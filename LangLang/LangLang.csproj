@@ -7,4 +7,10 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Model\DAO\" />
+    <Folder Include="Storage\" />
+  </ItemGroup>
+
 </Project>
