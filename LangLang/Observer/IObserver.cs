@@ -1,4 +1,4 @@
-﻿namespace CRUDExample.Observer
+﻿namespace LangLang.Observer
 {
     public interface IObserver
     {
