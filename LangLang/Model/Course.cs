@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using LangLang.Storage.Serialization;
 
 namespace LangLang.Model
 {
-    public class Course
+    public class Course : ISerializable
     {
         private int courseID;
         private Language language;
