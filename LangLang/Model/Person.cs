@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LangLang.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace LangLang.Model
 {
     public abstract class Person
     {
+        protected int id;
         protected string firstName;
         protected string lastName;
         protected Gender gender;
@@ -15,6 +17,12 @@ namespace LangLang.Model
         protected string phoneNumber;
         protected string email;
         protected string password;
+
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
         public string FirstName
         {
             get { return firstName; }
@@ -35,8 +43,8 @@ namespace LangLang.Model
 
         public DateTime DateOfBirth
         {
-            get { return dob; }
-            set { dob = value; }
+            get { return dateOfBirth; }
+            set { dateOfBirth = value; }
         }
 
         public string PhoneNumber
@@ -57,7 +65,30 @@ namespace LangLang.Model
             set { password = value; }
         }
 
-        public abstract string[] ToCsv();
-        public abstract void FromCsv(string[] values);
+        protected Person() { }
+        protected Person(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password)
+        {
+            this.id = id;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.gender = gender;
+            this.dateOfBirth = dateOfBirth;
+            this.phoneNumber = phoneNumber;
+            this.email = email;
+            this.password = password;
+        }
+        protected Person(string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password)
+        {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.gender = gender;
+            this.dateOfBirth = dateOfBirth;
+            this.phoneNumber = phoneNumber;
+            this.email = email;
+            this.password = password;
+        }
+
+        public abstract string[] ToCSV();
+        public abstract void FromCSV(string[] values);
     }
 }
