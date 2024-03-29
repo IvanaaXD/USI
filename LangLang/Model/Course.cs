@@ -7,21 +7,11 @@ using System.Windows;
 
 namespace LangLang.Model
 {
-    public enum Level
-    {
-        A1,
-        A2,
-        B1,
-        B2,
-        C1,
-        C2
-    }
-
     public class Course
     {
         private int courseID;
-        private string language;
-        private Level level;
+        private Language language;
+        private LanguageLevel languageLevel;
         private int duration;
         private List<DayOfWeek> workDays;
         private DateTime startDate;
@@ -35,16 +25,16 @@ namespace LangLang.Model
             set { courseID = value; }
         }
 
-        public string Language
+        public Language Language
         {
             get { return language; }
             set { language = value; }
         }
 
-        public Level Level
+        public LanguageLevel Level
         {
-            get { return level; }
-            set { level = value; }
+            get { return languageLevel; }
+            set { languageLevel = value; }
         }
 
         public int Duration
@@ -85,11 +75,11 @@ namespace LangLang.Model
         public Course()
         {
         }
-        public Course(int courseID, string language, Level level, int duration, List<DayOfWeek> workDays, DateTime startDate, bool isOnline, int maxEnrolledStudents, List<int> examTerms)
+        public Course(int courseID, Language language, LanguageLevel languageLevel, int duration, List<DayOfWeek> workDays, DateTime startDate, bool isOnline, int maxEnrolledStudents, List<int> examTerms)
         {
             this.courseID = courseID;
             this.language = language;
-            this.level = level;
+            this.languageLevel = languageLevel;
             this.duration = duration;
             this.workDays = workDays;
             this.startDate = startDate;
@@ -107,7 +97,7 @@ namespace LangLang.Model
             string[] csvValues =
             {
                 CourseID.ToString(),
-                Language,
+                Language.ToString(),
                 Level.ToString(),
                 Duration.ToString(),
                 workDaysStr,
@@ -128,8 +118,8 @@ namespace LangLang.Model
             }
 
             CourseID = int.Parse(values[0]);
-            Language = values[1];
-            Level = (Level)Enum.Parse(typeof(Level), values[2]);
+            Language = (Language)Enum.Parse(typeof(Language), values[1]);
+            Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), values[2]);
             Duration = int.Parse(values[3]);
             WorkDays = values[4].Split(',').Select(d => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), d)).ToList();
             StartDate = DateTime.ParseExact(values[5], "yyyy-MM-dd", null);
