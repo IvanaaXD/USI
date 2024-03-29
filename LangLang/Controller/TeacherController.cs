@@ -12,6 +12,7 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly TeacherDAO _coursesExams;
+
         public TeacherController()
         { 
             _coursesExams = new TeacherDAO();
@@ -20,10 +21,17 @@ namespace LangLang.Controller
         {
             return _coursesExams.GetAllCourses();
         }
-
+        public List<ExamTerm> GetAllExamTerms()
+        {
+            return _coursesExams.GetAllExamTerms();
+        }
         public void AddCourse(Course course)
         {
             _coursesExams.AddCourse(course);
+        }
+        public void AddExamTerm(ExamTerm examTerm)
+        {
+            _coursesExams.AddExamTerm(examTerm);
         }
 
         public void UpdateCourse(Course course)
@@ -31,11 +39,20 @@ namespace LangLang.Controller
             _coursesExams.UpdateCourse(course);
         }
 
+        public void UpdateExamTerm(ExamTerm examTerm)
+        {
+            _coursesExams.UpdateExamTerm(examTerm);
+        }
+
         public void RemoveCourse(int courseId)
         {
             _coursesExams.RemoveCourse(courseId);
         }
 
+        public void RemoveExamTerm(int examId)
+        {
+            _coursesExams.RemoveExamTerm(examId);
+        }
         public void Subscribe(IObserver observer)
         {
             _coursesExams.Subscribe(observer);
