@@ -13,17 +13,27 @@ namespace LangLang.Model.DAO
     {
         private readonly List<Course> _courses;
         private readonly Storage<Course> _courseStorage;
+        private readonly List<ExamTerm> _examTerms;
+        private readonly Storage<ExamTerm> _examTermsStorage;
 
         public TeacherDAO()
         {
             _courseStorage = new Storage<Course>("course.txt");
             _courses = _courseStorage.Load();
+            _examTermsStorage = new Storage<ExamTerm>("exam.txt");
+            _examTerms = _examTermsStorage.Load();
         }
 
         private int GenerateCourseId()
         {
             if (_courses.Count == 0) return 0;
             return _courses.Last().CourseID + 1;
+        }
+
+        private int GenerateExamId()
+        {
+            if (_examTerms.Count == 0) return 0;
+            return _examTerms.Last().ExamID + 1;
         }
 
         public Course AddCourse(Course course)
@@ -33,6 +43,15 @@ namespace LangLang.Model.DAO
             _courseStorage.Save(_courses);
             NotifyObservers();
             return course;
+        }
+
+        public ExamTerm AddExamTerm(ExamTerm examTerm)
+        {
+            examTerm.Id = GenerateExamId();
+            _examTerms.Add(examTerm);
+            _examTermsStorage.Save(_examTerms);
+            NotifyObservers();
+            return examTerm;
         }
 
         public Course? UpdateCourse(Course course)
@@ -54,6 +73,20 @@ namespace LangLang.Model.DAO
             return oldCourse;
         }
 
+        public ExamTerm UpdateExamTerm(ExamTerm examTerm)
+        {
+            ExamTerm oldExamTerm = GetExamTermById(examTerm.ExamID);
+            if (oldExamTerm == null) return null;
+
+            oldExamTerm.CourseId = examTerm.CourseId;
+            oldExamTerm.ExamTime = examTerm.ExamTime;
+            oldExamTerm.MaxStudents = examTerm.MaxStudents;
+
+            _examTermsStorage.Save(_examTerms);
+            NotifyObservers();
+            return oldExamTerm;
+        }
+
         public Course? RemoveCourse(int id)
         {
             Course? course = GetCourseById(id);
@@ -70,14 +103,34 @@ namespace LangLang.Model.DAO
             return course;
         }
 
+        public ExamTerm RemoveExamTerm(int id)
+        {
+            ExamTerm examTerm = GetExamTermById(id);
+            if (examTerm == null) return null;
+
+            _examTerms.Remove(examTerm);
+            _examTermsStorage.Save(_examTerms);
+            NotifyObservers();
+            return examTerm;
+        }
+
         private Course? GetCourseById(int id)
         {
             return _courses.Find(v => v.CourseID == id);
         }
 
+        private ExamTerm GetExamTermById(int id)
+        {
+            return _examTerms.Find(et => et.ExamID == id);
+        }
         public List<Course> GetAllCourses()
         {
             return _courses;
+        }
+
+        public List<ExamTerm> GetAllExamTerms()
+        {
+            return _examTerms;
         }
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
@@ -91,5 +144,14 @@ namespace LangLang.Model.DAO
 
             return filteredCourses;
         }
+
+        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        {
+            var filteredExams;
+            // TO DO
+
+            return filteredExams;
+        }
+        
     }
 }
