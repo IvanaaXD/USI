@@ -26,4 +26,24 @@ namespace LangLang.Model.Enums
         ASC,
         DESC
     }
+
+    public enum LanguageLevel
+    {
+        A1,
+        A2,
+        B1,
+        B2,
+        C1,
+        C2
+    }
+
+    public enum Language
+    {
+        English,
+        Spanish,
+        German,
+        Japanese,
+        Russian,
+        French
+    }
 }
