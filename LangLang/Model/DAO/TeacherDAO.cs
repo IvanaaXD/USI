@@ -47,7 +47,7 @@ namespace LangLang.Model.DAO
 
         public ExamTerm AddExamTerm(ExamTerm examTerm)
         {
-            examTerm.Id = GenerateExamId();
+            examTerm.ExamID = GenerateExamId();
             _examTerms.Add(examTerm);
             _examTermsStorage.Save(_examTerms);
             NotifyObservers();
@@ -78,7 +78,7 @@ namespace LangLang.Model.DAO
             ExamTerm oldExamTerm = GetExamTermById(examTerm.ExamID);
             if (oldExamTerm == null) return null;
 
-            oldExamTerm.CourseId = examTerm.CourseId;
+            oldExamTerm.CourseID = examTerm.CourseID;
             oldExamTerm.ExamTime = examTerm.ExamTime;
             oldExamTerm.MaxStudents = examTerm.MaxStudents;
 
@@ -148,6 +148,7 @@ namespace LangLang.Model.DAO
         public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
             var filteredExams;
+            filteredExams = List<ExamTerm>();
             // TO DO
 
             return filteredExams;
