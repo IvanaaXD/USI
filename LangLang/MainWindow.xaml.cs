@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using LangLang.View.Student;
+
 namespace LangLang
 {
     /// <summary>
@@ -24,5 +26,13 @@ namespace LangLang
         {
             InitializeComponent();
         }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            RegistrationForm regForm = new RegistrationForm();
+            regForm.Show();
+            this.Close();
+        }
+
     }
 }
