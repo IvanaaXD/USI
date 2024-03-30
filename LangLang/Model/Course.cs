@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using LangLang.Storage.Serialization;
+using LangLang.Model.Enums;
 
 namespace LangLang.Model
 {
