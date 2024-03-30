@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LangLang.Model
 {
-    public class ExamTerm
+    public class ExamTerm : ISerializable
     {
         private int examID;
         private int courseID;
