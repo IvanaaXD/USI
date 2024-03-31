@@ -134,11 +134,6 @@ namespace LangLang.Model
 
         public void FromCSV(string[] values)
         {
-            if (values.Length != 9)
-            {
-                throw new ArgumentException("Invalid number of values in CSV");
-            }
-
             CourseID = int.Parse(values[0]);
             Language = (Language)Enum.Parse(typeof(Language), values[1]);
             Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), values[2]);
