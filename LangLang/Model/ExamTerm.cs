@@ -13,6 +13,7 @@ namespace LangLang.Model
         private int courseID;
         private DateTime examTime;
         private int maxStudents;
+        private int currentlyAttending;
 
         public int ExamID
         {
@@ -38,21 +39,28 @@ namespace LangLang.Model
             set { maxStudents = value; }
         }
 
+        public int CurrentlyAttending
+        {
+            get { return currentlyAttending; }
+            set { currentlyAttending = value; }
+        }
+
         public ExamTerm()
         {
         }
 
-        public ExamTerm(int examID, int courseID, DateTime examTime, int maxStudents)
+        public ExamTerm(int examID, int courseID, DateTime examTime, int maxStudents, int currentlyAttending)
         {
             this.examID = examID;
             this.courseID = courseID;
             this.examTime = examTime;
             this.maxStudents = maxStudents;
+            this.currentlyAttending = currentlyAttending;
         }
 
         public override string ToString()
         {
-            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}";
+            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}, CurrentlyAttending:{currentlyAttending}";
         }
 
         public string[] ToCSV()
@@ -62,7 +70,8 @@ namespace LangLang.Model
                 examID.ToString(),
                 courseID.ToString(),
                 examTime.ToString(),
-                maxStudents.ToString()
+                maxStudents.ToString(),
+                currentlyAttending.ToString()
             };
             return csvValues;
         }
@@ -78,6 +87,7 @@ namespace LangLang.Model
             CourseID = int.Parse(values[1]);
             ExamTime = DateTime.Parse(values[2]);
             MaxStudents = int.Parse(values[3]);
+            CurrentlyAttending = int.Parse(values[4]);
         }
     }
 }
