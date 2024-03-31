@@ -24,13 +24,13 @@ namespace LangLang.Model.DAO
             _examTerms = _examTermsStorage.Load();
         }
 
-        private int GenerateCourseId()
+        public int GenerateCourseId()
         {
             if (_courses.Count == 0) return 0;
             return _courses.Last().CourseID + 1;
         }
 
-        private int GenerateExamId()
+        public int GenerateExamId()
         {
             if (_examTerms.Count == 0) return 0;
             return _examTerms.Last().ExamID + 1;
@@ -145,14 +145,14 @@ namespace LangLang.Model.DAO
             return filteredCourses;
         }
 
-        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        /*public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
             var filteredExams;
             filteredExams = List<ExamTerm>();
             // TO DO
 
             return filteredExams;
-        }
+        }*/
         
     }
 }
