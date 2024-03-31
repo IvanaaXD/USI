@@ -24,13 +24,13 @@ namespace LangLang.Model.DAO
             _examTerms = _examTermsStorage.Load();
         }
 
-        public int GenerateCourseId()
+        private int GenerateCourseId()
         {
             if (_courses.Count == 0) return 0;
             return _courses.Last().CourseID + 1;
         }
 
-        public int GenerateExamId()
+        private int GenerateExamId()
         {
             if (_examTerms.Count == 0) return 0;
             return _examTerms.Last().ExamID + 1;
@@ -114,12 +114,12 @@ namespace LangLang.Model.DAO
             return examTerm;
         }
 
-        private Course? GetCourseById(int id)
+        public Course? GetCourseById(int id)
         {
             return _courses.Find(v => v.CourseID == id);
         }
 
-        private ExamTerm GetExamTermById(int id)
+        public ExamTerm GetExamTermById(int id)
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
