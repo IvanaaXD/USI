@@ -12,6 +12,11 @@
         <converters:CollectionToStringConverter x:Key="CollectionToStringConverter"/>
     </Window.Resources>
     <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Delete" Click="Delete_Click"></MenuItem>
+            </MenuItem>
+        </Menu>
         <TabControl>
             <TabItem Header="Courses">
                 <DataGrid Height="350"
@@ -36,7 +41,7 @@
                         <DataGridTextColumn Header="Online" Binding="{Binding IsOnline}"/>
                         <DataGridTextColumn Header="Currently Enrolled" Binding="{Binding CurrentlyEnrolled}"/>
                         <DataGridTextColumn Header="Max Students" Binding="{Binding MaxEnrolledStudents}"/>
-                        <DataGridTemplateColumn Header="Exam Terms">
+                        <DataGridTemplateColumn Header="Exam Terms IDs">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding ExamTerms, Converter={StaticResource CollectionToStringConverter}}"/>

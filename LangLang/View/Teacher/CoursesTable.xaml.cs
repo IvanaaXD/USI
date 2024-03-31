@@ -13,7 +13,6 @@ namespace LangLang.View.Teacher
 {
     public partial class CoursesTable : Window, IObserver
     {
-        // Nested ViewModel class
         public class ViewModel
         {
             public ObservableCollection<CourseDTO> Courses { get; set; }
@@ -23,7 +22,7 @@ namespace LangLang.View.Teacher
                 Courses = new ObservableCollection<CourseDTO>();
             }
 
-            
+
         }
 
         public ViewModel TableViewModel { get; set; }
@@ -53,12 +52,26 @@ namespace LangLang.View.Teacher
                 }
                 else
                 {
-                    MessageBox.Show("No courses found."); // Display message if no courses found
+                    MessageBox.Show("No courses found.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}"); // Display error message
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedCourse == null)
+            {
+                MessageBox.Show("Please choose a course to cancel!");
+            }
+            else
+            {
+                if (DateTime.Now.AddDays(7) > SelectedCourse.StartDate)
+                    MessageBox.Show("Cannot cancel a course that starts in less than a week.");
+                else
+                    teacherController.RemoveCourse(SelectedCourse.CourseID);
             }
         }
     }
