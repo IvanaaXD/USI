@@ -18,9 +18,9 @@ namespace LangLang.Model.DAO
 
         public TeacherDAO()
         {
-            _courseStorage = new Storage<Course>("course.txt");
+            _courseStorage = new Storage<Course>("course.csv");
             _courses = _courseStorage.Load();
-            _examTermsStorage = new Storage<ExamTerm>("exam.txt");
+            _examTermsStorage = new Storage<ExamTerm>("exam.csv");
             _examTerms = _examTermsStorage.Load();
         }
 
@@ -65,6 +65,7 @@ namespace LangLang.Model.DAO
             oldCourse.WorkDays = course.WorkDays;
             oldCourse.StartDate = course.StartDate;
             oldCourse.IsOnline = course.IsOnline;
+            oldCourse.CurrentlyEnrolled = course.CurrentlyEnrolled;
             oldCourse.MaxEnrolledStudents = course.MaxEnrolledStudents;
             oldCourse.ExamTerms = course.ExamTerms;
 
@@ -114,12 +115,12 @@ namespace LangLang.Model.DAO
             return examTerm;
         }
 
-        public Course? GetCourseById(int id)
+        private Course? GetCourseById(int id)
         {
             return _courses.Find(v => v.CourseID == id);
         }
 
-        public ExamTerm GetExamTermById(int id)
+        private ExamTerm GetExamTermById(int id)
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
@@ -153,6 +154,6 @@ namespace LangLang.Model.DAO
 
             return filteredExams;
         }*/
-        
+
     }
 }
