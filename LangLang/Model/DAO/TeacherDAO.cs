@@ -147,12 +147,26 @@ namespace LangLang.Model.DAO
 
         public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
-            var filteredExams;
-            filteredExams = List<ExamTerm>();
-            // TO DO
+            List<ExamTerm> allExams = GetAllExamTerms();
+
+            var filteredExams = new List<ExamTerm>();
+
+            foreach (var exam in allExams)
+            {
+                Course course = GetCourseById(exam.CourseID);
+
+                bool matchesLanguage = !language.HasValue || course.Language == language;
+                bool matchesLevel = !level.HasValue || course.Level == level;
+                bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date == examDate.Value.Date;
+
+                if (matchesLanguage && matchesLevel && matchesExamDate)
+                {
+                    filteredExams.Add(exam);
+                }
+            }
 
             return filteredExams;
         }
-        
+
     }
 }
