@@ -9,12 +9,12 @@
         Title="CoursesTable" Height="450" Width="850">
     <Window.Resources>
         <converters:DayOfWeekToStringConverter x:Key="DayOfWeekToStringConverter"/>
-        <converters:CollectionToStringConverter x:Key="CollectionToStringConverter"/>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Delete" Click="Delete_Click"></MenuItem>
+                <MenuItem Header="Create" Click="Create_Click"></MenuItem>
+                <MenuItem Header="Cancel" Click="Cancel_Click"></MenuItem>
             </MenuItem>
         </Menu>
         <TabControl>
@@ -26,28 +26,20 @@
           SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
           SelectionMode="Single" IsReadOnly="True">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Course ID" Binding="{Binding CourseID}"/>
                         <DataGridTextColumn Header="Language" Binding="{Binding Language}"/>
                         <DataGridTextColumn Header="Level" Binding="{Binding Level}"/>
                         <DataGridTextColumn Header="Duration In Weeks" Binding="{Binding Duration}"/>
-                        <DataGridTemplateColumn Header="Week Days">
+                        <DataGridTemplateColumn Header="Work Days">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd}}"/>
+                        <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
                         <DataGridTextColumn Header="Online" Binding="{Binding IsOnline}"/>
                         <DataGridTextColumn Header="Currently Enrolled" Binding="{Binding CurrentlyEnrolled}"/>
                         <DataGridTextColumn Header="Max Students" Binding="{Binding MaxEnrolledStudents}"/>
-                        <DataGridTemplateColumn Header="Exam Terms IDs">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding ExamTerms, Converter={StaticResource CollectionToStringConverter}}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
