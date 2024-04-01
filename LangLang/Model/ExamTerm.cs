@@ -78,11 +78,6 @@ namespace LangLang.Model
 
         public void FromCSV(string[] values)
         {
-            if (values.Length != 4)
-            {
-                throw new ArgumentException("Invalid number of values in CSV");
-            }
-
             ExamID = int.Parse(values[0]);
             CourseID = int.Parse(values[1]);
             ExamTime = DateTime.Parse(values[2]);
