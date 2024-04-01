@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using LangLang.View.Student;
+using LangLang.View.Director;
 using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Model;
@@ -27,36 +27,41 @@ namespace LangLang
     /// </summary>
     public partial class MainWindow : Window, IObserver
     {
-        public ObservableCollection<StudentDTO> Students { get; set; }
-        public StudentDTO SelectedStudent { get; set; }
-        private StudentsController studentsController { get; set; }
+        public ObservableCollection<TeacherDTO> Teachers { get; set; }
+        public TeacherDTO SelectedTeacher { get; set; }
+        private DirectorController directorController { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            Students = new ObservableCollection<StudentDTO>();
-            studentsController = new StudentsController();
-            studentsController.Subscribe(this);
+            Teachers = new ObservableCollection<TeacherDTO>();
+            directorController = new DirectorController();
+            directorController.Subscribe(this);
+
             Update();
         }
 
         public void Update()
         {
-            Students.Clear();
-            foreach (Student student in studentsController.GetAllStudents())
-                Students.Add(new StudentDTO(student));
+            Teachers.Clear();
+            /*foreach (Teacher teacher in directorController.GetAllTeachers())
+                Teachers.Add(new TeacherDTO(teacher));*/
+
         }
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            WelcomePage welcomePage = new WelcomePage(0);
+           
+            /*WelcomePage welcomePage = new WelcomePage(0, studentController);
             welcomePage.Show();
-            this.Close();
+            this.Close();*/
         }
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
-            RegistrationForm regForm = new RegistrationForm(studentsController);
+            RegistrationForm regForm = new RegistrationForm(directorController);
+
             regForm.Show();
         }
     }

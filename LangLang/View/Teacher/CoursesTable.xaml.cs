@@ -1,29 +1,17 @@
-﻿using System;
+﻿using LangLang.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
+using LangLang.View;
+using LangLang.Observer;
 using LangLang.DTO;
 using LangLang.Controller;
-using LangLang.Model;
-using LangLang.Observer;
 
-namespace LangLang.View.Student
+namespace LangLang.View.Teacher
 {
-    /// <summary>
-    /// Interaction logic for AvailableCoursesForm.xaml
-    /// </summary>
-    public partial class AvailableCoursesForm : Window, IObserver
+    public partial class CoursesTable : Window, IObserver
     {
         public class ViewModel
         {
@@ -39,18 +27,17 @@ namespace LangLang.View.Student
 
         public ViewModel TableViewModel { get; set; }
         public CourseDTO SelectedCourse { get; set; }
-        private StudentsController studentsController { get; set; }
+        public TeacherController teacherController { get; set; }
+        public int teacherId { get; set; }
 
-        private int studentId { get; set; }
-
-        public AvailableCoursesForm(int studentId)
+        public CoursesTable(int teacherId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            studentsController = new StudentsController();
-            this.studentId = studentId;
+            teacherController = new TeacherController();
+            this.teacherId = teacherId;
             DataContext = this;
-            studentsController.Subscribe(this);
+            teacherController.Subscribe(this);
             Update();
         }
 
@@ -59,7 +46,7 @@ namespace LangLang.View.Student
             try
             {
                 TableViewModel.Courses.Clear();
-                var courses = studentsController.GetAvailableCourses(studentId);
+                var courses = teacherController.GetAllCourses();
                 if (courses != null)
                 {
                     foreach (Course course in courses)
@@ -76,14 +63,26 @@ namespace LangLang.View.Student
             }
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void Create_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            CreateCourseForm courseTable = new CreateCourseForm(teacherController, teacherId);
+            courseTable.Show();
         }
 
-        private void btnSingUp_Click(object sender, EventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            if (SelectedCourse == null)
+            {
+                MessageBox.Show("Please choose a course to cancel!");
+            }
+            else
+            {
+                if (DateTime.Now.AddDays(7) > SelectedCourse.StartDate)
+                    MessageBox.Show("Cannot cancel a course that starts in less than a week.");
+                else
+                    teacherController.DeleteCourse(SelectedCourse.CourseID);
+            }
         }
+
     }
 }
