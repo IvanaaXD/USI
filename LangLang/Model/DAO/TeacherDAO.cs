@@ -120,7 +120,8 @@ namespace LangLang.Model.DAO
             return _courses.Find(v => v.CourseID == id);
         }
 
-        public ExamTerm? GetExamTermById(int id)
+        public ExamTerm GetExamTermById(int id)
+
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
@@ -146,7 +147,7 @@ namespace LangLang.Model.DAO
             return filteredCourses;
         }
 
-        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        /*public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
            List<ExamTerm> allExams = GetAllExamTerms();
 

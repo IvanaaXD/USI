@@ -15,7 +15,7 @@ namespace LangLang.Model
             set { title = value; }
         }
 
-        public Employee() {}
+        public Employee() : base() { }
 
         public Employee(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email,
                         string password, int title)

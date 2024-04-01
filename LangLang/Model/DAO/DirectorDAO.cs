@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
+using LangLang.DTO;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -15,8 +16,13 @@ namespace LangLang.Model.DAO
 
         private readonly List<Teacher> _teachers;
         private readonly Storage<Teacher> _storage;
-        
-        public DirectorDAO() { }
+        private TeacherDAO teacherDAO;
+
+        public DirectorDAO() {
+            _storage = new Storage<Teacher>("teachers.csv");
+            _teachers = _storage.Load();
+            teacherDAO = new TeacherDAO();
+        }
 
         private int GenerateId()
         {
