@@ -122,7 +122,7 @@ namespace LangLang.Model
                 Level.ToString(),
                 Duration.ToString(),
                 workDaysStr,
-                StartDate.ToString("yyyy-MM-dd"),
+                StartDate.ToString("yyyy-MM-dd HH:mm"),
                 IsOnline.ToString(),
                 CurrentlyEnrolled.ToString(),
                 MaxEnrolledStudents.ToString(),
@@ -139,11 +139,18 @@ namespace LangLang.Model
             Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), values[2]);
             Duration = int.Parse(values[3]);
             WorkDays = values[4].Split(',').Select(d => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), d)).ToList();
-            StartDate = DateTime.ParseExact(values[5], "yyyy-MM-dd", null);
+            StartDate = DateTime.ParseExact(values[5], "yyyy-MM-dd HH:mm", null);
             IsOnline = bool.Parse(values[6]);
             CurrentlyEnrolled = int.Parse(values[7]);
             MaxEnrolledStudents = int.Parse(values[8]);
-            ExamTerms = values[9].Split(',').Select(int.Parse).ToList();
+            if (values[9] == "")
+            {
+                ExamTerms = new List<int>();
+            }
+            else
+            {
+                ExamTerms = values[9].Split(',').Select(int.Parse).ToList();
+            }
         }
 
     }

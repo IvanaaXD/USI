@@ -28,12 +28,14 @@ namespace LangLang.View.Teacher
         public ViewModel TableViewModel { get; set; }
         public CourseDTO SelectedCourse { get; set; }
         public TeacherController teacherController { get; set; }
+        public int teacherId { get; set; }
 
-        public CoursesTable()
+        public CoursesTable(int teacherId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
             teacherController = new TeacherController();
+            this.teacherId = teacherId;
             DataContext = this;
             teacherController.Subscribe(this);
             Update();
@@ -52,15 +54,22 @@ namespace LangLang.View.Teacher
                 }
                 else
                 {
-                    MessageBox.Show("No courses found.");
+                    MessageBox.Show("No courses found."); // Display message if no courses found
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                MessageBox.Show($"An error occurred: {ex.Message}"); // Display error message
             }
         }
-        private void Delete_Click(object sender, RoutedEventArgs e)
+
+        private void Create_Click(object sender, RoutedEventArgs e)
+        {
+            CreateCourseForm courseTable = new CreateCourseForm(teacherController, teacherId);
+            courseTable.Show();
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
             {
@@ -71,8 +80,9 @@ namespace LangLang.View.Teacher
                 if (DateTime.Now.AddDays(7) > SelectedCourse.StartDate)
                     MessageBox.Show("Cannot cancel a course that starts in less than a week.");
                 else
-                    teacherController.RemoveCourse(SelectedCourse.CourseID);
+                    teacherController.DeleteCourse(SelectedCourse.CourseID);
             }
         }
+
     }
 }
