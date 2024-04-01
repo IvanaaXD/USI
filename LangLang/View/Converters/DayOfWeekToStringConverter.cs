@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
 
 namespace LangLang.View.Converters
@@ -8,10 +10,11 @@ namespace LangLang.View.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DayOfWeek)
+            if (value is IEnumerable<DayOfWeek> daysOfWeek)
             {
-                DayOfWeek dayOfWeek = (DayOfWeek)value;
-                return CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(dayOfWeek);
+                var dayNames = daysOfWeek.Select(day => day.ToString());
+
+                return string.Join(", ", dayNames);
             }
             return value;
         }
