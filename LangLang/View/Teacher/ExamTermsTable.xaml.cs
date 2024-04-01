@@ -68,7 +68,7 @@ namespace LangLang.View.Teacher
                 if (DateTime.Now.AddDays(14) > SelectedExamTerm.ExamTime)
                     MessageBox.Show("Cannot cancel an exam that starts in less than a 2 week.");
                 else
-                    teacherController.RemoveExamTerm(SelectedExamTerm.ExamID);
+                    teacherController.DeleteExamTerm(SelectedExamTerm.ExamID);
             }
         }
     }
