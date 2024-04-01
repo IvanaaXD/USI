@@ -52,7 +52,7 @@
                     HorizontalAlignment="Left"/>
             </Grid>
 
-            <Button x:Name="LoginBtn"
+            <Button x:Name="btnLogin"
                     Content="Login" 
                     Foreground="White"
                     Background="#4F518C"
@@ -62,13 +62,15 @@
                     Click="btnLogin_Click">
             </Button>
 
-            <Button Content="Register"
+            <Button x:Name="btnRegistration"
+                    Content="Register"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Center"
                     Foreground="#4F518C"
                     Background="#e6e8e6"
                     Height="35"
-                    Width="250">
+                    Width="250"
+                    Click="btnRegistration_Click">
 
             </Button>
         </StackPanel>
