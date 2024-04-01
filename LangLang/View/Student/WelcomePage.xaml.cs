@@ -43,7 +43,5 @@ namespace LangLang.View.Student
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
         }
-
-        private void ModifyAccount_Click(object sender, RoutedEventArgs e) { }
     }
 }

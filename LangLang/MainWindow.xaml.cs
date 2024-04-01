@@ -25,11 +25,12 @@ namespace LangLang
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IObserver
     {
         public ObservableCollection<TeacherDTO> Teachers { get; set; }
         public TeacherDTO SelectedTeacher { get; set; }
         private DirectorController directorController { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,6 +38,7 @@ namespace LangLang
             Teachers = new ObservableCollection<TeacherDTO>();
             directorController = new DirectorController();
             directorController.Subscribe(this);
+
             Update();
         }
 
@@ -45,11 +47,13 @@ namespace LangLang
             Teachers.Clear();
             /*foreach (Teacher teacher in directorController.GetAllTeachers())
                 Teachers.Add(new TeacherDTO(teacher));*/
+
         }
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             WelcomePage welcomePage = new WelcomePage(0, directorController);
+
             welcomePage.Show();
             this.Close();
         }
@@ -57,6 +61,7 @@ namespace LangLang
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
             RegistrationForm regForm = new RegistrationForm(directorController);
+
             regForm.Show();
         }
     }
