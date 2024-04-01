@@ -147,7 +147,7 @@ namespace LangLang.Model.DAO
             return filteredCourses;
         }
 
-        /*public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
            List<ExamTerm> allExams = GetAllExamTerms();
 
@@ -169,6 +169,7 @@ namespace LangLang.Model.DAO
 
             return filteredExams;
         }
-
+       
     }
 }
+        
