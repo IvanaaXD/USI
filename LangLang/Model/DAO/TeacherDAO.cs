@@ -119,7 +119,7 @@ namespace LangLang.Model.DAO
             return _courses.Find(v => v.CourseID == id);
         }
 
-        private ExamTerm GetExamTermById(int id)
+        public ExamTerm GetExamTermById(int id)
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
@@ -145,13 +145,28 @@ namespace LangLang.Model.DAO
             return filteredCourses;
         }
 
-        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        /*public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
-            var filteredExams;
-            // TO DO
+           List<ExamTerm> allExams = GetAllExamTerms();
+
+            var filteredExams = new List<ExamTerm>();
+
+            foreach (var exam in allExams)
+            {
+                Course course = GetCourseById(exam.CourseID);
+                
+                bool matchesLanguage = !language.HasValue || course.Language == language;
+                bool matchesLevel = !level.HasValue || course.Level == level;
+                bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date == examDate.Value.Date;
+
+                if (matchesLanguage && matchesLevel && matchesExamDate)
+                {
+                    filteredExams.Add(exam);
+                }
+            }
 
             return filteredExams;
         }
-        
+
     }
 }

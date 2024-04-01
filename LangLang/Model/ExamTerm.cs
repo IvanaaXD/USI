@@ -70,7 +70,7 @@ namespace LangLang.Model
         {
             if (values.Length != 4)
             {
-                throw new ArgumentException("Invalid number of values in CSV");
+                //throw new ArgumentException("Invalid number of values in CSV");
             }
 
             ExamID = int.Parse(values[0]);
