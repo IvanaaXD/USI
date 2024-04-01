@@ -115,12 +115,12 @@ namespace LangLang.Model.DAO
             return examTerm;
         }
 
-        private Course? GetCourseById(int id)
+        public Course? GetCourseById(int id)
         {
             return _courses.Find(v => v.CourseID == id);
         }
 
-        private ExamTerm? GetExamTermById(int id)
+        public ExamTerm? GetExamTermById(int id)
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
