@@ -74,9 +74,9 @@ namespace LangLang.Model.DAO
             return oldCourse;
         }
 
-        public ExamTerm UpdateExamTerm(ExamTerm examTerm)
+        public ExamTerm? UpdateExamTerm(ExamTerm examTerm)
         {
-            ExamTerm oldExamTerm = GetExamTermById(examTerm.ExamID);
+            ExamTerm? oldExamTerm = GetExamTermById(examTerm.ExamID);
             if (oldExamTerm == null) return null;
 
             oldExamTerm.CourseID = examTerm.CourseID;
@@ -104,9 +104,9 @@ namespace LangLang.Model.DAO
             return course;
         }
 
-        public ExamTerm RemoveExamTerm(int id)
+        public ExamTerm? RemoveExamTerm(int id)
         {
-            ExamTerm examTerm = GetExamTermById(id);
+            ExamTerm? examTerm = GetExamTermById(id);
             if (examTerm == null) return null;
 
             _examTerms.Remove(examTerm);
@@ -120,7 +120,7 @@ namespace LangLang.Model.DAO
             return _courses.Find(v => v.CourseID == id);
         }
 
-        private ExamTerm GetExamTermById(int id)
+        private ExamTerm? GetExamTermById(int id)
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
@@ -146,14 +146,28 @@ namespace LangLang.Model.DAO
             return filteredCourses;
         }
 
-        /*public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
-            var filteredExams;
-            filteredExams = List<ExamTerm>();
-            // TO DO
+           List<ExamTerm> allExams = GetAllExamTerms();
+
+            var filteredExams = new List<ExamTerm>();
+
+            foreach (var exam in allExams)
+            {
+                Course course = GetCourseById(exam.CourseID);
+                
+                bool matchesLanguage = !language.HasValue || course.Language == language;
+                bool matchesLevel = !level.HasValue || course.Level == level;
+                bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date == examDate.Value.Date;
+
+                if (matchesLanguage && matchesLevel && matchesExamDate)
+                {
+                    filteredExams.Add(exam);
+                }
+            }
 
             return filteredExams;
-        }*/
+        }
 
     }
 }
