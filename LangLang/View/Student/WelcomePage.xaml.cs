@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LangLang.Controller;
+using LangLang.Observer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +21,27 @@ namespace LangLang.View.Student
     /// </summary>
     public partial class WelcomePage : Window
     {
-        public WelcomePage()
+        int studentId;
+        StudentsController studentController;
+        public WelcomePage(int studentId, StudentsController studentController)
         {
             InitializeComponent();
+            this.studentId = studentId;
+            this.studentController = studentController;
+        }
+
+        private void AvailableCourses_Click(object sender, RoutedEventArgs e)
+        {
+            AvailableCoursesForm availableCoursesForm = new AvailableCoursesForm(studentId);
+            availableCoursesForm.Show();
+        }
+
+        private void DeleteAccount_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            studentController.Delete(studentId);
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
         }
     }
 }
