@@ -81,5 +81,9 @@ namespace LangLang.View.Student
             Close();
         }
 
+        private void btnSingUp_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }

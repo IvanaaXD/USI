@@ -52,10 +52,10 @@ namespace LangLang
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            WelcomePage welcomePage = new WelcomePage(0, directorController);
-
+           
+            /*WelcomePage welcomePage = new WelcomePage(0, studentController);
             welcomePage.Show();
-            this.Close();
+            this.Close();*/
         }
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
