@@ -10,7 +10,7 @@ namespace LangLang.Model
 {
     public class Director : Employee
     {
-        public Director() { }
+        public Director() : base() { }
 
         public Director(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email,
                 string password, int title)
