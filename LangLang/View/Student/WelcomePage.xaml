@@ -19,14 +19,15 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <DockPanel Grid.ColumnSpan="2" Panel.ZIndex="2" Height="auto">
-            <Menu DockPanel.Dock="Top" >
-                <MenuItem Header="Nalog">
-                    <MenuItem Header="Izmena podataka"></MenuItem>
-                    <MenuItem Header="Brisanje naloga"></MenuItem>
+
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Account">
+                    <MenuItem Header="Modify data" Click="ModifyAccount_Click"></MenuItem>
+                    <MenuItem Header="Delete account" Click="DeleteAccount_Click"></MenuItem>
                 </MenuItem>
-                <MenuItem Header="Pregled">
-                    <MenuItem Header="Dostupni kursevi"></MenuItem>
-                    <MenuItem Header="Dostupni ispiti"></MenuItem>
+                <MenuItem Header="View">
+                    <MenuItem Header="Available courses" Click="AvailableCourses_Click"></MenuItem>
+                    <MenuItem Header="Available exams"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Mail"></MenuItem>
             </Menu>
@@ -43,7 +44,7 @@
 
         <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"></ColumnDefinition>
+                <ColumnDefinition Width="270"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -52,9 +53,9 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Broj odslusanih kurseva: " VerticalAlignment="Center" FontSize="20"></TextBlock>
-            <TextBlock Grid.Row="1" Text="Broj polozenih ispita: " VerticalAlignment="Center" FontSize="20"></TextBlock>
-            <TextBlock Grid.Row="2" Text="Broj penalnih poena: " VerticalAlignment="Center" FontSize="20"></TextBlock>
+            <TextBlock Grid.Row="0" Text="Number of courses attended:" VerticalAlignment="Center" FontSize="20"></TextBlock>
+            <TextBlock Grid.Row="1" Text="Number of passed exams:" VerticalAlignment="Center" FontSize="20"></TextBlock>
+            <TextBlock Grid.Row="2" Text="Number of penalty points:" VerticalAlignment="Center" FontSize="20"></TextBlock>
 
             <TextBlock x:Name="completedCoursesBlock" Grid.Row="0" Grid.Column="1" FontSize="20">2</TextBlock>
             <TextBlock x:Name="passedExamsBlock" Grid.Row="1" Grid.Column="1" FontSize="20">1</TextBlock>
