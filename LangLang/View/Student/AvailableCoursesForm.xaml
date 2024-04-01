@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
-        Title="AvailableCoursesForm" Height="450" Width="800">
+        Title="AvailableCoursesForm" Height="450" Width="841">
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="100"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="70"></RowDefinition>
         </Grid.RowDefinitions>
@@ -16,21 +16,63 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-    
-    <DockPanel Grid.ColumnSpan="2" Panel.ZIndex="2" Height="auto">
-        <Menu DockPanel.Dock="Top" >
-            <MenuItem Header="Account">
-                <MenuItem Header="Modify data"></MenuItem>
-                <MenuItem Header="Delete account"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Header="Available courses"></MenuItem>
-                <MenuItem Header="Available exams"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Mail"></MenuItem>
-        </Menu>
+
+        <DockPanel Grid.ColumnSpan="2" Height="auto">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Account">
+                    <MenuItem Header="Modify data"></MenuItem>
+                    <MenuItem Header="Delete account"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="View">
+                    <MenuItem Header="Available courses"></MenuItem>
+                    <MenuItem Header="Available exams"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Mail"></MenuItem>
+            </Menu>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"></RowDefinition>
+                    <RowDefinition Height="50"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                    <TextBlock Text="Lenguage:" Width="150" Margin="0,0,5,0"></TextBlock>
+                    <TextBlock Text="Lenguage level:" Width="150" Margin="5,0,5,0"></TextBlock>
+                    <TextBlock Text="Start date:" Width="150" Margin="5,0,5,0"></TextBlock>
+                    <TextBlock Text="Duration:" Width="150" Margin="5,0,5,0"></TextBlock>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+
+                    <ComboBox x:Name="languageComboBox" Width="150" Margin="5"
+                              ItemsSource="{Binding LanguageValues}"
+                              SelectedItem="{Binding SelectedLanguage}"
+                              DisplayMemberPath="Name" SelectedValuePath="Id"/>         
+
+                    <!-- ComboBox za nivo -->
+                    <ComboBox x:Name="levelComboBox" Width="150" Margin="5"
+                              ItemsSource="{Binding LevelValues}"
+                              SelectedItem="{Binding SelectedLevel}"/>
+
+                    <!-- DatePicker za početni datum -->
+                    <DatePicker x:Name="startDateDatePicker" Width="150" Margin="5"/>
+
+                    <!-- TextBox za trajanje -->
+                    <TextBox x:Name="durationTextBox" Width="150" Margin="5"/>
+
+                    <!-- CheckBox za online -->
+                    <CheckBox x:Name="onlineCheckBox" Content="Online" Margin="5"
+                              IsChecked="{Binding IsOnline, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <Button Grid.Row="1" Content="Search" Click="btnSearch_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,0,10,20"/>
+            </Grid>
+        </DockPanel>
         
-        <TabControl>
+
+        <DockPanel Grid.Row="1" Grid.ColumnSpan="2" Panel.ZIndex="2" Height="auto">
+            <TabControl>
             <TabItem Header="Courses">
                 <DataGrid Height="350"
           AutoGenerateColumns="False"
@@ -42,24 +84,25 @@
                             <DataGridTextColumn Header="Language" Binding="{Binding Language}"/>
                         <DataGridTextColumn Header="Level" Binding="{Binding Level}"/>
                         <DataGridTextColumn Header="Duration In Weeks" Binding="{Binding Duration}"/>
-                        <DataGridTemplateColumn Header="Week Days">
+                        <!--<DataGridTemplateColumn Header="Week Days">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                        </DataGridTemplateColumn> -->
                         <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd}}"/>
                         <DataGridTextColumn Header="Online" Binding="{Binding IsOnline}"/>
                         <DataGridTextColumn Header="Currently Enrolled" Binding="{Binding CurrentlyEnrolled}"/>
                         <DataGridTextColumn Header="Max Students" Binding="{Binding MaxEnrolledStudents}"/>
-                        <DataGridTemplateColumn Header="Exam Terms">
+                       <!-- <DataGridTemplateColumn Header="Exam Terms">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding ExamTerms, Converter={StaticResource CollectionToStringConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                            -->
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

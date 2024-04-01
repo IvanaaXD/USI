@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LangLang.Controller;
+using LangLang.DTO;
+using LangLang.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,36 +14,35 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using LangLang.Model.Enums;
-using LangLang.Controller;
-using LangLang.DTO;
-using LangLang.Model.DAO;
 
 namespace LangLang.View.Student
 {
-    public partial class RegistrationForm : Window
+    /// <summary>
+    /// Interaction logic for ModifyDataForm.xaml
+    /// </summary>
+    public partial class ModifyDataForm : Window
     {
         public Gender[] genderValues => (Gender[])Enum.GetValues(typeof(Gender));
         public EducationLevel[] educationLevelValues => (EducationLevel[])Enum.GetValues(typeof(EducationLevel));
 
         public StudentDTO Student { get; set; }
 
-        private StudentsController studentsController;
+        private readonly StudentsController studentsController;
 
-        public RegistrationForm(StudentsController studentsController)
+        public ModifyDataForm(int studentId, StudentsController studentsController)
         {
             InitializeComponent();
-            Student = new StudentDTO();
             this.studentsController = studentsController;
-            DataContext = this;
+            Student = new StudentDTO(studentsController.GetStudentById(studentId));
+            DataContext = Student;
 
+            passwordBox.Password = Student.Password;
         }
-
-        private void btnRegistration_Click(object sender, RoutedEventArgs e)
+        private void btnSaveData_Click(object sender, RoutedEventArgs e)
         {
             if (Student.IsValid)
             {
-                studentsController.Add(Student.ToStudent());
+                studentsController.Update(Student.ToStudent());
                 Close();
             }
             else
@@ -60,6 +62,5 @@ namespace LangLang.View.Student
                 Student.Password = passwordBox.Password;
             }
         }
-
     }
 }
