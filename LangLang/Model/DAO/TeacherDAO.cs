@@ -94,10 +94,10 @@ namespace LangLang.Model.DAO
             if (course == null) return null;
 
             _courses.Remove(course);
-            /*foreach(int examTermId in course.ExamTerms)
+            foreach (int examTermId in course.ExamTerms)
             {
-                // ToDo : Delete each term
-            }*/
+                RemoveExamTerm(examTermId);
+            }
 
             _courseStorage.Save(_courses);
             NotifyObservers();
