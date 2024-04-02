@@ -210,7 +210,7 @@ namespace LangLang.DTO
 
                         foreach (Teacher teacher in directorController.GetAllTeachers())
                         {
-                            if (teacher.Email.Equals(Email))
+                            if (teacher.Email.Equals(Email) && teacher.Id != Id)
                                 return "Email already exists. Try again.";
                         }
 

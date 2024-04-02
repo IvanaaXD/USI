@@ -18,9 +18,19 @@ namespace LangLang.Controller
             _directorDao = new DirectorDAO();
         }
 
+        public Teacher GetTeacherById(int teacherId)
+        {
+            return _directorDao.GetTeacherById(teacherId);
+        }
+
         public List<Teacher> GetAllTeachers()
         {
             return _directorDao.GetAllTeachers();
+        }
+
+        public bool IsEmailUnique(string email)
+        {
+            return _directorDao.IsEmailUnique(email);
         }
 
         public void Add(Teacher teacher)

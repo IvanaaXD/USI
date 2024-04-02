@@ -73,7 +73,7 @@ namespace LangLang.Model.DAO
             return teacher;
         }
 
-        private Teacher GetTeacherById(int id)
+        public Teacher GetTeacherById(int id)
         {
             return _teachers.Find(t => t.Id == id);
         }
@@ -81,6 +81,15 @@ namespace LangLang.Model.DAO
         public List<Teacher> GetAllTeachers()
         {
             return _teachers;
+        }
+
+        public bool IsEmailUnique(string email)
+        {
+            foreach (Teacher teacher in _teachers)
+            {
+                if (teacher.Email.Equals(email)) return false;
+            }
+            return true;
         }
 
         public List<Teacher> SearchAllTeachers(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)

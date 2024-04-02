@@ -74,7 +74,9 @@ namespace LangLang.View.Director
             }
             else
             {
-                directorController.Delete(SelectedTeacher.Id);
+                ModifyDataForm modifyDataForm = new ModifyDataForm(SelectedTeacher.Id, directorController);
+                modifyDataForm.Show();
+                modifyDataForm.Activate();
             }
         }
 
