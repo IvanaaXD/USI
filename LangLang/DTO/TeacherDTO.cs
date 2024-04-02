@@ -6,6 +6,7 @@ using LangLang.Model.Enums;
 using LangLang.Model;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using LangLang.Controller;
 
 
 namespace LangLang.DTO
@@ -34,12 +35,12 @@ namespace LangLang.DTO
             {
                 List<string> languageLevelNames = new List<string>();
 
-                var languages = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
-                var levels = Enum.GetValues(typeof(LanguageLevel)).Cast<LanguageLevel>().ToList();
+                var langs = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
+                var levs = Enum.GetValues(typeof(LanguageLevel)).Cast<LanguageLevel>().ToList();
 
-                foreach (var language in languages)
+                foreach (var language in langs)
                 {
-                    foreach (var level in levels)
+                    foreach (var level in levs)
                     {
                         languageLevelNames.Add($"{language} {level}");
                     }
@@ -203,6 +204,21 @@ namespace LangLang.DTO
 
                         if (!_EmailRegex.IsMatch(Email))
                             return "Format not good. Try again.";
+
+                        DirectorController directorController = new DirectorController();
+                        StudentsController studentsController = new StudentsController();
+
+                        foreach (Teacher teacher in directorController.GetAllTeachers())
+                        {
+                            if (teacher.Email.Equals(Email))
+                                return "Email already exists. Try again.";
+                        }
+
+                        foreach (Student student in studentsController.GetAllStudents())
+                        {
+                            if (student.Email.Equals(Email))
+                                return "Email already exists. Try again.";
+                        }
                         break;
 
                     case "Password":
@@ -211,6 +227,21 @@ namespace LangLang.DTO
 
                         if (!_PasswordRegex.IsMatch(Password))
                             return "Format not good. Try again.";
+
+                        directorController = new DirectorController();
+                        studentsController = new StudentsController();
+
+                        foreach (Teacher teacher in directorController.GetAllTeachers())
+                        {
+                            if (teacher.Password.Equals(Password))
+                                return "Email already exists. Try again.";
+                        }
+
+                        foreach (Student student in studentsController.GetAllStudents())
+                        {
+                            if (student.Password.Equals(Password))
+                                return "Email already exists. Try again.";
+                        }
                         break;
                 }
                 return null;
@@ -269,10 +300,10 @@ namespace LangLang.DTO
             startedWork = teacher.StartedWork;
             averageRating = teacher.AverageRating;
 
-            languages = new List<Language>();
-            levelOfLanguages = new List<LanguageLevel>();
+            languages = teacher.Languages;
+            levelOfLanguages = teacher.LevelOfLanguages;
 
-            foreach (string languageLevel in LevelAndLanguages)
+            /*foreach (string languageLevel in LevelAndLanguages)
             {
                 string[] parts = languageLevel.Split(' '); 
                 if (parts.Length == 2)
@@ -287,7 +318,7 @@ namespace LangLang.DTO
                         levelOfLanguages.Add(level);
                     }
                 }
-            }
+            }*/
         }
 
     }

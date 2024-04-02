@@ -6,6 +6,7 @@ using LangLang.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace LangLang.View.Director
 {
@@ -49,13 +50,24 @@ namespace LangLang.View.Director
             Close();
         }
 
+        private Regex _passwordRegex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$");
+
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (sender is PasswordBox passwordBox)
+            var passwordBox = sender as PasswordBox;
+
+            string password = passwordBox.Password;
+
+            if (!_passwordRegex.IsMatch(password))
             {
-                Teacher.Password = passwordBox.Password;
+                passwordBox.ToolTip = "Invalid password format";
+            }
+            else
+            {
+                passwordBox.ToolTip = null;
             }
         }
+
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
@@ -70,6 +82,7 @@ namespace LangLang.View.Director
             }
             else
             {
+
                 MessageBox.Show("Teacher cannot be created. Not all fields are valid.");
             }
         }
@@ -130,10 +143,7 @@ namespace LangLang.View.Director
         }
 
 
-        private void languagesListBox_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-
-        }
+        private void languagesListBox_SelectionChanged(object sender, RoutedEventArgs e) { }
 
     }
 }
