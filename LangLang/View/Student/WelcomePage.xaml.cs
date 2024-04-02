@@ -36,6 +36,11 @@ namespace LangLang.View.Student
             availableCoursesForm.Show();
         }
 
+        private void ModifyAccount_Click(object sender, RoutedEventArgs e)
+        {
+            // to do
+        }
+
         private void DeleteAccount_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

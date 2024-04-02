@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="CoursesTable" Height="450" Width="850">
     <Window.Resources>
-        <converters:LanguageToStringConverter x:Key="LanguageToStringConverter"/>
+        <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
         <converters:LevelOfLanguageToStringConverter x:Key="LevelOfLanguageToStringConverter"/>
     </Window.Resources>
     
@@ -41,7 +41,7 @@
                         <DataGridTemplateColumn Header="Languages">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Languages, Converter={StaticResource LanguageToStringConverter}}"/>
+                                    <TextBlock Text="{Binding Languages, Converter={StaticResource LanguageStringConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
