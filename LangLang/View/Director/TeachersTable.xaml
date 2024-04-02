@@ -26,7 +26,7 @@
           AutoGenerateColumns="False"
           x:Name="CoursesDataGrid"
           ItemsSource="{Binding TableViewModel.Teachers, UpdateSourceTrigger=PropertyChanged}"
-          SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
+          SelectedItem="{Binding SelectedTeacher, UpdateSourceTrigger=PropertyChanged}"
           SelectionMode="Single" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
