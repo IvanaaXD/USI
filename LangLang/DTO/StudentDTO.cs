@@ -18,7 +18,7 @@ namespace LangLang.DTO
         private string firstName ;
         private string lastName;
         private Gender gender;
-        private DateTime dateOfBirth;
+        private DateTime dateOfBirth = new DateTime(2000,1,1);
         private string phoneNumber;
         private string email;
         private string password;
@@ -97,6 +97,15 @@ namespace LangLang.DTO
                 OnPropertyChanged("Password");
             }
         }
+        public EducationLevel SelectedEducationLevel
+        {
+            get { return educationLevel; }
+            set
+            {
+                educationLevel = value;
+                OnPropertyChanged("SelectedEducationLevel");
+            }
+        }
 
         public string? Error => null;
 
@@ -104,7 +113,7 @@ namespace LangLang.DTO
         private Regex _LastNameRegex = new Regex(@"^[A-Za-z]+$");
         private Regex _PhoneNumberRegex = new Regex(@"^\d{9,15}$");
         private Regex _EmailRegex = new Regex(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
-        private Regex _PasswordRegex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$"); // Minimum 8 characters, at least one letter and one number
+        //private Regex _PasswordRegex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$"); // Minimum 8 characters, at least one letter and one number
 
         public string this[string columnName]
         {
@@ -152,21 +161,21 @@ namespace LangLang.DTO
                 }
                 else if (columnName == "Password")
                 {
-                    //string passwordStr = SecureStringHelper.ConvertToString(password);
-
-                    if (string.IsNullOrEmpty(password))
-                        return "Phone number is required";
-
-                    Match match = _PasswordRegex.Match(password);
-                    if (!match.Success)
-                        return "Format not good. Try again.";
+                    if (string.IsNullOrEmpty(Password))
+                        return "Password is required";
 
                 }
+                else if (columnName == "DateOfBirth")
+                {
+                    if (DateOfBirth < new DateTime(1900,1,1) || DateOfBirth > DateTime.Today)
+                        return "Invalid Date of birth.";
+                }
+
                 return null;
             }
         }
 
-        private readonly string[] _validatedProperties = { "FirstName", "LastName", "PhoneNumber", "Email", "Password" };
+        private readonly string[] _validatedProperties = { "FirstName", "LastName", "PhoneNumber", "Email", "Password", "DateOfBirth" };
 
         public bool IsValid
         {
@@ -185,7 +194,6 @@ namespace LangLang.DTO
 
         public Student ToStudent()
         {
-            //string passwordStr = SecureStringHelper.ConvertToString(password);
             return new Student(firstName,lastName,gender,dateOfBirth,phoneNumber,email,password,educationLevel);
         }
 
@@ -198,14 +206,14 @@ namespace LangLang.DTO
         public StudentDTO(Student student)
         {
             id = student.Id;
-            firstName = student.FirstName;
-            lastName = student.LastName;
-            gender = student.Gender;
-            dateOfBirth = student.DateOfBirth;
-            phoneNumber = student.PhoneNumber;
-            email = student.Email;
-            educationLevel = student.EducationLevel;
-            password = student.Password;//SecureStringHelper.ConvertToSecureString(student.Password);
+            FirstName = student.FirstName;
+            LastName = student.LastName;
+            Gender = student.Gender;
+            DateOfBirth = student.DateOfBirth;
+            PhoneNumber = student.PhoneNumber;
+            Email = student.Email;
+            SelectedEducationLevel = student.EducationLevel;
+            Password = student.Password;
         }
 
         protected virtual void OnPropertyChanged(string name)
