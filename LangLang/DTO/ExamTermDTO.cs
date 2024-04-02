@@ -1,4 +1,5 @@
-﻿using LangLang.Model;
+﻿using LangLang.Controller;
+using LangLang.Model;
 using LangLang.Model.DAO;
 using LangLang.Model.Enums;
 using System;
@@ -21,7 +22,7 @@ namespace LangLang.DTO
         private string examTime;
         private int maxStudents;
         private int currentlyAttending;
-
+        private TeacherController teacherController = new TeacherController();
         private string languageAndLevel;
 
         public List<string> LanguageAndLevelValues
@@ -105,6 +106,7 @@ namespace LangLang.DTO
         public string Error => null;
 
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
+        
         public string this[string columnName]
         {
             get
@@ -115,11 +117,13 @@ namespace LangLang.DTO
                         if (ExamDate < DateTime.Today)
                             return "Exam date cannot be in the past";
                         break;
+                    /*
                     case "ExamTime":
                         if (!_TimeRegex.IsMatch(ExamTime))
                             return "Format is not good. Try again.";
                         break;
-                    case "CurrentlyAttending":
+                    */
+                     case "CurrentlyAttending":
                         if (CurrentlyAttending < 0 ||  (CurrentlyAttending > MaxStudents))
                             return "Number of attending students on the exam can't be less than 0 or greater than max number of students.";
                         break;
@@ -143,6 +147,10 @@ namespace LangLang.DTO
                 if (ExamDate < DateTime.Today)
                     return false;
                 if (!_TimeRegex.IsMatch(ExamTime))
+                    return false;
+                if ((ExamDate - DateTime.Now).TotalDays < 14)
+                        return false;
+                if (!teacherController.CheckExamOverlap(ExamDate)) // =====================
                     return false;
                 if (CurrentlyAttending < 0 || (CurrentlyAttending > MaxStudents))
                     return false;
