@@ -3,9 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:LangLang.View.Converters"
         mc:Ignorable="d"
         Title="AvailableCoursesForm" Height="450" Width="841">
-
+    <Window.Resources>
+        <converters:DayOfWeekToStringConverter x:Key="DayOfWeekToStringConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"></RowDefinition>
@@ -75,25 +78,19 @@
                             <DataGridTextColumn Header="Language" Binding="{Binding Language}"/>
                         <DataGridTextColumn Header="Level" Binding="{Binding Level}"/>
                         <DataGridTextColumn Header="Duration In Weeks" Binding="{Binding Duration}"/>
-                        <!--<DataGridTemplateColumn Header="Week Days">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn> -->
-                        <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd}}"/>
+                            <DataGridTemplateColumn Header="Work Days">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd}}"/>
                         <DataGridTextColumn Header="Online" Binding="{Binding IsOnline}"/>
                         <DataGridTextColumn Header="Currently Enrolled" Binding="{Binding CurrentlyEnrolled}"/>
                         <DataGridTextColumn Header="Max Students" Binding="{Binding MaxEnrolledStudents}"/>
-                       <!-- <DataGridTemplateColumn Header="Exam Terms">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding ExamTerms, Converter={StaticResource CollectionToStringConverter}}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                            -->
+                       
+                           
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
