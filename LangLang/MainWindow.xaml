@@ -5,8 +5,78 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="400" Width="344">
+    <Border Width="300"
+            Height="400"
+            Background="White"
+            CornerRadius="6">
+        <StackPanel Orientation="Vertical"
+                    Margin="20">
+            <TextBlock Text="Login" 
+                       FontSize="25"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       FontWeight="Bold"
+                       Padding="10"
+                       />
+            <Grid VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Email:" 
+                   Grid.Row="0"
+                   Margin="0,15"
+                   HorizontalAlignment="Left"/>
 
-    </Grid>
+                <TextBox  
+                  x:Name="Email"
+                  Grid.Column="1"
+                  Grid.Row="1"
+                  Padding="0,5"
+                  Width="255"
+                  BorderThickness="0,0,0,1"
+                  HorizontalAlignment="Left"
+                  Text="Enter a email"
+                  Opacity="0.5"/>
+
+                <TextBlock Text="Password" 
+                   Grid.Row="2"
+                   Margin="0,15"
+                   HorizontalAlignment="Left"/>
+                <PasswordBox 
+                    x:Name="Password"
+                    Grid.Row="3"
+                    Password="sifra"
+                    Padding="0,5"                           
+                    Width="255"
+                    BorderThickness="0,0,0,1"
+                    HorizontalAlignment="Left"/>
+            </Grid>
+
+            <Button x:Name="btnLogin"
+                    Content="Login" 
+                    Foreground="White"
+                    Background="#4F518C"
+                    Margin="0,25,0,5"
+                    Height="35"
+                    Width="250"
+                    Click="btnLogin_Click">
+            </Button>
+
+            <Button x:Name="btnRegistration"
+                    Content="Register"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Foreground="#4F518C"
+                    Background="#e6e8e6"
+                    Height="35"
+                    Width="250"
+                    Click="btnRegistration_Click">
+
+            </Button>
+        </StackPanel>
+    </Border>
 </Window>

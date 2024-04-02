@@ -5,6 +5,14 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <StartupObject>LangLang.App</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Model\DAO\" />
+    <Folder Include="Data\" />
+    <Folder Include="Storage\" />
+  </ItemGroup>
 
 </Project>
