@@ -75,6 +75,7 @@ namespace LangLang
                     CoursesTable coursesTable = new CoursesTable(teacher.Id);
                     coursesTable.Show();
                     this.Close();
+                    return;
                 }
             }
 
@@ -85,6 +86,7 @@ namespace LangLang
                     LangLang.View.Student.WelcomePage welcomePage = new LangLang.View.Student.WelcomePage(student.Id, studentController);
                     welcomePage.Show();
                     this.Close();
+                    return;
                 }
             }
 
@@ -95,9 +97,13 @@ namespace LangLang
                 TeachersTable table = new TeachersTable();
                 table.Show();
                 this.Close();
+                return;
             }
-
-            MessageBox.Show("User does not exists.");
+            
+            
+             MessageBox.Show("User does not exist.");
+            
+            
 
         }
 
