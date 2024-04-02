@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using LangLang.View.Director;
+using LangLang.View.Student;
 using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Model;
@@ -27,40 +27,40 @@ namespace LangLang
     /// </summary>
     public partial class MainWindow : Window, IObserver
     {
-        public ObservableCollection<TeacherDTO> Teachers { get; set; }
-        public TeacherDTO SelectedTeacher { get; set; }
-        private DirectorController directorController { get; set; }
+        public ObservableCollection<StudentDTO> Students { get; set; }
+        public StudentDTO SelectedStudent { get; set; }
+        private StudentsController studentsController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            Teachers = new ObservableCollection<TeacherDTO>();
-            directorController = new DirectorController();
-            directorController.Subscribe(this);
+            Students = new ObservableCollection<StudentDTO>();
+            studentsController = new StudentsController();
+            studentsController.Subscribe(this);
 
             Update();
         }
 
         public void Update()
         {
-            Teachers.Clear();
-            /*foreach (Teacher teacher in directorController.GetAllTeachers())
-                Teachers.Add(new TeacherDTO(teacher));*/
+            Students.Clear();
+            /*foreach (Student teacher in studentController.GetAllStudents())
+                Students.Add(new StudentDTO(teacher));*/
 
         }
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-           
-            /*WelcomePage welcomePage = new WelcomePage(0, studentController);
+            WelcomePage welcomePage = new WelcomePage(0, studentsController);
+
             welcomePage.Show();
-            this.Close();*/
+            this.Close();
         }
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
-            RegistrationForm regForm = new RegistrationForm(directorController);
+            RegistrationForm regForm = new RegistrationForm(studentsController);
 
             regForm.Show();
         }
