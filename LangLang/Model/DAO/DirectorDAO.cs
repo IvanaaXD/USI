@@ -103,6 +103,10 @@ namespace LangLang.Model.DAO
         {
             Teacher teacher = GetTeacherById(id);
             if (teacher == null) return null;
+            foreach(int courseid in teacher.CoursesId)
+            {
+                teacherDAO.RemoveCourse(courseid);
+            }
 
             _teachers.Remove(teacher);
             _storage.Save(_teachers);
