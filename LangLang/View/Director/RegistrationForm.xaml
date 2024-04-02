@@ -6,12 +6,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Director" xmlns:dto="clr-namespace:LangLang.DTO"
         mc:Ignorable="d"
+        xmlns:convs="clr-namespace:LangLang.View.Converters" 
         Title="RegistrationForm" Height="600" Width="384">
 
     <Window.Resources>
+
+        <convs:PasswordValidationToStringConverter x:Key="PasswordValidationToStringConverter"/>
+
         <ControlTemplate x:Key="ValidationTemplate">
             <StackPanel>
                 <!-- Placeholder for the TextBox itself -->
+                
                 <AdornedElementPlaceholder x:Name="textBox" />
                 <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" />
             </StackPanel>
@@ -71,8 +76,14 @@
 
         <TextBlock Grid.Row="7" Grid.Column="1" Text="Password:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <PasswordBox x:Name="passwordBox" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="150"
-                     PasswordChanged="PasswordBox_PasswordChanged" 
-                     Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+             PasswordChanged="PasswordBox_PasswordChanged" 
+             Validation.ErrorTemplate="{StaticResource ValidationTemplate}">
+            <PasswordBox.ToolTip>
+                <ToolTip DataContext="{Binding RelativeSource={RelativeSource Self}}" 
+                 Content="Invalid password format" 
+                 Visibility="{Binding Teacher.Password, Converter={StaticResource PasswordValidationToStringConverter}}"/>
+            </PasswordBox.ToolTip>
+        </PasswordBox>
 
         <TextBlock Grid.Row="5" Grid.Column="1" Text="Started work:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <DatePicker x:Name="startedWorkDatePicker" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Height="23" Width="150"
