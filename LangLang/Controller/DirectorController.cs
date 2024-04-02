@@ -49,6 +49,16 @@ namespace LangLang.Controller
             _directorDao.RemoveTeacher(teacherId);
         }
 
+        public void AddCourseId(int courseId, int teacherId)
+        {
+            _directorDao.AddCourseId(courseId, teacherId);
+        }
+
+        public List<Course> GetAvailableCourses(int teacherId)
+        {
+            return _directorDao.GetAvailableCourses(teacherId);
+        }
+
         public void Update(Teacher teacher)
         {
             _directorDao.UpdateTeacher(teacher);

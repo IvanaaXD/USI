@@ -33,6 +33,8 @@ namespace LangLang.View.Teacher
         public LanguageLevel[] languageLevelValues => (LanguageLevel[])Enum.GetValues(typeof(LanguageLevel));
 
         private CourseDTO _course;
+        public TeacherDTO Teacher { get; set; }
+
 
         public CourseDTO Course
         {
@@ -45,18 +47,28 @@ namespace LangLang.View.Teacher
         }
 
         private TeacherController teacherController;
+        private readonly DirectorController directorController;
         private int teacherId;
 
-        public CreateCourseForm(TeacherController teacherController, int teacherId)
+        public CreateCourseForm(TeacherController teacherController, DirectorController directorController, int teacherId)
         {
             InitializeComponent();
 
             DataContext = this;
-            Course = new CourseDTO();
+            Course = new CourseDTO(teacherController);
+            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            this.directorController = directorController;
             this.teacherController = teacherController;
             this.teacherId = teacherId;
-            Course.StartDate = DateTime.Now;
+            Course.StartDate = new DateTime(2024, 04, 02);
             Course.StartTime = "00:00";
+            List<string> levellanguagestr = new List<string>();
+
+            for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
+            {
+                levellanguagestr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
+            }
+            languageComboBox.ItemsSource = levellanguagestr;
         }
 
         private void PickLanguageAndLevel()
@@ -145,7 +157,8 @@ namespace LangLang.View.Teacher
 
             if (Course.IsValid)
             {
-                teacherController.AddCourse(Course.ToCourse());
+                LangLang.Model.Course course1 = teacherController.AddCourse(Course.ToCourse());
+                directorController.AddCourseId(course1.CourseID, teacherId);
                 Close();
             }
             else

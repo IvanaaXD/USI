@@ -25,15 +25,27 @@ namespace LangLang.View.Teacher
         public CourseDTO Course { get; set; }
 
         private readonly TeacherController teacherController;
+        private readonly DirectorController directorController;
         private int teacherId;
+        public TeacherDTO Teacher { get; set; }
 
-        public ModifyCourseDataForm(int courseId, TeacherController teacherController)
+        public ModifyCourseDataForm(int courseId, int teacherId, TeacherController teacherController, DirectorController directorController)
         {
-            Course = new CourseDTO(teacherController,teacherController.GetCourseById(courseId));
+            Course = new CourseDTO(teacherController, teacherController.GetCourseById(courseId));
+            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             Course.StartTime = Course.StartDate.ToString("HH:mm");
             DataContext = Course;
             InitializeComponent();
             this.teacherController = teacherController;
+            this.directorController = directorController;
+
+            List<string> levellanguagestr = new List<string>();
+
+            for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
+            {
+                levellanguagestr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
+            }
+            languageComboBox.ItemsSource = levellanguagestr;
 
             string selectedLanguageAndLevel = $"{Course.Language} {Course.Level}";
 
@@ -50,7 +62,6 @@ namespace LangLang.View.Teacher
             }
 
             maxEnrolledTextBox.Text = Course.MaxEnrolledStudents.ToString();
-
         }
 
         private void PickLanguageAndLevel()
@@ -125,8 +136,8 @@ namespace LangLang.View.Teacher
             PickDataFromListBox();
             if (Course.IsValid)
             {
-                    teacherController.UpdateCourse(Course.ToCourse());
-                    Close();
+                teacherController.UpdateCourse(Course.ToCourse());
+                Close();
             }
             else
             {

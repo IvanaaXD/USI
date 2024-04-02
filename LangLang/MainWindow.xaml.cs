@@ -72,7 +72,7 @@ namespace LangLang
             {
                 if (teacher.Email == email && teacher.Password == password)
                 {
-                    CoursesTable coursesTable = new CoursesTable(teacher.Id);
+                    CoursesTable coursesTable = new CoursesTable(teacher.Id, directorController);
                     coursesTable.Show();
                     this.Close();
                     return;
