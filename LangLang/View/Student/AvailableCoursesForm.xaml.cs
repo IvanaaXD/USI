@@ -80,5 +80,6 @@ namespace LangLang.View.Student
         {
             Close();
         }
+
     }
 }
