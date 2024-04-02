@@ -170,6 +170,24 @@ namespace LangLang.Model.DAO
             return filteredExams;
         }
 
+        public String FindLanguageAndLevel(int courseID)
+        {
+            String res = "";
+            
+            Course course = GetAllCourses().FirstOrDefault(c => c.CourseID == courseID);
+
+            if (course != null)
+            {
+                res = $"{course.Language}, {course.Level}";
+            }
+            else
+            {
+                res = "Language and level not found";
+            }
+
+            return res;
+        }
+
         public void DecrementCourseCurrentlyEnrolled(int courseId)
         {
             Course course = GetCourseById(courseId);
