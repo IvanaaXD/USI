@@ -95,10 +95,7 @@ namespace LangLang
                 TeachersTable table = new TeachersTable();
                 table.Show();
                 this.Close();
-            }
-
-            MessageBox.Show("User does not exists.");
-
+            } 
         }
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
