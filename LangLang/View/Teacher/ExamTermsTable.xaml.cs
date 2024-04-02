@@ -24,7 +24,7 @@ namespace LangLang.View.Teacher
         public ViewModel TableViewModel { get; set; }
         public ExamTermDTO SelectedExamTerm { get; set; }
         public TeacherController teacherController { get; set; }
-
+        public int teacherId { get; set; }
         public ExamTermsTable()
         {
             InitializeComponent();
@@ -57,6 +57,12 @@ namespace LangLang.View.Teacher
             }
         }
 
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            CreateExamForm examTable = new CreateExamForm(teacherController, teacherId);
+            examTable.Show();
+        }
+
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedExamTerm == null)
@@ -65,7 +71,7 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                if (DateTime.Now.AddDays(14) > SelectedExamTerm.ExamTime)
+                if (DateTime.Now.AddDays(14) > SelectedExamTerm.ExamDate)
                     MessageBox.Show("Cannot cancel an exam that starts in less than a 2 week.");
                 else
                     teacherController.DeleteExamTerm(SelectedExamTerm.ExamID);
