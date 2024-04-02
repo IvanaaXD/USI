@@ -14,6 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using LangLang.Model;
+using LangLang.View.Converters;
+
 namespace LangLang.View.Student
 {
     /// <summary>
@@ -35,12 +38,21 @@ namespace LangLang.View.Student
             AvailableCoursesForm availableCoursesForm = new AvailableCoursesForm(studentId);
             availableCoursesForm.Show();
         }
-
+       
         private void ModifyAccount_Click(object sender, RoutedEventArgs e)
         {
-            // to do
+            LangLang.Model.Student student = studentController.GetStudentById(studentId);
+            if (student.ActiveCourseId != -1)
+            {
+                MessageBox.Show("The student attends the course and cannot change the data.");
+            }
+            else
+            {
+                ModifyDataForm modifyDataForm = new ModifyDataForm(studentId, studentController);
+                modifyDataForm.Show();
+                modifyDataForm.Activate();
+            }
         }
-
         private void DeleteAccount_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
