@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LangLang.Model.DAO;
 using LangLang.Model;
+using LangLang.Model.Enums;
 
 namespace LangLang.Controller
 {
@@ -52,6 +53,11 @@ namespace LangLang.Controller
         public void Subscribe(IObserver observer)
         {
             _directorDao.Subscribe(observer);
+        }
+
+        public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel level, DateTime startedWork)
+        {
+            return _directorDao.FindTeachersByCriteria(language, level, startedWork);
         }
     }
 }

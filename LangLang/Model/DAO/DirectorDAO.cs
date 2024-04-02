@@ -92,17 +92,18 @@ namespace LangLang.Model.DAO
             return true;
         }
 
-        public List<Teacher> SearchAllTeachers(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)
+        public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)
         {
             List<Teacher> teachers = GetAllTeachers();
 
             var filteredTeachers = teachers.Where(teacher =>
-                (language == null || teacher.Languages.Contains(language)) &&
-                (levelOfLanguage == null || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
+                (language == Model.Enums.Language.NULL || teacher.Languages.Contains(language)) &&
+                (levelOfLanguage == Model.Enums.LanguageLevel.NULL || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
                 (startedWork == DateTime.MinValue || teacher.StartedWork.Date == startedWork.Date)
             ).ToList();
 
             return filteredTeachers;
         }
+
     }
 }

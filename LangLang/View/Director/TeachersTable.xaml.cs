@@ -8,6 +8,9 @@ using LangLang.View;
 using LangLang.Observer;
 using LangLang.DTO;
 using LangLang.Controller;
+using LangLang.Model.Enums;
+using System.Windows.Documents;
+using LangLang.Model.DAO;
 
 namespace LangLang.View.Director
 {
@@ -27,6 +30,9 @@ namespace LangLang.View.Director
         public TeacherDTO SelectedTeacher { get; set; }
         public DirectorController directorController { get; set; }
 
+        private bool isSearchButtonClicked = false;
+
+
         public TeachersTable()
         {
             InitializeComponent();
@@ -34,6 +40,8 @@ namespace LangLang.View.Director
             directorController = new DirectorController();
             DataContext = this;
             directorController.Subscribe(this);
+            languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
+            levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
             Update();
         }
 
@@ -43,6 +51,7 @@ namespace LangLang.View.Director
             {
                 TableViewModel.Teachers.Clear();
                 var teachers = directorController.GetAllTeachers();
+
                 if (teachers != null)
                 {
                     foreach (Model.Teacher teacher in teachers)
@@ -51,6 +60,29 @@ namespace LangLang.View.Director
                 else
                 {
                     MessageBox.Show("No teachers found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+
+        public void UpdateSearch()
+        {
+            try
+            {
+                TableViewModel.Teachers.Clear();
+                List<Model.Teacher> teachers = GetFilteredTeachers();
+
+                if (teachers != null)
+                {
+                    foreach (Model.Teacher teacher in teachers)
+                        TableViewModel.Teachers.Add(new TeacherDTO(teacher));
+                }
+                else
+                {
+                    MessageBox.Show("No courses found.");
                 }
             }
             catch (Exception ex)
@@ -90,6 +122,70 @@ namespace LangLang.View.Director
             {
                 directorController.Delete(SelectedTeacher.Id);
             }
+        }
+
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateSearch();
+            isSearchButtonClicked = true;
+        }
+
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            isSearchButtonClicked = false;
+            Update();
+            ResetSearchElements();
+        }
+
+        private void ResetSearchElements()
+        {
+            languageComboBox.SelectedItem = null;
+            levelComboBox.SelectedItem = null;
+            startedWorkDatePicker.SelectedDate = null;
+        }
+
+        private List<Model.Teacher> GetFilteredTeachers()
+        {
+            Language selectedLanguage = Model.Enums.Language.NULL;
+            LanguageLevel selectedLevel = Model.Enums.LanguageLevel.NULL;
+            DateTime selectedStartDate = DateTime.MinValue;
+
+            if (languageComboBox.SelectedItem != null)
+            {
+                selectedLanguage = (Language)languageComboBox.SelectedItem; 
+            }
+
+            if (levelComboBox.SelectedItem != null)
+            {
+                selectedLevel = (LanguageLevel)levelComboBox.SelectedItem;
+            }
+
+            if (startedWorkDatePicker.SelectedDate.HasValue)
+            {
+                selectedStartDate = (DateTime)startedWorkDatePicker.SelectedDate;
+            }
+
+            List<Model.Teacher> finalTeachers= new List<Model.Teacher>();
+
+            if (isSearchButtonClicked)
+            {
+
+                List<Model.Teacher> allFilteredTeachers = directorController.FindTeachersByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+
+                foreach (Model.Teacher teacher in allFilteredTeachers)
+                {
+
+                    finalTeachers.Add(teacher);
+                }
+            }
+            else
+            {
+                foreach (Model.Teacher teacher in directorController.GetAllTeachers())
+                {
+                    finalTeachers.Add(teacher);
+                }
+            }
+            return finalTeachers;
         }
     }
 }
