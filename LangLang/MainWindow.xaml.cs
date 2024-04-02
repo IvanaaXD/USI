@@ -97,16 +97,17 @@ namespace LangLang
                 TeachersTable table = new TeachersTable();
                 table.Show();
                 this.Close();
+
                 return;
             }
             
             
              MessageBox.Show("User does not exist.");
-            
-            
 
-        }
 
+            } 
+
+   
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
             RegistrationForm registrationForm = new RegistrationForm(studentController);
@@ -114,3 +115,4 @@ namespace LangLang
         }
     }
 }
+
