@@ -12,6 +12,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
+                <MenuItem Header="Add" Click="Add_Click"></MenuItem>
                 <MenuItem Header="Cancel" Click="Cancel_Click"></MenuItem>
             </MenuItem>
         </Menu>
@@ -25,8 +26,8 @@
                           SelectionMode="Single" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Exam ID" Binding="{Binding ExamID}"/>
-                        <DataGridTextColumn Header="Course ID" Binding="{Binding CourseID}"/>
-                        <DataGridTextColumn Header="Exam Time" Binding="{Binding ExamTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                        <DataGridTextColumn Header="Language and Level" Binding="{Binding LanguageAndLevel}"/>
+                        <DataGridTextColumn Header="Exam Date" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
                         <DataGridTextColumn Header="Max Students" Binding="{Binding MaxStudents}"/>
                         <DataGridTextColumn Header="Currently Attending" Binding="{Binding CurrentlyAttending}"/>
                     </DataGrid.Columns>
