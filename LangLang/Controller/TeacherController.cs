@@ -34,9 +34,9 @@ namespace LangLang.Controller
         {
             return _coursesExams.GetAllExamTerms();
         }
-        public void AddCourse(Course course)
+        public Course AddCourse(Course course)
         {
-            _coursesExams.AddCourse(course);
+            return _coursesExams.AddCourse(course);
         }
         public void AddExamTerm(ExamTerm examTerm)
         {

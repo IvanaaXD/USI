@@ -40,6 +40,33 @@ namespace LangLang.Model.DAO
             return _teachers.Last().Id + 1;
         }
 
+        public List<Course> GetAvailableCourses(int teacherId)
+        {
+            Teacher teacher = GetTeacherById(teacherId);
+            List<Course> allCourses = teacherDAO.GetAllCourses();
+            List<int> allTeacherCourses = teacher.CoursesId;
+            DateTime currentTime = DateTime.Now;
+
+            List<Course> availableCourses = new List<Course>();
+
+            foreach (Course course in allCourses)
+            {
+                if (allTeacherCourses.Contains(course.CourseID))
+                {
+                    availableCourses.Add(course);
+                }
+            }
+
+            return availableCourses;
+        }
+
+        public void AddCourseId(int courseId, int teacherId)
+        {
+            Teacher t = GetTeacherById(teacherId);
+            t.CoursesId.Add(courseId);
+            _storage.Save(_teachers);
+            NotifyObservers();
+        }
         public Teacher AddTeacher(Teacher teacher)
         {
             teacher.Id = GenerateId();

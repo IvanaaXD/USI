@@ -29,18 +29,24 @@ namespace LangLang.View.Teacher
         public ViewModel TableViewModel { get; set; }
         public CourseDTO SelectedCourse { get; set; }
         public TeacherController teacherController { get; set; }
+
+        public DirectorController directorController { get; set; }
         public int teacherId { get; set; }
         private bool isSearchButtonClicked = false;
 
-        public CoursesTable(int teacherId)
+        public CoursesTable(int teacherId, DirectorController directorController1)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
+            directorController = directorController1;
             teacherController = new TeacherController();
             this.teacherId = teacherId;
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
             DataContext = this;
+
+            TableViewModel.Courses = new ObservableCollection<CourseDTO>(teacherController.GetAllCourses().Select(course => new CourseDTO(teacherController, course)));
+
             teacherController.Subscribe(this);
             Update();
         }
@@ -70,7 +76,7 @@ namespace LangLang.View.Teacher
 
         private void Create_Click(object sender, RoutedEventArgs e)
         {
-            CreateCourseForm courseTable = new CreateCourseForm(teacherController, teacherId);
+            CreateCourseForm courseTable = new CreateCourseForm(teacherController, directorController, teacherId);
             courseTable.Show();
         }
 
@@ -103,7 +109,7 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("Cannot update a course that starts in less than a week.");
                 else
                 {
-                    ModifyCourseDataForm modifyForm = new ModifyCourseDataForm(SelectedCourse.CourseID, teacherController);
+                    ModifyCourseDataForm modifyForm = new ModifyCourseDataForm(SelectedCourse.CourseID, teacherId, teacherController, directorController);
                     modifyForm.Show();
                 }
             }
@@ -146,24 +152,23 @@ namespace LangLang.View.Teacher
                 }
             }
 
-            List<Course> availableCourses = teacherController.GetAllCourses();
+            List<Course> availableCourses = directorController.GetAvailableCourses(teacherId);
             List<Course> finalCourses = new List<Course>();
 
             if (isSearchButtonClicked)
             {
                 bool isOnline = onlineCheckBox.IsChecked ?? false;
-                finalCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
-
-              /*  foreach (Course course in allFilteredCourses)
+                List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
+                foreach (Course course in allFilteredCourses)
                 {
-                    foreach (Course singleCourse in availableCourses)
+                    foreach (Course teacherCourse in availableCourses)
                     {
-                        if (singleCourse.CourseID == course.CourseID && !finalCourses.Contains(course))
+                        if (teacherCourse.CourseID == course.CourseID)
                         {
                             finalCourses.Add(course);
                         }
                     }
-                }*/
+                }
             }
             else
             {
