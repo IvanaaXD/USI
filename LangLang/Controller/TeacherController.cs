@@ -18,6 +18,10 @@ namespace LangLang.Controller
         {
             _coursesExams = new TeacherDAO();
         }
+        public Course GetCourseById(int courseID)
+        {
+            return _coursesExams.GetCourseById(courseID);
+        }
         public List<Course> GetAllCourses()
         {
             return _coursesExams.GetAllCourses();
@@ -98,13 +102,25 @@ namespace LangLang.Controller
                 return isOverlap;
             });
 
-
             int overlapCount = overlappingItemsFiltered.Count();
 
             int itemsToRemove = 0;
 
             foreach (var item in overlappingItemsFiltered)
             {
+                if (item is ExamTerm)
+                {
+                    DayOfWeek hep = item.ExamTime.DayOfWeek;
+                    if (!courseDays.Any(d => d == item.ExamTime.DayOfWeek))
+                    {
+                        itemsToRemove++;
+                    }
+                    continue;
+                }
+                if (item.CourseID == course.CourseID)
+                {
+                    itemsToRemove++;
+                }
                 bool hasMatchingDay = false;
                 List<DayOfWeek> itemDayOfWeek = item.WorkDays;
                 foreach (var day in courseDays)

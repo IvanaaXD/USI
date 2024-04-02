@@ -171,21 +171,15 @@ namespace LangLang.DTO
                         if (!_TimeRegex.IsMatch(StartTime))
                             return "Format is not good. Try again.";
                         break;
-                    case "IsOnline":
-                        if (IsOnline && MaxEnrolledStudents != 0)
-                            return "Max enrolled students must be 0 for online courses";
-                        if (!IsOnline && MaxEnrolledStudents > 150)
-                            return "Max enrolled students must be <= 150 for offline courses";
-                        break;
                     case "CurrentlyEnrolled":
                         if (CurrentlyEnrolled < 0 || (!IsOnline && CurrentlyEnrolled > MaxEnrolledStudents))
                             return "Number of enrolled students can't be less than 0 or greater than max enrolled";
                         break;
                     case "MaxEnrolledStudents":
-                        if (IsOnline && MaxEnrolledStudents != 0)
-                            return "Max enrolled students must be 0 for online courses";
-                        if (!IsOnline && MaxEnrolledStudents > 150)
-                            return "Max enrolled students must be <= 150 for offline courses";
+                        if (MaxEnrolledStudents < 0)
+                            return "Max enrolled students must be >= 0";
+                        if (MaxEnrolledStudents > 150)
+                            return "Max enrolled students must be <= 150s";
                         break;
                     case "WorkDays":
                         if (WorkDays == null || !WorkDays.Any())
@@ -203,6 +197,7 @@ namespace LangLang.DTO
 
             Course course = new Course
             {
+                CourseID = courseID,
                 Language = language,
                 Level = languageLevel,
                 Duration = duration,
@@ -246,9 +241,14 @@ namespace LangLang.DTO
             {
                 examTerms = new List<int>();
             }
+            if (isOnline)
+            {
+                maxEnrolledStudents = 0;
+            }
 
             return new Course
             {
+                CourseID = courseID,
                 Language = language,
                 Level = languageLevel,
                 Duration = duration,
@@ -261,12 +261,30 @@ namespace LangLang.DTO
             };
         }
 
+
         public CourseDTO()
         {
         }
 
         public CourseDTO(Course course)
         {
+            courseID = course.CourseID;
+            language = course.Language;
+            languageLevel = course.Level;
+            duration = course.Duration;
+
+            workDays = course.WorkDays;
+            startDate = course.StartDate;
+            isOnline = course.IsOnline;
+            currentlyEnrolled = course.CurrentlyEnrolled;
+            maxEnrolledStudents = course.MaxEnrolledStudents;
+
+            examTerms = course.ExamTerms;
+        }
+
+        public CourseDTO(TeacherController tc, Course course)
+        {
+            _teacherController = tc;
             courseID = course.CourseID;
             language = course.Language;
             languageLevel = course.Level;
