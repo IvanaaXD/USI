@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LangLang.Storage.Serialization;
 
 namespace LangLang.Model
 {
-    public abstract class Person
+    public abstract class Person : ISerializable
     {
         protected int id;
         protected string firstName;
@@ -65,7 +66,14 @@ namespace LangLang.Model
             set { password = value; }
         }
 
-        protected Person() { }
+        protected Person() 
+        {
+            this.firstName = "";
+            this.lastName = "";
+            this.phoneNumber = "";
+            this.email = "";
+            this.password = "";
+        }
         protected Person(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password)
         {
             this.id = id;

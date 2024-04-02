@@ -18,9 +18,9 @@ namespace LangLang.Model.DAO
 
         public TeacherDAO()
         {
-            _courseStorage = new Storage<Course>("course.txt");
+            _courseStorage = new Storage<Course>("course.csv");
             _courses = _courseStorage.Load();
-            _examTermsStorage = new Storage<ExamTerm>("exam.txt");
+            _examTermsStorage = new Storage<ExamTerm>("exam.csv");
             _examTerms = _examTermsStorage.Load();
         }
 
@@ -47,7 +47,7 @@ namespace LangLang.Model.DAO
 
         public ExamTerm AddExamTerm(ExamTerm examTerm)
         {
-            examTerm.Id = GenerateExamId();
+            examTerm.ExamID = GenerateExamId();
             _examTerms.Add(examTerm);
             _examTermsStorage.Save(_examTerms);
             NotifyObservers();
@@ -65,6 +65,7 @@ namespace LangLang.Model.DAO
             oldCourse.WorkDays = course.WorkDays;
             oldCourse.StartDate = course.StartDate;
             oldCourse.IsOnline = course.IsOnline;
+            oldCourse.CurrentlyEnrolled = course.CurrentlyEnrolled;
             oldCourse.MaxEnrolledStudents = course.MaxEnrolledStudents;
             oldCourse.ExamTerms = course.ExamTerms;
 
@@ -73,12 +74,12 @@ namespace LangLang.Model.DAO
             return oldCourse;
         }
 
-        public ExamTerm UpdateExamTerm(ExamTerm examTerm)
+        public ExamTerm? UpdateExamTerm(ExamTerm examTerm)
         {
-            ExamTerm oldExamTerm = GetExamTermById(examTerm.ExamID);
+            ExamTerm? oldExamTerm = GetExamTermById(examTerm.ExamID);
             if (oldExamTerm == null) return null;
 
-            oldExamTerm.CourseId = examTerm.CourseId;
+            oldExamTerm.CourseID = examTerm.CourseID;
             oldExamTerm.ExamTime = examTerm.ExamTime;
             oldExamTerm.MaxStudents = examTerm.MaxStudents;
 
@@ -103,9 +104,9 @@ namespace LangLang.Model.DAO
             return course;
         }
 
-        public ExamTerm RemoveExamTerm(int id)
+        public ExamTerm? RemoveExamTerm(int id)
         {
-            ExamTerm examTerm = GetExamTermById(id);
+            ExamTerm? examTerm = GetExamTermById(id);
             if (examTerm == null) return null;
 
             _examTerms.Remove(examTerm);
@@ -114,12 +115,13 @@ namespace LangLang.Model.DAO
             return examTerm;
         }
 
-        private Course? GetCourseById(int id)
+        public Course? GetCourseById(int id)
         {
             return _courses.Find(v => v.CourseID == id);
         }
 
         public ExamTerm GetExamTermById(int id)
+
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
