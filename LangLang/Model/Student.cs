@@ -181,11 +181,11 @@ namespace LangLang.Model
             }
             if (!string.IsNullOrEmpty(values[14]))
             {
-                pendingExamCoursesIds = new List<int>(Array.ConvertAll(values[14].Split(','), int.Parse));
+                registeredExamIds = new List<int>(Array.ConvertAll(values[14].Split(','), int.Parse));
             }
             else
             {
-                pendingExamCoursesIds = new List<int>();
+                registeredExamIds = new List<int>();
             }
         }
     }
