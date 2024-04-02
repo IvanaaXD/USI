@@ -169,7 +169,17 @@ namespace LangLang.Model.DAO
 
             return filteredExams;
         }
-       
+
+        public void DecrementCourseCurrentlyEnrolled(int courseId)
+        {
+            Course course = GetCourseById(courseId);
+            --course.CurrentlyEnrolled;
+        }
+        public void DecrementExamTermCurrentlyAttending(int examTermId)
+        {
+            ExamTerm examTerm = GetExamTermById(examTermId);
+            --examTerm.CurrentlyAttending;
+        }
     }
 }
         

@@ -8,6 +8,8 @@ using LangLang.Storage;
 using LangLang.Observer;
 using System.Printing;
 using System.Windows.Input;
+using System.Windows;
+using System.Linq.Expressions;
 
 namespace LangLang.Model.DAO
 {
@@ -56,6 +58,7 @@ namespace LangLang.Model.DAO
             oldStudent.ActiveCourseId = student.ActiveCourseId;
             oldStudent.PassedExamsIds = student.PassedExamsIds;
             oldStudent.PendingCoursesIds = student.PendingCoursesIds;
+            oldStudent.RegisteredExamsIds = student.RegisteredExamsIds;
 
             _storage.Save(_students);
             NotifyObservers();
@@ -67,10 +70,21 @@ namespace LangLang.Model.DAO
             Student? student = GetStudentById(id);
             if (student == null) return null;
 
+            DeleteStudentCoursesAndExams(student);
             _students.Remove(student);
             _storage.Save(_students);
             NotifyObservers();
             return student;
+        }
+
+        private void DeleteStudentCoursesAndExams(Student student)
+        {
+            if (student.ActiveCourseId != -1)
+                teacherDAO.DecrementCourseCurrentlyEnrolled(student.ActiveCourseId);
+
+            foreach(int examTermId in student.RegisteredExamsIds) {
+                teacherDAO.DecrementExamTermCurrentlyAttending(examTermId);
+            }
         }
 
         public Student? GetStudentById(int id)
@@ -88,16 +102,18 @@ namespace LangLang.Model.DAO
             Student student = GetStudentById(studentId);
             List<Course> allCourses = teacherDAO.GetAllCourses();
             List<int> passedCoursesIds = GetPassedCourses(student);
+            List<int> courseIdsByRegisteredExams = GetCourseIdsByRegisteredExams(student);
             DateTime currentTime = DateTime.Now;
 
             List<Course> availableCourses = new List<Course>();
 
             foreach(Course course in allCourses) {
                 if(!passedCoursesIds.Contains(course.CourseID) && 
+                   !courseIdsByRegisteredExams.Contains(course.CourseID) &&
                    !student.PendingCoursesIds.Contains(course.CourseID) && 
                    !student.PendingExamCoursesIds.Contains(course.CourseID) &&
                    (course.CurrentlyEnrolled < course.MaxEnrolledStudents) && 
-                   (currentTime - course.StartDate).TotalDays > 6)
+                   (course.StartDate - currentTime).TotalDays > 6)
                 {
                     availableCourses.Add(course);
                 }
@@ -106,7 +122,17 @@ namespace LangLang.Model.DAO
             return availableCourses;
         }
 
-  
+        private List<int> GetCourseIdsByRegisteredExams(Student student)
+        {
+            List<int> courses = new List<int>();
+            foreach (int examTermId in student.RegisteredExamsIds)
+            {
+                ExamTerm examTerm = teacherDAO.GetExamTermById(examTermId);
+                if (!courses.Contains(examTerm.CourseID))
+                    courses.Add(examTerm.CourseID);
+            }
+            return courses;
+        }
         private List<int> GetPassedCourses(Student student)
         {
             List<int> courses = new List<int>();
@@ -132,7 +158,7 @@ namespace LangLang.Model.DAO
                 foreach(ExamTerm examTerm in examTerms)
                 {
                     if ((examTerm.CurrentlyAttending < examTerm.MaxStudents) &&
-                        (currentTime - examTerm.ExamTime).TotalDays > 30)
+                        (examTerm.ExamTime - currentTime).TotalDays > 30)
                     {
                         availableExamTerms.Add(examTerm);
                     }
@@ -146,6 +172,15 @@ namespace LangLang.Model.DAO
         {
             Course course = teacherDAO.GetCourseById(courseId);
             return teacherDAO.FindExamTermsByCriteria(course.Language, course.Level,null);
+        }
+
+        public bool IsEmailUnique(string email)
+        {
+            foreach(Student student in _students)
+            {
+                if (student.Email.Equals(email)) return false;
+            }
+            return true;
         }
     }
 }
