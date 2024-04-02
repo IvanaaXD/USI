@@ -150,7 +150,7 @@ namespace LangLang.DTO
                     return false;
                 if ((ExamDate - DateTime.Now).TotalDays < 14)
                         return false;
-                if (!teacherController.CheckExamOverlap(ExamDate)) // =====================
+                if (!teacherController.CheckExamOverlap(ExamID, ExamDate)) // =====================
                     return false;
                 if (CurrentlyAttending < 0 || (CurrentlyAttending > MaxStudents))
                     return false;

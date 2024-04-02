@@ -52,22 +52,51 @@ namespace LangLang.Controller
         {
             _coursesExams.UpdateExamTerm(examTerm);
         }
-        public bool CheckExamOverlap(DateTime examDateTime)
+        public bool CheckExamOverlap(int ExamID, DateTime ExamDate)
         {
             int examDurationInMinutes = 240;
 
-            DateTime examStartDateTime = examDateTime;
-            DateTime examEndDateTime = examDateTime.AddMinutes(examDurationInMinutes);
+            DateTime examStartDateTime = ExamDate;
+            DateTime examEndDateTime = examStartDateTime.AddMinutes(examDurationInMinutes);
 
             IEnumerable<dynamic> overlappingExams = _coursesExams.GetAllExamTerms()
                 .Where(item =>
                 {
+                    bool isDifferentId = item.ExamID != ExamID;
+
                     DateTime itemExamDateTime = item.ExamTime;
 
-                    bool isOverlap = (itemExamDateTime < examEndDateTime && itemExamDateTime.AddMinutes(examDurationInMinutes) > examStartDateTime);
+                    bool isOverlap = isDifferentId && (itemExamDateTime < examEndDateTime && itemExamDateTime.AddMinutes(examDurationInMinutes) > examStartDateTime);
 
                     return isOverlap;
                 });
+
+            /*
+            IEnumerable<dynamic> possibleOverlappingCourses =  _coursesExams.GetAllCourses()
+        .Where(c =>
+        {
+            DateTime courseStartDateTime = c.StartDate;
+            DateTime courseEndDateTime = c.StartDate.AddDays(c.Duration * 7);
+
+            bool possible =
+                (courseStartDateTime >= examStartDateTime && courseStartDateTime <= examEndDateTime) ||
+                (courseEndDateTime >= examStartDateTime && courseEndDateTime <= examEndDateTime) ||
+                (courseStartDateTime <= examStartDateTime && courseEndDateTime >= examEndDateTime);
+            if (possible == true)
+            {
+
+                DayOfWeek dayOfWeek = ExamDate.DayOfWeek;
+                if (c.WorkDays.Any(d => d == ExamDate.DayOfWeek))
+                {
+                    
+                }
+            }
+
+                
+            return true;
+        });*/
+
+
 
             return !overlappingExams.Any();
         }
