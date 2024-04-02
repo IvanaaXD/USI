@@ -30,7 +30,8 @@ namespace LangLang.View.Teacher
         public int teacherId { get; set; }
 
         private bool isSearchButtonClicked = false;
-        public ExamTermsTable(int teacherId)
+        DirectorController directorController;
+        public ExamTermsTable(int teacherId, DirectorController directorController)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
@@ -39,6 +40,7 @@ namespace LangLang.View.Teacher
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
             DataContext = this;
+            this.directorController = directorController;
             teacherController.Subscribe(this);
             Update();
         }
@@ -48,7 +50,7 @@ namespace LangLang.View.Teacher
             try
             {
                 TableViewModel.ExamTerms.Clear();
-                
+
                 var examTerms = GetFilteredExamTerms();
                 if (examTerms != null)
                 {
@@ -62,7 +64,7 @@ namespace LangLang.View.Teacher
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}"); 
+                MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
 
@@ -97,7 +99,14 @@ namespace LangLang.View.Teacher
             levelComboBox.SelectedItem = null;
             examDatePicker.SelectedDate = null;
         }
-        
+
+        private void btnCourseTable(object sender, RoutedEventArgs e)
+        {
+            CoursesTable courseT = new CoursesTable(teacherId, directorController);
+            courseT.Show();
+        }
+
+
         private void Search_Click(object sender, RoutedEventArgs e)
         {
             Update();

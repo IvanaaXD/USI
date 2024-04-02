@@ -97,6 +97,12 @@ namespace LangLang.View.Teacher
             ResetSearchElements();
         }
 
+        private void btnGoToExamTermTable(object sender, EventArgs e)
+        {
+            ExamTermsTable examTable = new ExamTermsTable(teacherId, directorController);
+            examTable.Show();
+        }
+
         private void Update_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)

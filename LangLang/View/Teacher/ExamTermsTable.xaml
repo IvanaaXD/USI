@@ -42,10 +42,12 @@
         <!-- DataGrid -->
         <DockPanel Grid.Row="1">
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="File">
-
-                    <MenuItem Header="Add" Click="Add_Click"></MenuItem>
-                    <MenuItem Header="Edit" Click="Update_Click"></MenuItem>
+                <MenuItem Header="Courses">
+                    <MenuItem Header="Table" Click="btnCourseTable"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Exam Terms">
+                    <MenuItem Header="Create" Click="Add_Click"></MenuItem>
+                    <MenuItem Header="Update" Click="Update_Click"></MenuItem>
                     <MenuItem Header="Cancel" Click="Cancel_Click"></MenuItem>
                 </MenuItem>
             </Menu>
