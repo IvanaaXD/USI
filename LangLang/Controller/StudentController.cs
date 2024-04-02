@@ -46,10 +46,18 @@ namespace LangLang.Controller
         {
             return _students.GetAvailableCourses(studentId);
         }
-        
+        public List<ExamTerm> GetAvailableExamTerms(int studentId)
+        {
+            return _students.GetAvailableExamTerms(studentId);
+        }
+
         public Student? GetStudentById(int studentId)
         {
             return _students.GetStudentById(studentId);
+        }
+        public bool IsEmailUnique(string email)
+        {
+            return _students.IsEmailUnique(email);
         }
     }
 }
