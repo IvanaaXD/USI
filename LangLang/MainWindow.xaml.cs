@@ -82,7 +82,7 @@ namespace LangLang
             {
                 if (student.Email == email && student.Password == password)
                 {
-                    WelcomePage welcomePage = new WelcomePage(student.Id, studentController);
+                    LangLang.View.Student.WelcomePage welcomePage = new LangLang.View.Student.WelcomePage(student.Id, studentController);
                     welcomePage.Show();
                     this.Close();
                 }
