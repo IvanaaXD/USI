@@ -1,5 +1,9 @@
-﻿using System;
+﻿using LangLang.Controller;
+using LangLang.DTO;
+using LangLang.Model.Enums;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,52 +15,42 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using LangLang.Model.Enums;
-using LangLang.Controller;
-using LangLang.DTO;
-using System.ComponentModel;
-using System.Globalization;
-using System.Reflection.Emit;
-using System.Xml.Serialization;
 
 namespace LangLang.View.Teacher
 {
-    public partial class CreateCourseForm : Window, INotifyPropertyChanged
+    public partial class ModifyCourseDataForm : Window
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         public Language[] languageValues => (Language[])Enum.GetValues(typeof(Language));
         public LanguageLevel[] languageLevelValues => (LanguageLevel[])Enum.GetValues(typeof(LanguageLevel));
+        public CourseDTO Course { get; set; }
 
-        private CourseDTO _course;
-
-        public CourseDTO Course
-        {
-            get { return _course; }
-            set
-            {
-                _course = value;
-                OnPropertyChanged(nameof(Course));
-            }
-        }
-
-        private TeacherController teacherController;
+        private readonly TeacherController teacherController;
         private int teacherId;
 
-        public CreateCourseForm(TeacherController teacherController, int teacherId)
+        public ModifyCourseDataForm(int courseId, TeacherController teacherController)
         {
+            Course = new CourseDTO(teacherController,teacherController.GetCourseById(courseId));
+            Course.StartTime = Course.StartDate.ToString("HH:mm");
+            DataContext = Course;
             InitializeComponent();
-
-            DataContext = this;
-            Course = new CourseDTO();
             this.teacherController = teacherController;
-            this.teacherId = teacherId;
-            Course.StartDate = DateTime.Now;
-            Course.StartTime = "00:00";
+
+            string selectedLanguageAndLevel = $"{Course.Language} {Course.Level}";
+
+            languageComboBox.SelectedItem = selectedLanguageAndLevel;
+
+            durationInWeeks.Text = Course.Duration.ToString();
+
+            startDatePicker.SelectedDate = Course.StartDate;
+            startTimeTextBox.Text = Course.StartTime;
+
+            for (int i = 0; i < Course.WorkDays.Count; i++)
+            {
+                dayListBox.SelectedItems.Add($"{Course.WorkDays[i]}");
+            }
+
+            maxEnrolledTextBox.Text = Course.MaxEnrolledStudents.ToString();
+
         }
 
         private void PickLanguageAndLevel()
@@ -93,17 +87,6 @@ namespace LangLang.View.Teacher
                 }
             }
         }
-
-        private void PickDataFromComboBox()
-        {
-            if (isOnlineComboBox.SelectedItem != null)
-            {
-                string selectedOption = ((ComboBoxItem)isOnlineComboBox.SelectedItem).Content.ToString();
-
-                Course.IsOnline = selectedOption == "Online";
-            }
-        }
-
         private void PickDataFromDatePicker()
         {
             if (startDatePicker.SelectedDate.HasValue && !string.IsNullOrWhiteSpace(startTimeTextBox.Text))
@@ -124,7 +107,6 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Please select a valid start date and time.");
             }
         }
-
         private void PickDataFromListBox()
         {
             Course.WorkDays = new List<DayOfWeek>();
@@ -136,28 +118,24 @@ namespace LangLang.View.Teacher
                 }
             }
         }
-        private void btnCreate_Click(object sender, RoutedEventArgs e)
+        private void btnSaveData_Click(object sender, RoutedEventArgs e)
         {
-            PickDataFromComboBox();
             PickDataFromDatePicker();
             PickLanguageAndLevel();
             PickDataFromListBox();
-
             if (Course.IsValid)
             {
-                teacherController.AddCourse(Course.ToCourse());
-                Close();
+                    teacherController.UpdateCourse(Course.ToCourse());
+                    Close();
             }
             else
             {
-                MessageBox.Show("Course cannot be created. Not all fields are valid.");
+                MessageBox.Show("Course can not be updated. Not all fields are valid.");
             }
         }
-
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
-
     }
 }

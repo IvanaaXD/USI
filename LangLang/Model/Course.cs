@@ -96,18 +96,6 @@ namespace LangLang.Model
             this.maxEnrolledStudents = maxEnrolledStudents;
             this.examTerms = examTerms;
         }
-        public Course(Language language, LanguageLevel languageLevel, int duration, List<DayOfWeek> workDays, DateTime startDate, bool isOnline, int currentlyEnrolled, int maxEnrolledStudents, List<int> examTerms)
-        {
-            this.language = language;
-            this.languageLevel = languageLevel;
-            this.duration = duration;
-            this.workDays = workDays;
-            this.startDate = startDate;
-            this.isOnline = isOnline;
-            this.currentlyEnrolled = currentlyEnrolled;
-            this.maxEnrolledStudents = maxEnrolledStudents;
-            this.examTerms = examTerms;
-        }
 
         public string[] ToCSV()
         {
