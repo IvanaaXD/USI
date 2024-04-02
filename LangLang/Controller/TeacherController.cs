@@ -22,6 +22,10 @@ namespace LangLang.Controller
         {
             return _coursesExams.GetCourseById(courseID);
         }
+        public ExamTerm? GetExamTermById(int examId)
+        {
+            return _coursesExams.GetExamTermById(examId);
+        }
         public List<Course> GetAllCourses()
         {
             return _coursesExams.GetAllCourses();
