@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using LangLang.Model;
+using System.Text.RegularExpressions;
+using System.Configuration;
 
 namespace LangLang.DTO
 {
@@ -16,12 +18,42 @@ namespace LangLang.DTO
         private Language language;
         private LanguageLevel languageLevel;
         private int duration;
-        private string workDays;
+        private List<DayOfWeek> workDays;
         private DateTime startDate;
+        private string startTime;
         private bool isOnline;
         private int currentlyEnrolled;
         private int maxEnrolledStudents;
         private List<int> examTerms;
+
+        public List<string> LanguageAndLevelValues
+        {
+            get
+            {
+                List<string> languageLevelNames = new List<string>();
+
+                var languages = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
+                var levels = Enum.GetValues(typeof(LanguageLevel)).Cast<LanguageLevel>().ToList();
+
+                foreach (var language in languages)
+                {
+                    foreach (var level in levels)
+                    {
+                        languageLevelNames.Add($"{language} {level}");
+                    }
+                }
+                return languageLevelNames;
+            }
+        }
+
+        public List<DayOfWeek> DayOfWeekValues
+        {
+            get
+            {
+                var days = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList();
+                return days;
+            }
+        }
 
         public int CourseID
         {
@@ -47,7 +79,7 @@ namespace LangLang.DTO
             set { SetProperty(ref duration, value); }
         }
 
-        public string WorkDays
+        public List<DayOfWeek> WorkDays
         {
             get { return workDays; }
             set { SetProperty(ref workDays, value); }
@@ -57,6 +89,12 @@ namespace LangLang.DTO
         {
             get { return startDate; }
             set { SetProperty(ref startDate, value); }
+        }
+
+        public string StartTime
+        {
+            get { return startTime; }
+            set { SetProperty(ref startTime, value); }
         }
 
         public bool IsOnline
@@ -104,6 +142,8 @@ namespace LangLang.DTO
 
         public string Error => null;
 
+        private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
+
         public string this[string columnName]
         {
             get
@@ -112,11 +152,15 @@ namespace LangLang.DTO
                 {
                     case "Duration":
                         if (Duration <= 0 || Duration > 50)
-                            return "Duration must be between 1 and 50 weeks";
+                            return "Duration must be > 1 and < 50 weeks";
                         break;
                     case "StartDate":
                         if (StartDate < DateTime.Today)
                             return "Start date cannot be in the past";
+                        break;
+                    case "StartTime":
+                        if (!_TimeRegex.IsMatch(StartTime))
+                            return "Format is not good. Try again.";
                         break;
                     case "IsOnline":
                         if (IsOnline && MaxEnrolledStudents != 0)
@@ -142,7 +186,7 @@ namespace LangLang.DTO
                 return null;
             }
         }
-        private readonly string[] _validatedProperties = { "Duration", "StartDate", "IsOnline","CurrentlyEnrolled", "MaxEnrolledStudents", "WorkDays" };
+        private readonly string[] _validatedProperties = { "Duration", "StartDate", "StartTime", "IsOnline", "CurrentlyEnrolled", "MaxEnrolledStudents", "WorkDays" };
 
         public bool IsValid
         {
@@ -158,19 +202,16 @@ namespace LangLang.DTO
             }
         }
 
+
         public Course ToCourse()
         {
-            List<DayOfWeek> daysOfWeek = new List<DayOfWeek>();
-            if (!string.IsNullOrEmpty(workDays))
+            TimeSpan timeSpan = TimeSpan.Parse(startTime);
+
+            DateTime combinedDateTime = startDate.Date + timeSpan;
+
+            if (examTerms == null)
             {
-                string[] workDaysArray = workDays.Split(',');
-                foreach (string day in workDaysArray)
-                {
-                    if (Enum.TryParse(day, out DayOfWeek dayOfWeek))
-                    {
-                        daysOfWeek.Add(dayOfWeek);
-                    }
-                }
+                examTerms = new List<int>();
             }
 
             return new Course
@@ -178,8 +219,8 @@ namespace LangLang.DTO
                 Language = language,
                 Level = languageLevel,
                 Duration = duration,
-                WorkDays = daysOfWeek,
-                StartDate = startDate,
+                WorkDays = workDays,
+                StartDate = combinedDateTime,
                 IsOnline = isOnline,
                 CurrentlyEnrolled = currentlyEnrolled,
                 MaxEnrolledStudents = maxEnrolledStudents,
@@ -189,7 +230,6 @@ namespace LangLang.DTO
 
         public CourseDTO()
         {
-
         }
 
         public CourseDTO(Course course)
@@ -199,8 +239,7 @@ namespace LangLang.DTO
             languageLevel = course.Level;
             duration = course.Duration;
 
-            workDays = string.Join(",", course.WorkDays.Select(d => d.ToString()));
-
+            workDays = course.WorkDays;
             startDate = course.StartDate;
             isOnline = course.IsOnline;
             currentlyEnrolled = course.CurrentlyEnrolled;

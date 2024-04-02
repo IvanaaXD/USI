@@ -14,7 +14,7 @@ namespace LangLang.Controller
         private readonly TeacherDAO _coursesExams;
 
         public TeacherController()
-        { 
+        {
             _coursesExams = new TeacherDAO();
         }
         public List<Course> GetAllCourses()
@@ -44,12 +44,12 @@ namespace LangLang.Controller
             _coursesExams.UpdateExamTerm(examTerm);
         }
 
-        public void RemoveCourse(int courseId)
+        public void DeleteCourse(int courseId)
         {
             _coursesExams.RemoveCourse(courseId);
         }
 
-        public void RemoveExamTerm(int examId)
+        public void DeleteExamTerm(int examId)
         {
             _coursesExams.RemoveExamTerm(examId);
         }

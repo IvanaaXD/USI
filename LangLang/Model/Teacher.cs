@@ -37,7 +37,7 @@ namespace LangLang.Model
             set { averageRating = value; }
         }
 
-        public Teacher() { }
+        public Teacher() : base() { }
 
         public Teacher(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
                        int title, List<Language> languages, List<LanguageLevel> levelOfLanguages, DateTime startedWork, int averageRating)
@@ -54,14 +54,15 @@ namespace LangLang.Model
             string languagesCsv = string.Join(",", languages);
             string levelOfLanguagesCsv = string.Join(",", levelOfLanguages);
 
-            string startedWorkString = startedWork.ToString("yyyy-MM-dd");
+            string startedWorkString = startedWork.Date.ToString("yyyy-MM-dd");
+            string dateOfBirthString = dateOfBirth.Date.ToString("yyyy-MM-dd");
 
             return new string[] {
                 Id.ToString(),
                 FirstName, 
                 LastName, 
-                Gender.ToString(), 
-                DateOfBirth.ToString(), 
+                Gender.ToString(),
+                dateOfBirthString, 
                 PhoneNumber, 
                 Email, 
                 Password, 
