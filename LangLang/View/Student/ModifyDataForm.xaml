@@ -45,8 +45,7 @@
              Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 
         <TextBlock Grid.Row="3" Text="Gender:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-        <ComboBox Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,10" Width="150" Height="20"
-                  ItemsSource="{Binding genderValues}"
+        <ComboBox x:Name="genderComboBox" Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,10" Width="150" Height="20"
                   SelectedItem="{Binding Gender}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="1" Text="Date of Birth:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
@@ -70,8 +69,7 @@
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 
         <TextBlock Grid.Row="5" Grid.Column="1" Text="Education Level:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-        <ComboBox Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Width="150" Height="20"
-                  ItemsSource="{Binding educationLevelValues}"
+        <ComboBox x:Name="educationLevelComboBox" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Width="150" Height="20"
                   SelectedItem="{Binding SelectedEducationLevel}"/>
 
         <StackPanel Grid.Row="9" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">

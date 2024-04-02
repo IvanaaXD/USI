@@ -37,7 +37,7 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
-                    <TextBlock Text="Lenguage:" Width="150" Margin="0,0,5,0"></TextBlock>
+                    <TextBlock Text="Lenguage:" Width="150" Margin="5,0,5,0"></TextBlock>
                     <TextBlock Text="Lenguage level:" Width="150" Margin="5,0,5,0"></TextBlock>
                     <TextBlock Text="Start date:" Width="150" Margin="5,0,5,0"></TextBlock>
                     <TextBlock Text="Duration:" Width="150" Margin="5,0,5,0"></TextBlock>
@@ -45,23 +45,14 @@
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
 
-                    <ComboBox x:Name="languageComboBox" Width="150" Margin="5"
-                              ItemsSource="{Binding LanguageValues}"
-                              SelectedItem="{Binding SelectedLanguage}"
-                              DisplayMemberPath="Name" SelectedValuePath="Id"/>         
+                    <ComboBox x:Name="languageComboBox" Width="150" Margin="5"/>
 
-                    <!-- ComboBox za nivo -->
-                    <ComboBox x:Name="levelComboBox" Width="150" Margin="5"
-                              ItemsSource="{Binding LevelValues}"
-                              SelectedItem="{Binding SelectedLevel}"/>
-
-                    <!-- DatePicker za početni datum -->
+                    <ComboBox x:Name="levelComboBox" Width="150" Margin="5"/>
+                    
                     <DatePicker x:Name="startDateDatePicker" Width="150" Margin="5"/>
 
-                    <!-- TextBox za trajanje -->
                     <TextBox x:Name="durationTextBox" Width="150" Margin="5"/>
 
-                    <!-- CheckBox za online -->
                     <CheckBox x:Name="onlineCheckBox" Content="Online" Margin="5"
                               IsChecked="{Binding IsOnline, Mode=TwoWay}"/>
                 </StackPanel>
@@ -110,7 +101,8 @@
     </DockPanel>
 
     <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
-        <Button Content="Sing up to course" Click="btnSingUp_Click" Width="150"  Margin="0,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+            <Button Content= "Reset values" Click="btnReset_Click" Width="100" FontSize="14" Background="#6d6fbf" Foreground="White"/>
+            <Button Content="Sing up to course" Click="btnSingUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
         <Button Content="Cancel" Click="btnCancel_Click" Width="100"/>
     </StackPanel>
     </Grid>

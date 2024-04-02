@@ -18,8 +18,8 @@
             <ColumnDefinition Width="200"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <DockPanel Grid.ColumnSpan="2" Panel.ZIndex="2" Height="auto">
-
+        
+        <DockPanel Grid.ColumnSpan="2" Panel.ZIndex="3" Height="auto">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Account">
                     <MenuItem Header="Modify data" Click="ModifyAccount_Click"></MenuItem>
@@ -27,7 +27,7 @@
                 </MenuItem>
                 <MenuItem Header="View">
                     <MenuItem Header="Available courses" Click="AvailableCourses_Click"></MenuItem>
-                    <MenuItem Header="Available exams"></MenuItem>
+                    <MenuItem Header="Available exam terms" Click="AvailableExamTerms_Click"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Mail"></MenuItem>
             </Menu>
@@ -39,7 +39,7 @@
 
         <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Center"
                      FontSize="30">Welcome</TextBlock>
-        <Button x:Name="logoutBtn" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+        <Button x:Name="btnLogout" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnLogout_Click"
                  Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Log out</Button>
 
         <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">

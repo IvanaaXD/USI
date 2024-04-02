@@ -48,11 +48,11 @@
         <TextBlock Grid.Row="3" Text="Gender:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <ComboBox x:Name="genderComboBox" Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,10" Width="150" Height="20"
                   ItemsSource="{Binding genderValues}"
-                  SelectedIndex="0"/>
+                  SelectedItem="{Binding Path=Student.Gender}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="1" Text="Date of Birth:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <DatePicker x:Name="dateOfBirthDatePicker" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Height="23" Width="150"
-                    SelectedDate="{Binding Student.DateOfBirth, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+                    SelectedDate="{Binding Path=Student.DateOfBirth, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
                     Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 
         <TextBlock Grid.Row="5" Text="Phone Number:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
@@ -73,7 +73,7 @@
         <TextBlock Grid.Row="5" Grid.Column="1" Text="Education Level:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <ComboBox x:Name="educationLevelComboBox" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Width="150" Height="20"
                   ItemsSource="{Binding educationLevelValues}"
-                  SelectedIndex="0"/>
+                  SelectedItem="{Binding Path=Student.SelectedEducationLevel}"/>
 
         <StackPanel Grid.Row="9" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
             <Button Content="Sing up" Click="btnRegistration_Click" Width="100"  Margin="0,0,10,0" Foreground="White" Background="#4F519A"/>
