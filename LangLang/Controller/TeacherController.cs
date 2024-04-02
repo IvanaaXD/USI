@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LangLang.Model.Enums;
 
 namespace LangLang.Controller
 {
@@ -142,6 +143,15 @@ namespace LangLang.Controller
         public void Subscribe(IObserver observer)
         {
             _coursesExams.Subscribe(observer);
+        }
+
+        public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
+        {
+            return _coursesExams.FindCoursesByCriteria(language, level, startDate, duration, isOnline);
+        }
+        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        {
+            return _coursesExams.FindExamTermsByCriteria(language, level, examDate);
         }
     }
 }
