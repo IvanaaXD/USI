@@ -33,6 +33,10 @@ namespace LangLang.Controller
             _students.RemoveStudent(studentId);
         }
 
+        public void Update(Student student)
+        {
+            _students.UpdateStudent(student);
+        }
         public void Subscribe(IObserver observer)
         {
             _students.Subscribe(observer);
