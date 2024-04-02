@@ -12,6 +12,7 @@ namespace LangLang.Model
         protected List<LanguageLevel> levelOfLanguages;
         protected DateTime startedWork;
         protected int averageRating;
+        protected List<int> coursesId;
 
         public List<Language> Languages
         {
@@ -37,6 +38,12 @@ namespace LangLang.Model
             set { averageRating = value; }
         }
 
+        public List<int> CoursesId
+        {
+            get { return coursesId; }
+            set { coursesId = value; }
+        }
+
         public Teacher() : base() { }
 
         public Teacher(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
@@ -53,6 +60,7 @@ namespace LangLang.Model
         {
             string languagesCsv = string.Join(",", languages);
             string levelOfLanguagesCsv = string.Join(",", levelOfLanguages);
+            string coursesIdCsv = string.Join(",", coursesId);
 
             string startedWorkString = startedWork.Date.ToString("yyyy-MM-dd");
             string dateOfBirthString = dateOfBirth.Date.ToString("yyyy-MM-dd");
@@ -70,7 +78,9 @@ namespace LangLang.Model
                 languagesCsv, 
                 levelOfLanguagesCsv, 
                 startedWorkString, 
-                averageRating.ToString() };
+                averageRating.ToString(),
+                coursesIdCsv
+            };
         }
 
         public override void FromCSV(string[] values)
@@ -100,7 +110,18 @@ namespace LangLang.Model
 
             startedWork = DateTime.ParseExact(values[11], "yyyy-MM-dd", null);
             averageRating = int.Parse(values[12]);
-        }
 
+            coursesId = new List<int>();
+            if (values.Length > 13)
+            {
+                foreach (string courseId in values[13].Split(','))
+                {
+                    if (int.TryParse(courseId, out int id))
+                    {
+                        coursesId.Add(id);
+                    }
+                }
+            }
+        }
     }
 }

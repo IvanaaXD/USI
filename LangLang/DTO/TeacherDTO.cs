@@ -40,10 +40,23 @@ namespace LangLang.DTO
 
                 foreach (var language in langs)
                 {
-                    foreach (var level in levs)
+                    if (language.Equals(Language.NULL))
                     {
-                        languageLevelNames.Add($"{language} {level}");
+                        continue;
+                    } else
+                    {
+                        foreach (var level in levs)
+                        {
+                            if (level.Equals(LanguageLevel.NULL))
+                            {
+                                continue;
+                            } else
+                            {
+                                languageLevelNames.Add($"{language} {level}");
+                            }
+                        }
                     }
+
                 }
                 return languageLevelNames;
             }
