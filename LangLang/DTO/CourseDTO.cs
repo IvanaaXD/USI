@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LangLang.Model;
 using System.Text.RegularExpressions;
 using System.Configuration;
+using LangLang.Controller;
 
 namespace LangLang.DTO
 {
@@ -25,6 +26,13 @@ namespace LangLang.DTO
         private int currentlyEnrolled;
         private int maxEnrolledStudents;
         private List<int> examTerms;
+
+        private readonly TeacherController _teacherController;
+
+        public CourseDTO(TeacherController teacherController)
+        {
+            _teacherController = teacherController;
+        }
 
         public List<string> LanguageAndLevelValues
         {
@@ -140,6 +148,7 @@ namespace LangLang.DTO
             return true;
         }
 
+
         public string Error => null;
 
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
@@ -183,9 +192,31 @@ namespace LangLang.DTO
                             return "At least one work day must be chosen";
                         break;
                 }
+
                 return null;
             }
         }
+
+        private string IsValidCourseTimeslot()
+        {
+            DateTime combinedDateTime = StartDate.Date + TimeSpan.Parse(StartTime);
+
+            Course course = new Course
+            {
+                Language = language,
+                Level = languageLevel,
+                Duration = duration,
+                WorkDays = workDays,
+                StartDate = combinedDateTime,
+                IsOnline = isOnline,
+                CurrentlyEnrolled = currentlyEnrolled,
+                MaxEnrolledStudents = maxEnrolledStudents,
+                ExamTerms = examTerms
+            };
+
+            return _teacherController.ValidateCourseTimeslot(course);
+        }
+
         private readonly string[] _validatedProperties = { "Duration", "StartDate", "StartTime", "IsOnline", "CurrentlyEnrolled", "MaxEnrolledStudents", "WorkDays" };
 
         public bool IsValid
@@ -197,6 +228,8 @@ namespace LangLang.DTO
                     if (this[property] != null)
                         return false;
                 }
+                if (!string.IsNullOrEmpty(IsValidCourseTimeslot()))
+                    return false;
                 return true;
 
             }
