@@ -80,6 +80,10 @@ namespace LangLang.View.Student
         {
             Close();
         }
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
 
         private void btnSingUp_Click(object sender, EventArgs e)
         {
