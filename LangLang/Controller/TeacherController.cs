@@ -52,7 +52,25 @@ namespace LangLang.Controller
         {
             _coursesExams.UpdateExamTerm(examTerm);
         }
+        public bool CheckExamOverlap(DateTime examDateTime)
+        {
+            int examDurationInMinutes = 240;
 
+            DateTime examStartDateTime = examDateTime;
+            DateTime examEndDateTime = examDateTime.AddMinutes(examDurationInMinutes);
+
+            IEnumerable<dynamic> overlappingExams = _coursesExams.GetAllExamTerms()
+                .Where(item =>
+                {
+                    DateTime itemExamDateTime = item.ExamTime;
+
+                    bool isOverlap = (itemExamDateTime < examEndDateTime && itemExamDateTime.AddMinutes(examDurationInMinutes) > examStartDateTime);
+
+                    return isOverlap;
+                });
+
+            return !overlappingExams.Any();
+        }
         public string ValidateCourseTimeslot(Course course)
         {
             string overlapResult = CheckOverlap(course, isCourse: true);
