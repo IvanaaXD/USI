@@ -38,11 +38,16 @@ namespace LangLang.View.Student
             AvailableCoursesForm availableCoursesForm = new AvailableCoursesForm(studentId);
             availableCoursesForm.Show();
         }
-       
+        private void AvailableExamTerms_Click(object sender, RoutedEventArgs e)
+        {
+            AvailableExamTermsForm availableExamTermsForm = new AvailableExamTermsForm(studentId);
+            availableExamTermsForm.Show();
+        }
+
         private void ModifyAccount_Click(object sender, RoutedEventArgs e)
         {
             LangLang.Model.Student student = studentController.GetStudentById(studentId);
-            if (student.ActiveCourseId != -1)
+            if (student.ActiveCourseId != -1 && student.RegisteredExamsIds != null)
             {
                 MessageBox.Show("The student attends the course and cannot change the data.");
             }
@@ -57,6 +62,12 @@ namespace LangLang.View.Student
         {
             this.Close();
             studentController.Delete(studentId);
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+        }
+        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
         }

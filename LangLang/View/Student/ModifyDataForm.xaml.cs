@@ -22,12 +22,11 @@ namespace LangLang.View.Student
     /// </summary>
     public partial class ModifyDataForm : Window
     {
-        public Gender[] genderValues => (Gender[])Enum.GetValues(typeof(Gender));
-        public EducationLevel[] educationLevelValues => (EducationLevel[])Enum.GetValues(typeof(EducationLevel));
 
         public StudentDTO Student { get; set; }
 
         private readonly StudentsController studentsController;
+        private string studentEmail;
 
         public ModifyDataForm(int studentId, StudentsController studentsController)
         {
@@ -35,15 +34,26 @@ namespace LangLang.View.Student
             this.studentsController = studentsController;
             Student = new StudentDTO(studentsController.GetStudentById(studentId));
             DataContext = Student;
+            studentEmail = Student.Email;
 
+            genderComboBox.ItemsSource = Enum.GetValues(typeof(Gender));
+            educationLevelComboBox.ItemsSource = Enum.GetValues(typeof(EducationLevel));
             passwordBox.Password = Student.Password;
         }
         private void btnSaveData_Click(object sender, RoutedEventArgs e)
         {
             if (Student.IsValid)
             {
-                studentsController.Update(Student.ToStudent());
-                Close();
+                if (studentsController.IsEmailUnique(Student.Email) || 
+                   (!studentsController.IsEmailUnique(Student.Email) && Student.Email == studentEmail))
+                {
+                    studentsController.Update(Student.ToStudent());
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show("Email already exists.");
+                }
             }
             else
             {
