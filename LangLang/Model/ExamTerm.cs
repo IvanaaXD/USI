@@ -13,6 +13,7 @@ namespace LangLang.Model
         private int courseID;
         private DateTime examTime;
         private int maxStudents;
+        private int currentlyAttending;
 
         public int ExamID
         {
@@ -38,21 +39,28 @@ namespace LangLang.Model
             set { maxStudents = value; }
         }
 
+        public int CurrentlyAttending
+        {
+            get { return currentlyAttending; }
+            set { currentlyAttending = value; }
+        }
+
         public ExamTerm()
         {
         }
 
-        public ExamTerm(int examID, int courseID, DateTime examTime, int maxStudents)
+        public ExamTerm(int examID, int courseID, DateTime examTime, int maxStudents, int currentlyAttending)
         {
             this.examID = examID;
             this.courseID = courseID;
             this.examTime = examTime;
             this.maxStudents = maxStudents;
+            this.currentlyAttending = currentlyAttending;
         }
 
         public override string ToString()
         {
-            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}";
+            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}, CurrentlyAttending:{currentlyAttending}";
         }
 
         public string[] ToCSV()
@@ -61,23 +69,22 @@ namespace LangLang.Model
             {
                 examID.ToString(),
                 courseID.ToString(),
-                examTime.ToString(),
-                maxStudents.ToString()
+                //examTime.ToString(),
+                examTime.ToString("yyyy-MM-dd HH:mm"),
+                maxStudents.ToString(),
+                currentlyAttending.ToString()
             };
             return csvValues;
         }
 
         public void FromCSV(string[] values)
         {
-            if (values.Length != 4)
-            {
-                throw new ArgumentException("Invalid number of values in CSV");
-            }
-
             ExamID = int.Parse(values[0]);
             CourseID = int.Parse(values[1]);
-            ExamTime = DateTime.Parse(values[2]);
+            // ExamTime = DateTime.Parse(values[2]);
+            ExamTime = DateTime.ParseExact(values[2], "yyyy-MM-dd HH:mm", null);
             MaxStudents = int.Parse(values[3]);
+            CurrentlyAttending = int.Parse(values[4]);
         }
     }
 }

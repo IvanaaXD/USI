@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LangLang.Model.Enums;
 
 namespace LangLang.Controller
 {
@@ -14,7 +15,7 @@ namespace LangLang.Controller
         private readonly TeacherDAO _coursesExams;
 
         public TeacherController()
-        { 
+        {
             _coursesExams = new TeacherDAO();
         }
         public List<Course> GetAllCourses()
@@ -44,18 +45,27 @@ namespace LangLang.Controller
             _coursesExams.UpdateExamTerm(examTerm);
         }
 
-        public void RemoveCourse(int courseId)
+        public void DeleteCourse(int courseId)
         {
             _coursesExams.RemoveCourse(courseId);
         }
 
-        public void RemoveExamTerm(int examId)
+        public void DeleteExamTerm(int examId)
         {
             _coursesExams.RemoveExamTerm(examId);
         }
         public void Subscribe(IObserver observer)
         {
             _coursesExams.Subscribe(observer);
+        }
+
+        public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
+        {
+            return _coursesExams.FindCoursesByCriteria(language, level, startDate, duration, isOnline);
+        }
+        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        {
+            return _coursesExams.FindExamTermsByCriteria(language,level, examDate);
         }
     }
 }
