@@ -19,6 +19,11 @@ namespace LangLang.Controller
             _directorDao = new DirectorDAO();
         }
 
+        public Director GetDirector()
+        {
+            return _directorDao.GetDirector();
+        }
+
         public Teacher GetTeacherById(int teacherId)
         {
             return _directorDao.GetTeacherById(teacherId);

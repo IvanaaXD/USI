@@ -14,11 +14,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using LangLang.View.Student;
+using LangLang.View.Director;
 using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Model;
 using LangLang.Observer;
+using LangLang.View.Teacher;
+using LangLang.View.Student;
+using RegistrationForm = LangLang.View.Student.RegistrationForm;
+using LangLang.Model.DAO;
 
 namespace LangLang
 {
@@ -27,42 +31,80 @@ namespace LangLang
     /// </summary>
     public partial class MainWindow : Window, IObserver
     {
+        public ObservableCollection<TeacherDTO> Teachers { get; set; }
         public ObservableCollection<StudentDTO> Students { get; set; }
-        public StudentDTO SelectedStudent { get; set; }
-        private StudentsController studentsController { get; set; }
+        public TeacherDTO SelectedTeacher { get; set; }
+        public StudentDTO SelectedStuent { get; set; }
+        private StudentsController studentController { get; set; }
+        private DirectorController directorController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+            Teachers = new ObservableCollection<TeacherDTO>();
             Students = new ObservableCollection<StudentDTO>();
-            studentsController = new StudentsController();
-            studentsController.Subscribe(this);
-
+            directorController = new DirectorController();
+            studentController = new StudentsController();
+            directorController.Subscribe(this);
+            studentController.Subscribe(this);
             Update();
         }
 
         public void Update()
         {
+            Teachers.Clear();
+            foreach (Teacher teacher in directorController.GetAllTeachers())
+                Teachers.Add(new TeacherDTO(teacher));
+
             Students.Clear();
-            /*foreach (Student teacher in studentController.GetAllStudents())
-                Students.Add(new StudentDTO(teacher));*/
+            foreach (Student student in studentController.GetAllStudents())
+                Students.Add(new StudentDTO(student));
 
         }
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            WelcomePage welcomePage = new WelcomePage(0, studentsController);
+            string email = Email.Text; 
+            string password = Password.Password; 
 
-            welcomePage.Show();
-            this.Close();
+            foreach (Teacher teacher in directorController.GetAllTeachers())
+            {
+                if (teacher.Email == email && teacher.Password == password)
+                {
+                    CoursesTable coursesTable = new CoursesTable(teacher.Id);
+                    coursesTable.Show();
+                    this.Close();
+                }
+            }
+
+            foreach (Student student in studentController.GetAllStudents())
+            {
+                if (student.Email == email && student.Password == password)
+                {
+                    WelcomePage welcomePage = new WelcomePage(student.Id, studentController);
+                    welcomePage.Show();
+                    this.Close();
+                }
+            }
+
+            Director director = directorController.GetDirector();
+
+            if (director.Email == email && director.Password == password)
+            {
+                TeachersTable table = new TeachersTable();
+                table.Show();
+                this.Close();
+            }
+
+            MessageBox.Show("User does not exists.");
+
         }
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
-            RegistrationForm regForm = new RegistrationForm(studentsController);
-
-            regForm.Show();
+            RegistrationForm registrationForm = new RegistrationForm(studentController);
+            registrationForm.Show();
         }
     }
 }

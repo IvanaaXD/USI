@@ -15,13 +15,23 @@ namespace LangLang.Model.DAO
     {
 
         private readonly List<Teacher> _teachers;
+        private readonly List<Director> _director;
         private readonly Storage<Teacher> _storage;
+        private readonly Storage<Director> _storageDirector;
+
         private TeacherDAO teacherDAO;
 
         public DirectorDAO() {
             _storage = new Storage<Teacher>("teachers.csv");
+            _storageDirector = new Storage<Director>("director.csv");
             _teachers = _storage.Load();
+            _director = _storageDirector.Load();
             teacherDAO = new TeacherDAO();
+        }
+
+        public Director GetDirector()
+        {
+            return _director.Find(d => d.Id == 0);
         }
 
         private int GenerateId()

@@ -31,7 +31,9 @@
                    Margin="0,15"
                    HorizontalAlignment="Left"/>
 
-                <TextBox  Grid.Column="1"
+                <TextBox  
+                  x:Name="Email"
+                  Grid.Column="1"
                   Grid.Row="1"
                   Padding="0,5"
                   Width="255"
@@ -44,7 +46,9 @@
                    Grid.Row="2"
                    Margin="0,15"
                    HorizontalAlignment="Left"/>
-                <PasswordBox Grid.Row="3"
+                <PasswordBox 
+                    x:Name="Password"
+                    Grid.Row="3"
                     Password="sifra"
                     Padding="0,5"                           
                     Width="255"
