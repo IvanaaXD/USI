@@ -30,16 +30,14 @@ namespace LangLang.View.Teacher
         public int teacherId { get; set; }
 
         private bool isSearchButtonClicked = false;
-        public ExamTermsTable()
+        public ExamTermsTable(int teacherId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
             teacherController = new TeacherController();
             this.teacherId = teacherId;
-
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
-
             DataContext = this;
             teacherController.Subscribe(this);
             Update();
@@ -50,7 +48,7 @@ namespace LangLang.View.Teacher
             try
             {
                 TableViewModel.ExamTerms.Clear();
-                //var examTerms = teacherController.GetAllExamTerms();
+                
                 var examTerms = GetFilteredExamTerms();
                 if (examTerms != null)
                 {
@@ -99,7 +97,7 @@ namespace LangLang.View.Teacher
             levelComboBox.SelectedItem = null;
             examDatePicker.SelectedDate = null;
         }
-        // btnSearch_Click
+        
         private void Search_Click(object sender, RoutedEventArgs e)
         {
             Update();
@@ -125,11 +123,13 @@ namespace LangLang.View.Teacher
             LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
             DateTime? selectedStartDate = examDatePicker.SelectedDate;
 
-            //List<ExamTerm> teacherAvailableExamTerms = teacherController.GetAllExamTerms(); 
-            //GetAvailableExamTerms(teacherId);
-            TeacherDAO teacherDAO = new TeacherDAO();
-            List<ExamTerm> finalExamTerms =teacherDAO.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+            List<ExamTerm> finalExamTerms = teacherController.GetAllExamTerms();
 
+            if (isSearchButtonClicked)
+            {
+                TeacherDAO teacherDAO = new TeacherDAO();
+                finalExamTerms = teacherDAO.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+            }
             return finalExamTerms;
         }
     }
