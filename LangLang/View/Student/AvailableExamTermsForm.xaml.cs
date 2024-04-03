@@ -57,7 +57,7 @@ namespace LangLang.View.Student
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
 
             DataContext = this;
-            studentsController.Subscribe(this);
+            teacherController.Subscribe(this);
             Update();
         }
 
