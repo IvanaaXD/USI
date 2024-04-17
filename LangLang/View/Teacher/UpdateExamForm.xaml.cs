@@ -100,11 +100,11 @@ namespace LangLang.View.Teacher
         }
         private void PickDataFromDatePicker()
         {
-            if (dpExamDate.SelectedDate.HasValue && !string.IsNullOrWhiteSpace(txtExamTime.Text))
+            if (examDatePicker.SelectedDate.HasValue && !string.IsNullOrWhiteSpace(examTimeTextBox.Text))
             {
-                DateTime startDate = dpExamDate.SelectedDate.Value.Date;
+                DateTime startDate = examDatePicker.SelectedDate.Value.Date;
                 DateTime startTime;
-                if (DateTime.TryParseExact(txtExamTime.Text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startTime))
+                if (DateTime.TryParseExact(examTimeTextBox.Text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startTime))
                 {
                     ExamTerm.ExamDate = startDate.Add(startTime.TimeOfDay);
                 }
