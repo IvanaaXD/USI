@@ -20,16 +20,13 @@ using System.Windows.Shapes;
 
 namespace LangLang.View.Teacher
 {
-    /// <summary>
-    /// Interaction logic for ModifyExamDataForm.xaml
-    /// </summary>
-    public partial class ModifyExamDataForm : Window
+    public partial class UpdateExamForm : Window
     {
         public ExamTermDTO ExamTerm { get; set; }
 
         private readonly TeacherController teacherController;
 
-        public ModifyExamDataForm(int examId, TeacherController teacherController)
+        public UpdateExamForm(int examId, TeacherController teacherController)
         {
             ExamTerm examTerm = teacherController.GetExamTermById(examId);
             ExamTerm = new ExamTermDTO(examTerm);
@@ -45,10 +42,10 @@ namespace LangLang.View.Teacher
             string[] parts = languageAndLevel.Split(',');
             languageAndLevel = parts[0].Trim() + " " + parts[1].Trim();
             
-            languageComboBox.SelectedItem = languageAndLevel; 
-            dpExamDate.SelectedDate = ExamTerm.ExamDate;
-            txtExamTime.Text = ExamTerm.ExamDate.ToString("HH:mm"); //ExamTerm.ExamTime;
-            txtMaxStudents.Text = ExamTerm.MaxStudents.ToString();
+            languageComboBox.SelectedItem = languageAndLevel;
+            examDatePicker.SelectedDate = ExamTerm.ExamDate;
+            examTimeTextBox.Text = ExamTerm.ExamDate.ToString("HH:mm"); //ExamTerm.ExamTime;
+            maxStudentsTextBox.Text = ExamTerm.MaxStudents.ToString();
 
         }
         private void PickLanguageAndLevel()
@@ -121,7 +118,7 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Please select a valid start date and time.");
             }
         }
-        private void btnSaveData_Click(object sender, RoutedEventArgs e)
+        private void Save_Click(object sender, RoutedEventArgs e)
         {
             PickDataFromDatePicker();
             PickLanguageAndLevel();
@@ -135,7 +132,7 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Exam Term can not be updated. Not all fields are valid.");
             }
         }
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }

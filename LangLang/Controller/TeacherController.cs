@@ -12,45 +12,45 @@ namespace LangLang.Controller
 {
     public class TeacherController
     {
-        private readonly TeacherDAO _coursesExams;
+        private readonly TeacherDAO _teachers; // _teachers
 
         public TeacherController()
         {
-            _coursesExams = new TeacherDAO();
+            _teachers = new TeacherDAO();
         }
         public Course GetCourseById(int courseID)
         {
-            return _coursesExams.GetCourseById(courseID);
+            return _teachers.GetCourseById(courseID);
         }
         public ExamTerm? GetExamTermById(int examId)
         {
-            return _coursesExams.GetExamTermById(examId);
+            return _teachers.GetExamTermById(examId);
         }
         public List<Course> GetAllCourses()
         {
-            return _coursesExams.GetAllCourses();
+            return _teachers.GetAllCourses();
         }
         public List<ExamTerm> GetAllExamTerms()
         {
-            return _coursesExams.GetAllExamTerms();
+            return _teachers.GetAllExamTerms();
         }
         public Course AddCourse(Course course)
         {
-            return _coursesExams.AddCourse(course);
+            return _teachers.AddCourse(course);
         }
         public void AddExamTerm(ExamTerm examTerm)
         {
-            _coursesExams.AddExamTerm(examTerm);
+            _teachers.AddExamTerm(examTerm);
         }
 
         public void UpdateCourse(Course course)
         {
-            _coursesExams.UpdateCourse(course);
+            _teachers.UpdateCourse(course);
         }
 
         public void UpdateExamTerm(ExamTerm examTerm)
         {
-            _coursesExams.UpdateExamTerm(examTerm);
+            _teachers.UpdateExamTerm(examTerm);
         }
         public bool CheckExamOverlap(int ExamID, DateTime ExamDate)
         {
@@ -59,7 +59,7 @@ namespace LangLang.Controller
             DateTime examStartDateTime = ExamDate;
             DateTime examEndDateTime = examStartDateTime.AddMinutes(examDurationInMinutes);
 
-            IEnumerable<dynamic> overlappingExams = _coursesExams.GetAllExamTerms()
+            IEnumerable<dynamic> overlappingExams = _teachers.GetAllExamTerms()
                 .Where(item =>
                 {
                     bool isDifferentId = item.ExamID != ExamID;
@@ -72,7 +72,7 @@ namespace LangLang.Controller
                 });
 
             /*
-            IEnumerable<dynamic> possibleOverlappingCourses =  _coursesExams.GetAllCourses()
+            IEnumerable<dynamic> possibleOverlappingCourses =  _teachers.GetAllCourses()
         .Where(c =>
         {
             DateTime courseStartDateTime = c.StartDate;
@@ -118,7 +118,7 @@ namespace LangLang.Controller
             int examDurationInMinutes = 240;
 
             IEnumerable<dynamic> overlappingItems = isCourse ?
-    (IEnumerable<dynamic>)_coursesExams.GetAllCourses()
+    (IEnumerable<dynamic>)_teachers.GetAllCourses()
     .Where(c =>
     {
         DateTime courseStartDateTime = c.StartDate;
@@ -131,7 +131,7 @@ namespace LangLang.Controller
 
         return isOverlap;
     }) :
-    (IEnumerable<dynamic>)_coursesExams.GetAllExamTerms()
+    (IEnumerable<dynamic>)_teachers.GetAllExamTerms()
     .Where(item =>
     {
         DateTime examDateTime = item.ExamTime;
@@ -200,25 +200,25 @@ namespace LangLang.Controller
 
         public void DeleteCourse(int courseId)
         {
-            _coursesExams.RemoveCourse(courseId);
+            _teachers.RemoveCourse(courseId);
         }
 
         public void DeleteExamTerm(int examId)
         {
-            _coursesExams.RemoveExamTerm(examId);
+            _teachers.RemoveExamTerm(examId);
         }
         public void Subscribe(IObserver observer)
         {
-            _coursesExams.Subscribe(observer);
+            _teachers.Subscribe(observer);
         }
 
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
-            return _coursesExams.FindCoursesByCriteria(language, level, startDate, duration, isOnline);
+            return _teachers.FindCoursesByCriteria(language, level, startDate, duration, isOnline);
         }
         public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
-            return _coursesExams.FindExamTermsByCriteria(language, level, examDate);
+            return _teachers.FindExamTermsByCriteria(language, level, examDate);
         }
     }
 }

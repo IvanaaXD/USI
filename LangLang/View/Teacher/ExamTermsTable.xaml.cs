@@ -68,7 +68,7 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
+        private void Create_Click(object sender, RoutedEventArgs e)
         {
             CreateExamForm examTable = new CreateExamForm(teacherController, teacherId);
             examTable.Show();
@@ -81,7 +81,7 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                ModifyExamDataForm modifyDataForm = new ModifyExamDataForm(SelectedExamTerm.ExamID, teacherController);
+                UpdateExamForm modifyDataForm = new UpdateExamForm(SelectedExamTerm.ExamID, teacherController);
                 modifyDataForm.Show();
                 modifyDataForm.Activate();
             }
@@ -100,7 +100,7 @@ namespace LangLang.View.Teacher
             examDatePicker.SelectedDate = null;
         }
 
-        private void btnCourseTable(object sender, RoutedEventArgs e)
+        private void CourseTable_Click(object sender, RoutedEventArgs e)
         {
             CoursesTable courseT = new CoursesTable(teacherId, directorController);
             courseT.Show();
@@ -112,7 +112,7 @@ namespace LangLang.View.Teacher
             Update();
             isSearchButtonClicked = true;
         }
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+        private void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedExamTerm == null)
             {
