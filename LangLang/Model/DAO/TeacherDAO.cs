@@ -27,7 +27,7 @@ namespace LangLang.Model.DAO
         private int GenerateCourseId()
         {
             if (_courses.Count == 0) return 0;
-            return _courses.Last().CourseID + 1;
+            return _courses.Last().Id + 1;
         }
 
         private int GenerateExamId()
@@ -38,7 +38,7 @@ namespace LangLang.Model.DAO
 
         public Course AddCourse(Course course)
         {
-            course.CourseID = GenerateCourseId();
+            course.Id = GenerateCourseId();
             _courses.Add(course);
             _courseStorage.Save(_courses);
             NotifyObservers();
@@ -56,7 +56,7 @@ namespace LangLang.Model.DAO
 
         public Course? UpdateCourse(Course course)
         {
-            Course? oldCourse = GetCourseById(course.CourseID);
+            Course? oldCourse = GetCourseById(course.Id);
             if (oldCourse == null) return null;
 
             oldCourse.Language = course.Language;
@@ -117,7 +117,7 @@ namespace LangLang.Model.DAO
 
         public Course? GetCourseById(int id)
         {
-            return _courses.Find(v => v.CourseID == id);
+            return _courses.Find(v => v.Id == id);
         }
 
         public ExamTerm GetExamTermById(int id)
@@ -174,7 +174,7 @@ namespace LangLang.Model.DAO
         {
             String res = "";
             
-            Course course = GetAllCourses().FirstOrDefault(c => c.CourseID == courseID);
+            Course course = GetAllCourses().FirstOrDefault(c => c.Id == courseID);
 
             if (course != null)
             {

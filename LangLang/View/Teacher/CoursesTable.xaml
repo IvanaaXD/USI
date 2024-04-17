@@ -25,10 +25,10 @@
                 <MenuItem Header="Courses">
                     <MenuItem Header="Create" Click="Create_Click"></MenuItem>
                     <MenuItem Header="Update" Click="Update_Click"></MenuItem>
-                    <MenuItem Header="Cancel" Click="Cancel_Click"></MenuItem>
+                    <MenuItem Header="Delete" Click="Delete_Click"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Exam Terms">
-                    <MenuItem Header="Table" Click="btnGoToExamTermTable"></MenuItem>
+                    <MenuItem Header="Table" Click="ExamTermTable_Click"></MenuItem>
                 </MenuItem>
             </Menu>
 
@@ -56,11 +56,12 @@
                     <TextBox x:Name="durationTextBox" Width="150" Margin="5"/>
 
                     <CheckBox x:Name="onlineCheckBox" Content="Online" Margin="5"
-                    IsChecked="{Binding IsOnline, Mode=TwoWay}"/>
+                    IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
+
 
                 </StackPanel>
 
-                <Button Grid.Row="1" Content="Search" Click="btnSearch_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,0,10,20"/>
+                <Button Grid.Row="1" Content="Search" Click="Search_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,0,10,20"/>
             </Grid>
         </DockPanel>
 
@@ -94,8 +95,8 @@
             </TabControl>
         </DockPanel>
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
-            <Button Content= "Reset values" Click="btnReset_Click" Width="100" FontSize="14" Background="#6d6fbf" Foreground="White"/>
-            <Button Content="Cancel" Click="btnCancel_Click" Width="100"/>
+            <Button Content= "Reset values" Click="Reset_Click" Width="100" FontSize="14" Background="#6d6fbf" Foreground="White"/>
+            <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
         </StackPanel>
     </Grid>
 </Window>

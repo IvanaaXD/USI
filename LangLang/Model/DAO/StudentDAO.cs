@@ -108,10 +108,10 @@ namespace LangLang.Model.DAO
             List<Course> availableCourses = new List<Course>();
 
             foreach(Course course in allCourses) {
-                if(!passedCoursesIds.Contains(course.CourseID) && 
-                   !courseIdsByRegisteredExams.Contains(course.CourseID) &&
-                   !student.PendingCoursesIds.Contains(course.CourseID) && 
-                   !student.PendingExamCoursesIds.Contains(course.CourseID) &&
+                if(!passedCoursesIds.Contains(course.Id) && 
+                   !courseIdsByRegisteredExams.Contains(course.Id) &&
+                   !student.PendingCoursesIds.Contains(course.Id) && 
+                   !student.PendingExamCoursesIds.Contains(course.Id) &&
                    (course.CurrentlyEnrolled < course.MaxEnrolledStudents) && 
                    (course.StartDate - currentTime).TotalDays > 6)
                 {

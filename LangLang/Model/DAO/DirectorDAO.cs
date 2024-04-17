@@ -51,7 +51,7 @@ namespace LangLang.Model.DAO
 
             foreach (Course course in allCourses)
             {
-                if (allTeacherCourses.Contains(course.CourseID))
+                if (allTeacherCourses.Contains(course.Id))
                 {
                     availableCourses.Add(course);
                 }

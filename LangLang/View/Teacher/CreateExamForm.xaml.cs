@@ -102,7 +102,7 @@ namespace LangLang.View.Teacher
                 {
                     if (course.Language == lang && course.Level == lvl)
                     {
-                        ExamTerm.CourseID = course.CourseID;
+                        ExamTerm.CourseID = course.Id;
                         break; 
                     }
                 }

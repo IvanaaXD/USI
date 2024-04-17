@@ -4,21 +4,11 @@ using LangLang.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LangLang.View.Teacher
 {
-    public partial class ModifyCourseDataForm : Window
+    public partial class UpdateCourseForm : Window
     {
         public Language[] languageValues => (Language[])Enum.GetValues(typeof(Language));
         public LanguageLevel[] languageLevelValues => (LanguageLevel[])Enum.GetValues(typeof(LanguageLevel));
@@ -29,29 +19,30 @@ namespace LangLang.View.Teacher
         private int teacherId;
         public TeacherDTO Teacher { get; set; }
 
-        public ModifyCourseDataForm(int courseId, int teacherId, TeacherController teacherController, DirectorController directorController)
+        public UpdateCourseForm(int courseId, int teacherId, TeacherController teacherController, DirectorController directorController)
         {
             Course = new CourseDTO(teacherController, teacherController.GetCourseById(courseId));
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             Course.StartTime = Course.StartDate.ToString("HH:mm");
             DataContext = Course;
+
             InitializeComponent();
             this.teacherController = teacherController;
             this.directorController = directorController;
 
-            List<string> levellanguagestr = new List<string>();
+            List<string> levelLanguageStr = new List<string>();
 
             for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
             {
-                levellanguagestr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
+                levelLanguageStr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
             }
-            languageComboBox.ItemsSource = levellanguagestr;
+            languageComboBox.ItemsSource = levelLanguageStr;
 
             string selectedLanguageAndLevel = $"{Course.Language} {Course.Level}";
 
             languageComboBox.SelectedItem = selectedLanguageAndLevel;
 
-            durationInWeeks.Text = Course.Duration.ToString();
+            durationTextBox.Text = Course.Duration.ToString();
 
             startDatePicker.SelectedDate = Course.StartDate;
             startTimeTextBox.Text = Course.StartTime;
@@ -72,29 +63,16 @@ namespace LangLang.View.Teacher
 
                 string[] parts = selectedLanguageAndLevel.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (parts.Length == 2)
+                if (parts.Length == 2 &&
+                    Enum.TryParse(parts[0], out Language language) &&
+                    Enum.TryParse(parts[1], out LanguageLevel level))
                 {
-                    if (Enum.TryParse(parts[0], out Language language))
-                    {
-                        Course.Language = language;
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Invalid language: {parts[0]}");
-                    }
-
-                    if (Enum.TryParse(parts[1], out LanguageLevel level))
-                    {
-                        Course.Level = level;
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Invalid level: {parts[1]}");
-                    }
+                    Course.Language = language;
+                    Course.Level = level;
                 }
                 else
                 {
-                    MessageBox.Show("Invalid language and level format.");
+                    MessageBox.Show("Invalid input format.");
                 }
             }
         }
@@ -129,7 +107,7 @@ namespace LangLang.View.Teacher
                 }
             }
         }
-        private void btnSaveData_Click(object sender, RoutedEventArgs e)
+        private void Save_Click(object sender, RoutedEventArgs e)
         {
             PickDataFromDatePicker();
             PickLanguageAndLevel();
@@ -144,9 +122,10 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Course can not be updated. Not all fields are valid.");
             }
         }
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
+
     }
 }

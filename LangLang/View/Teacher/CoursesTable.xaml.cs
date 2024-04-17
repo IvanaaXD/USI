@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using LangLang.View;
 using LangLang.Observer;
 using LangLang.DTO;
 using LangLang.Controller;
@@ -22,8 +21,6 @@ namespace LangLang.View.Teacher
             {
                 Courses = new ObservableCollection<CourseDTO>();
             }
-
-
         }
 
         public ViewModel TableViewModel { get; set; }
@@ -34,13 +31,14 @@ namespace LangLang.View.Teacher
         public int teacherId { get; set; }
         private bool isSearchButtonClicked = false;
 
-        public CoursesTable(int teacherId, DirectorController directorController1)
+        public CoursesTable(int teacherId, DirectorController directorController)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            directorController = directorController1;
+            this.directorController = directorController;
             teacherController = new TeacherController();
             this.teacherId = teacherId;
+
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
             DataContext = this;
@@ -80,24 +78,24 @@ namespace LangLang.View.Teacher
             courseTable.Show();
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void Cancel_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private void Search_Click(object sender, EventArgs e)
         {
             Update();
             isSearchButtonClicked = true;
         }
-        private void btnReset_Click(object sender, EventArgs e)
+        private void Reset_Click(object sender, EventArgs e)
         {
             isSearchButtonClicked = false;
             Update();
             ResetSearchElements();
         }
 
-        private void btnGoToExamTermTable(object sender, EventArgs e)
+        private void ExamTermTable_Click(object sender, EventArgs e)
         {
             ExamTermsTable examTable = new ExamTermsTable(teacherId, directorController);
             examTable.Show();
@@ -115,13 +113,13 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("Cannot update a course that starts in less than a week.");
                 else
                 {
-                    ModifyCourseDataForm modifyForm = new ModifyCourseDataForm(SelectedCourse.CourseID, teacherId, teacherController, directorController);
-                    modifyForm.Show();
+                    UpdateCourseForm updateForm = new UpdateCourseForm(SelectedCourse.Id, teacherId, teacherController, directorController);
+                    updateForm.Show();
                 }
             }
         }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+        private void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
             {
@@ -132,7 +130,7 @@ namespace LangLang.View.Teacher
                 if (DateTime.Now.AddDays(7) > SelectedCourse.StartDate)
                     MessageBox.Show("Cannot cancel a course that starts in less than a week.");
                 else
-                    teacherController.DeleteCourse(SelectedCourse.CourseID);
+                    teacherController.DeleteCourse(SelectedCourse.Id);
             }
         }
         private void ResetSearchElements()
@@ -142,6 +140,35 @@ namespace LangLang.View.Teacher
             startDateDatePicker.SelectedDate = null;
             durationTextBox.Text = string.Empty;
             onlineCheckBox.IsChecked = false;
+        }
+
+        private List<Course> GetFinalDisplayCourses(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration)
+        {
+            List<Course> finalCourses = new List<Course>();
+
+            if (isSearchButtonClicked)
+            {
+                bool isOnline = onlineCheckBox.IsChecked ?? false;
+                List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
+                foreach (Course course in allFilteredCourses)
+                {
+                    foreach (Course teacherCourse in availableCourses)
+                    {
+                        if (teacherCourse.Id == course.Id)
+                        {
+                            finalCourses.Add(course);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (Course course in availableCourses)
+                {
+                    finalCourses.Add(course);
+                }
+            }
+            return finalCourses;
         }
 
         private List<Course> GetFilteredCourses()
@@ -159,31 +186,8 @@ namespace LangLang.View.Teacher
             }
 
             List<Course> availableCourses = directorController.GetAvailableCourses(teacherId);
-            List<Course> finalCourses = new List<Course>();
-
-            if (isSearchButtonClicked)
-            {
-                bool isOnline = onlineCheckBox.IsChecked ?? false;
-                List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
-                foreach (Course course in allFilteredCourses)
-                {
-                    foreach (Course teacherCourse in availableCourses)
-                    {
-                        if (teacherCourse.CourseID == course.CourseID)
-                        {
-                            finalCourses.Add(course);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                foreach (Course course in availableCourses)
-                {
-                    finalCourses.Add(course);
-                }
-            }
-            return finalCourses;
+           
+            return GetFinalDisplayCourses(availableCourses, selectedLanguage,selectedLevel,selectedStartDate,selectedDuration);
         }
 
     }

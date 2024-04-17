@@ -15,16 +15,16 @@ namespace LangLang.DTO
 {
     public class CourseDTO : INotifyPropertyChanged, IDataErrorInfo
     {
-        private int courseID;
+        private int id;
         private Language language;
         private LanguageLevel languageLevel;
-        private int duration;
+        private string duration;
         private List<DayOfWeek> workDays;
         private DateTime startDate;
         private string startTime;
         private bool isOnline;
         private int currentlyEnrolled;
-        private int maxEnrolledStudents;
+        private string maxEnrolledStudents;
         private List<int> examTerms;
 
         private readonly TeacherController _teacherController;
@@ -63,10 +63,10 @@ namespace LangLang.DTO
             }
         }
 
-        public int CourseID
+        public int Id
         {
-            get { return courseID; }
-            set { SetProperty(ref courseID, value); }
+            get { return id; }
+            set { SetProperty(ref id, value); }
         }
 
         public Language Language
@@ -81,7 +81,7 @@ namespace LangLang.DTO
             set { SetProperty(ref languageLevel, value); }
         }
 
-        public int Duration
+        public string Duration
         {
             get { return duration; }
             set { SetProperty(ref duration, value); }
@@ -117,16 +117,10 @@ namespace LangLang.DTO
             set { SetProperty(ref currentlyEnrolled, value); }
         }
 
-        public int MaxEnrolledStudents
+        public string MaxEnrolledStudents
         {
             get { return maxEnrolledStudents; }
             set { SetProperty(ref maxEnrolledStudents, value); }
-        }
-
-        public List<int> ExamTerms
-        {
-            get { return examTerms; }
-            set { SetProperty(ref examTerms, value); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -152,7 +146,7 @@ namespace LangLang.DTO
         public string Error => null;
 
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
-
+        private Regex _DurationRegex = new Regex(@"\b(1?[1-9]|20)\b");
         public string this[string columnName]
         {
             get
@@ -160,7 +154,7 @@ namespace LangLang.DTO
                 switch (columnName)
                 {
                     case "Duration":
-                        if (Duration <= 0 || Duration > 50)
+                        if (Duration == null || !_DurationRegex.IsMatch(Duration))
                             return "Duration must be > 1 and < 50 weeks";
                         break;
                     case "StartDate":
@@ -172,13 +166,15 @@ namespace LangLang.DTO
                             return "Format is not good. Try again.";
                         break;
                     case "CurrentlyEnrolled":
-                        if (CurrentlyEnrolled < 0 || (!IsOnline && CurrentlyEnrolled > MaxEnrolledStudents))
+                        if (CurrentlyEnrolled < 0 || (!IsOnline && CurrentlyEnrolled > int.Parse(MaxEnrolledStudents)))
                             return "Number of enrolled students can't be less than 0 or greater than max enrolled";
                         break;
                     case "MaxEnrolledStudents":
-                        if (MaxEnrolledStudents < 0)
+                        if (MaxEnrolledStudents == null)
+                            return "Max entolled students must be >=0";
+                        if (int.Parse(MaxEnrolledStudents) < 0)
                             return "Max enrolled students must be >= 0";
-                        if (MaxEnrolledStudents > 150)
+                        if (int.Parse(MaxEnrolledStudents) > 150)
                             return "Max enrolled students must be <= 150s";
                         break;
                     case "WorkDays":
@@ -197,15 +193,15 @@ namespace LangLang.DTO
 
             Course course = new Course
             {
-                CourseID = courseID,
+                Id = id,
                 Language = language,
                 Level = languageLevel,
-                Duration = duration,
+                Duration = int.Parse(duration),
                 WorkDays = workDays,
                 StartDate = combinedDateTime,
                 IsOnline = isOnline,
                 CurrentlyEnrolled = currentlyEnrolled,
-                MaxEnrolledStudents = maxEnrolledStudents,
+                MaxEnrolledStudents = int.Parse(maxEnrolledStudents),
                 ExamTerms = examTerms
             };
 
@@ -243,20 +239,20 @@ namespace LangLang.DTO
             }
             if (isOnline)
             {
-                maxEnrolledStudents = 0;
+                maxEnrolledStudents = "0";
             }
 
             return new Course
             {
-                CourseID = courseID,
+                Id = id,
                 Language = language,
                 Level = languageLevel,
-                Duration = duration,
+                Duration = int.Parse(duration),
                 WorkDays = workDays,
                 StartDate = combinedDateTime,
                 IsOnline = isOnline,
                 CurrentlyEnrolled = currentlyEnrolled,
-                MaxEnrolledStudents = maxEnrolledStudents,
+                MaxEnrolledStudents = int.Parse(maxEnrolledStudents),
                 ExamTerms = examTerms
             };
         }
@@ -268,16 +264,16 @@ namespace LangLang.DTO
 
         public CourseDTO(Course course)
         {
-            courseID = course.CourseID;
+            id = course.Id;
             language = course.Language;
             languageLevel = course.Level;
-            duration = course.Duration;
+            duration = course.Duration.ToString();
 
             workDays = course.WorkDays;
             startDate = course.StartDate;
             isOnline = course.IsOnline;
             currentlyEnrolled = course.CurrentlyEnrolled;
-            maxEnrolledStudents = course.MaxEnrolledStudents;
+            maxEnrolledStudents = course.MaxEnrolledStudents.ToString();
 
             examTerms = course.ExamTerms;
         }
@@ -285,16 +281,16 @@ namespace LangLang.DTO
         public CourseDTO(TeacherController tc, Course course)
         {
             _teacherController = tc;
-            courseID = course.CourseID;
+            id = course.Id;
             language = course.Language;
             languageLevel = course.Level;
-            duration = course.Duration;
+            duration = course.Duration.ToString();
 
             workDays = course.WorkDays;
             startDate = course.StartDate;
             isOnline = course.IsOnline;
             currentlyEnrolled = course.CurrentlyEnrolled;
-            maxEnrolledStudents = course.MaxEnrolledStudents;
+            maxEnrolledStudents = course.MaxEnrolledStudents.ToString();
 
             examTerms = course.ExamTerms;
         }

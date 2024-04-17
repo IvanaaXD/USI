@@ -139,7 +139,7 @@ namespace LangLang.View.Student
                 {
                     foreach (Course studentCourse in studentsAvailableCourses)
                     {
-                        if (studentCourse.CourseID == course.CourseID && !finalCourses.Contains(course))
+                        if (studentCourse.Id == course.Id && !finalCourses.Contains(course))
                         {
                             finalCourses.Add(course);
                         }

@@ -11,7 +11,7 @@ namespace LangLang.Model
 {
     public class Course : ISerializable
     {
-        private int courseID;
+        private int id;
         private Language language;
         private LanguageLevel languageLevel;
         private int duration;
@@ -22,10 +22,10 @@ namespace LangLang.Model
         private int maxEnrolledStudents;
         private List<int> examTerms;
 
-        public int CourseID
+        public int Id
         {
-            get { return courseID; }
-            set { courseID = value; }
+            get { return id; }
+            set { id = value; }
         }
 
         public Language Language
@@ -83,9 +83,9 @@ namespace LangLang.Model
         public Course()
         {
         }
-        public Course(int courseID, Language language, LanguageLevel languageLevel, int duration, List<DayOfWeek> workDays, DateTime startDate, bool isOnline, int currentlyEnrolled, int maxEnrolledStudents, List<int> examTerms)
+        public Course(int id, Language language, LanguageLevel languageLevel, int duration, List<DayOfWeek> workDays, DateTime startDate, bool isOnline, int currentlyEnrolled, int maxEnrolledStudents, List<int> examTerms)
         {
-            this.courseID = courseID;
+            this.id = id;
             this.language = language;
             this.languageLevel = languageLevel;
             this.duration = duration;
@@ -105,7 +105,7 @@ namespace LangLang.Model
 
             string[] csvValues =
             {
-                CourseID.ToString(),
+                Id.ToString(),
                 Language.ToString(),
                 Level.ToString(),
                 Duration.ToString(),
@@ -122,7 +122,7 @@ namespace LangLang.Model
 
         public void FromCSV(string[] values)
         {
-            CourseID = int.Parse(values[0]);
+            Id = int.Parse(values[0]);
             Language = (Language)Enum.Parse(typeof(Language), values[1]);
             Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), values[2]);
             Duration = int.Parse(values[3]);

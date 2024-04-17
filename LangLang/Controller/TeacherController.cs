@@ -12,7 +12,7 @@ namespace LangLang.Controller
 {
     public class TeacherController
     {
-        private readonly TeacherDAO _teachers; // _teachers
+        private readonly TeacherDAO _teachers;
 
         public TeacherController()
         {
@@ -168,7 +168,7 @@ namespace LangLang.Controller
                     }
                     continue;
                 }
-                if (item.CourseID == course.CourseID)
+                if (item.CourseID == course.Id)
                 {
                     itemsToRemove++;
                 }
