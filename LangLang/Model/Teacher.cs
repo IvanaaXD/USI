@@ -60,10 +60,14 @@ namespace LangLang.Model
         {
             string languagesCsv = string.Join(",", languages);
             string levelOfLanguagesCsv = string.Join(",", levelOfLanguages);
-            string coursesIdCsv = string.Join(",", coursesId);
-
             string startedWorkString = startedWork.Date.ToString("yyyy-MM-dd");
             string dateOfBirthString = dateOfBirth.Date.ToString("yyyy-MM-dd");
+
+            string coursesIdCsv = "";
+            if (coursesId != null)
+            {
+                coursesIdCsv = string.Join(",", coursesId);
+            }
 
             return new string[] {
                 Id.ToString(),
@@ -111,16 +115,13 @@ namespace LangLang.Model
             startedWork = DateTime.ParseExact(values[11], "yyyy-MM-dd", null);
             averageRating = int.Parse(values[12]);
 
-            coursesId = new List<int>();
-            if (values.Length > 13)
+            if (!string.IsNullOrEmpty(values[13]))
             {
-                foreach (string courseId in values[13].Split(','))
-                {
-                    if (int.TryParse(courseId, out int id))
-                    {
-                        coursesId.Add(id);
-                    }
-                }
+                coursesId = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
+            }
+            else
+            {
+                coursesId = new List<int>();
             }
         }
     }

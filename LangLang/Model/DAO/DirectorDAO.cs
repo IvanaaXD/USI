@@ -67,6 +67,7 @@ namespace LangLang.Model.DAO
             _storage.Save(_teachers);
             NotifyObservers();
         }
+
         public Teacher AddTeacher(Teacher teacher)
         {
             teacher.Id = GenerateId();
@@ -93,6 +94,7 @@ namespace LangLang.Model.DAO
             oldTeacher.LevelOfLanguages = teacher.LevelOfLanguages;
             oldTeacher.StartedWork = teacher.StartedWork;
             oldTeacher.AverageRating = teacher.AverageRating;
+            oldTeacher.CoursesId = teacher.CoursesId;
 
             _storage.Save(_teachers);
             NotifyObservers();

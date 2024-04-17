@@ -1,16 +1,11 @@
-﻿using LangLang.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
-using LangLang.View;
 using LangLang.Observer;
 using LangLang.DTO;
 using LangLang.Controller;
 using LangLang.Model.Enums;
-using System.Windows.Documents;
-using LangLang.Model.DAO;
 
 namespace LangLang.View.Director
 {
@@ -31,7 +26,6 @@ namespace LangLang.View.Director
         public DirectorController directorController { get; set; }
 
         private bool isSearchButtonClicked = false;
-
 
         public TeachersTable()
         {
@@ -93,9 +87,8 @@ namespace LangLang.View.Director
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            RegistrationForm regForm = new RegistrationForm(directorController);
-
-            regForm.Show();
+            CreateTeacherFrom createTeacherFrom = new CreateTeacherFrom(directorController);
+            createTeacherFrom.Show();
         }
 
         private void Update_Click(object sender, RoutedEventArgs e)
@@ -106,9 +99,9 @@ namespace LangLang.View.Director
             }
             else
             {
-                ModifyDataForm modifyDataForm = new ModifyDataForm(SelectedTeacher.Id, directorController);
-                modifyDataForm.Show();
-                modifyDataForm.Activate();
+                UpdateTeacherForm updateTeacherForm = new UpdateTeacherForm(SelectedTeacher.Id, directorController);
+                updateTeacherForm.Show();
+                updateTeacherForm.Activate();
             }
         }
 
@@ -147,12 +140,12 @@ namespace LangLang.View.Director
         private List<Model.Teacher> GetFilteredTeachers()
         {
             Language selectedLanguage = Model.Enums.Language.NULL;
-            LanguageLevel selectedLevel = Model.Enums.LanguageLevel.NULL;
+            LanguageLevel selectedLevel = LanguageLevel.NULL;
             DateTime selectedStartDate = DateTime.MinValue;
 
             if (languageComboBox.SelectedItem != null)
             {
-                selectedLanguage = (Language)languageComboBox.SelectedItem; 
+                selectedLanguage = (Language)languageComboBox.SelectedItem;
             }
 
             if (levelComboBox.SelectedItem != null)
@@ -165,7 +158,7 @@ namespace LangLang.View.Director
                 selectedStartDate = (DateTime)startedWorkDatePicker.SelectedDate;
             }
 
-            List<Model.Teacher> finalTeachers= new List<Model.Teacher>();
+            List<Model.Teacher> finalTeachers = new List<Model.Teacher>();
 
             if (isSearchButtonClicked)
             {

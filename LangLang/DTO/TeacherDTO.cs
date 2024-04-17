@@ -28,6 +28,7 @@ namespace LangLang.DTO
         private List<Language> languages;
         private List<LanguageLevel> levelOfLanguages;
         private List<Gender> genderValues;
+        private List<int> coursesId;
 
         public List<string> LevelAndLanguages
         {
@@ -147,6 +148,12 @@ namespace LangLang.DTO
         {
             get { return levelOfLanguages; }
             set { SetProperty(ref levelOfLanguages, value); }
+        }
+
+        public List<int> CoursesId
+        {
+            get { return coursesId; }
+            set { SetProperty(ref coursesId, value); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -292,7 +299,8 @@ namespace LangLang.DTO
                 Languages = languages,
                 LevelOfLanguages = levelOfLanguages,
                 StartedWork = startedWork,
-                AverageRating = averageRating
+                AverageRating = averageRating,
+                CoursesId = coursesId
             };
         }
 
@@ -315,6 +323,7 @@ namespace LangLang.DTO
 
             languages = teacher.Languages;
             levelOfLanguages = teacher.LevelOfLanguages;
+            coursesId = teacher.CoursesId;
 
             /*foreach (string languageLevel in LevelAndLanguages)
             {
@@ -333,6 +342,5 @@ namespace LangLang.DTO
                 }
             }*/
         }
-
     }
 }

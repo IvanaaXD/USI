@@ -1,9 +1,6 @@
 ﻿using LangLang.Observer;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LangLang.Model.DAO;
 using LangLang.Model;
 using LangLang.Model.Enums;
@@ -12,68 +9,67 @@ namespace LangLang.Controller
 {
     public class DirectorController
     {
-        private readonly DirectorDAO _directorDao;
+        private readonly DirectorDAO _directors;
 
         public DirectorController()
         {
-            _directorDao = new DirectorDAO();
+            _directors = new DirectorDAO();
         }
 
         public Director GetDirector()
         {
-            return _directorDao.GetDirector();
+            return _directors.GetDirector();
         }
 
         public Teacher GetTeacherById(int teacherId)
         {
-            return _directorDao.GetTeacherById(teacherId);
+            return _directors.GetTeacherById(teacherId);
         }
 
         public List<Teacher> GetAllTeachers()
         {
-            return _directorDao.GetAllTeachers();
+            return _directors.GetAllTeachers();
         }
 
         public bool IsEmailUnique(string email)
         {
-            return _directorDao.IsEmailUnique(email);
+            return _directors.IsEmailUnique(email);
         }
 
         public void Add(Teacher teacher)
         {
-            _directorDao.AddTeacher(teacher);
+            _directors.AddTeacher(teacher);
         }
 
         public void Delete(int teacherId)
         {
-            _directorDao.RemoveTeacher(teacherId);
+            _directors.RemoveTeacher(teacherId);
         }
 
         public void AddCourseId(int courseId, int teacherId)
         {
-            _directorDao.AddCourseId(courseId, teacherId);
+            _directors.AddCourseId(courseId, teacherId);
         }
 
         public List<Course> GetAvailableCourses(int teacherId)
         {
-            return _directorDao.GetAvailableCourses(teacherId);
+            return _directors.GetAvailableCourses(teacherId);
         }
 
         public void Update(Teacher teacher)
         {
-            _directorDao.UpdateTeacher(teacher);
+            _directors.UpdateTeacher(teacher);
 
         }
 
         public void Subscribe(IObserver observer)
         {
-            _directorDao.Subscribe(observer);
+            _directors.Subscribe(observer);
         }
 
         public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel level, DateTime startedWork)
         {
-            return _directorDao.FindTeachersByCriteria(language, level, startedWork);
+            return _directors.FindTeachersByCriteria(language, level, startedWork);
         }
     }
 }
-
