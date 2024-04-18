@@ -4,8 +4,6 @@ using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LangLang.Model.Enums;
 
 namespace LangLang.Controller
@@ -18,7 +16,7 @@ namespace LangLang.Controller
         {
             _teachers = new TeacherDAO();
         }
-        public Course GetCourseById(int courseID)
+        public Course? GetCourseById(int courseID)
         {
             return _teachers.GetCourseById(courseID);
         }
@@ -33,6 +31,10 @@ namespace LangLang.Controller
         public List<ExamTerm> GetAllExamTerms()
         {
             return _teachers.GetAllExamTerms();
+        }
+        public List<Course> GetAvailableCourses(Teacher teacher)
+        {
+            return _teachers.GetAvailableCourses(teacher);
         }
         public Course AddCourse(Course course)
         {
@@ -168,7 +170,7 @@ namespace LangLang.Controller
                     }
                     continue;
                 }
-                if (item.CourseID == course.Id)
+                if (item.Id == course.Id)
                 {
                     itemsToRemove++;
                 }
