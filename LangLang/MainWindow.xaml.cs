@@ -31,35 +31,50 @@ namespace LangLang
     /// </summary>
     public partial class MainWindow : Window, IObserver
     {
-        public ObservableCollection<TeacherDTO> Teachers { get; set; }
         public ObservableCollection<StudentDTO> Students { get; set; }
+        public ObservableCollection<TeacherDTO> Teachers { get; set; }
+        public ObservableCollection<ExamTermDTO> ExamTerms { get; set; }
+        public ObservableCollection<CourseDTO> Courses { get; set; }
         public TeacherDTO SelectedTeacher { get; set; }
         public StudentDTO SelectedStuent { get; set; }
         private StudentsController studentController { get; set; }
+        private TeacherController teacherController { get; set; }
         private DirectorController directorController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            Teachers = new ObservableCollection<TeacherDTO>();
             Students = new ObservableCollection<StudentDTO>();
-            directorController = new DirectorController();
+            Teachers = new ObservableCollection<TeacherDTO>();
+            ExamTerms = new ObservableCollection<ExamTermDTO>();
+            Courses = new ObservableCollection<CourseDTO>();
             studentController = new StudentsController();
-            directorController.Subscribe(this);
+            teacherController = new TeacherController();
+            directorController = new DirectorController();
             studentController.Subscribe(this);
+            teacherController.Subscribe(this);
+            directorController.Subscribe(this);
             Update();
         }
 
         public void Update()
         {
+            Students.Clear();
+            foreach (Student student in studentController.GetAllStudents())
+                Students.Add(new StudentDTO(student));
+
             Teachers.Clear();
             foreach (Teacher teacher in directorController.GetAllTeachers())
                 Teachers.Add(new TeacherDTO(teacher));
 
-            Students.Clear();
-            foreach (Student student in studentController.GetAllStudents())
-                Students.Add(new StudentDTO(student));
+            ExamTerms.Clear();
+            foreach (ExamTerm examTerm in teacherController.GetAllExamTerms())
+                ExamTerms.Add(new ExamTermDTO(examTerm));
+
+            Courses.Clear();
+            foreach (Course course in teacherController.GetAllCourses())
+                Courses.Add(new CourseDTO(course));
 
         }
 

@@ -16,15 +16,15 @@ namespace LangLang.Model.DAO
 
         private readonly List<Teacher> _teachers;
         private readonly List<Director> _director;
-        private readonly Storage<Teacher> _storage;
+        private readonly Storage<Teacher> _storageTeacher;
         private readonly Storage<Director> _storageDirector;
 
         private TeacherDAO teacherDAO;
 
         public DirectorDAO() {
-            _storage = new Storage<Teacher>("teachers.csv");
+            _storageTeacher = new Storage<Teacher>("teachers.csv");
             _storageDirector = new Storage<Director>("director.csv");
-            _teachers = _storage.Load();
+            _teachers = _storageTeacher.Load();
             _director = _storageDirector.Load();
             teacherDAO = new TeacherDAO();
         }
@@ -64,7 +64,7 @@ namespace LangLang.Model.DAO
         {
             Teacher t = GetTeacherById(teacherId);
             t.CoursesId.Add(courseId);
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
         }
 
@@ -72,7 +72,7 @@ namespace LangLang.Model.DAO
         {
             teacher.Id = GenerateId();
             _teachers.Add(teacher);
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return teacher;
         }
@@ -96,7 +96,7 @@ namespace LangLang.Model.DAO
             oldTeacher.AverageRating = teacher.AverageRating;
             oldTeacher.CoursesId = teacher.CoursesId;
 
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return oldTeacher;
         }
@@ -111,7 +111,7 @@ namespace LangLang.Model.DAO
             }
 
             _teachers.Remove(teacher);
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return teacher;
         }
