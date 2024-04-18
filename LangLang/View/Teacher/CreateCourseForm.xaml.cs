@@ -6,6 +6,7 @@ using LangLang.Controller;
 using LangLang.DTO;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 
 namespace LangLang.View.Teacher
 {
@@ -130,8 +131,9 @@ namespace LangLang.View.Teacher
 
             if (Course.IsValid)
             {
-                LangLang.Model.Course course1 = teacherController.AddCourse(Course.ToCourse());
-                directorController.AddCourseId(course1.Id, teacherId);
+                int courseId = teacherController.GetAllCourses().Last().Id;
+                directorController.AddCourseId(courseId, teacherId);
+                teacherController.AddCourse(Course.ToCourse());
                 Close();
             }
             else

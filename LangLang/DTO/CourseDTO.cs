@@ -146,7 +146,6 @@ namespace LangLang.DTO
         public string Error => null;
 
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
-        private Regex _DurationRegex = new Regex(@"\b(1?[1-9]|20)\b");
         public string this[string columnName]
         {
             get
@@ -154,8 +153,13 @@ namespace LangLang.DTO
                 switch (columnName)
                 {
                     case "Duration":
-                        if (Duration == null || !_DurationRegex.IsMatch(Duration))
-                            return "Duration must be > 1 and < 50 weeks";
+                        if (Duration == null)
+                            return "Course duration must be >=0";
+                        if (int.Parse(Duration) < 0)
+                            return "Course duration must be >= 0";
+                        if (int.Parse(Duration) > 20)
+                            return "Course duration must be <= 20";
+                        break;
                         break;
                     case "StartDate":
                         if (StartDate < DateTime.Today)
@@ -171,11 +175,11 @@ namespace LangLang.DTO
                         break;
                     case "MaxEnrolledStudents":
                         if (MaxEnrolledStudents == null)
-                            return "Max entolled students must be >=0";
+                            return "Max enrolled students must be >=0";
                         if (int.Parse(MaxEnrolledStudents) < 0)
                             return "Max enrolled students must be >= 0";
                         if (int.Parse(MaxEnrolledStudents) > 150)
-                            return "Max enrolled students must be <= 150s";
+                            return "Max enrolled students must be <= 150";
                         break;
                     case "WorkDays":
                         if (WorkDays == null || !WorkDays.Any())
@@ -256,7 +260,6 @@ namespace LangLang.DTO
                 ExamTerms = examTerms
             };
         }
-
 
         public CourseDTO()
         {

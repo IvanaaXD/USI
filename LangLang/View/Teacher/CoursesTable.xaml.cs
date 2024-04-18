@@ -31,19 +31,17 @@ namespace LangLang.View.Teacher
         public int teacherId { get; set; }
         private bool isSearchButtonClicked = false;
 
-        public CoursesTable(int teacherId, DirectorController directorController)
+        public CoursesTable(int teacherId, TeacherController teacherController, DirectorController directorController)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
             this.directorController = directorController;
-            teacherController = new TeacherController();
+            this.teacherController = teacherController;
             this.teacherId = teacherId;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
             DataContext = this;
-
-            TableViewModel.Courses = new ObservableCollection<CourseDTO>(teacherController.GetAllCourses().Select(course => new CourseDTO(teacherController, course)));
 
             teacherController.Subscribe(this);
             Update();
@@ -185,8 +183,10 @@ namespace LangLang.View.Teacher
                 }
             }
 
-            List<Course> availableCourses = directorController.GetAvailableCourses(teacherId);
-           
+            LangLang.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+
+            List<Course> availableCourses = teacherController.GetAvailableCourses(teacher);
+
             return GetFinalDisplayCourses(availableCourses, selectedLanguage,selectedLevel,selectedStartDate,selectedDuration);
         }
 

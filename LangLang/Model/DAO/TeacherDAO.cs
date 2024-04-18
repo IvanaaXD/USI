@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -134,6 +132,24 @@ namespace LangLang.Model.DAO
         {
             return _examTerms;
         }
+
+        public List<Course> GetAvailableCourses(Teacher teacher)
+        {
+            List<Course> allCourses = GetAllCourses();
+            List<int> allTeacherCourses = teacher.CoursesId;
+
+            List<Course> availableCourses = new List<Course>();
+
+            foreach(Course course in allCourses)
+            {
+                if (allTeacherCourses.Contains(course.Id))
+                {
+                    availableCourses.Add(course);
+                }
+            }
+            return availableCourses;
+        }
+
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
             var filteredCourses = _courses.Where(course =>
