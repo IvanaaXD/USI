@@ -27,33 +27,45 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Email:" 
-                   Grid.Row="0"
-                   Margin="0,15"
-                   HorizontalAlignment="Left"/>
+                           Grid.Row="0"
+                           Margin="0,15"
+                           HorizontalAlignment="Left"/>
 
                 <TextBox  
-                  x:Name="Email"
-                  Grid.Column="1"
-                  Grid.Row="1"
-                  Padding="0,5"
-                  Width="255"
-                  BorderThickness="0,0,0,1"
-                  HorizontalAlignment="Left"
-                  Text="Enter a email"
-                  Opacity="0.5"/>
+                    x:Name="Email"
+                    Grid.Row="1"
+                    Padding="0,5"
+                    Width="255"
+                    BorderThickness="0,0,0,1"
+                    HorizontalAlignment="Left"
+                    Background="Transparent"
+                    GotFocus="EmailTextBox_GotFocus"
+                    LostFocus="EmailTextBox_LostFocus"/>
 
-                <TextBlock Text="Password" 
-                   Grid.Row="2"
-                   Margin="0,15"
-                   HorizontalAlignment="Left"/>
+                <TextBlock Text="Password:" 
+                           Grid.Row="2"
+                           Margin="0,15"
+                           HorizontalAlignment="Left"/> 
                 <PasswordBox 
                     x:Name="Password"
                     Grid.Row="3"
-                    Password="sifra"
                     Padding="0,5"                           
                     Width="255"
                     BorderThickness="0,0,0,1"
-                    HorizontalAlignment="Left"/>
+                    HorizontalAlignment="Left"
+                    PasswordChanged="PasswordBox_PasswordChanged"/>
+
+                <!-- Placeholder TextBlocks -->
+                <TextBlock Text="Enter an email" 
+                           x:Name="EmailPlaceholder"
+                           Grid.Row="1"
+                           Foreground="Gray"
+                           Margin="5,0"/>
+                <TextBlock Text="Enter a password" 
+                           x:Name="PasswordPlaceholder"
+                           Grid.Row="3"
+                           Foreground="Gray"
+                           Margin="5,0"/>
             </Grid>
 
             <Button x:Name="btnLogin"

@@ -29,54 +29,33 @@ namespace LangLang
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IObserver
+    public partial class MainWindow : Window
     {
-        public ObservableCollection<StudentDTO> Students { get; set; }
-        public ObservableCollection<TeacherDTO> Teachers { get; set; }
-        public ObservableCollection<ExamTermDTO> ExamTerms { get; set; }
-        public ObservableCollection<CourseDTO> Courses { get; set; }
-        public TeacherDTO SelectedTeacher { get; set; }
-        public StudentDTO SelectedStuent { get; set; }
+
         private StudentsController studentController { get; set; }
-        private TeacherController teacherController { get; set; }
         private DirectorController directorController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
-            Students = new ObservableCollection<StudentDTO>();
-            Teachers = new ObservableCollection<TeacherDTO>();
-            ExamTerms = new ObservableCollection<ExamTermDTO>();
-            Courses = new ObservableCollection<CourseDTO>();
-            studentController = new StudentsController();
-            teacherController = new TeacherController();
             directorController = new DirectorController();
-            studentController.Subscribe(this);
-            teacherController.Subscribe(this);
-            directorController.Subscribe(this);
-            Update();
+            studentController = new StudentsController();
+
+            // Postavljanje placeholder teksta i događaja
+            EmailPlaceholder.Visibility = Visibility.Visible;
+            PasswordPlaceholder.Visibility = Visibility.Visible;
+
+            Email.GotFocus += EmailTextBox_GotFocus;
+            Password.GotFocus += PasswordBox_GotFocus;
+
+            Email.LostFocus += EmailTextBox_LostFocus;
+            Password.LostFocus += PasswordBox_LostFocus;
+
+            // Omogućuje klik na mjesto gdje je placeholder kako bi se fokusiralo TextBox ili PasswordBox
+            EmailPlaceholder.MouseDown += Placeholder_MouseDown;
+            PasswordPlaceholder.MouseDown += Placeholder_MouseDown;
         }
 
-        public void Update()
-        {
-            Students.Clear();
-            foreach (Student student in studentController.GetAllStudents())
-                Students.Add(new StudentDTO(student));
-
-            Teachers.Clear();
-            foreach (Teacher teacher in directorController.GetAllTeachers())
-                Teachers.Add(new TeacherDTO(teacher));
-
-            ExamTerms.Clear();
-            foreach (ExamTerm examTerm in teacherController.GetAllExamTerms())
-                ExamTerms.Add(new ExamTermDTO(examTerm));
-
-            Courses.Clear();
-            foreach (Course course in teacherController.GetAllCourses())
-                Courses.Add(new CourseDTO(course));
-
-        }
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
@@ -112,15 +91,12 @@ namespace LangLang
                 TeachersTable table = new TeachersTable();
                 table.Show();
                 this.Close();
-
                 return;
             }
             
             
              MessageBox.Show("User does not exist.");
-
-
-            } 
+        } 
 
    
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
@@ -128,6 +104,55 @@ namespace LangLang
             RegistrationForm registrationForm = new RegistrationForm(studentController);
             registrationForm.Show();
         }
+
+        private void EmailTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            EmailPlaceholder.Visibility = Visibility.Collapsed;
+        }
+
+        private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            PasswordPlaceholder.Visibility = Visibility.Collapsed;
+        }
+
+        private void EmailTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Email.Text))
+            {
+                EmailPlaceholder.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Password.Password))
+            {
+                PasswordPlaceholder.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Placeholder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender == EmailPlaceholder)
+            {
+                EmailPlaceholder.Visibility = Visibility.Collapsed;
+                Email.Focus();
+            }
+            else if (sender == PasswordPlaceholder)
+            {
+                PasswordPlaceholder.Visibility = Visibility.Collapsed;
+                Password.Focus();
+            }
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (PasswordPlaceholder != null)
+            {
+                PasswordPlaceholder.Visibility = string.IsNullOrEmpty(Password.Password) ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
     }
 }
 
