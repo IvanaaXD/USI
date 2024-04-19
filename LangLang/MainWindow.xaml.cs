@@ -6,6 +6,8 @@ using LangLang.Controller;
 using LangLang.Model;
 using LangLang.View.Teacher;
 using RegistrationForm = LangLang.View.Student.RegistrationForm;
+using LangLang.DTO;
+using System.Collections.ObjectModel;
 
 namespace LangLang
 {
@@ -14,8 +16,14 @@ namespace LangLang
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        public ObservableCollection<StudentDTO> Students { get; set; }
+        public ObservableCollection<TeacherDTO> Teachers { get; set; }
+        public ObservableCollection<ExamTermDTO> ExamTerms { get; set; }
+        public ObservableCollection<CourseDTO> Courses { get; set; }
+        public TeacherDTO SelectedTeacher { get; set; }
+        public StudentDTO SelectedStudent { get; set; }
         private StudentsController studentController { get; set; }
+        private TeacherController teacherController { get; set; }
         private DirectorController directorController { get; set; }
 
         public MainWindow()
@@ -39,8 +47,7 @@ namespace LangLang
             PasswordPlaceholder.MouseDown += Placeholder_MouseDown;
         }
 
-
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private void Login_Click(object sender, RoutedEventArgs e)
         {
             string email = Email.Text; 
             string password = Password.Password; 
@@ -49,7 +56,7 @@ namespace LangLang
             {
                 if (teacher.Email == email && teacher.Password == password)
                 {
-                    CoursesTable coursesTable = new CoursesTable(teacher.Id, directorController);
+                    CoursesTable coursesTable = new CoursesTable(teacher.Id, teacherController, directorController);
                     coursesTable.Show();
                     this.Close();
                     return;
@@ -81,8 +88,7 @@ namespace LangLang
              MessageBox.Show("User does not exist.");
         } 
 
-   
-        private void btnRegistration_Click(object sender, RoutedEventArgs e)
+        private void Registration_Click(object sender, RoutedEventArgs e)
         {
             RegistrationForm registrationForm = new RegistrationForm(studentController);
             registrationForm.Show();

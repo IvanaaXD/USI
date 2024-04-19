@@ -75,7 +75,7 @@
                     Margin="0,25,0,5"
                     Height="35"
                     Width="250"
-                    Click="btnLogin_Click">
+                    Click="Login_Click">
             </Button>
 
             <Button x:Name="btnRegistration"
@@ -86,7 +86,7 @@
                     Background="#e6e8e6"
                     Height="35"
                     Width="250"
-                    Click="btnRegistration_Click">
+                    Click="Registration_Click">
 
             </Button>
         </StackPanel>
