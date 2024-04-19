@@ -1,11 +1,11 @@
-﻿<Window x:Class="LangLang.View.Student.AvailableCoursesForm"
+﻿<Window x:Class="LangLang.View.Student.AvailableCoursesTable"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:LangLang.View.Converters"
         mc:Ignorable="d"
-        Title="AvailableCoursesForm" Height="450" Width="841">
+        Title="AvailableCoursesTable" Height="450" Width="841">
     <Window.Resources>
         <converters:DayOfWeekToStringConverter x:Key="DayOfWeekToStringConverter"/>
     </Window.Resources>

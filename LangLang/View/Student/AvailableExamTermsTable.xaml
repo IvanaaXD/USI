@@ -1,11 +1,11 @@
-﻿<Window x:Class="LangLang.View.Student.AvailableExamTermsForm"
+﻿<Window x:Class="LangLang.View.Student.AvailableExamTermsTable"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
-        Title="AvailableExamTermsForm" Height="450" Width="613">
+        Title="AvailableExamTermsTable" Height="450" Width="613">
 
     <Grid>
         <Grid.RowDefinitions>

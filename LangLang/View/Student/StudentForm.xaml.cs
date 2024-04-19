@@ -20,13 +20,13 @@ using LangLang.View.Converters;
 namespace LangLang.View.Student
 {
     /// <summary>
-    /// Interaction logic for WelcomePage.xaml
+    /// Interaction logic for StudentForm.xaml
     /// </summary>
-    public partial class WelcomePage : Window
+    public partial class StudentForm : Window
     {
         int studentId;
         StudentsController studentController;
-        public WelcomePage(int studentId, StudentsController studentController)
+        public StudentForm(int studentId, StudentsController studentController)
         {
             InitializeComponent();
             this.studentId = studentId;
@@ -35,16 +35,16 @@ namespace LangLang.View.Student
 
         private void AvailableCourses_Click(object sender, RoutedEventArgs e)
         {
-            AvailableCoursesForm availableCoursesForm = new AvailableCoursesForm(studentId);
-            availableCoursesForm.Show();
+            AvailableCoursesTable availableCoursesTable = new AvailableCoursesTable(studentId);
+            availableCoursesTable.Show();
         }
         private void AvailableExamTerms_Click(object sender, RoutedEventArgs e)
         {
-            AvailableExamTermsForm availableExamTermsForm = new AvailableExamTermsForm(studentId);
+            AvailableExamTermsTable availableExamTermsForm = new AvailableExamTermsTable(studentId);
             availableExamTermsForm.Show();
         }
 
-        private void ModifyAccount_Click(object sender, RoutedEventArgs e)
+        private void UpdateAccount_Click(object sender, RoutedEventArgs e)
         {
             LangLang.Model.Student student = studentController.GetStudentById(studentId);
             if (student.ActiveCourseId != -1 && student.RegisteredExamsIds != null)
@@ -53,9 +53,9 @@ namespace LangLang.View.Student
             }
             else
             {
-                ModifyDataForm modifyDataForm = new ModifyDataForm(studentId, studentController);
-                modifyDataForm.Show();
-                modifyDataForm.Activate();
+                UpdateForm updateDataForm = new UpdateForm(studentId, studentController);
+                updateDataForm.Show();
+                updateDataForm.Activate();
             }
         }
         private void DeleteAccount_Click(object sender, RoutedEventArgs e)
@@ -65,7 +65,7 @@ namespace LangLang.View.Student
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
         }
-        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        private void Logout_Click(object sender, RoutedEventArgs e)
         {
             Close();
             MainWindow mainWindow = new MainWindow();

@@ -21,9 +21,9 @@ using System.Windows.Shapes;
 namespace LangLang.View.Student
 {
     /// <summary>
-    /// Interaction logic for AvailableExamTermsForm.xaml
+    /// Interaction logic for AvailableExamTermsTable.xaml
     /// </summary>
-    public partial class AvailableExamTermsForm : Window, IObserver
+    public partial class AvailableExamTermsTable : Window, IObserver
     {
         public class ViewModel
         {
@@ -45,7 +45,7 @@ namespace LangLang.View.Student
         private bool isSearchButtonClicked = false;
 
 
-        public AvailableExamTermsForm(int studentId)
+        public AvailableExamTermsTable(int studentId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();

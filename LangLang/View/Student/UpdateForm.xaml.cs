@@ -18,9 +18,9 @@ using System.Windows.Shapes;
 namespace LangLang.View.Student
 {
     /// <summary>
-    /// Interaction logic for ModifyDataForm.xaml
+    /// Interaction logic for UpdateForm.xaml
     /// </summary>
-    public partial class ModifyDataForm : Window
+    public partial class UpdateForm : Window
     {
 
         public StudentDTO Student { get; set; }
@@ -28,7 +28,7 @@ namespace LangLang.View.Student
         private readonly StudentsController studentsController;
         private string studentEmail;
 
-        public ModifyDataForm(int studentId, StudentsController studentsController)
+        public UpdateForm(int studentId, StudentsController studentsController)
         {
             InitializeComponent();
             this.studentsController = studentsController;

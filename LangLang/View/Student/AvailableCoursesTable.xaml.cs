@@ -22,9 +22,9 @@ using LangLang.Model.Enums;
 namespace LangLang.View.Student
 {
     /// <summary>
-    /// Interaction logic for AvailableCoursesForm.xaml
+    /// Interaction logic for AvailableCoursesTable.xaml
     /// </summary>
-    public partial class AvailableCoursesForm : Window, IObserver
+    public partial class AvailableCoursesTable : Window, IObserver
     {
         public class ViewModel
         {
@@ -46,7 +46,7 @@ namespace LangLang.View.Student
         private bool isSearchButtonClicked = false;
 
 
-        public AvailableCoursesForm(int studentId)
+        public AvailableCoursesTable(int studentId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
