@@ -59,8 +59,8 @@ namespace LangLang
 
             if (director.Email == email && director.Password == password)
             {
-                TeachersTable table = new TeachersTable();
-                table.Show();
+                DirectorPage directorPage = new DirectorPage(director.Id, directorController);
+                directorPage.Show();
                 this.Close();
                 return;
             }
