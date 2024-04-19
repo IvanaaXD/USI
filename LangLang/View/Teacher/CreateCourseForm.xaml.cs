@@ -132,8 +132,11 @@ namespace LangLang.View.Teacher
             if (Course.IsValid)
             {
                 int courseId = teacherController.GetAllCourses().Last().Id;
-                directorController.AddCourseId(courseId, teacherId);
+                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                teacher.CoursesId.Add(courseId);
+                directorController.Update(teacher);
                 teacherController.AddCourse(Course.ToCourse());
+
                 Close();
             }
             else
