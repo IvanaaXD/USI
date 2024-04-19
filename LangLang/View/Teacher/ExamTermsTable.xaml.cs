@@ -102,7 +102,7 @@ namespace LangLang.View.Teacher
 
         private void CourseTable_Click(object sender, RoutedEventArgs e)
         {
-            CoursesTable courseT = new CoursesTable(teacherId, directorController);
+            CoursesTable courseT = new CoursesTable(teacherId, teacherController, directorController);
             courseT.Show();
         }
 
