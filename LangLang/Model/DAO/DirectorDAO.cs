@@ -13,7 +13,6 @@ namespace LangLang.Model.DAO
 {
     public class DirectorDAO : Subject
     {
-
         private readonly List<Teacher> _teachers;
         private readonly List<Director> _director;
         private readonly Storage<Teacher> _storageTeacher;
@@ -58,14 +57,6 @@ namespace LangLang.Model.DAO
             }
 
             return availableCourses;
-        }
-
-        public void AddCourseId(int courseId, int teacherId)
-        {
-            Teacher t = GetTeacherById(teacherId);
-            t.CoursesId.Add(courseId);
-            _storageTeacher.Save(_teachers);
-            NotifyObservers();
         }
 
         public Teacher AddTeacher(Teacher teacher)
@@ -147,6 +138,5 @@ namespace LangLang.Model.DAO
 
             return filteredTeachers;
         }
-
     }
 }

@@ -85,7 +85,7 @@ namespace LangLang.View.Director
             }
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
+        private void Create_Click(object sender, RoutedEventArgs e)
         {
             CreateTeacherFrom createTeacherFrom = new CreateTeacherFrom(directorController);
             createTeacherFrom.Show();
@@ -158,11 +158,15 @@ namespace LangLang.View.Director
                 selectedStartDate = (DateTime)startedWorkDatePicker.SelectedDate;
             }
 
+            return GetDisplayTeachers(selectedLanguage, selectedLevel, selectedStartDate);
+        }
+
+        private List<Model.Teacher> GetDisplayTeachers(Language selectedLanguage, LanguageLevel selectedLevel, DateTime selectedStartDate)
+        {
             List<Model.Teacher> finalTeachers = new List<Model.Teacher>();
 
             if (isSearchButtonClicked)
             {
-
                 List<Model.Teacher> allFilteredTeachers = directorController.FindTeachersByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
 
                 foreach (Model.Teacher teacher in allFilteredTeachers)

@@ -46,11 +46,6 @@ namespace LangLang.Controller
             _directors.RemoveTeacher(teacherId);
         }
 
-        public void AddCourseId(int courseId, int teacherId)
-        {
-            _directors.AddCourseId(courseId, teacherId);
-        }
-
         public List<Course> GetAvailableCourses(int teacherId)
         {
             return _directors.GetAvailableCourses(teacherId);

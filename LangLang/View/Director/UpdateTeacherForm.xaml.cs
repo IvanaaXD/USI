@@ -40,6 +40,7 @@ namespace LangLang.View.Director
 
             genderComboBox.ItemsSource = Enum.GetValues(typeof(Gender));
             genderComboBox.SelectedItem = Teacher.Gender;
+            passwordBox.Password = Teacher.Password;
 
             languagesListBox.ItemsSource = Teacher.LevelAndLanguages;
 
@@ -53,8 +54,6 @@ namespace LangLang.View.Director
                     }
                 }
             }
-
-            passwordBox.Password = Teacher.Password;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -92,6 +91,5 @@ namespace LangLang.View.Director
         }
 
         private void LanguagesListBox_SelectionChanged(object sender, RoutedEventArgs e) { }
-
     }
 }
