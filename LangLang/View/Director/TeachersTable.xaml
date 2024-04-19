@@ -19,7 +19,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Search Grid -->
         <Grid Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -42,8 +41,6 @@
             <Button Grid.Row="1" Content="Search" Click="Search_Click" HorizontalAlignment="Right" Width="100" Margin="0,0,10,20" />
         </Grid>
 
-
-        <!-- DataGrid -->
         <DockPanel Grid.Row="1">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File">

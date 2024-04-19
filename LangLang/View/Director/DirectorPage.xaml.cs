@@ -1,5 +1,4 @@
 ﻿using LangLang.Controller;
-using System;
 using System.Windows;
 
 namespace LangLang.View.Director
@@ -9,26 +8,27 @@ namespace LangLang.View.Director
     /// </summary>
     public partial class DirectorPage : Window
     {
-        int directorId;
-        DirectorController directorController;
+        readonly int directorId;
+        readonly DirectorController directorController;
+
         public DirectorPage(int directorId, DirectorController directorController)
         {
-            InitializeComponents();
+            InitializeComponent();
             this.directorId = directorId;
             this.directorController = directorController;
         }
 
-        private void InitializeComponents()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void DeleteAccount_Click(object sender, RoutedEventArgs e)
+        private void Logout_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-            directorController.Delete(directorId);
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
+        }
+
+        private void TeachersTable_Click(object sender, RoutedEventArgs e)
+        {
+            TeachersTable teachersTable = new TeachersTable();
+            teachersTable.Show();
         }
     }
 }

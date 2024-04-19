@@ -57,7 +57,6 @@ namespace LangLang.DTO
                             }
                         }
                     }
-
                 }
                 return languageLevelNames;
             }
@@ -304,7 +303,6 @@ namespace LangLang.DTO
             };
         }
 
-
         public TeacherDTO() { }
 
         public TeacherDTO(Teacher teacher)
@@ -324,23 +322,6 @@ namespace LangLang.DTO
             languages = teacher.Languages;
             levelOfLanguages = teacher.LevelOfLanguages;
             coursesId = teacher.CoursesId;
-
-            /*foreach (string languageLevel in LevelAndLanguages)
-            {
-                string[] parts = languageLevel.Split(' '); 
-                if (parts.Length == 2)
-                {
-                    if (Enum.TryParse(parts[0], out Language language))
-                    {
-                        languages.Add(language);
-                    }
-
-                    if (Enum.TryParse(parts[1], out LanguageLevel level))
-                    {
-                        levelOfLanguages.Add(level);
-                    }
-                }
-            }*/
         }
     }
 }

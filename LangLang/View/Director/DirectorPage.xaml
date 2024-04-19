@@ -18,18 +18,24 @@
             <ColumnDefinition Width="200"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <DockPanel Grid.ColumnSpan="2" Panel.ZIndex="2" Height="auto">
 
-
+        <DockPanel Grid.ColumnSpan="2" Panel.ZIndex="3" Height="auto">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Account"></MenuItem>
+                <MenuItem Header="View">
+                    <MenuItem Header="Teachers table" Click="TeachersTable_Click"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Mail"></MenuItem>
+            </Menu>
         </DockPanel>
 
         <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0">
-            <Image Source="https://cdn-icons-png.flaticon.com/512/201/201818.png" Width="150"></Image>
+            <Image Source="https://cdn2.iconfinder.com/data/icons/avatars-2-7/128/37-512.png" Width="150" RenderTransformOrigin="0.52,0.499"></Image>
         </Border>
 
         <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Center"
                      FontSize="30">Welcome</TextBlock>
-        <Button x:Name="logoutBtn" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+        <Button x:Name="logoutBtn"  Click="Logout_Click" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
                  Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Log out</Button>
 
         <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -40,16 +46,14 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Number of courses attended:" VerticalAlignment="Center" FontSize="20"></TextBlock>
-            <TextBlock Grid.Row="1" Text="Number of passed exams:" VerticalAlignment="Center" FontSize="20"></TextBlock>
-            <TextBlock Grid.Row="2" Text="Number of penalty points:" VerticalAlignment="Center" FontSize="20"></TextBlock>
-
-            <TextBlock x:Name="completedCoursesBlock" Grid.Row="0" Grid.Column="1" FontSize="20">2</TextBlock>
-            <TextBlock x:Name="passedExamsBlock" Grid.Row="1" Grid.Column="1" FontSize="20">1</TextBlock>
-            <TextBlock x:Name="penaltyPoinsBlcok" Grid.Row="2" Grid.Column="1"  FontSize="20">0</TextBlock>
+            <TextBlock Grid.Row="0" Text="Director: " VerticalAlignment="Center" FontSize="20"></TextBlock>
+            <TextBlock Grid.Row="1" VerticalAlignment="Center" FontSize="20">
+                <Run Text="{Binding firstName}" />
+                <Run Text=" " />
+                <Run Text="{Binding lastName}" />
+            </TextBlock>
         </Grid>
     </Grid>
 </Window>
