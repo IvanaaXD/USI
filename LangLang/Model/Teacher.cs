@@ -89,7 +89,6 @@ namespace LangLang.Model
 
         public override void FromCSV(string[] values)
         {
-
             id = int.Parse(values[0]);
             firstName = values[1];
             lastName = values[2];

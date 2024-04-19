@@ -47,17 +47,17 @@
         <DockPanel Grid.Row="1">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File">
-                    <MenuItem Header="Add" Click="Add_Click"></MenuItem>
+                    <MenuItem Header="Create" Click="Create_Click"></MenuItem>
                     <MenuItem Header="Update" Click="Update_Click"></MenuItem>
                     <MenuItem Header="Delete" Click="Delete_Click"></MenuItem>
                 </MenuItem>
             </Menu>
 
             <TabControl>
-                <TabItem Header="Courses">
+                <TabItem Header="Teachers">
                     <DataGrid Height="350"
                               AutoGenerateColumns="False"
-                              x:Name="CoursesDataGrid"
+                              x:Name="TeachersDataGrid"
                               ItemsSource="{Binding TableViewModel.Teachers, UpdateSourceTrigger=PropertyChanged}"
                               SelectedItem="{Binding SelectedTeacher, UpdateSourceTrigger=PropertyChanged}"
                               SelectionMode="Single" IsReadOnly="True">
