@@ -16,7 +16,6 @@ namespace LangLang
     public partial class MainWindow : Window
     {
         private StudentsController studentController { get; set; }
-        private TeacherController teacherController { get; set; }
         private DirectorController directorController { get; set; }
 
         public MainWindow()
@@ -37,8 +36,8 @@ namespace LangLang
             {
                 if (teacher.Email == email && teacher.Password == password)
                 {
-                    CoursesTable coursesTable = new CoursesTable(teacher.Id, teacherController, directorController);
-                    coursesTable.Show();
+                    TeacherPage teacherPage = new TeacherPage(teacher.Id, directorController);
+                    teacherPage.Show();
                     this.Close();
                     return;
                 }
