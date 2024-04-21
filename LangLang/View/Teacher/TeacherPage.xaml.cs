@@ -9,11 +9,11 @@ namespace LangLang.View.Teacher
         int teacherId;
         DirectorController directorController;
         TeacherController teacherController;
-        public TeacherPage(int teacherId, TeacherController teacherController, DirectorController directorController)
+        public TeacherPage(int teacherId, DirectorController directorController)
         {
             InitializeComponent();
             this.teacherId = teacherId;
-            this.teacherController = teacherController;
+            this.teacherController = new();
             this.directorController = directorController;
         }
 
