@@ -25,7 +25,6 @@ namespace LangLang.View.Director
         readonly DirectorController directorController;
         public TeacherDTO SelectedTeacher { get; set; }
 
-
         public ViewModel TableViewModel { get; set; }
 
         private bool isSearchButtonClicked = false;

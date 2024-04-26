@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang"
         mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
         Title="MainWindow" Height="400" Width="344">
     <Border Width="300"
             Height="400"

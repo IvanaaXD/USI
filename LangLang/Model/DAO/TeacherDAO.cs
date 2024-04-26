@@ -214,6 +214,15 @@ namespace LangLang.Model.DAO
             ExamTerm examTerm = GetExamTermById(examTermId);
             --examTerm.CurrentlyAttending;
         }
+
+        public ExamTerm ConfirmExamTerm(int examTermId)
+        {
+            ExamTerm examTerm = GetExamTermById(examTermId);
+            examTerm.Confirmed = true;
+            _examTermsStorage.Save(_examTerms);
+            NotifyObservers();
+            return examTerm;
+        }
     }
 }
         

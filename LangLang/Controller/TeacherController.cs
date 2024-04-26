@@ -222,5 +222,10 @@ namespace LangLang.Controller
         {
             return _teachers.FindExamTermsByCriteria(language, level, examDate);
         }
+
+        public ExamTerm ConfirmExamTerm(int examTermId)
+        {
+            return _teachers.ConfirmExamTerm(examTermId);
+        }
     }
 }
