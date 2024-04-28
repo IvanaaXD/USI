@@ -1,20 +1,19 @@
-﻿using System;
+﻿using LangLang.Controller;
+using LangLang.DTO;
+using LangLang.Model.Enums;
+using LangLang.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-
-using LangLang.DTO;
-using LangLang.Controller;
-using LangLang.Model;
 using LangLang.Observer;
-using LangLang.Model.Enums;
 
 namespace LangLang.View.Student
 {
     /// <summary>
-    /// Interaction logic for AvailableCoursesTable.xaml
+    /// Interaction logic for CompletedCoursesTable.xaml
     /// </summary>
-    public partial class AvailableCoursesTable : Window, IObserver
+    public partial class CompletedCoursesTable : Window, IObserver
     {
         public class ViewModel
         {
@@ -36,7 +35,7 @@ namespace LangLang.View.Student
         private bool isSearchButtonClicked = false;
 
 
-        public AvailableCoursesTable(int studentId)
+        public CompletedCoursesTable(int studentId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
@@ -58,7 +57,7 @@ namespace LangLang.View.Student
             {
                 TableViewModel.Courses.Clear();
                 var courses = GetFilteredCourses();
-                
+
                 if (courses != null)
                 {
                     foreach (Course course in courses)
@@ -75,38 +74,20 @@ namespace LangLang.View.Student
             }
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
             Close();
         }
-        private void SignUpButton_Click(object sender, EventArgs e)
+        private void btnSingUp_Click(object sender, EventArgs e)
         {
-            if (SelectedCourse == null)
-            {
-                MessageBox.Show("Please choose a course to register!");
-            }
-            else
-            {
-                bool isRegisteredForCourse = studentsController.RegisterForCourse(studentId, SelectedCourse.Id);
-                if (isRegisteredForCourse)
-                {
-                    /* MessageBox.Show("You have sent a request to register for the course: " +
-                                     $"{SelectedCourse.Language} {SelectedCourse.Level}");*/
-                    MessageBox.Show("You have sent a request to register for the course: ");
-                    Update();
-                }
-                else
-                {
-                    MessageBox.Show("You are already taking a course.");
-                }
-            }
+            Close();
         }
-        private void SearchButton_Click(object sender, EventArgs e)
+        private void btnSearch_Click(object sender, EventArgs e)
         {
             Update();
             isSearchButtonClicked = true;
         }
-        private void ResetButton_Click(object sender, EventArgs e)
+        private void btnReset_Click(object sender, EventArgs e)
         {
             isSearchButtonClicked = false;
             Update();
@@ -123,8 +104,8 @@ namespace LangLang.View.Student
         }
         private List<Course> GetFilteredCourses()
         {
-            Language? selectedLanguage = (Language?) languageComboBox.SelectedItem;
-            LanguageLevel? selectedLevel = (LanguageLevel?) levelComboBox.SelectedItem;
+            Language? selectedLanguage = (Language?)languageComboBox.SelectedItem;
+            LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
             DateTime? selectedStartDate = startDateDatePicker.SelectedDate;
             int selectedDuration = 0;
             if (!string.IsNullOrEmpty(durationTextBox.Text))
@@ -135,7 +116,7 @@ namespace LangLang.View.Student
                 }
             }
 
-            List<Course> studentsAvailableCourses = studentsController.GetAvailableCourses(studentId);
+            List<Course> studentsAvailableCourses = studentsController.GetCompletedCourses(studentId);
             List<Course> finalCourses = new List<Course>();
 
             if (isSearchButtonClicked)
