@@ -14,6 +14,7 @@ namespace LangLang.Model
         private DateTime examTime;
         private int maxStudents;
         private int currentlyAttending;
+        private bool confirmed;
 
         public int ExamID
         {
@@ -45,6 +46,12 @@ namespace LangLang.Model
             set { currentlyAttending = value; }
         }
 
+        public bool Confirmed
+        {
+            get { return confirmed; }
+            set { confirmed = value; }
+        }
+
         public ExamTerm()
         {
         }
@@ -56,11 +63,12 @@ namespace LangLang.Model
             this.examTime = examTime;
             this.maxStudents = maxStudents;
             this.currentlyAttending = currentlyAttending;
+            this.confirmed = false;
         }
 
         public override string ToString()
         {
-            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}, CurrentlyAttending:{currentlyAttending}";
+            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}, CurrentlyAttending:{currentlyAttending}, Confirmed:{confirmed}";
         }
 
         public string[] ToCSV()
@@ -72,7 +80,8 @@ namespace LangLang.Model
                 //examTime.ToString(),
                 examTime.ToString("yyyy-MM-dd HH:mm"),
                 maxStudents.ToString(),
-                currentlyAttending.ToString()
+                currentlyAttending.ToString(),
+                confirmed.ToString()
             };
             return csvValues;
         }
@@ -85,6 +94,7 @@ namespace LangLang.Model
             ExamTime = DateTime.ParseExact(values[2], "yyyy-MM-dd HH:mm", null);
             MaxStudents = int.Parse(values[3]);
             CurrentlyAttending = int.Parse(values[4]);
+            Confirmed = bool.Parse(values[5]);
         }
     }
 }
