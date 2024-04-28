@@ -17,12 +17,14 @@ namespace LangLang
     {
         private StudentsController studentController { get; set; }
         private DirectorController directorController { get; set; }
+        private MainController mainController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            directorController = new DirectorController();
-            studentController = new StudentsController();
+            mainController = new MainController();
+            directorController = mainController.GetDirectorController();
+            studentController = mainController.GetStudentController();
 
             SetPlaceholders();
         }
@@ -136,7 +138,6 @@ namespace LangLang
                 PasswordPlaceholder.Visibility = string.IsNullOrEmpty(Password.Password) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
-
     }
 }
 
