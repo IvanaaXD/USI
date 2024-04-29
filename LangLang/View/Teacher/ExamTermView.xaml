@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:LangLang.View.Converters"
         mc:Ignorable="d"
         WindowStartupLocation = "CenterScreen"
-        Title="WelcomePage" Height="450" Width="800">
+        Title="ExamTerm" Height="450" Width="800">
 
     <Window.Resources>
         <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
@@ -48,7 +48,53 @@
             </DockPanel>
         </TabItem>
 
+        <TabItem Header="Mail">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Window}}">
+                
+                <TabItem Header="Received"  Height="30">
 
+
+                    <DockPanel Height="auto">
+
+                        <Grid>
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
+                                <TabControl VerticalAlignment="Center" Grid.ColumnSpan="2">
+                                    <DataGrid Height="350"
+                                      AutoGenerateColumns="False"
+                                      x:Name="MailDataGrid"
+                                      ItemsSource="{Binding TableViewModel.Mail, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedItem="{Binding SelectedMail, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectionMode="Single" IsReadOnly="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="First name" Binding="{Binding FirstName}" />
+                                            <DataGridTextColumn Header="Last name" Binding="{Binding LastName}" />
+                                            <DataGridTextColumn Header="Gender" Binding="{Binding TyoeOfMessage}" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </TabControl>
+
+                            </Grid>
+
+                            <!-- StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+                                <Button Content="Create" Click="CreateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
+                                <Button Content="Update" Click="UpdateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
+                                <Button Content="Delete" Click="DeleteTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                            </StackPanel -->
+
+                        </Grid>
+                    </DockPanel>
+
+
+
+                </TabItem>
+
+                <TabItem Header="Sent"  Height="30">
+                    
+                </TabItem>
+                
+            </StackPanel>
+
+        </TabItem>
 
     </TabControl>
 </Window>

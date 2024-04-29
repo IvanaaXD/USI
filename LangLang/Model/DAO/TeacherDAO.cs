@@ -13,6 +13,8 @@ namespace LangLang.Model.DAO
         private readonly Storage<Course> _courseStorage;
         private readonly List<ExamTerm> _examTerms;
         private readonly Storage<ExamTerm> _examTermsStorage;
+        private readonly List<Mail> _mails;
+        private readonly Storage<Mail> _mailsStorage;
 
         public TeacherDAO()
         {
@@ -20,6 +22,8 @@ namespace LangLang.Model.DAO
             _courses = _courseStorage.Load();
             _examTermsStorage = new Storage<ExamTerm>("exam.csv");
             _examTerms = _examTermsStorage.Load();
+            _mailsStorage = new Storage<Mail>("mail.csv");
+            _mails = _mailsStorage.Load();
         }
 
         private int GenerateCourseId()
