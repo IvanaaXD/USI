@@ -12,7 +12,6 @@
     <Folder Include="Data\" />
     <Folder Include="Model\DAO\" />
     <Folder Include="Data\" />
-    <Folder Include="Storage\" />
   </ItemGroup>
 
 </Project>

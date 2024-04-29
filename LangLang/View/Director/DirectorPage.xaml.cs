@@ -23,6 +23,7 @@ namespace LangLang.View.Director
         }
         readonly int directorId;
         readonly DirectorController directorController;
+
         public TeacherDTO SelectedTeacher { get; set; }
 
         public ViewModel TableViewModel { get; set; }

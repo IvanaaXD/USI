@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using LangLang.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
+using LangLang.Model.DAO;
 
 namespace LangLang.View.Student
 {
@@ -29,9 +30,10 @@ namespace LangLang.View.Student
         public RegistrationForm(StudentsController studentsController)
         {
             InitializeComponent();
-            DataContext = this;
             Student = new StudentDTO();
+            Student.Password = passwordBox.Password;
             this.studentsController = studentsController;
+            DataContext = this;
 
         }
 
@@ -39,8 +41,15 @@ namespace LangLang.View.Student
         {
             if (Student.IsValid)
             {
-                studentsController.Add(Student.ToStudent());
-                Close();
+                if (studentsController.IsEmailUnique(Student.Email))
+                {
+                    studentsController.Add(Student.ToStudent());
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show("Email already exists.");
+                }
             }
             else
             {
@@ -59,6 +68,5 @@ namespace LangLang.View.Student
                 Student.Password = passwordBox.Password;
             }
         }
-
     }
 }

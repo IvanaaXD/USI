@@ -33,6 +33,10 @@ namespace LangLang.Controller
             _students.RemoveStudent(studentId);
         }
 
+        public void Update(Student student)
+        {
+            _students.UpdateStudent(student);
+        }
         public void Subscribe(IObserver observer)
         {
             _students.Subscribe(observer);
@@ -42,10 +46,42 @@ namespace LangLang.Controller
         {
             return _students.GetAvailableCourses(studentId);
         }
-        
+        public List<ExamTerm> GetAvailableExamTerms(int studentId)
+        {
+            return _students.GetAvailableExamTerms(studentId);
+        }
+        public List<Course> GetRegisteredCourses(int studentId)
+        {
+            return _students.GetRegisteredCourses(studentId);
+        }
+        public List<Course> GetCompletedCourses(int studentId)
+        {
+            return _students.GetCompletedCourses(studentId);
+        }
+        public List<Course> GetPassedCourses(int studentId)
+        {
+            return _students.GetPassedCourses(studentId);
+        }
+
         public Student? GetStudentById(int studentId)
         {
             return _students.GetStudentById(studentId);
+        }
+        public bool IsEmailUnique(string email)
+        {
+            return _students.IsEmailUnique(email);
+        }
+        public bool RegisterForCourse(int studentId, int courseId)
+        {
+            return _students.RegisterForCourse(studentId, courseId);
+        }
+        public bool CancelCourseRegistration(int studentId, int courseId)
+        {
+            return _students.CancelCourseRegistration(studentId, courseId);
+        }
+        public bool IsStudentAttendingCourse(int studentId)
+        {
+            return _students.IsStudentAttendingCourse(studentId);
         }
     }
 }

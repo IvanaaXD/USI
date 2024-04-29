@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -15,6 +13,8 @@ namespace LangLang.Model.DAO
         private readonly Storage<Course> _courseStorage;
         private readonly List<ExamTerm> _examTerms;
         private readonly Storage<ExamTerm> _examTermsStorage;
+        private readonly List<Mail> _mails;
+        private readonly Storage<Mail> _mailsStorage;
 
         public TeacherDAO()
         {
@@ -22,12 +22,14 @@ namespace LangLang.Model.DAO
             _courses = _courseStorage.Load();
             _examTermsStorage = new Storage<ExamTerm>("exam.csv");
             _examTerms = _examTermsStorage.Load();
+            _mailsStorage = new Storage<Mail>("mail.csv");
+            _mails = _mailsStorage.Load();
         }
 
         private int GenerateCourseId()
         {
             if (_courses.Count == 0) return 0;
-            return _courses.Last().CourseID + 1;
+            return _courses.Last().Id + 1;
         }
 
         private int GenerateExamId()
@@ -38,7 +40,7 @@ namespace LangLang.Model.DAO
 
         public Course AddCourse(Course course)
         {
-            course.CourseID = GenerateCourseId();
+            course.Id = GenerateCourseId();
             _courses.Add(course);
             _courseStorage.Save(_courses);
             NotifyObservers();
@@ -56,7 +58,7 @@ namespace LangLang.Model.DAO
 
         public Course? UpdateCourse(Course course)
         {
-            Course? oldCourse = GetCourseById(course.CourseID);
+            Course? oldCourse = GetCourseById(course.Id);
             if (oldCourse == null) return null;
 
             oldCourse.Language = course.Language;
@@ -94,10 +96,10 @@ namespace LangLang.Model.DAO
             if (course == null) return null;
 
             _courses.Remove(course);
-            /*foreach(int examTermId in course.ExamTerms)
+            foreach (int examTermId in course.ExamTerms)
             {
-                // ToDo : Delete each term
-            }*/
+                RemoveExamTerm(examTermId);
+            }
 
             _courseStorage.Save(_courses);
             NotifyObservers();
@@ -117,7 +119,7 @@ namespace LangLang.Model.DAO
 
         public Course? GetCourseById(int id)
         {
-            return _courses.Find(v => v.CourseID == id);
+            return _courses.Find(v => v.Id == id);
         }
 
         public ExamTerm GetExamTermById(int id)
@@ -134,6 +136,24 @@ namespace LangLang.Model.DAO
         {
             return _examTerms;
         }
+
+        public List<Course> GetAvailableCourses(Teacher teacher)
+        {
+            List<Course> allCourses = GetAllCourses();
+            List<int> allTeacherCourses = teacher.CoursesId;
+
+            List<Course> availableCourses = new List<Course>();
+
+            foreach(Course course in allCourses)
+            {
+                if (allTeacherCourses.Contains(course.Id))
+                {
+                    availableCourses.Add(course);
+                }
+            }
+            return availableCourses;
+        }
+
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
             var filteredCourses = _courses.Where(course =>
@@ -147,7 +167,7 @@ namespace LangLang.Model.DAO
             return filteredCourses;
         }
 
-        /*public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
            List<ExamTerm> allExams = GetAllExamTerms();
 
@@ -170,5 +190,43 @@ namespace LangLang.Model.DAO
             return filteredExams;
         }
 
+        public String FindLanguageAndLevel(int courseID)
+        {
+            String res = "";
+            
+            Course course = GetAllCourses().FirstOrDefault(c => c.Id == courseID);
+
+            if (course != null)
+            {
+                res = $"{course.Language}, {course.Level}";
+            }
+            else
+            {
+                res = "Language and level not found";
+            }
+
+            return res;
+        }
+
+        public void DecrementCourseCurrentlyEnrolled(int courseId)
+        {
+            Course course = GetCourseById(courseId);
+            --course.CurrentlyEnrolled;
+        }
+        public void DecrementExamTermCurrentlyAttending(int examTermId)
+        {
+            ExamTerm examTerm = GetExamTermById(examTermId);
+            --examTerm.CurrentlyAttending;
+        }
+
+        public ExamTerm ConfirmExamTerm(int examTermId)
+        {
+            ExamTerm examTerm = GetExamTermById(examTermId);
+            examTerm.Confirmed = true;
+            _examTermsStorage.Save(_examTerms);
+            NotifyObservers();
+            return examTerm;
+        }
     }
 }
+        

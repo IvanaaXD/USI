@@ -9,29 +9,67 @@
     <Window.Resources>
         <!-- Dodajte konvertere ovdje ako su potrebni -->
     </Window.Resources>
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="Cancel" Click="Cancel_Click"></MenuItem>
-            </MenuItem>
-        </Menu>
-        <TabControl>
-            <TabItem Header="Exam Terms">
-                <DataGrid Height="350"
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Search Grid -->
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Menu DockPanel.Dock="Top" Margin="0,0,0,21">
+                <MenuItem Header="Courses">
+                    <MenuItem Header="Table" Click="CourseTable_Click"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Exam Terms">
+                    <MenuItem Header="Create" Click="Create_Click"></MenuItem>
+                    <MenuItem Header="Update" Click="Update_Click"></MenuItem>
+                    <MenuItem Header="Delete" Click="Delete_Click"></MenuItem>
+                </MenuItem>
+            </Menu>
+            
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,20,0,5">
+                <TextBlock Text="Language:" Width="150" Margin="5,0,5,0" />
+                <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0" />
+                <TextBlock Text="Exam Date:" Width="150" Margin="5,0,5,0" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+                <ComboBox x:Name="languageComboBox" Width="150" Margin="5" />
+                <ComboBox x:Name="levelComboBox" Width="150" Margin="5" />
+                <DatePicker x:Name="examDatePicker" Width="150" Margin="5" />
+                <Button Content="Reset values" Click="Reset_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
+            </StackPanel>
+
+            <Button Grid.Row="1" Content="Search" Click="Search_Click" HorizontalAlignment="Right" Width="100" Margin="0,0,10,20" />
+        </Grid>
+
+        <!-- DataGrid -->
+        <DockPanel Grid.Row="1">
+            <TabControl>
+                <TabItem Header="Exam Terms">
+                    <DataGrid Height="350"
                           AutoGenerateColumns="False"
                           x:Name="ExamTermsDataGrid"
                           ItemsSource="{Binding TableViewModel.ExamTerms, UpdateSourceTrigger=PropertyChanged}"
                           SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
                           SelectionMode="Single" IsReadOnly="True">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Exam ID" Binding="{Binding ExamID}"/>
-                        <DataGridTextColumn Header="Course ID" Binding="{Binding CourseID}"/>
-                        <DataGridTextColumn Header="Exam Time" Binding="{Binding ExamTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
-                        <DataGridTextColumn Header="Max Students" Binding="{Binding MaxStudents}"/>
-                        <DataGridTextColumn Header="Currently Attending" Binding="{Binding CurrentlyAttending}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </TabItem>
-        </TabControl>
-    </DockPanel>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Exam ID" Binding="{Binding ExamID}"/>
+                            <DataGridTextColumn Header="Language and Level" Binding="{Binding LanguageAndLevel}"/>
+                            <DataGridTextColumn Header="Exam Date" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                            <DataGridTextColumn Header="Max Students" Binding="{Binding MaxStudents}"/>
+                            <DataGridTextColumn Header="Currently Attending" Binding="{Binding CurrentlyAttending}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </Grid>
 </Window>

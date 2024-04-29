@@ -16,6 +16,7 @@ namespace LangLang.View.Director
         public TeacherDTO Teacher { get; set; }
 
         private DirectorController directorController;
+
         private string teacherEmail;
 
         public UpdateTeacherForm(int teacherId, DirectorController directorController)
@@ -29,7 +30,7 @@ namespace LangLang.View.Director
             genderComboBox.ItemsSource = Enum.GetValues(typeof(Gender));
             genderComboBox.SelectedItem = Teacher.Gender;
             passwordBox.Password = Teacher.Password;
-            
+
             languagesListBox.ItemsSource = Teacher.LevelAndLanguages;
 
             for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)

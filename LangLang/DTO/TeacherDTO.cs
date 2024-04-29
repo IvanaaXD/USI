@@ -6,6 +6,7 @@ using LangLang.Model.Enums;
 using LangLang.Model;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using LangLang.Controller;
 
 
 namespace LangLang.DTO
@@ -26,7 +27,7 @@ namespace LangLang.DTO
 
         private List<Language> languages;
         private List<LanguageLevel> levelOfLanguages;
-        private List<Gender> genderValues;
+        private List<int> coursesId;
 
         public List<string> LevelAndLanguages
         {
@@ -34,14 +35,26 @@ namespace LangLang.DTO
             {
                 List<string> languageLevelNames = new List<string>();
 
-                var languages = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
-                var levels = Enum.GetValues(typeof(LanguageLevel)).Cast<LanguageLevel>().ToList();
+                var langs = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
+                var levs = Enum.GetValues(typeof(LanguageLevel)).Cast<LanguageLevel>().ToList();
 
-                foreach (var language in languages)
+                foreach (var language in langs)
                 {
-                    foreach (var level in levels)
+                    if (language.Equals(Language.NULL))
                     {
-                        languageLevelNames.Add($"{language} {level}");
+                        continue;
+                    } else
+                    {
+                        foreach (var level in levs)
+                        {
+                            if (level.Equals(LanguageLevel.NULL))
+                            {
+                                continue;
+                            } else
+                            {
+                                languageLevelNames.Add($"{language} {level}");
+                            }
+                        }
                     }
                 }
                 return languageLevelNames;
@@ -135,14 +148,20 @@ namespace LangLang.DTO
             set { SetProperty(ref levelOfLanguages, value); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public List<int> CoursesId
+        {
+            get { return coursesId; }
+            set { SetProperty(ref coursesId, value); }
+        }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public event PropertyChangedEventHandler ?PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))
             {
@@ -154,7 +173,7 @@ namespace LangLang.DTO
             return true;
         }
 
-        public string Error => null;
+        public string? Error => null;
 
         private Regex _FirstNameRegex = new Regex(@"^[A-Za-z]+$");
         private Regex _LastNameRegex = new Regex(@"^[A-Za-z]+$");
@@ -203,16 +222,27 @@ namespace LangLang.DTO
 
                         if (!_EmailRegex.IsMatch(Email))
                             return "Format not good. Try again.";
+
+                        DirectorController directorController = new DirectorController();
+                        StudentsController studentsController = new StudentsController();
+
+                        foreach (Teacher teacher in directorController.GetAllTeachers())
+                        {
+                            if (teacher.Email.Equals(Email) && teacher.Id != Id)
+                                return "Email already exists. Try again.";
+                        }
+
+                        foreach (Student student in studentsController.GetAllStudents())
+                        {
+                            if (student.Email.Equals(Email))
+                                return "Email already exists. Try again.";
+                        }
                         break;
 
                     case "Password":
                         if (string.IsNullOrEmpty(Password))
                             return "Password is required";
 
-<<<<<<< Updated upstream
-                        if (!_PasswordRegex.IsMatch(Password))
-                            return "Format not good. Try again.";
-=======
                         directorController = new DirectorController();
                         studentsController = new StudentsController();
 
@@ -227,7 +257,6 @@ namespace LangLang.DTO
                             if (student.Password.Equals(Password))
                                 return "Email already exists. Try again.";
                         }
->>>>>>> Stashed changes
                         break;
                 }
                 return null;
@@ -266,10 +295,10 @@ namespace LangLang.DTO
                 Languages = languages,
                 LevelOfLanguages = levelOfLanguages,
                 StartedWork = startedWork,
-                AverageRating = averageRating
+                AverageRating = averageRating,
+                CoursesId = coursesId
             };
         }
-
 
         public TeacherDTO() { }
 
@@ -287,26 +316,9 @@ namespace LangLang.DTO
             startedWork = teacher.StartedWork;
             averageRating = teacher.AverageRating;
 
-            languages = new List<Language>();
-            levelOfLanguages = new List<LanguageLevel>();
-
-            foreach (string languageLevel in LevelAndLanguages)
-            {
-                string[] parts = languageLevel.Split(' '); 
-                if (parts.Length == 2)
-                {
-                    if (Enum.TryParse(parts[0], out Language language))
-                    {
-                        languages.Add(language);
-                    }
-
-                    if (Enum.TryParse(parts[1], out LanguageLevel level))
-                    {
-                        levelOfLanguages.Add(level);
-                    }
-                }
-            }
+            languages = teacher.Languages;
+            levelOfLanguages = teacher.LevelOfLanguages;
+            coursesId = teacher.CoursesId;
         }
-
     }
 }

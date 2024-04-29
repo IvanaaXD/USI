@@ -16,8 +16,9 @@ namespace LangLang.Model
         private int penaltyPoints;
         private int activeCourseId;
         private List<int> passedExamsIds = new List<int>();
-        private List<int> pendingCoursesIds = new List<int>();
-        private List<int> pendingExamCoursesIds = new List<int>();
+        private List<int> registeredCoursesIds = new List<int>();
+        private List<int> completedCoursesIds = new List<int>();
+        private List<int> registeredExamsIds = new List<int>();
 
         public EducationLevel EducationLevel
         {
@@ -39,22 +40,27 @@ namespace LangLang.Model
             get { return passedExamsIds; }
             set { passedExamsIds = value; }
         }
-        public List<int> PendingCoursesIds
+        public List<int> RegisteredCoursesIds
         {
-            get { return pendingCoursesIds; }
-            set { pendingCoursesIds = value; }
+            get { return registeredCoursesIds; }
+            set { registeredCoursesIds = value; }
         }
-        public List<int> PendingExamCoursesIds
+        public List<int> CompletedCoursesIds
         {
-            get { return pendingExamCoursesIds; }
-            set { pendingExamCoursesIds = value; }
+            get { return completedCoursesIds; }
+            set { completedCoursesIds = value; }
+        }
+        public List<int> RegisteredExamsIds
+        {
+            get { return registeredExamsIds; }
+            set { registeredExamsIds = value; }
         }
 
         public Student() : base() { }
 
         public Student(string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
                        EducationLevel educationLevel, int penaltyPoints, int activeCourseId,
-                       List<int> passedExamsIds, List<int> pendingCoursesIds, List<int> pendingExamCoursesIds)
+                       List<int> passedExamsIds, List<int> registeredCoursesIds, List<int> completedCoursesIds, List<int> registeredExamsIds)
                        : base(firstName, lastName, gender, dateOfBirth, phoneNumber, email, password)
         {
 
@@ -62,12 +68,13 @@ namespace LangLang.Model
             this.penaltyPoints = penaltyPoints;
             this.activeCourseId = activeCourseId;
             this.passedExamsIds = passedExamsIds;
-            this.pendingCoursesIds = pendingCoursesIds;
-            this.pendingExamCoursesIds = pendingExamCoursesIds;
+            this.registeredCoursesIds = registeredCoursesIds;
+            this.completedCoursesIds = completedCoursesIds;
+            this.registeredExamsIds = registeredExamsIds;
         }
         public Student(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
                        EducationLevel educationLevel, int penaltyPoints, int activeCourseId,
-                       List<int> passedExamsIds, List<int> pendingCoursesIds, List<int> pendingExamCoursesIds)
+                       List<int> passedExamsIds, List<int> registeredCoursesIds, List<int> completedCoursesIds, List<int> registeredExamsIds)
                        : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password)
         {
 
@@ -75,8 +82,9 @@ namespace LangLang.Model
             this.penaltyPoints = penaltyPoints;
             this.activeCourseId = activeCourseId;
             this.passedExamsIds = passedExamsIds;
-            this.pendingCoursesIds = pendingCoursesIds;
-            this.pendingExamCoursesIds = pendingExamCoursesIds;
+            this.registeredCoursesIds = registeredCoursesIds;
+            this.completedCoursesIds = completedCoursesIds;
+            this.registeredExamsIds = registeredExamsIds;
         }
 
         public Student(string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
@@ -99,8 +107,10 @@ namespace LangLang.Model
         public override string[] ToCSV()
         {
             string passedExamsIdsStr = string.Join(",", PassedExamsIds);
-            string pendingCoursesIdsStr = string.Join(",", PendingCoursesIds);
-            string pendingExamCoursesIdsStr = string.Join(",", PendingExamCoursesIds);
+            string registeredCoursesIdsStr = string.Join(",", RegisteredCoursesIds);
+            string completedCoursesIdsStr = string.Join(",", CompletedCoursesIds);
+            string registeredExamsIdsStr = string.Join(",", RegisteredExamsIds);
+
 
             string[] csvValues =
             {
@@ -116,8 +126,9 @@ namespace LangLang.Model
                 penaltyPoints.ToString(),
                 activeCourseId.ToString(),
                 passedExamsIdsStr,
-                pendingCoursesIdsStr,
-                pendingExamCoursesIdsStr
+                registeredCoursesIdsStr,
+                completedCoursesIdsStr,
+                registeredExamsIdsStr
             };
 
             return csvValues;
@@ -125,6 +136,11 @@ namespace LangLang.Model
 
         public override void FromCSV(string[] values)
         {
+            if (values.Length != 15)
+            {
+                throw new ArgumentException("Invalid number of student values in CSV");
+            }
+
             id = int.Parse(values[0]);
             firstName = values[1];
             lastName = values[2];
@@ -147,20 +163,28 @@ namespace LangLang.Model
 
             if (!string.IsNullOrEmpty(values[12]))
             {
-                pendingCoursesIds = new List<int>(Array.ConvertAll(values[12].Split(','), int.Parse));
+                registeredCoursesIds = new List<int>(Array.ConvertAll(values[12].Split(','), int.Parse));
             }
             else
             {
-                pendingCoursesIds = new List<int>();
+                registeredCoursesIds = new List<int>();
             }
 
             if (!string.IsNullOrEmpty(values[13]))
             {
-                pendingExamCoursesIds = new List<int>(Array.ConvertAll(values[12].Split(','), int.Parse));
+                completedCoursesIds = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
             }
             else
             {
-                pendingExamCoursesIds = new List<int>();
+                completedCoursesIds = new List<int>();
+            }
+            if (!string.IsNullOrEmpty(values[14]))
+            {
+                registeredExamsIds = new List<int>(Array.ConvertAll(values[14].Split(','), int.Parse));
+            }
+            else
+            {
+                registeredExamsIds = new List<int>();
             }
         }
     }

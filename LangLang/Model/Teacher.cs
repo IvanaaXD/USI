@@ -2,7 +2,6 @@
 using LangLang.Storage.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace LangLang.Model
 {
@@ -12,6 +11,7 @@ namespace LangLang.Model
         protected List<LanguageLevel> levelOfLanguages;
         protected DateTime startedWork;
         protected int averageRating;
+        protected List<int> coursesId;
 
         public List<Language> Languages
         {
@@ -37,6 +37,12 @@ namespace LangLang.Model
             set { averageRating = value; }
         }
 
+        public List<int> CoursesId
+        {
+            get { return coursesId; }
+            set { coursesId = value; }
+        }
+
         public Teacher() : base() { }
 
         public Teacher(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
@@ -53,9 +59,14 @@ namespace LangLang.Model
         {
             string languagesCsv = string.Join(",", languages);
             string levelOfLanguagesCsv = string.Join(",", levelOfLanguages);
-
             string startedWorkString = startedWork.Date.ToString("yyyy-MM-dd");
             string dateOfBirthString = dateOfBirth.Date.ToString("yyyy-MM-dd");
+
+            string coursesIdCsv = "";
+            if (coursesId != null)
+            {
+                coursesIdCsv = string.Join(",", coursesId);
+            }
 
             return new string[] {
                 Id.ToString(),
@@ -70,12 +81,13 @@ namespace LangLang.Model
                 languagesCsv, 
                 levelOfLanguagesCsv, 
                 startedWorkString, 
-                averageRating.ToString() };
+                averageRating.ToString(),
+                coursesIdCsv
+            };
         }
 
         public override void FromCSV(string[] values)
         {
-
             id = int.Parse(values[0]);
             firstName = values[1];
             lastName = values[2];
@@ -100,7 +112,15 @@ namespace LangLang.Model
 
             startedWork = DateTime.ParseExact(values[11], "yyyy-MM-dd", null);
             averageRating = int.Parse(values[12]);
-        }
 
+            if (!string.IsNullOrEmpty(values[13]))
+            {
+                coursesId = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
+            }
+            else
+            {
+                coursesId = new List<int>();
+            }
+        }
     }
 }

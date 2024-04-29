@@ -5,6 +5,9 @@ using System.Collections.ObjectModel;
 using LangLang.Observer;
 using LangLang.DTO;
 using LangLang.Controller;
+using LangLang.Model.Enums;
+using System.Collections.Generic;
+using LangLang.Model.DAO;
 
 namespace LangLang.View.Teacher
 {
@@ -24,13 +27,20 @@ namespace LangLang.View.Teacher
         public ViewModel TableViewModel { get; set; }
         public ExamTermDTO SelectedExamTerm { get; set; }
         public TeacherController teacherController { get; set; }
+        public int teacherId { get; set; }
 
-        public ExamTermsTable()
+        private bool isSearchButtonClicked = false;
+        DirectorController directorController;
+        public ExamTermsTable(int teacherId, DirectorController directorController)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
             teacherController = new TeacherController();
+            this.teacherId = teacherId;
+            languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
+            levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
             DataContext = this;
+            this.directorController = directorController;
             teacherController.Subscribe(this);
             Update();
         }
@@ -40,7 +50,8 @@ namespace LangLang.View.Teacher
             try
             {
                 TableViewModel.ExamTerms.Clear();
-                var examTerms = teacherController.GetAllExamTerms();
+
+                var examTerms = GetFilteredExamTerms();
                 if (examTerms != null)
                 {
                     foreach (ExamTerm examTerm in examTerms)
@@ -48,16 +59,60 @@ namespace LangLang.View.Teacher
                 }
                 else
                 {
-                    MessageBox.Show("No exam terms found."); // Display message if no exam terms found
+                    MessageBox.Show("No exam terms found.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}"); // Display error message
+                MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+        private void Create_Click(object sender, RoutedEventArgs e)
+        {
+            CreateExamForm examTable = new CreateExamForm(teacherController, teacherId);
+            examTable.Show();
+        }
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedExamTerm == null)
+            {
+                MessageBox.Show("Please choose exam to update!");
+            }
+            else
+            {
+                UpdateExamForm modifyDataForm = new UpdateExamForm(SelectedExamTerm.ExamID, teacherController);
+                modifyDataForm.Show();
+                modifyDataForm.Activate();
+            }
+        }
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            isSearchButtonClicked = false;
+            Update();
+            ResetSearchElements();
+        }
+
+        private void ResetSearchElements()
+        {
+            languageComboBox.SelectedItem = null;
+            levelComboBox.SelectedItem = null;
+            examDatePicker.SelectedDate = null;
+        }
+
+        private void CourseTable_Click(object sender, RoutedEventArgs e)
+        {
+            CoursesTable courseT = new CoursesTable(teacherId, teacherController, directorController);
+            courseT.Show();
+        }
+
+
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+            Update();
+            isSearchButtonClicked = true;
+        }
+        private void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedExamTerm == null)
             {
@@ -65,11 +120,26 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                if (DateTime.Now.AddDays(14) > SelectedExamTerm.ExamTime)
+                if (DateTime.Now.AddDays(14) > SelectedExamTerm.ExamDate)
                     MessageBox.Show("Cannot cancel an exam that starts in less than a 2 week.");
                 else
-                    teacherController.RemoveExamTerm(SelectedExamTerm.ExamID);
+                    teacherController.DeleteExamTerm(SelectedExamTerm.ExamID);
             }
+        }
+        private List<ExamTerm> GetFilteredExamTerms()
+        {
+            Language? selectedLanguage = (Language?)languageComboBox.SelectedItem;
+            LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
+            DateTime? selectedStartDate = examDatePicker.SelectedDate;
+
+            List<ExamTerm> finalExamTerms = teacherController.GetAllExamTerms();
+
+            if (isSearchButtonClicked)
+            {
+                TeacherDAO teacherDAO = new TeacherDAO();
+                finalExamTerms = teacherDAO.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+            }
+            return finalExamTerms;
         }
     }
 }

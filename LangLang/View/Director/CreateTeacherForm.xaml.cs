@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace LangLang.View.Director
 {
-    public partial class RegistrationForm : Window, INotifyPropertyChanged
+    public partial class CreateTeacherFrom : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -34,17 +34,18 @@ namespace LangLang.View.Director
 
         private DirectorController directorController;
 
-        public RegistrationForm(DirectorController directorController)
+        public CreateTeacherFrom(DirectorController directorController)
         {
             InitializeComponent();
             DataContext = this;
             Teacher = new TeacherDTO();
+            Teacher.Password = passwordBox.Password;
             this.directorController = directorController;
             Teacher.DateOfBirth = new DateTime(1900, 1, 1);
             Teacher.StartedWork = new DateTime(1900, 1, 1);
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
@@ -57,7 +58,7 @@ namespace LangLang.View.Director
             }
         }
 
-        private void btnRegistration_Click(object sender, RoutedEventArgs e)
+        private void Create_Click(object sender, RoutedEventArgs e)
         {
             PickDataFromListBox();
             PickDataFromDatePicker();
@@ -129,11 +130,7 @@ namespace LangLang.View.Director
             }
         }
 
-
-        private void languagesListBox_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-
-        }
+        private void languagesListBox_SelectionChanged(object sender, RoutedEventArgs e) {}
 
     }
 }

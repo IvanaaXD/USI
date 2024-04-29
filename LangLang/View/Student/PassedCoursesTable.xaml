@@ -1,0 +1,106 @@
+﻿<Window x:Class="LangLang.View.Student.PassedCoursesTable"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:LangLang.View.Converters"
+        mc:Ignorable="d"
+        Title="Passed courses" Height="450" Width="841">
+    <Window.Resources>
+        <converters:DayOfWeekToStringConverter x:Key="DayOfWeekToStringConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="70"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.ColumnSpan="2" Height="auto">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Account">
+                    <MenuItem Header="Modify data"></MenuItem>
+                    <MenuItem Header="Delete account"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="View">
+                    <MenuItem Header="Available courses"></MenuItem>
+                    <MenuItem Header="Available exams"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Mail"></MenuItem>
+            </Menu>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"></RowDefinition>
+                    <RowDefinition Height="50"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                    <TextBlock Text="Lenguage:" Width="150" Margin="5,0,5,0"></TextBlock>
+                    <TextBlock Text="Lenguage level:" Width="150" Margin="5,0,5,0"></TextBlock>
+                    <TextBlock Text="Start date:" Width="150" Margin="5,0,5,0"></TextBlock>
+                    <TextBlock Text="Duration:" Width="150" Margin="5,0,5,0"></TextBlock>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+
+                    <ComboBox x:Name="languageComboBox" Width="150" Margin="5"/>
+
+                    <ComboBox x:Name="levelComboBox" Width="150" Margin="5"/>
+
+                    <DatePicker x:Name="startDateDatePicker" Width="150" Margin="5"/>
+
+                    <TextBox x:Name="durationTextBox" Width="150" Margin="5"/>
+
+                    <CheckBox x:Name="onlineCheckBox" Content="Online" Margin="5"
+                              IsChecked="{Binding IsOnline, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <Button Grid.Row="1" Content="Search" Click="btnSearch_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,0,10,20"/>
+            </Grid>
+        </DockPanel>
+
+
+        <DockPanel Grid.Row="1" Grid.ColumnSpan="2" Panel.ZIndex="2" Height="auto">
+            <TabControl>
+                <TabItem Header="Courses">
+                    <DataGrid Height="350"
+          AutoGenerateColumns="False"
+          x:Name="CoursesDataGrid"
+          ItemsSource="{Binding TableViewModel.Courses, UpdateSourceTrigger=PropertyChanged}"
+          SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
+          SelectionMode="Single" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Language" Binding="{Binding Language}"/>
+                            <DataGridTextColumn Header="Level" Binding="{Binding Level}"/>
+                            <DataGridTextColumn Header="Duration In Weeks" Binding="{Binding Duration}"/>
+                            <DataGridTemplateColumn Header="Work Days">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd}}"/>
+                            <DataGridTextColumn Header="Online" Binding="{Binding IsOnline}"/>
+                            <DataGridTextColumn Header="Currently Enrolled" Binding="{Binding CurrentlyEnrolled}"/>
+                            <DataGridTextColumn Header="Max Students" Binding="{Binding MaxEnrolledStudents}"/>
+
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+            <Button Content= "Reset values" Click="btnReset_Click" Width="100" FontSize="14" Background="#6d6fbf" Foreground="White"/>
+            <Button Content="Sign up to course" Click="btnSingUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+            <Button Content="Cancel" Click="btnCancel_Click" Width="100"/>
+        </StackPanel>
+    </Grid>
+</Window>
