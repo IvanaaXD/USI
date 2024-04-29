@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Director" xmlns:dto="clr-namespace:LangLang.DTO"
         mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
         Title="CreateTeacherForm" Height="600" Width="384">
 
     <Window.Resources>
