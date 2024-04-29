@@ -34,7 +34,8 @@ namespace LangLang.Model.Enums
         B1,
         B2,
         C1,
-        C2
+        C2,
+        NULL
     }
 
     public enum Language
@@ -44,6 +45,19 @@ namespace LangLang.Model.Enums
         German,
         Japanese,
         Russian,
-        French
+        French,
+        NULL
+    }
+
+    public enum TypeOfMessage
+    {
+        EnterCourseRequest,
+        QuitCourseRequest,
+        QuitEnteringCourseRequest,
+        AcceptEnterCourseRequestMessage,
+        DenyEnterCourseRequestMessage,
+        EnterExamTermRequest,
+        PenaltyPointMessage,
+        NULL
     }
 }

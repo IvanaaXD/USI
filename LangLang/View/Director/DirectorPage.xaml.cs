@@ -12,6 +12,7 @@ namespace LangLang.View.Director
     {
         public ObservableCollection<TeacherDTO> Teachers { get; set; }
 
+
         public class ViewModel
         {
             public ObservableCollection<TeacherDTO> Teachers { get; set; }
@@ -23,7 +24,9 @@ namespace LangLang.View.Director
         }
         readonly int directorId;
         readonly DirectorController directorController;
+
         public TeacherDTO SelectedTeacher { get; set; }
+
 
         public ViewModel TableViewModel { get; set; }
 
@@ -34,6 +37,7 @@ namespace LangLang.View.Director
             InitializeComponent();
             this.directorId = directorId;
             this.directorController = directorController;
+
             this.Teachers = Teachers;
 
             TableViewModel = new ViewModel();

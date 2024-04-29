@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -12,11 +9,25 @@ namespace LangLang.Model.DAO
 {
     public class DirectorDAO : Subject
     {
-
         private readonly List<Teacher> _teachers;
-        private readonly Storage<Teacher> _storage;
-        
-        public DirectorDAO() { }
+        private readonly List<Director> _director;
+        private readonly Storage<Teacher> _storageTeacher;
+        private readonly Storage<Director> _storageDirector;
+
+        private TeacherDAO teacherDAO;
+
+        public DirectorDAO() {
+            _storageTeacher = new Storage<Teacher>("teachers.csv");
+            _storageDirector = new Storage<Director>("director.csv");
+            _teachers = _storageTeacher.Load();
+            _director = _storageDirector.Load();
+            teacherDAO = new TeacherDAO();
+        }
+
+        public Director GetDirector()
+        {
+            return _director.Find(d => d.Id == 0);
+        }
 
         private int GenerateId()
         {
@@ -24,11 +35,31 @@ namespace LangLang.Model.DAO
             return _teachers.Last().Id + 1;
         }
 
+        public List<Course> GetAvailableCourses(int teacherId)
+        {
+            Teacher teacher = GetTeacherById(teacherId);
+            List<Course> allCourses = teacherDAO.GetAllCourses();
+            List<int> allTeacherCourses = teacher.CoursesId;
+            DateTime currentTime = DateTime.Now;
+
+            List<Course> availableCourses = new List<Course>();
+
+            foreach (Course course in allCourses)
+            {
+                if (allTeacherCourses.Contains(course.Id))
+                {
+                    availableCourses.Add(course);
+                }
+            }
+
+            return availableCourses;
+        }
+
         public Teacher AddTeacher(Teacher teacher)
         {
             teacher.Id = GenerateId();
             _teachers.Add(teacher);
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return teacher;
         }
@@ -50,8 +81,9 @@ namespace LangLang.Model.DAO
             oldTeacher.LevelOfLanguages = teacher.LevelOfLanguages;
             oldTeacher.StartedWork = teacher.StartedWork;
             oldTeacher.AverageRating = teacher.AverageRating;
+            oldTeacher.CoursesId = teacher.CoursesId;
 
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return oldTeacher;
         }
@@ -60,14 +92,18 @@ namespace LangLang.Model.DAO
         {
             Teacher teacher = GetTeacherById(id);
             if (teacher == null) return null;
+            foreach(int courseid in teacher.CoursesId)
+            {
+                teacherDAO.RemoveCourse(courseid);
+            }
 
             _teachers.Remove(teacher);
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return teacher;
         }
 
-        private Teacher GetTeacherById(int id)
+        public Teacher GetTeacherById(int id)
         {
             return _teachers.Find(t => t.Id == id);
         }
@@ -77,13 +113,22 @@ namespace LangLang.Model.DAO
             return _teachers;
         }
 
-        public List<Teacher> SearchAllTeachers(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)
+        public bool IsEmailUnique(string email)
+        {
+            foreach (Teacher teacher in _teachers)
+            {
+                if (teacher.Email.Equals(email)) return false;
+            }
+            return true;
+        }
+
+        public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)
         {
             List<Teacher> teachers = GetAllTeachers();
 
             var filteredTeachers = teachers.Where(teacher =>
-                (language == null || teacher.Languages.Contains(language)) &&
-                (levelOfLanguage == null || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
+                (language == Model.Enums.Language.NULL || teacher.Languages.Contains(language)) &&
+                (levelOfLanguage == Model.Enums.LanguageLevel.NULL || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
                 (startedWork == DateTime.MinValue || teacher.StartedWork.Date == startedWork.Date)
             ).ToList();
 

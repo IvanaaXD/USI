@@ -5,8 +5,91 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        WindowStartupLocation = "CenterScreen"
+        Title="MainWindow" Height="400" Width="344">
+    <Border Width="300"
+            Height="400"
+            Background="White"
+            CornerRadius="6">
+        <StackPanel Orientation="Vertical"
+                    Margin="20">
+            <TextBlock Text="Login" 
+                       FontSize="25"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       FontWeight="Bold"
+                       Padding="10"
+                       />
+            <Grid VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Email:" 
+                           Grid.Row="0"
+                           Margin="0,15"
+                           HorizontalAlignment="Left"/>
 
-    </Grid>
+                <TextBox  
+                    x:Name="Email"
+                    Grid.Row="1"
+                    Padding="0,5"
+                    Width="255"
+                    BorderThickness="0,0,0,1"
+                    HorizontalAlignment="Left"
+                    Background="Transparent"
+                    GotFocus="EmailTextBox_GotFocus"
+                    LostFocus="EmailTextBox_LostFocus"/>
+
+                <TextBlock Text="Password:" 
+                           Grid.Row="2"
+                           Margin="0,15"
+                           HorizontalAlignment="Left"/> 
+                <PasswordBox 
+                    x:Name="Password"
+                    Grid.Row="3"
+                    Padding="0,5"                           
+                    Width="255"
+                    BorderThickness="0,0,0,1"
+                    HorizontalAlignment="Left"
+                    PasswordChanged="PasswordBox_PasswordChanged"/>
+
+                <!-- Placeholder TextBlocks -->
+                <TextBlock Text="Enter an email" 
+                           x:Name="EmailPlaceholder"
+                           Grid.Row="1"
+                           Foreground="Gray"
+                           Margin="5,0"/>
+                <TextBlock Text="Enter a password" 
+                           x:Name="PasswordPlaceholder"
+                           Grid.Row="3"
+                           Foreground="Gray"
+                           Margin="5,0"/>
+            </Grid>
+
+            <Button x:Name="btnLogin"
+                    Content="Login" 
+                    Foreground="White"
+                    Background="#4F518C"
+                    Margin="0,25,0,5"
+                    Height="35"
+                    Width="250"
+                    Click="Login_Click">
+            </Button>
+
+            <Button x:Name="btnRegistration"
+                    Content="Register"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Foreground="#4F518C"
+                    Background="#e6e8e6"
+                    Height="35"
+                    Width="250"
+                    Click="Registration_Click">
+
+            </Button>
+        </StackPanel>
+    </Border>
 </Window>

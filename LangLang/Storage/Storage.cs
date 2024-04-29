@@ -1,6 +1,4 @@
-﻿
-using LangLang.Model;
-using LangLang.Storage.Serialization;
+﻿using LangLang.Storage.Serialization;
 using System.Collections.Generic;
 using System.IO;
 
@@ -15,7 +13,7 @@ namespace LangLang.Storage
     */
     public class Storage<T> where T : ISerializable, new()
     {
-        private readonly string _fileName = @"../../../../LangLang/LangLang/Data/{0}";
+        private readonly string _fileName = @"../../../../LangLang/Data/{0}";
         private readonly Serializer<T> _serializer = new Serializer<T>();
 
         public Storage(string fileName)
