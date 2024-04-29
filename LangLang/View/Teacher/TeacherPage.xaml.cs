@@ -32,17 +32,21 @@ namespace LangLang.View.Teacher
         public ViewModel TableViewModel { get; set; }
         public CourseDTO SelectedCourse { get; set; }
         public ExamTermDTO SelectedExamTerm { get; set; }
+        public StudentsController studentController { get; set; }
         public TeacherController teacherController { get; set; }
         public DirectorController directorController { get; set; }
+        public MainController mainController { get; set; }
         
         private bool isSearchCourseClicked = false;
         private bool isSearchExamClicked = false;
-        public TeacherPage(int teacherId, DirectorController directorController)
+        public TeacherPage(int teacherId, MainController mainController)
         {
             InitializeComponent();
             this.teacherId = teacherId;
-            this.teacherController = new();
-            this.directorController = directorController;
+            this.mainController = mainController;
+            this.studentController = mainController.GetStudentController();
+            this.teacherController = mainController.GetTeacherController();
+            this.directorController = mainController.GetDirectorController();
 
             this.Courses = Courses;
             this.ExamTerms = ExamTerms;
@@ -111,12 +115,14 @@ namespace LangLang.View.Teacher
             Update();
             isSearchCourseClicked = true;
         }
+
         private void ResetCourse_Click(object sender, EventArgs e)
         {
             isSearchCourseClicked = false;
             Update();
             ResetCourse_Click();
         }
+
         private void UpdateCourse_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
@@ -134,6 +140,7 @@ namespace LangLang.View.Teacher
                 }
             }
         }
+
         private void DeleteCourse_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
@@ -265,6 +272,29 @@ namespace LangLang.View.Teacher
                     teacherController.DeleteExamTerm(SelectedExamTerm.ExamID);
             }
         }
+
+        private void ViewExam_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedExamTerm == null)
+            {
+                MessageBox.Show("Please choose an exam term to view!");
+            }
+            else
+            {
+                ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
+                if (examTerm != null)
+                {
+                    ExamTermView examTermView = new ExamTermView(examTerm, directorController.GetTeacherById(this.teacherId), teacherController);
+                    examTermView.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to retrieve the exam term. Please try again.");
+                }
+            }
+        }
+
+
         public void UpdateExam()
         {
             try
@@ -317,7 +347,6 @@ namespace LangLang.View.Teacher
             }
             return finalExamTerms;
         }
-
 
     }
 }
