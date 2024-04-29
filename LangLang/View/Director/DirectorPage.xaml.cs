@@ -10,7 +10,7 @@ namespace LangLang.View.Director
 {
     public partial class DirectorPage : Window, IObserver
     {
-        public ObservableCollection<TeacherDTO> Teachers { get; set; }
+        public ObservableCollection<TeacherDTO> ?Teachers { get; set; }
 
         public class ViewModel
         {
@@ -23,7 +23,7 @@ namespace LangLang.View.Director
         }
         readonly int directorId;
         readonly DirectorController directorController;
-        public TeacherDTO SelectedTeacher { get; set; }
+        public TeacherDTO ?SelectedTeacher { get; set; }
 
         public ViewModel TableViewModel { get; set; }
 

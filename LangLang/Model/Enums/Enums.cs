@@ -48,4 +48,16 @@ namespace LangLang.Model.Enums
         French,
         NULL
     }
+
+    public enum TypeOfMessage
+    {
+        EnterCourseRequest,
+        QuitCourseRequest,
+        QuitEnteringCourseRequest,
+        AcceptEnterCourseRequestMessage,
+        DenyEnterCourseRequestMessage,
+        EnterExamTermRequest,
+        PenaltyPointMessage,
+        NULL
+    }
 }

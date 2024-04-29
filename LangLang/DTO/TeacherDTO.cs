@@ -27,7 +27,6 @@ namespace LangLang.DTO
 
         private List<Language> languages;
         private List<LanguageLevel> levelOfLanguages;
-        private List<Gender> genderValues;
         private List<int> coursesId;
 
         public List<string> LevelAndLanguages
@@ -155,14 +154,14 @@ namespace LangLang.DTO
             set { SetProperty(ref coursesId, value); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler ?PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))
             {
@@ -174,7 +173,7 @@ namespace LangLang.DTO
             return true;
         }
 
-        public string Error => null;
+        public string? Error => null;
 
         private Regex _FirstNameRegex = new Regex(@"^[A-Za-z]+$");
         private Regex _LastNameRegex = new Regex(@"^[A-Za-z]+$");
