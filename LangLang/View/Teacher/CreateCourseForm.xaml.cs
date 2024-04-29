@@ -42,7 +42,7 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
 
-            Course = new CourseDTO(teacherController);
+            Course = new CourseDTO(teacherController, directorController.GetTeacherById(teacherId));
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             this.directorController = directorController;
             this.teacherController = teacherController;
