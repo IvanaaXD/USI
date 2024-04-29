@@ -67,6 +67,12 @@ namespace LangLang.Controller
         {
             return _students.GetStudentById(studentId);
         }
+
+        public List<Student> GetAllStudentsForExamTerm(int examTermId)
+        {
+            return _students.GetAllStudentsForExamTerm(examTermId);
+        }
+
         public bool IsEmailUnique(string email)
         {
             return _students.IsEmailUnique(email);

@@ -215,6 +215,19 @@ namespace LangLang.Model.DAO
             return registeredCourses;
         }
 
+        public List<Student> GetAllStudentsForExamTerm(int examTermId)
+        {
+            List<Student> filteredStudents = new List<Student> ();
+            foreach (Student student in _students)
+            {
+                if (student.RegisteredExamsIds.Contains(examTermId))
+                {
+                    filteredStudents.Add(student);  
+                }
+            }
+            return filteredStudents;
+        }
+
         public bool IsEmailUnique(string email)
         {
             foreach(Student student in _students)

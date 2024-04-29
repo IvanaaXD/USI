@@ -137,6 +137,20 @@ namespace LangLang.Model.DAO
             return _examTerms;
         }
 
+        public List<Mail> GetAllMails()
+        {
+            List<Mail> filteredMails = new List<Mail>();
+            
+            foreach (Mail mail in _mails)
+            {
+                if (mail.Sender is Teacher || mail.Recevier is Teacher)
+                {
+                    filteredMails.Add(mail);    
+                } 
+            }
+            return filteredMails;
+        }
+
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
             List<Course> allCourses = GetAllCourses();
