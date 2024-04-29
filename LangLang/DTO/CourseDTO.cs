@@ -28,10 +28,12 @@ namespace LangLang.DTO
         private List<int> examTerms;
 
         private readonly TeacherController _teacherController;
+        private readonly Teacher teacher;
 
-        public CourseDTO(TeacherController teacherController)
+        public CourseDTO(TeacherController teacherController, Teacher teacher)
         {
             _teacherController = teacherController;
+            this.teacher = teacher;
         }
 
         public List<string> LanguageAndLevelValues
@@ -214,8 +216,9 @@ namespace LangLang.DTO
                 MaxEnrolledStudents = int.Parse(maxEnrolledStudents),
                 ExamTerms = examTerms
             };
-
-            return _teacherController.ValidateCourseTimeslot(course);
+            if (!_teacherController.ValidateCourseTimeslot(course, this.teacher))
+                return "Cannot create course because of course time overlaps!";
+            return null;
         }
 
         private readonly string[] _validatedProperties = { "Duration", "StartDate", "StartTime", "IsOnline", "CurrentlyEnrolled", "MaxEnrolledStudents", "WorkDays" };
@@ -287,9 +290,10 @@ namespace LangLang.DTO
             examTerms = course.ExamTerms;
         }
 
-        public CourseDTO(TeacherController tc, Course course)
+        public CourseDTO(TeacherController tc, Course course, Teacher teacher)
         {
             _teacherController = tc;
+            this.teacher = teacher;
             id = course.Id;
             language = course.Language;
             languageLevel = course.Level;
