@@ -67,11 +67,11 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
-                        <ComboBox x:Name="languageComboBox" Width="150" Margin="5"/>
-                        <ComboBox x:Name="levelComboBox" Width="150" Margin="5"/>
-                        <DatePicker x:Name="startDateDatePicker" Width="150" Margin="5"/>
-                        <TextBox x:Name="durationTextBox" Width="150" Margin="5"/>
-                        <CheckBox x:Name="onlineCheckBox" Content="Online" Margin="5"
+                        <ComboBox x:Name="courseLanguageComboBox" Width="150" Margin="5"/>
+                        <ComboBox x:Name="courseLevelComboBox" Width="150" Margin="5"/>
+                        <DatePicker x:Name="courseStartDateDatePicker" Width="150" Margin="5"/>
+                        <TextBox x:Name="courseDurationTextBox" Width="150" Margin="5"/>
+                        <CheckBox x:Name="courseOnlineCheckBox" Content="Online" Margin="5"
             IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
                     </StackPanel>
                     <Button Grid.Row="1" Content="Search" Click="SearchCourse_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,0,10,20"/>
@@ -83,11 +83,11 @@
                         <TabControl>
                             <TabItem Header="Courses">
                                 <DataGrid Height="350"
-  AutoGenerateColumns="False"
-  x:Name="CoursesDataGrid"
-  ItemsSource="{Binding TableViewModel.Courses, UpdateSourceTrigger=PropertyChanged}"
-  SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
-  SelectionMode="Single" IsReadOnly="True">
+                                  AutoGenerateColumns="False"
+                                  x:Name="CoursesDataGrid"
+                                  ItemsSource="{Binding TableViewModel.Courses, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectionMode="Single" IsReadOnly="True">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Language" Binding="{Binding Language}"/>
                                         <DataGridTextColumn Header="Level" Binding="{Binding Level}"/>
@@ -106,7 +106,7 @@
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </TabItem>
-                           
+
                         </TabControl>
                     </Grid>
 
@@ -114,6 +114,7 @@
                         <Button Content="Create" Click="CreateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
                         <Button Content="Update" Click="UpdateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
                         <Button Content="Delete" Click="DeleteCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                        <Button Content="View" Click="ViewCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#9e9e9e" Width="80"/>
                     </StackPanel>
                 </Grid>
             </DockPanel>
@@ -129,22 +130,22 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,5">
-                            <TextBlock Text="Language:" Width="150" Margin="5,0,5,0" />
-                            <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0" />
-                            <TextBlock Text="Exam Date:" Width="150" Margin="5,0,5,0" />
-                        </StackPanel>
+                        <TextBlock Text="Language:" Width="150" Margin="5,0,5,0" />
+                        <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0" />
+                        <TextBlock Text="Exam Date:" Width="150" Margin="5,0,5,0" />
+                    </StackPanel>
 
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
-                            <ComboBox x:Name="examLanguageComboBox" Width="150" Margin="5" />
-                            <ComboBox x:Name="examLevelComboBox" Width="150" Margin="5" />
-                            <DatePicker x:Name="examDatePicker" Width="150" Margin="5" />
-                            <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
-                        </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+                        <ComboBox x:Name="examLanguageComboBox" Width="150" Margin="5" />
+                        <ComboBox x:Name="examLevelComboBox" Width="150" Margin="5" />
+                        <DatePicker x:Name="examDatePicker" Width="150" Margin="5" />
+                        <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
+                    </StackPanel>
 
-                        <Button Grid.Row="1" Content="Search" Click="SearchExam_Click" HorizontalAlignment="Right" Width="100" Margin="0,0,10,20" />
-                    </Grid>
+                    <Button Grid.Row="1" Content="Search" Click="SearchExam_Click" HorizontalAlignment="Right" Width="100" Margin="0,0,10,20" />
+                </Grid>
 
-                    <Grid>
+                <Grid>
                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
                         <TabControl>
                             <TabItem Header="Exam Terms">
@@ -176,8 +177,8 @@
                 </Grid>
             </DockPanel>
         </TabItem>
-        
-        
-        
+
+
+
     </TabControl>
 </Window>
