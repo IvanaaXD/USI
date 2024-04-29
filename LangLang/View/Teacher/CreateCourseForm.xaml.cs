@@ -133,7 +133,7 @@ namespace LangLang.View.Teacher
             {
                 int courseId = teacherController.GetAllCourses().Last().Id;
                 Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                teacher.CoursesId.Add(courseId);
+                teacher.CoursesId.Add(courseId+1);
                 directorController.Update(teacher);
                 teacherController.AddCourse(Course.ToCourse());
 

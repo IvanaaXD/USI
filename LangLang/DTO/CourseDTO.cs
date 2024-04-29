@@ -154,12 +154,18 @@ namespace LangLang.DTO
                 {
                     case "Duration":
                         if (Duration == null)
-                            return "Course duration must be >=0";
-                        if (int.Parse(Duration) < 0)
                             return "Course duration must be >= 0";
-                        if (int.Parse(Duration) > 20)
+                        if (Duration == "")
+                            return "Course duration must be >= 0";
+                        int durationValue;
+                        if (!int.TryParse(Duration, out durationValue))
+                            return "Invalid input for duration. Please enter a valid numeric value.";
+
+                        if (durationValue < 0)
+                            return "Course duration must be >= 0";
+                        if (durationValue > 20)
                             return "Course duration must be <= 20";
-                        break;
+
                         break;
                     case "StartDate":
                         if (StartDate < DateTime.Today)
