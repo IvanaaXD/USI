@@ -62,17 +62,17 @@ namespace LangLang.Model.DAO
         {
             return _grades.Find(v => v.Id == id);
         }
-        public Grade? GetGradesByStudentTeacherExam(int studentId, int teacherId, int examId)
+        public Grade? GetGradeByStudentTeacherExam(int studentId, int teacherId, int examId)
         {
             return _grades.Find(grade => grade.StudentId == studentId && grade.TeacherId == teacherId && grade.ExamId == examId);
         }
-        public Grade? GetGradesByStudentExam(int studentId, int examId)
+        public Grade? GetGradeByStudentExam(int studentId, int examId)
         {
             return _grades.Find(grade => grade.StudentId == studentId && grade.ExamId == examId);
         }
-        public Grade? GetGradesByTeacherExam(int teacherId, int examId)
+        public List<Grade> GetGradesByTeacherExam(int teacherId, int examId)
         {
-            return _grades.Find(grade => grade.TeacherId == teacherId && grade.ExamId == examId);
+            return _grades.Where(grade => grade.TeacherId == teacherId && grade.ExamId == examId).ToList();
         }
 
         public List<Grade> GetAllGrades()
