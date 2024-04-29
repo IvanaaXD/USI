@@ -273,6 +273,21 @@ namespace LangLang.View.Teacher
             }
         }
 
+        private void ViewCourse_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedCourse == null)
+            {
+                MessageBox.Show("Please choose a course to view!");
+            }
+            else
+            {
+                Course course = teacherController.GetCourseById(SelectedCourse.Id);
+                CourseView courseView = new CourseView(course, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
+                courseView.Show();
+            }
+        }
+
+
         private void ViewExam_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedExamTerm == null)
@@ -348,17 +363,6 @@ namespace LangLang.View.Teacher
             return finalExamTerms;
         }
 
-        private void ViewCourse_Click(object sender, RoutedEventArgs e)
-        {
-            if (SelectedCourse == null)
-            {
-                MessageBox.Show("Please choose a course to view!");
-            }
-            else
-            {
-                ViewCourseTable viewCourse = new ViewCourseTable(SelectedCourse.Id, teacherId, teacherController, directorController);
-                viewCourse.Show();
-            }
-        }
+
     }
 }
