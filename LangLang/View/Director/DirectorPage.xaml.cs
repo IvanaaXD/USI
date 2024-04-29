@@ -12,7 +12,6 @@ namespace LangLang.View.Director
     {
         public ObservableCollection<TeacherDTO> Teachers { get; set; }
 
-
         public class ViewModel
         {
             public ObservableCollection<TeacherDTO> Teachers { get; set; }
@@ -26,7 +25,6 @@ namespace LangLang.View.Director
         readonly DirectorController directorController;
 
         public TeacherDTO SelectedTeacher { get; set; }
-
 
         public ViewModel TableViewModel { get; set; }
 

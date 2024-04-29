@@ -3,9 +3,9 @@ using System.Windows.Input;
 using LangLang.View.Director;
 using LangLang.Controller;
 using LangLang.Model;
+using LangLang.Observer;
 using LangLang.View.Teacher;
 using LangLang.View.Student;
-using RegistrationForm = LangLang.View.Student.RegistrationForm;
 
 namespace LangLang
 {

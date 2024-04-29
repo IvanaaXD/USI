@@ -243,15 +243,12 @@ namespace LangLang.DTO
                         if (string.IsNullOrEmpty(Password))
                             return "Password is required";
 
-                        if (!_PasswordRegex.IsMatch(Password))
-                            return "Format not good. Try again.";
-
                         directorController = new DirectorController();
                         studentsController = new StudentsController();
 
                         foreach (Teacher teacher in directorController.GetAllTeachers())
                         {
-                            if (teacher.Password.Equals(Password))
+                            if (teacher.Password.Equals(Password) && teacher.Id != Id)
                                 return "Email already exists. Try again.";
                         }
 
@@ -286,6 +283,7 @@ namespace LangLang.DTO
 
             return new Teacher
             {
+                Id = id,
                 FirstName = firstName,
                 LastName = lastName,
                 Gender = gender,

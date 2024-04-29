@@ -15,7 +15,8 @@ namespace LangLang.View.Director
 
         public TeacherDTO Teacher { get; set; }
 
-        private readonly DirectorController directorController;
+        private DirectorController directorController;
+
         private string teacherEmail;
 
         public UpdateTeacherForm(int teacherId, DirectorController directorController)
@@ -48,16 +49,8 @@ namespace LangLang.View.Director
         {
             if (Teacher.IsValid)
             {
-                if (directorController.IsEmailUnique(Teacher.Email) || 
-                   (!directorController.IsEmailUnique(Teacher.Email) && Teacher.Email == teacherEmail))
-                {
-                    directorController.Update(Teacher.ToTeacher());
-                    Close();
-                }
-                else
-                {
-                    MessageBox.Show("Email already exists.");
-                }
+                directorController.Update(Teacher.ToTeacher());
+                Close();
             }
             else
             {
