@@ -209,8 +209,25 @@ namespace LangLang.DTO
                         if (string.IsNullOrEmpty(Password))
                             return "Password is required";
 
+<<<<<<< Updated upstream
                         if (!_PasswordRegex.IsMatch(Password))
                             return "Format not good. Try again.";
+=======
+                        directorController = new DirectorController();
+                        studentsController = new StudentsController();
+
+                        foreach (Teacher teacher in directorController.GetAllTeachers())
+                        {
+                            if (teacher.Password.Equals(Password) && teacher.Id != Id)
+                                return "Email already exists. Try again.";
+                        }
+
+                        foreach (Student student in studentsController.GetAllStudents())
+                        {
+                            if (student.Password.Equals(Password))
+                                return "Email already exists. Try again.";
+                        }
+>>>>>>> Stashed changes
                         break;
                 }
                 return null;
@@ -237,6 +254,7 @@ namespace LangLang.DTO
 
             return new Teacher
             {
+                Id = id,
                 FirstName = firstName,
                 LastName = lastName,
                 Gender = gender,

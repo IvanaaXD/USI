@@ -18,7 +18,12 @@ using LangLang.View.Director;
 using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Model;
+<<<<<<< Updated upstream
 using LangLang.Observer;
+=======
+using LangLang.View.Teacher;
+using LangLang.View.Student;
+>>>>>>> Stashed changes
 
 namespace LangLang
 {
