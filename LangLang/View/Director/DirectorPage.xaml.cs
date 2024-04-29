@@ -36,8 +36,6 @@ namespace LangLang.View.Director
             this.directorId = directorId;
             this.directorController = directorController;
 
-            this.Teachers = Teachers;
-
             TableViewModel = new ViewModel();
             DataContext = this;
             directorController.Subscribe(this);

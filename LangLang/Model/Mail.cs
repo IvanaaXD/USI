@@ -1,15 +1,15 @@
 ﻿using LangLang.Model.Enums;
 using System;
 using LangLang.Storage.Serialization;
-
+using LangLang.Controller;
 
 namespace LangLang.Model
 {
     public class Mail : ISerializable
     {
         private int id;
-        private string sender;
-        private string recevier;
+        private Person sender;
+        private Person recevier;
         private TypeOfMessage typeOfMessage;
         private DateTime dateOfMessage;
         private string message;
@@ -20,12 +20,12 @@ namespace LangLang.Model
             get { return id; }
             set { id = value; }
         }
-        public string Sender
+        public Person Sender
         {
             get { return sender; }
             set { sender = value; }
         }
-        public string Recevier
+        public Person Recevier
         {
             get { return recevier; }
             set { recevier = value; }
@@ -53,7 +53,7 @@ namespace LangLang.Model
 
         public Mail() { }
 
-        public Mail(int id, string sender, string recevier, TypeOfMessage typeOfMessage, DateTime dateOfMessage, string message, bool answered)
+        public Mail(int id, Person sender, Person recevier, TypeOfMessage typeOfMessage, DateTime dateOfMessage, string message, bool answered)
         {
 
             this.id = id;
@@ -70,8 +70,8 @@ namespace LangLang.Model
             string[] csvValues =
             {
                 Id.ToString(),
-                Sender,
-                Recevier,
+                Sender.Email,
+                Recevier.Email,
                 TypeOfMessage.ToString(),
                 DateOfMessage.ToString("yyyy-MM-dd"),
                 Message,
@@ -84,12 +84,75 @@ namespace LangLang.Model
         {
             if (values.Length != 7)
             {
-                throw new ArgumentException("Invalid number of student values in CSV");
+                throw new ArgumentException("Invalid number of maik values in CSV");
             }
 
             id = int.Parse(values[0]);
-            sender = values[1];
-            recevier = values[2];
+
+            MainController mainController = new MainController();
+            bool found = false;
+
+            foreach (Student student in mainController.GetStudentController().GetAllStudents())
+            {
+                if (sender.Equals(values[1]))
+                {
+                    sender = student;
+                    break;
+                }
+            }
+
+            if (!found) {
+                foreach (Teacher teacher in mainController.GetDirectorController().GetAllTeachers())
+                {
+                    if (sender.Equals(values[1]))
+                    {
+                        sender = teacher;
+                        break;
+                    }
+                }
+            }
+
+            if (!found)
+            {
+                Director director = mainController.GetDirectorController().GetDirector();
+                if (sender.Equals(values[1]))
+                {
+                    sender = director;
+                }
+            }
+
+            found = false;
+
+            foreach (Student student in mainController.GetStudentController().GetAllStudents())
+            {
+                if (recevier.Equals(values[1]))
+                {
+                    recevier = student;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                foreach (Teacher teacher in mainController.GetDirectorController().GetAllTeachers())
+                {
+                    if (recevier.Equals(values[1]))
+                    {
+                        recevier = teacher;
+                        break;
+                    }
+                }
+            }
+
+            if (!found)
+            {
+                Director director = mainController.GetDirectorController().GetDirector();
+                if (recevier.Equals(values[1]))
+                {
+                    recevier = director;
+                }
+            }
+
             typeOfMessage = (TypeOfMessage)Enum.Parse(typeof(TypeOfMessage), values[3]);
             dateOfMessage = DateTime.ParseExact(values[4], "yyyy-MM-dd", null);
             message = values[5];

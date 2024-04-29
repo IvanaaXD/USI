@@ -1,33 +1,24 @@
-﻿using LangLang.Controller;
-using LangLang.Model.Enums;
-using LangLang.Model;
+﻿using LangLang.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using LangLang.Model;
 
 namespace LangLang.DTO
 {
-    internal class MailDTO : INotifyPropertyChanged, IDataErrorInfo
+    public class MailDTO : INotifyPropertyChanged, IDataErrorInfo
     {
         private int id;
-        private string sender;
-        private string recevier;
+        private Person sender;
+        private Person recevier;
         private TypeOfMessage typeOfMessage;
         private DateTime dateOfMessage;
         private string message;
         private bool answered;
 
-        private readonly StudentsController _studentController;
-        private readonly TeacherController _teacherController;
-        private readonly DirectorController _directorController;
-
-        public MailDTO(MainController mainController)
-        {
-            _studentController = mainController.GetStudentController();
-            _teacherController = mainController.GetTeacherController();
-            _directorController = mainController.GetDirectorController();
-        }
+        private string firstName;
+        private string lastName;
 
         public int Id
         {
@@ -35,13 +26,13 @@ namespace LangLang.DTO
             set { SetProperty(ref id, value); }
         }
 
-        public string Sender
+        public Person Sender
         {
             get { return sender; }
             set { SetProperty(ref sender, value); }
         }
 
-        public string Recevier
+        public Person Recevier
         {
             get { return recevier; }
             set { SetProperty(ref recevier, value); }
@@ -69,6 +60,18 @@ namespace LangLang.DTO
         {
             get { return answered; }
             set { SetProperty(ref answered, value); }
+        }
+
+        public string FirstName
+        {
+            get { return firstName; }
+            set { SetProperty(ref firstName, value); }
+        }
+
+        public string LastName
+        {
+            get { return lastName; }
+            set { SetProperty(ref lastName, value); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -129,7 +132,7 @@ namespace LangLang.DTO
                 TypeOfMessage = typeOfMessage,
                 DateOfMessage = dateOfMessage,
                 Message = message,
-                Answered = answered
+                Answered = answered,
             };
         }
 
@@ -147,6 +150,8 @@ namespace LangLang.DTO
             dateOfMessage = mail.DateOfMessage;
             message = mail.Message;
             answered = mail.Answered;
+            firstName = mail.Sender.FirstName;
+            lastName = mail.Sender.LastName;
         }
     }
 }

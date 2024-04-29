@@ -1,64 +1,93 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Model;
-using LangLang.Model.Enums;
 using LangLang.Observer;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace LangLang.View.Teacher
 {
     public partial class ExamTermView : Window, IObserver
     {
-        public ObservableCollection<TeacherDTO> Teachers { get; set; }
-
+        public ObservableCollection<MailDTO> Mails { get; set; }
+        public ObservableCollection<StudentDTO> Students { get; set; }
         public class ViewModel
         {
-            public ObservableCollection<TeacherDTO> Teachers { get; set; }
+            public ObservableCollection<MailDTO> Mails { get; set; }
+            public ObservableCollection<StudentDTO> Students { get; set; }
 
             public ViewModel()
             {
-                Teachers = new ObservableCollection<TeacherDTO>();
+                Mails = new ObservableCollection<MailDTO>();
+                Students = new ObservableCollection<StudentDTO>();
             }
         }
-        readonly ExamTerm examTerm;
-        readonly Model.Teacher teacher;
-        readonly TeacherController teacherController;
-        public TeacherDTO SelectedExamTerm { get; set; }
 
-        public ViewModel TableViewModel { get; set; }
+        public ViewModel MailsTableViewModel { get; set; }
+        public ViewModel StudentsTableViewModel { get; set; }
+        public MailDTO SelectedMail { get; set; }
 
-        public void Update()
-        {
-            throw new NotImplementedException();
-        }
+        private readonly ExamTerm examTerm;
+        private readonly Model.Teacher teacher;
+        private readonly TeacherController teacherController;
+        private readonly StudentsController studentController;
 
-        public ExamTermView(ExamTerm examTerm, Model.Teacher teacher, TeacherController teacherController)
+        public ExamTermView(ExamTerm examTerm, Model.Teacher teacher, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             this.examTerm = examTerm;
-
             this.teacherController = teacherController;
-            this.Teachers = Teachers;
-
+            this.studentController = studentController;
             this.teacher = teacher;
 
-            TableViewModel = new ViewModel();
-            teacherController = new TeacherController();
+            MailsTableViewModel = new ViewModel();
+            StudentsTableViewModel = new ViewModel();
 
             DataContext = this;
 
             teacherController.Subscribe(this);  
-            Update();
 
-            if (examTerm.Confirmed)
+            if (examTerm.ExamTime.Date <= DateTime.Now.AddDays(-7) || examTerm.Confirmed)
             {
                 Confirm.Visibility = Visibility.Collapsed;
+            }
+
+            Update();
+        }
+        public void Update()
+        {
+            try
+            {
+                MailsTableViewModel.Mails.Clear();
+                var mails = teacherController.GetAllMails();
+
+                if (mails != null)
+                {
+                    foreach (Mail mail in mails)
+                        MailsTableViewModel.Mails.Add(new MailDTO(mail));
+                }
+                else
+                {
+                    MessageBox.Show("No teachers found.");
+                }
+
+                StudentsTableViewModel.Students.Clear();
+                var students = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
+
+                if (students != null)
+                {
+                    foreach (Model.Student student in students)
+                        StudentsTableViewModel.Students.Add(new StudentDTO(student));
+                }
+                else
+                {
+                    MessageBox.Show("No teachers found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
 
@@ -67,6 +96,16 @@ namespace LangLang.View.Teacher
             teacherController.ConfirmExamTerm(this.examTerm.ExamID);
             MessageBox.Show("ExamTerm confirmed.");
             Confirm.Visibility = Visibility.Collapsed;
+        }
+
+        private void ReadMail_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AnswerMail_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
