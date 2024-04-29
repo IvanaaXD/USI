@@ -10,7 +10,8 @@ namespace LangLang.View.Director
 {
     public partial class DirectorPage : Window, IObserver
     {
-        public ObservableCollection<TeacherDTO> ?Teachers { get; set; }
+        public ObservableCollection<TeacherDTO> Teachers { get; set; }
+
 
         public class ViewModel
         {
@@ -23,7 +24,9 @@ namespace LangLang.View.Director
         }
         readonly int directorId;
         readonly DirectorController directorController;
-        public TeacherDTO ?SelectedTeacher { get; set; }
+
+        public TeacherDTO SelectedTeacher { get; set; }
+
 
         public ViewModel TableViewModel { get; set; }
 
@@ -34,26 +37,27 @@ namespace LangLang.View.Director
             InitializeComponent();
             this.directorId = directorId;
             this.directorController = directorController;
-            Model.Director director = directorController.GetDirector();
-            firstAndLastName.Text = director.FirstName + " " + director.LastName;
 
             this.Teachers = Teachers;
 
             TableViewModel = new ViewModel();
-            directorController = new DirectorController();
             DataContext = this;
             directorController.Subscribe(this);
+
+            Model.Director director = directorController.GetDirector();
+            firstAndLastName.Text = director.FirstName + " " + director.LastName;
+
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
-            this.directorId = directorId;
+
             Update();
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
-            MainWindow mainWindow = new MainWindow();
+            MainWindow mainWindow = new();
             mainWindow.Show();
+            this.Close();
         }
 
         public void Update()

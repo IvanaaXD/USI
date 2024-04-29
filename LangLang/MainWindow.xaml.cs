@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-
 using LangLang.View.Director;
 using LangLang.Controller;
 using LangLang.Model;
