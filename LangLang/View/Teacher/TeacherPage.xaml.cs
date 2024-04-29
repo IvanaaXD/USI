@@ -284,7 +284,7 @@ namespace LangLang.View.Teacher
                 ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
                 if (examTerm != null)
                 {
-                    ExamTermView examTermView = new ExamTermView(examTerm, directorController.GetTeacherById(this.teacherId), teacherController);
+                    ExamTermView examTermView = new ExamTermView(examTerm, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
                     examTermView.Show();
                 }
                 else

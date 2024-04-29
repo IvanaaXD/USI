@@ -32,6 +32,12 @@ namespace LangLang.Controller
         {
             return _teachers.GetAllExamTerms();
         }
+
+        public List<Mail> GetAllMails()
+        {
+            return _teachers.GetAllMails();
+        }
+
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
             return _teachers.GetAvailableCourses(teacher);
