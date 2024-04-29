@@ -36,7 +36,7 @@ namespace LangLang.View.Teacher
         public TeacherController teacherController { get; set; }
         public DirectorController directorController { get; set; }
         public MainController mainController { get; set; }
-        
+
         private bool isSearchCourseClicked = false;
         private bool isSearchExamClicked = false;
         public TeacherPage(int teacherId, MainController mainController)
@@ -57,11 +57,11 @@ namespace LangLang.View.Teacher
             Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             firstAndLastName.Text = teacher.FirstName + " " + teacher.LastName;
 
-            languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
-            levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
+            courseLanguageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
+            courseLevelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
 
 
-            List<Language> languages = new List<Language> ();
+            List<Language> languages = new List<Language>();
             List<LanguageLevel> levels = new List<LanguageLevel>();
 
             var courses = GetFilteredCourses();
@@ -70,15 +70,15 @@ namespace LangLang.View.Teacher
             {
                 languages.Add(course.Language);
                 levels.Add(course.Level);
-                
+
             }
             examLanguageComboBox.ItemsSource = languages;
-            examLevelComboBox.ItemsSource = levels; 
-            
+            examLevelComboBox.ItemsSource = levels;
+
             DataContext = this;
 
             Update();
-            UpdateExam(); 
+            UpdateExam();
         }
 
         public void Update()
@@ -170,11 +170,11 @@ namespace LangLang.View.Teacher
 
         private void ResetCourse_Click()
         {
-            languageComboBox.SelectedItem = null;
-            levelComboBox.SelectedItem = null;
-            startDateDatePicker.SelectedDate = null;
-            durationTextBox.Text = string.Empty;
-            onlineCheckBox.IsChecked = false;
+            courseLanguageComboBox.SelectedItem = null;
+            courseLevelComboBox.SelectedItem = null;
+            courseStartDateDatePicker.SelectedDate = null;
+            courseDurationTextBox.Text = string.Empty;
+            courseOnlineCheckBox.IsChecked = false;
         }
 
         private List<Course> GetFinalDisplayCourses(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration)
@@ -183,7 +183,7 @@ namespace LangLang.View.Teacher
 
             if (isSearchCourseClicked)
             {
-                bool isOnline = onlineCheckBox.IsChecked ?? false;
+                bool isOnline = courseOnlineCheckBox.IsChecked ?? false;
                 List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
                 foreach (Course course in allFilteredCourses)
                 {
@@ -208,13 +208,13 @@ namespace LangLang.View.Teacher
 
         private List<Course> GetFilteredCourses()
         {
-            Language? selectedLanguage = (Language?)languageComboBox.SelectedItem;
-            LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
-            DateTime? selectedStartDate = startDateDatePicker.SelectedDate;
+            Language? selectedLanguage = (Language?)courseLanguageComboBox.SelectedItem;
+            LanguageLevel? selectedLevel = (LanguageLevel?)courseLevelComboBox.SelectedItem;
+            DateTime? selectedStartDate = courseStartDateDatePicker.SelectedDate;
             int selectedDuration = 0;
-            if (!string.IsNullOrEmpty(durationTextBox.Text))
+            if (!string.IsNullOrEmpty(courseDurationTextBox.Text))
             {
-                if (int.TryParse(durationTextBox.Text, out int duration))
+                if (int.TryParse(courseDurationTextBox.Text, out int duration))
                 {
                     selectedDuration = duration;
                 }
@@ -322,7 +322,7 @@ namespace LangLang.View.Teacher
             Language? selectedLanguage = (Language?)examLanguageComboBox.SelectedItem;
             LanguageLevel? selectedLevel = (LanguageLevel?)examLevelComboBox.SelectedItem;
             DateTime? selectedStartDate = examDatePicker.SelectedDate;
-            
+
             var courses = GetFilteredCourses();
 
             List<ExamTerm> examTerms = teacherController.GetAllExamTerms();
@@ -348,5 +348,17 @@ namespace LangLang.View.Teacher
             return finalExamTerms;
         }
 
+        private void ViewCourse_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedCourse == null)
+            {
+                MessageBox.Show("Please choose a course to view!");
+            }
+            else
+            {
+                ViewCourseTable viewCourse = new ViewCourseTable(SelectedCourse.Id, teacherId, teacherController, directorController);
+                viewCourse.Show();
+            }
+        }
     }
 }
