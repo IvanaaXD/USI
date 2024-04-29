@@ -38,6 +38,11 @@ namespace LangLang.View.Student
             AvailableCoursesTable availableCoursesTable = new AvailableCoursesTable(studentId);
             availableCoursesTable.Show();
         }
+        private void RegisteredCourses_Click(object sender, RoutedEventArgs e)
+        {
+            RegisteredCoursesTable registeredCoursesTable = new RegisteredCoursesTable(studentId);
+            registeredCoursesTable.Show();
+        }
         private void AvailableExamTerms_Click(object sender, RoutedEventArgs e)
         {
             AvailableExamTermsTable availableExamTermsForm = new AvailableExamTermsTable(studentId);
