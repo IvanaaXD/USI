@@ -4,7 +4,9 @@ using LangLang.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Input;
 
 namespace LangLang.View.Teacher
 {
@@ -30,7 +32,9 @@ namespace LangLang.View.Teacher
         public ViewModel SentMailsTableViewModel { get; set; }
         public ViewModel ReceivedMailsTableViewModel { get; set; }
         public ViewModel StudentsTableViewModel { get; set; }
-        public MailDTO SelectedMail { get; set; }
+        public StudentDTO SelectedStudent { get; set; }
+        public MailDTO SelectedSentMail { get; set; }
+        public MailDTO SelectedReceivedMail { get; set; }
 
         private readonly ExamTerm examTerm;
         private readonly Model.Teacher teacher;
@@ -50,16 +54,27 @@ namespace LangLang.View.Teacher
             StudentsTableViewModel = new ViewModel();
 
             DataContext = this;
+            teacherController.Subscribe(this);
 
-            teacherController.Subscribe(this);  
-
-            if (examTerm.ExamTime.Date <= DateTime.Now.AddDays(-7) || examTerm.Confirmed)
+            if (DateTime.Now.AddDays(+7) <= examTerm.ExamTime.Date || examTerm.Confirmed)
             {
                 Confirm.Visibility = Visibility.Collapsed;
             }
 
+            if (!HasExamTermStarted())
+            {
+                Suspend.Visibility = Visibility.Collapsed;
+            } 
+
+            if (!HasExamTermFinished())
+            {
+                Mark.Visibility = Visibility.Collapsed;
+            }
+
+            AddExamTermInfo();
             Update();
         }
+
         public void Update()
         {
             try
@@ -107,6 +122,75 @@ namespace LangLang.View.Teacher
             }
         }
 
+        private void ViewExamTerms_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void AddExamTermInfo()
+        {
+            Course course = teacherController.GetCourseById(examTerm.CourseID);
+
+            examTermLanguageTextBlock.Text = $"{course.Language}";
+            examTermLevelTextBlock.Text = $"{course.Level}";
+            examTermStartDateTextBlock.Text = examTerm.ExamTime.ToString("yyyy-MM-dd HH:mm");
+            examTermMaxStudentsTextBlock.Text = examTerm.MaxStudents.ToString();
+            examTermCurrentlyAttendingTextBlock.Text = examTerm.CurrentlyAttending.ToString();
+
+            string examTermStatusCheck;
+
+            if (HasExamTermStarted())
+            {
+                examTermStatusCheck = "ExamTerm has started";
+            }
+            else if (HasExamTermFinished())
+            {
+                examTermStatusCheck = "ExamTerm has finished. It needs to be graded";
+            }
+            else if(examTerm.Confirmed)
+            {
+                examTermStatusCheck = "ExamTerm has been confirmed";
+            } 
+            else 
+            {
+                examTermStatusCheck = "ExamTerm hasn't started";
+            }
+
+            examTermStatus.Text = examTermStatusCheck;
+        }
+
+        private bool HasExamTermStarted()
+        {
+            TimeSpan currentTime = DateTime.Now.TimeOfDay;
+            TimeSpan examStartTime = TimeSpan.Parse(examTerm.ExamTime.ToString().Split()[1]);
+            TimeSpan examEndTime = examStartTime.Add(new TimeSpan(4, 0, 0));
+
+            if (DateTime.Today.Date.ToString("yyyy-MM-dd").Equals(examTerm.ExamTime.Date.ToString("yyyy-MM-dd"))) 
+            {
+                if (currentTime >= examStartTime && currentTime <= examEndTime)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool HasExamTermFinished()
+        {
+            TimeSpan currentTime = DateTime.Now.TimeOfDay;
+            TimeSpan examStartTime = TimeSpan.Parse(examTerm.ExamTime.ToString().Split()[1]);
+            TimeSpan examEndTime = examStartTime.Add(new TimeSpan(4, 0, 0));
+
+            if (DateTime.Today.Date.ToString("yyyy-MM-dd").Equals(examTerm.ExamTime.Date.ToString("yyyy-MM-dd")))
+            {
+                if (currentTime > examEndTime)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void ConfirmExamTerm_Click(object sender, RoutedEventArgs e)
         {
             teacherController.ConfirmExamTerm(this.examTerm.ExamID);
@@ -114,6 +198,29 @@ namespace LangLang.View.Teacher
             Confirm.Visibility = Visibility.Collapsed;
         }
 
+        private void SuspendStudent_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedStudent == null)
+            {
+                MessageBox.Show("Please choose a student to delete!");
+            }
+            else
+            {
+                studentController.Delete(SelectedStudent.id);
+            }
+        }
+
+        private void GradeStudent_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedStudent == null)
+            {
+                MessageBox.Show("Please choose a student to grade!");
+            }
+            else
+            {
+                //teacherController.Grade(SelectedStudent.id);
+            }
+        }
         private void ReadMail_Click(object sender, RoutedEventArgs e)
         {
 
