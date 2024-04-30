@@ -24,7 +24,7 @@ namespace LangLang.View.Teacher
                 Students = new ObservableCollection<StudentDTO>();
             }
         }
-        
+
         public ViewModel MailsTableViewModel { get; set; }
         public ViewModel StudentsTableViewModel { get; set; }
         public MailDTO SelectedMail { get; set; }
@@ -49,7 +49,9 @@ namespace LangLang.View.Teacher
 
             teacherController.Subscribe(this);
 
-            if (course.StartDate.Date <= DateTime.Now.AddDays(-7))
+            AddCourseInfo();
+
+            if (!HasCourseStarted())
             {
                 PenaltyPoint.Visibility = Visibility.Collapsed;
             }
@@ -93,10 +95,53 @@ namespace LangLang.View.Teacher
             }
         }
 
+        private void ViewCourses_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void AddCourseInfo()
+        {
+            courseLanguageTextBlock.Text = $"{course.Language}";
+            courseLevelTextBlock.Text = $"{course.Level}";
+            courseStartDateTextBlock.Text = course.StartDate.ToString("yyyy-MM-dd HH:mm");
+            courseDurationTextBlock.Text = course.Duration.ToString();
+            courseCurrentyEnrolledTextBlock.Text = course.CurrentlyEnrolled.ToString();
+
+            string courseStatusCheck;
+
+            if (HasStudentAcceptingPeriodStarted())
+                courseStatusCheck = "Request Accepting Period";
+            else if (HasCourseStarted())
+                courseStatusCheck = "Course Active";
+            else if (HasCoursePassed())
+                courseStatusCheck = "Course Ended";
+            else
+                courseStatusCheck = "Requests Open For Students";
+
+            courseStatus.Text = courseStatusCheck;
+        }
+
+        private bool HasStudentAcceptingPeriodStarted()
+        {
+            return (course.StartDate <= DateTime.Now.AddDays(7));
+        }
+
+        private bool HasCourseStarted()
+        {
+            return (course.StartDate <= DateTime.Now);
+        }
+
+        private bool HasCoursePassed()
+        {
+            return (course.StartDate.AddDays(7 * course.Duration) <= DateTime.Now);
+        }
+
         private void PenaltyPoint_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
 
         private void ReadMail_Click(object sender, RoutedEventArgs e)
         {

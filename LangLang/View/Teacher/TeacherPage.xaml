@@ -29,12 +29,12 @@
                     <Image Source="https://cdn0.iconfinder.com/data/icons/people-occupations-icons-rounded/110/Teacher-1024.png" Width="150"></Image>
                 </Border>
 
-                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Center"
-                 FontSize="30">Welcome</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Left"
+                 FontSize="30" Margin="346,0,0,0">Welcome</TextBlock>
                 <Button x:Name="logoutBtn" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="Logout_Click"
              Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Log out</Button>
 
-                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="239,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="270"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -45,8 +45,8 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="Teacher: " VerticalAlignment="Center" FontSize="20"></TextBlock>
-                    <TextBlock x:Name="firstAndLastName" Grid.Row="1" FontSize="20"></TextBlock>
+                    <TextBlock Text="Teacher: " VerticalAlignment="Center" FontSize="20" Grid.ColumnSpan="2" Margin="26,0,-26,0"/>
+                    <TextBlock x:Name="firstAndLastName" FontSize="20" Grid.ColumnSpan="2" Margin="161,6,-161,7"/>
                 </Grid>
             </Grid>
         </TabItem>
