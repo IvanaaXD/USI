@@ -56,7 +56,6 @@ namespace LangLang.Model.Enums
 
         QuitEnteringCourseRequest,
 
-        EnterExamTermRequest,
         PenaltyPointMessage,
         NULL
     }
