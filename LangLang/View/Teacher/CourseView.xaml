@@ -66,12 +66,16 @@
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem Header="Students">
+        <TabItem Header="Students" Name="StudentsTable" Height="20" VerticalAlignment="Top">
             <DockPanel Height="auto">
                 <Grid>
-                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="83*"/>
+                        <ColumnDefinition Width="711*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid VerticalAlignment="Top" Margin="0,5,0,0" Grid.ColumnSpan="2">
                         <TabControl VerticalAlignment="Center" Grid.ColumnSpan="2">
-                            <DataGrid Height="350"
+                            <DataGrid Height="330"
                             AutoGenerateColumns="False"
                             x:Name="ExamTermDataGrid"
                             ItemsSource="{Binding StudentsTableViewModel.Students, UpdateSourceTrigger=PropertyChanged}"
@@ -89,17 +93,20 @@
 
                     </Grid>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="249,0,0,7" Grid.Column="1" Height="25">
+                        <Button Name ="ConfirmRequest" Content="Confirm Request" Click="ConfirmRequest_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="100"/>
+                        <Button Name ="RejectRequest" Content="Reject Request" Click="RejectRequest_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="100"/>
                         <Button Name ="PenaltyPoint" Content="Give Penalty Point" Click="PenaltyPoint_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="120"/>
+                        <Button Name="Mark" Content="Grade" Click="GradeStudent_Click" Margin="10,0,0,0" Foreground="White" Background="#6d6fbf" Width="80"/>
                     </StackPanel>
 
                 </Grid>
             </DockPanel>
         </TabItem>
         <TabItem Header="Mail">
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Window}}">
+            <TabControl TabStripPlacement="Left">
 
-                <TabItem Header="Received" Height="30">
+                <TabItem Header="Received" Height="auto">
                     <DockPanel Height="auto">
                         <Grid>
                             <!-- Left half -->
@@ -109,31 +116,39 @@
                             </Grid.ColumnDefinitions>
 
                             <TabControl Grid.Column="0" VerticalAlignment="Top" Margin="0,5,0,35">
-                                <DataGrid Height="350"
+                                <DataGrid Height="373"
                                   AutoGenerateColumns="False"
-                                  x:Name="MailDataGrid"
-                                  ItemsSource="{Binding TableViewModel.Mail, UpdateSourceTrigger=PropertyChanged}"
-                                  SelectedItem="{Binding SelectedMail, UpdateSourceTrigger=PropertyChanged}"
+                                  x:Name="ReceivedMailDataGrid"
+                                  ItemsSource="{Binding ReceivedMailsTableViewModel.Mail, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding SelectedReceivedMail, UpdateSourceTrigger=PropertyChanged}"
                                   SelectionMode="Single" IsReadOnly="True">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="First name" Binding="{Binding FirstName}" />
                                         <DataGridTextColumn Header="Last name" Binding="{Binding LastName}" />
-                                        <DataGridTextColumn Header="Type of Message" Binding="{Binding TypeOfMessage}" />
+                                        <DataGridTextColumn Header="Type of Message" Width="*" Binding="{Binding TypeOfMessage}" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </TabControl>
 
                             <!-- Right half -->
-                            <StackPanel Grid.Column="1" Margin="10">
-                                <TextBlock Text="{Binding SelectedMail.FirstName}" />
-                                <TextBlock Text="{Binding SelectedMail.LastName}" />
-                                <TextBlock Text="{Binding SelectedMail.DateOfMessage}" />
-                                <TextBlock Text="{Binding SelectedMail.TypeOfMessage}" />
-                                <TextBlock Text="{Binding SelectedMail.Message}" />
-
+                            <StackPanel Grid.Column="1" Margin="10,10,10,35">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="READ" Click="ReadMail_Click" Margin="0,10,10,0" />
-                                    <Button Content="ANSWER" Click="AnswerMail_Click" Margin="0,10,0,0" />
+                                    <TextBlock>Sender:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedReceivedMail.FirstName}" Margin="3,0"/>
+                                    <TextBlock Text="{Binding SelectedReceivedMail.LastName}" Margin="3,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Date of message:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedMail.DateOfMessage}" Margin="3,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Type of message:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedReceivedMail.TypeOfMessage}" Margin="3,0"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding SelectedReceivedMail.Message}" Margin="0,0,0,0" HorizontalAlignment="Stretch" Height="250"/>
+                                <StackPanel Orientation="Horizontal" Height="37" HorizontalAlignment="Right" Width="180" Margin="0,0,10,0">
+                                    <Button Content="READ" Click="ReadMail_Click" Margin="0,10,40,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                    <Button Content="ANSWER" Click="AnswerMail_Click" Margin="0,10,0,0" Foreground="White" Background="#6d6fbf" Width="70"/>
                                 </StackPanel>
                             </StackPanel>
 
@@ -142,11 +157,55 @@
                 </TabItem>
 
                 <TabItem Header="Sent"  Height="30">
+                    <DockPanel Height="auto">
+                        <Grid>
+                            <!-- Left half -->
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
+                            <TabControl Grid.Column="0" VerticalAlignment="Top" Margin="0,5,0,35">
+                                <DataGrid Height="373"
+                                  AutoGenerateColumns="False"
+                                  x:Name="SentMailDataGrid"
+                                  ItemsSource="{Binding SentMailsTableViewModel.Mail, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding SelectedSentMail, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectionMode="Single" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="First name" Binding="{Binding FirstName}" />
+                                        <DataGridTextColumn Header="Last name" Binding="{Binding LastName}" />
+                                        <DataGridTextColumn Header="Type of Message" Width="*" Binding="{Binding TypeOfMessage}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabControl>
+
+                            <!-- Right half -->
+                            <StackPanel Grid.Column="1" Margin="10,10,10,35">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Sender:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedSentMail.FirstName}" Margin="3,0"/>
+                                    <TextBlock Text="{Binding SelectedSentMail.LastName}" Margin="3,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Date of message:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedSentMail.DateOfMessage}" Margin="3,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Type of message:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedSentMail.TypeOfMessage}" Margin="3,0"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding SelectedSentMail.Message}" Margin="0,0,0,0" HorizontalAlignment="Stretch" Height="250"/>
+                                <StackPanel Orientation="Horizontal" Height="37" HorizontalAlignment="Right" Width="180" Margin="0,0,10,0">
+                                    <Button Content="READ" Click="ReadMail_Click" Margin="0,10,40,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                    <Button Content="ANSWER" Click="AnswerMail_Click" Margin="0,10,0,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </Grid>
+                    </DockPanel>
                 </TabItem>
-
-            </StackPanel>
-
+            </TabControl>
         </TabItem>
     </TabControl>
 </Window>

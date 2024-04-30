@@ -11,23 +11,28 @@ namespace LangLang.View.Teacher
 {
     public partial class CourseView : Window, IObserver
     {
-        public ObservableCollection<MailDTO> Mails { get; set; }
+        public ObservableCollection<MailDTO> ReceivedMails { get; set; }
+        public ObservableCollection<MailDTO> SentMails { get; set; }
         public ObservableCollection<StudentDTO> Students { get; set; }
         public class ViewModel
         {
-            public ObservableCollection<MailDTO> Mails { get; set; }
+            public ObservableCollection<MailDTO> ReceivedMails { get; set; }
+            public ObservableCollection<MailDTO> SentMails { get; set; }
             public ObservableCollection<StudentDTO> Students { get; set; }
 
             public ViewModel()
             {
-                Mails = new ObservableCollection<MailDTO>();
+                SentMails = new ObservableCollection<MailDTO>();
+                ReceivedMails = new ObservableCollection<MailDTO>();
                 Students = new ObservableCollection<StudentDTO>();
             }
         }
-
-        public ViewModel MailsTableViewModel { get; set; }
+        public ViewModel SentMailsTableViewModel { get; set; }
+        public ViewModel ReceivedMailsTableViewModel { get; set; }
         public ViewModel StudentsTableViewModel { get; set; }
-        public MailDTO SelectedMail { get; set; }
+        public StudentDTO SelectedStudent { get; set; }
+        public MailDTO SelectedSentMail { get; set; }
+        public MailDTO SelectedReceivedMail { get; set; }
 
         private readonly Course course;
         private readonly Model.Teacher teacher;
@@ -42,19 +47,40 @@ namespace LangLang.View.Teacher
             this.studentController = studentController;
             this.teacher = teacher;
 
-            MailsTableViewModel = new ViewModel();
+            SentMailsTableViewModel = new ViewModel();
+            ReceivedMailsTableViewModel = new ViewModel();
             StudentsTableViewModel = new ViewModel();
 
             DataContext = this;
 
             teacherController.Subscribe(this);
 
-            AddCourseInfo();
-
-            if (!HasCourseStarted())
+            if (!HasStudentAcceptingPeriodStarted())
+            {
+                ConfirmRequest.Visibility = Visibility.Collapsed;
+                RejectRequest.Visibility = Visibility.Collapsed;
+                PenaltyPoint.Visibility = Visibility.Collapsed;
+                Mark.Visibility = Visibility.Collapsed;
+            }
+            else if (HasStudentAcceptingPeriodStarted() && !HasCourseStarted())
             {
                 PenaltyPoint.Visibility = Visibility.Collapsed;
+                Mark.Visibility = Visibility.Collapsed;
             }
+            else if (HasCourseStarted() && !HasCourseFinished())
+            {
+                ConfirmRequest.Visibility = Visibility.Collapsed;
+                RejectRequest.Visibility = Visibility.Collapsed;
+                Mark.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ConfirmRequest.Visibility = Visibility.Collapsed;
+                RejectRequest.Visibility = Visibility.Collapsed;
+                PenaltyPoint.Visibility = Visibility.Collapsed;
+            }
+
+            AddCourseInfo();
 
             Update();
         }
@@ -63,19 +89,29 @@ namespace LangLang.View.Teacher
         {
             try
             {
-                MailsTableViewModel.Mails.Clear();
-                var mails = teacherController.GetAllMails();
+                SentMailsTableViewModel.SentMails.Clear();
+                ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
-                if (mails != null)
+                var allMails = teacherController.GetAllMails();
+
+                if (allMails != null)
                 {
-                    foreach (Mail mail in mails)
-                        MailsTableViewModel.Mails.Add(new MailDTO(mail));
+                    foreach (Mail mail in allMails)
+                    {
+                        if (mail.Recevier == this.teacher)
+                        {
+                            ReceivedMails.Add(new MailDTO(mail));
+                        }
+                        else if (mail.Sender == this.teacher)
+                        {
+                            SentMails.Add(new MailDTO(mail));
+                        }
+                    }
                 }
                 else
                 {
                     MessageBox.Show("No teachers found.");
                 }
-
                 StudentsTableViewModel.Students.Clear();
                 var students = studentController.GetAllStudentsForCourse(course.Id);
 
@@ -110,12 +146,12 @@ namespace LangLang.View.Teacher
 
             string courseStatusCheck;
 
-            if (HasStudentAcceptingPeriodStarted())
+            if (HasStudentAcceptingPeriodStarted() && !HasCourseStarted())
                 courseStatusCheck = "Request Accepting Period";
-            else if (HasCourseStarted())
+            else if (HasCourseStarted() && !HasCourseFinished())
                 courseStatusCheck = "Course Active";
-            else if (HasCoursePassed())
-                courseStatusCheck = "Course Ended";
+            else if (HasCourseFinished())
+                courseStatusCheck = "Course Ended. Students need to be graded.";
             else
                 courseStatusCheck = "Requests Open For Students";
 
@@ -132,12 +168,27 @@ namespace LangLang.View.Teacher
             return (course.StartDate <= DateTime.Now);
         }
 
-        private bool HasCoursePassed()
+        private bool HasCourseFinished()
         {
             return (course.StartDate.AddDays(7 * course.Duration) <= DateTime.Now);
         }
 
+        private void ConfirmRequest_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void RejectRequest_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void PenaltyPoint_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
 
         }
