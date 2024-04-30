@@ -10,21 +10,25 @@ namespace LangLang.View.Teacher
 {
     public partial class ExamTermView : Window, IObserver
     {
-        public ObservableCollection<MailDTO> Mails { get; set; }
+        public ObservableCollection<MailDTO> ReceivedMails { get; set; }
+        public ObservableCollection<MailDTO> SentMails { get; set; }
         public ObservableCollection<StudentDTO> Students { get; set; }
         public class ViewModel
         {
-            public ObservableCollection<MailDTO> Mails { get; set; }
+            public ObservableCollection<MailDTO> ReceivedMails { get; set; }
+            public ObservableCollection<MailDTO> SentMails { get; set; }
             public ObservableCollection<StudentDTO> Students { get; set; }
 
             public ViewModel()
             {
-                Mails = new ObservableCollection<MailDTO>();
+                SentMails = new ObservableCollection<MailDTO>();
+                ReceivedMails = new ObservableCollection<MailDTO>();
                 Students = new ObservableCollection<StudentDTO>();
             }
         }
 
-        public ViewModel MailsTableViewModel { get; set; }
+        public ViewModel SentMailsTableViewModel { get; set; }
+        public ViewModel ReceivedMailsTableViewModel { get; set; }
         public ViewModel StudentsTableViewModel { get; set; }
         public MailDTO SelectedMail { get; set; }
 
@@ -41,7 +45,8 @@ namespace LangLang.View.Teacher
             this.studentController = studentController;
             this.teacher = teacher;
 
-            MailsTableViewModel = new ViewModel();
+            SentMailsTableViewModel = new ViewModel();
+            ReceivedMailsTableViewModel = new ViewModel();
             StudentsTableViewModel = new ViewModel();
 
             DataContext = this;
@@ -59,14 +64,25 @@ namespace LangLang.View.Teacher
         {
             try
             {
-                MailsTableViewModel.Mails.Clear();
-                var mails = teacherController.GetAllMails();
+                SentMailsTableViewModel.SentMails.Clear();
+                ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
-                if (mails != null)
+                var allMails = teacherController.GetAllMails();
+
+                if (allMails != null)
                 {
-                    foreach (Mail mail in mails)
-                        MailsTableViewModel.Mails.Add(new MailDTO(mail));
-                }
+                    foreach (Mail mail in allMails)
+                    {
+                        if (mail.Recevier == this.teacher)
+                        {
+                            ReceivedMails.Add(new MailDTO(mail));
+                        }
+                        else if (mail.Sender == this.teacher)
+                        {
+                            SentMails.Add(new MailDTO(mail));
+                        }
+                    }
+                } 
                 else
                 {
                     MessageBox.Show("No teachers found.");
