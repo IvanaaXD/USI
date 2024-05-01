@@ -217,12 +217,37 @@ namespace LangLang.Model.DAO
 
             return registeredCourses;
         }
+        public List<Student> GetAllStudentsRequestingCourse(int courseId)
+        {
+            List<Student> filteredStudents = new List<Student>();
+            foreach (Student student in _students)
+            {
+                if (student.RegisteredCoursesIds.Contains(courseId) || student.ActiveCourseId == courseId)
+                {
+                    filteredStudents.Add(student);
+                }
+            }
+            return filteredStudents;
+        }
         public List<Student> GetAllStudentsForCourse(int courseId)
         {
             List<Student> filteredStudents = new List<Student>();
             foreach (Student student in _students)
             {
-                if (student.RegisteredCoursesIds.Contains(courseId))
+                if (student.ActiveCourseId == courseId)
+                {
+                    filteredStudents.Add(student);
+                }
+            }
+            return filteredStudents;
+        }
+
+        public List<Student> GetAllStudentsForCourseGrading(int courseId)
+        {
+            List<Student> filteredStudents = new List<Student>();
+            foreach (Student student in _students)
+            {
+                if (student.CompletedCoursesIds.Contains(courseId))
                 {
                     filteredStudents.Add(student);
                 }
@@ -232,7 +257,7 @@ namespace LangLang.Model.DAO
 
         public List<Student> GetAllStudentsForExamTerm(int examTermId)
         {
-            List<Student> filteredStudents = new List<Student> ();
+            List<Student> filteredStudents = new List<Student>();
             foreach (Student student in _students)
             {
                 if (student.RegisteredExamsIds.Contains(examTermId))
@@ -245,7 +270,7 @@ namespace LangLang.Model.DAO
 
         public bool IsEmailUnique(string email)
         {
-            foreach(Student student in _students)
+            foreach (Student student in _students)
             {
                 if (student.Email.Equals(email)) return false;
             }
@@ -280,5 +305,16 @@ namespace LangLang.Model.DAO
             NotifyObservers();
             return true;
         }
+
+        public bool GivePenaltyPoint(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+            ++student.PenaltyPoints;
+
+            _storage.Save(_students);
+            NotifyObservers();
+            return true;
+        }
+
     }
 }

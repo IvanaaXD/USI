@@ -93,8 +93,8 @@ namespace LangLang.DTO
             {
                 switch (columnName)
                 {
-                    case "Grade":
-                        if (Value < 0 || Value > 10)
+                    case "Value":
+                        if (Value <= 0 || Value > 10)
                             return "Grade value must be between 1 and 10.";
                         break;
                 }
@@ -103,7 +103,7 @@ namespace LangLang.DTO
             }
         }
 
-        private readonly string[] _validatedProperties = { "Grade" };
+        private readonly string[] _validatedProperties = { "Value" };
 
         public bool IsValid
         {
