@@ -27,8 +27,8 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private GradeDTO _grade;
-        public GradeDTO Grade
+        private ExamTermGradeDTO _grade;
+        public ExamTermGradeDTO Grade
         {
             get { return _grade; }
             set
@@ -48,7 +48,7 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
             DataContext = this;
-            Grade = new GradeDTO();
+            Grade = new ExamTermGradeDTO();
 
             Student = new StudentDTO(student);
 
@@ -89,8 +89,6 @@ namespace LangLang.View.Teacher
                         Grade.Value = 6;
                         break;
                 }
-
-                Console.WriteLine(Grade.Value);
             }
         }
 

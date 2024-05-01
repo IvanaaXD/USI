@@ -206,6 +206,17 @@ namespace LangLang.DTO
                     case "DateOfBirth":
                         if (DateOfBirth > DateTime.Today)
                             return "Date of birth cannot be in the future";
+                        if (DateOfBirth < DateTime.Today.AddYears(-65))
+                            return "Date of birth cannot be more than 65 years in the past";
+                        break;
+
+                    case "StartedWork":
+                        if (StartedWork > DateTime.Today)
+                            return "Date of starting work cannot be in the future";
+                        if (StartedWork <= DateOfBirth)
+                            return "Date of starting work cannot be before the date of birth";
+                        if (StartedWork < DateOfBirth.AddYears(18))
+                            return "Date of starting work cannot be before the graduation";
                         break;
 
                     case "PhoneNumber":
@@ -263,7 +274,7 @@ namespace LangLang.DTO
             }
         }
 
-        private readonly string[] _validatedProperties = { "FirstName", "LastName", "DateOfBirth", "PhoneNumber", "Email", "Password" };
+        private readonly string[] _validatedProperties = { "FirstName", "LastName", "DateOfBirth", "StartedWork", "PhoneNumber", "Email", "Password"};
 
         public bool IsValid
         {

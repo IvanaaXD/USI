@@ -287,7 +287,6 @@ namespace LangLang.View.Teacher
             }
         }
 
-
         private void ViewExam_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedExamTerm == null)
@@ -297,18 +296,12 @@ namespace LangLang.View.Teacher
             else
             {
                 ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
-                if (examTerm != null)
-                {
-                    ExamTermView examTermView = new ExamTermView(examTerm, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
-                    examTermView.Show();
-                }
-                else
-                {
-                    MessageBox.Show("Failed to retrieve the exam term. Please try again.");
-                }
+                ExamTermView examTermView = new ExamTermView(examTerm, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
+                examTermView.Owner = this;
+                this.Visibility = Visibility.Collapsed;
+                examTermView.Show();
             }
         }
-
 
         public void UpdateExam()
         {

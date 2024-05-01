@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace LangLang.DTO
 {
-    public class GradeDTO : INotifyPropertyChanged, IDataErrorInfo
+    public class ExamTermGradeDTO : INotifyPropertyChanged, IDataErrorInfo
     {
         private int id;
         private int studentId;
@@ -122,25 +122,25 @@ namespace LangLang.DTO
             {
                 switch (columnName)
                 {
-                    case "Reading":
+                    case "ReadingPoints":
                         if (ReadingPoints < 0)
                             return "Reading cannot be negative";
                         if (ReadingPoints > 60)
                             return "Reading cannot be over 60";
                         break;
-                    case "Speaking":
+                    case "SpeakingPoints":
                         if (SpeakingPoints < 0)
                             return "Speaking cannot be negative";
                         if (SpeakingPoints > 50)
                             return "Speaking cannot be over 50";
                         break;
-                    case "Writing":
+                    case "WritingPoints":
                         if (WritingPoints < 0)
                             return "Writing cannot be negative";
                         if (WritingPoints > 60)
                             return "Writing cannot be over 60";
                         break;
-                    case "Listening":
+                    case "ListeningPoints":
                         if (ListeningPoints < 0)
                             return "Listening cannot be negative";
                         if (ListeningPoints > 40)
@@ -152,7 +152,7 @@ namespace LangLang.DTO
             }
         }
 
-        private readonly string[] _validatedProperties = { "Reading", "Speaking", "Writing", "Listening" };
+        private readonly string[] _validatedProperties = { "ReadingPoints", "SpeakingPoints", "WritingPoints", "ListeningPoints" };
 
         public bool IsValid
         {
@@ -167,9 +167,9 @@ namespace LangLang.DTO
             }
         }
 
-        public Grade ToGrade()
+        public ExamTermGrade ToGrade()
         {
-            return new Grade
+            return new ExamTermGrade
             {
                 Id = id,
                 TeacherId = teacherId,
@@ -183,9 +183,9 @@ namespace LangLang.DTO
             };
         }
 
-        public GradeDTO() {}
+        public ExamTermGradeDTO() {}
 
-        public GradeDTO(Grade grade, Student student)
+        public ExamTermGradeDTO(ExamTermGrade grade, Student student)
         {
             id = grade.Id;
             studentId = grade.StudentId;
