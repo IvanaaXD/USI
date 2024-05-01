@@ -2,7 +2,7 @@
 
 namespace LangLang.Model
 {
-    public class Grade : ISerializable
+    public class ExamTermGrade : ISerializable
     {
         private int id;
         private int studentId;
@@ -68,11 +68,11 @@ namespace LangLang.Model
             set { this.value = value; }
         }
 
-        public Grade()
+        public ExamTermGrade()
         {
         }
 
-        public Grade(int studentId, int teacherId, int examId, int readingPoints, int speakingPoints, int writingPoints, int listeningPoints, int value)
+        public ExamTermGrade(int studentId, int teacherId, int examId, int readingPoints, int speakingPoints, int writingPoints, int listeningPoints, int value)
         {
             this.studentId = studentId;
             this.teacherId = teacherId;

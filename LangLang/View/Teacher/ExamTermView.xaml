@@ -10,8 +10,15 @@
         Title="ExamTerm" Height="450" Width="800">
 
     <Window.Resources>
-        <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
-        <converters:LevelOfLanguageToStringConverter x:Key="LevelOfLanguageToStringConverter"/>
+
+        <ControlTemplate x:Key="ValidationTemplate">
+            <StackPanel>
+                <!-- Placeholder for the TextBox itself -->
+                <AdornedElementPlaceholder x:Name="textBox" />
+                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" />
+            </StackPanel>
+
+        </ControlTemplate>
     </Window.Resources>
 
     <TabControl>
@@ -25,20 +32,21 @@
                     <RowDefinition Height="60"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"></ColumnDefinition>
+                    <ColumnDefinition Width="131.533"></ColumnDefinition>
+                    <ColumnDefinition Width="68.467"/>
                     <ColumnDefinition Width="600"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Border Background="#4F518C" Grid.RowSpan="6" Grid.Column="0" Margin="0,0,0,0">
+                <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2">
                     <Image Source="https://cdn-icons-png.flaticon.com/512/354/354652.png" Width="150"></Image>
                 </Border>
 
-                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Top" HorizontalAlignment="Center"
+                <TextBlock Grid.Row="1" Grid.Column="2"  VerticalAlignment="Top" HorizontalAlignment="Center"
     FontSize="30" Margin="0,17,0,0">Welcome</TextBlock>
-                <Button x:Name="examTermPage" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ViewExamTerms_Click"
+                <Button x:Name="examTermPage" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ViewExamTerms_Click"
 Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Back To All ExamTerms</Button>
 
-                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="229"></ColumnDefinition>
                         <ColumnDefinition Width="250"/>
@@ -83,13 +91,14 @@ Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGr
                                     SelectedItem="{Binding SelectedStudent, UpdateSourceTrigger=PropertyChanged}"
                                     SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
-                                    <DataGridTextColumn Header="First name" Binding="{Binding FirstName}" />
-                                    <DataGridTextColumn Header="Last name" Binding="{Binding LastName}" />
-                                    <DataGridTextColumn Header="Gender" Binding="{Binding Gender}" />
-                                    <DataGridTextColumn Header="Date of birth" Binding="{Binding DateOfBirth, StringFormat={}{0:yyyy-MM-dd}}" />
-                                    <DataGridTextColumn Header="Phone number" Binding="{Binding PhoneNumber}" />
-                                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" />
+                                    <DataGridTextColumn Header="Id" Width="*" Binding="{Binding id}" />
+                                    <DataGridTextColumn Header="First name" Width="*" Binding="{Binding FirstName}" />
+                                    <DataGridTextColumn Header="Last name" Width="*" Binding="{Binding LastName}" />
+                                    <DataGridTextColumn Header="Gender" Width="*" Binding="{Binding Gender}" />
+                                    <DataGridTextColumn Header="Date of birth" Width="*" Binding="{Binding DateOfBirth, StringFormat={}{0:yyyy-MM-dd}}" />
+                                    <DataGridTextColumn Header="Phone number" Width="*" Binding="{Binding PhoneNumber}" />
+                                    <DataGridTextColumn Header="Email" Width="*" Binding="{Binding Email}" />
+                                    <DataGridTextColumn Header="Grade" Width="*" Binding="{Binding DataContext.SelectedGrade.Value, RelativeSource={RelativeSource AncestorType=DataGrid}, UpdateSourceTrigger=PropertyChanged}" />
                                 </DataGrid.Columns>
                             </DataGrid>
 

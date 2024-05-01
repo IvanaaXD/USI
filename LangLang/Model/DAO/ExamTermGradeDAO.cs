@@ -5,14 +5,14 @@ using LangLang.Storage;
 
 namespace LangLang.Model.DAO
 {
-    public class GradeDAO : Subject
+    public class ExamTermGradeDAO : Subject
     {
-        private readonly List<Grade> _grades;
-        private readonly Storage<Grade> _storage;
+        private readonly List<ExamTermGrade> _grades;
+        private readonly Storage<ExamTermGrade> _storage;
 
-        public GradeDAO()
+        public ExamTermGradeDAO()
         {
-            _storage = new Storage<Grade>("grades.csv");
+            _storage = new Storage<ExamTermGrade>("examTermGrades.csv");
             _grades = _storage.Load();
         }
 
@@ -22,7 +22,7 @@ namespace LangLang.Model.DAO
             return _grades.Last().Id + 1;
         }
 
-        public Grade AddGrade(Grade grade)
+        public ExamTermGrade AddGrade(ExamTermGrade grade)
         {
             grade.Id = GenerateId();
             _grades.Add(grade);
@@ -31,9 +31,9 @@ namespace LangLang.Model.DAO
             return grade;
         }
 
-        public Grade? UpdateGrade(Grade grade)
+        public ExamTermGrade? UpdateGrade(ExamTermGrade grade)
         {
-            Grade? oldGrade = GetGradeById(grade.Id);
+            ExamTermGrade? oldGrade = GetGradeById(grade.Id);
             if (oldGrade == null) return null;
 
             oldGrade.StudentId = grade.StudentId;
@@ -50,9 +50,9 @@ namespace LangLang.Model.DAO
             return oldGrade;
         }
 
-        public Grade? RemoveGrade(int id)
+        public ExamTermGrade? RemoveGrade(int id)
         {
-            Grade? grade = GetGradeById(id);
+            ExamTermGrade? grade = GetGradeById(id);
             if (grade == null) return null;
 
             _grades.Remove(grade);
@@ -60,27 +60,42 @@ namespace LangLang.Model.DAO
             NotifyObservers();
             return grade;
         }
-        public Grade? GetGradeById(int id)
+
+        public bool IsStudentGraded(int studentId)
+        {
+            foreach (var grade in _grades)
+            {
+                if (grade.StudentId == studentId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public ExamTermGrade? GetGradeById(int id)
         {
             return _grades.Find(v => v.Id == id);
         }
-        public Grade? GetGradeByStudentTeacherExam(int studentId, int teacherId, int examId)
+
+        public ExamTermGrade? GetExamTermGradeByStudentTeacherExam(int studentId, int teacherId, int examId)
         {
             return _grades.Find(grade => grade.StudentId == studentId && grade.TeacherId == teacherId && grade.ExamId == examId);
         }
-        public Grade? GetGradeByStudentExam(int studentId, int examId)
+
+        public ExamTermGrade? GetExamTermGradeByStudentExam(int studentId, int examId)
         {
             return _grades.Find(grade => grade.StudentId == studentId && grade.ExamId == examId);
         }
-        public List<Grade> GetGradesByTeacherExam(int teacherId, int examId)
+
+        public List<ExamTermGrade> GetExamTermGradesByTeacherExam(int teacherId, int examId)
         {
             return _grades.Where(grade => grade.TeacherId == teacherId && grade.ExamId == examId).ToList();
         }
 
-        public List<Grade> GetAllGrades()
+        public List<ExamTermGrade> GetAllExamTermGrades()
         {
             return _grades;
         }
-
     }
 }

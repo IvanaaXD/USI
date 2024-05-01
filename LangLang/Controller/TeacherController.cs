@@ -11,13 +11,13 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly TeacherDAO _teachers;
-        private readonly GradeDAO _grades;
+        private readonly ExamTermGradeDAO _examTermGrades;
         private readonly CourseGradeDAO _courseGrades;
 
         public TeacherController()
         {
             _teachers = new TeacherDAO();
-            _grades = new GradeDAO();
+            _examTermGrades = new ExamTermGradeDAO();
             _courseGrades = new CourseGradeDAO();
         }
         public Course? GetCourseById(int courseID)
@@ -40,6 +40,21 @@ namespace LangLang.Controller
         public List<Mail> GetAllMails()
         {
             return _teachers.GetAllMails();
+        }
+
+        public List<ExamTermGrade> GetAllExamTermGrades()
+        {
+            return _examTermGrades.GetAllExamTermGrades();
+        }
+
+        public List<ExamTermGrade> GetExamTermGradesByTeacherExam(int teacherId, int examTermId)
+        {
+            return _examTermGrades.GetExamTermGradesByTeacherExam(teacherId, examTermId);
+        }
+
+        public ExamTermGrade? GetExamTermGradeByStudentTeacherExam(int  studentId, int teacherId, int examTermId) 
+        {
+            return _examTermGrades.GetExamTermGradeByStudentTeacherExam(studentId, teacherId, examTermId);
         }
 
         public List<Course> GetAvailableCourses(Teacher teacher)
@@ -65,14 +80,24 @@ namespace LangLang.Controller
             _teachers.UpdateExamTerm(examTerm);
         }
 
-        public void GradeStudent(Grade grade)
+        public ExamTermGrade GradeStudent(ExamTermGrade grade)
         {
-            _grades.AddGrade(grade);
+            return _examTermGrades.AddGrade(grade);
         }
 
         public void GradeStudentCourse(CourseGrade grade)
         {
             _courseGrades.AddGrade(grade);
+        }
+
+        public ExamTerm ConfirmExamTerm(int examTermId)
+        {
+            return _teachers.ConfirmExamTerm(examTermId);
+        }
+
+        public bool IsStudentGradedExamTerm(int studentId)
+        {
+            return _examTermGrades.IsStudentGraded(studentId);
         }
 
         public bool CheckExamOverlap(int ExamID, DateTime ExamDate)
@@ -174,11 +199,6 @@ namespace LangLang.Controller
         public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
             return _teachers.FindExamTermsByCriteria(language, level, examDate);
-        }
-
-        public ExamTerm ConfirmExamTerm(int examTermId)
-        {
-            return _teachers.ConfirmExamTerm(examTermId);
         }
     }
 }

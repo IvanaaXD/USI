@@ -49,23 +49,23 @@
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<TextBlock Text="Reading:" Width="80" FontSize="16"/>
-				<TextBox x:Name="readingTextBox" Width="150" FontSize="16" Text="{Binding Grade.ReadingPoints, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Reading:" Width="80" FontSize="16"/>
+                <TextBox x:Name="readingTextBox" Width="150" FontSize="16" Text="{Binding Grade.ReadingPoints, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
-			</StackPanel>
+            </StackPanel>
 
-			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<TextBlock Text="Speaking:" Width="80" FontSize="16"/>
-				<TextBox x:Name="speakingTextBox" Width="150" FontSize="16" Text="{Binding Grade.SpeakingPoints, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Writing:" Width="80" FontSize="16"/>
+                <TextBox x:Name="writingTextBox" Width="150" FontSize="16" Text="{Binding Grade.WritingPoints, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
-			</StackPanel>
+            </StackPanel>
 
-			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<TextBlock Text="Writing:" Width="80" FontSize="16"/>
-				<TextBox x:Name="writingTextBox" Width="150" FontSize="16" Text="{Binding Grade.WritingPoints, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Speaking:" Width="80" FontSize="16"/>
+                <TextBox x:Name="speakingTextBox" Width="150" FontSize="16" Text="{Binding Grade.SpeakingPoints, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
-			</StackPanel>
+            </StackPanel>
 
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 				<TextBlock Text="Listening:" Width="80" FontSize="16"/>

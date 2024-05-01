@@ -19,6 +19,7 @@
 
         </ControlTemplate>
     </Window.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -43,13 +44,15 @@
 
         <TextBlock Grid.Row="1" Text="Name: "  HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <TextBox x:Name="firstNameTextBox" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="150"
-                 Text="{Binding Teacher.FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+                 Background="Transparent" Text="{Binding Teacher.FirstName, UpdateSourceTrigger=PropertyChanged, 
+                 ValidatesOnDataErrors=True}" Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
+                 GotFocus="FirstNameTextBox_GotFocus"/>
 
         <TextBlock Grid.Row="1" Grid.Column="1" Text="Last Name:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <TextBox x:Name="lastNameTextBox" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="150"
-                 Text="{Binding Teacher.LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+                 Background="Transparent" Text="{Binding Teacher.LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
+                 GotFocus="LastNameTextBox_GotFocus"/>
 
         <TextBlock Grid.Row="3" Text="Gender:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <ComboBox x:Name="genderComboBox" Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,10" Width="150" Height="20"
@@ -62,13 +65,15 @@
 
         <TextBlock Grid.Row="5" Text="Phone Number:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <TextBox x:Name="phoneNumberTextBox" Grid.Row="6" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="150"
-                 Text="{Binding Teacher.PhoneNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+                 Background="Transparent" Text="{Binding Teacher.PhoneNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
+                 GotFocus="PhoneNumberTextBox_GotFocus"/>
 
         <TextBlock Grid.Row="7" Text="Email:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <TextBox x:Name="emailTextBox" Grid.Row="8" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="150"
-                 Text="{Binding Teacher.Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+                 Background="Transparent" Text="{Binding Teacher.Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
+                 GotFocus="EmailTextBox_GotFocus"/>
 
         <TextBlock Grid.Row="7" Grid.Column="1" Text="Password:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <PasswordBox x:Name="passwordBox" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="150"

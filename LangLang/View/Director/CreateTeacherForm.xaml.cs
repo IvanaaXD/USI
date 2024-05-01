@@ -6,6 +6,8 @@ using LangLang.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
 using System.Collections.Generic;
+using LangLang.Model;
+using System.Windows.Input;
 
 namespace LangLang.View.Director
 {
@@ -37,12 +39,48 @@ namespace LangLang.View.Director
         public CreateTeacherFrom(DirectorController directorController)
         {
             InitializeComponent();
-            DataContext = this;
             Teacher = new TeacherDTO();
+            DataContext = this;
             Teacher.Password = passwordBox.Password;
+            Teacher.DateOfBirth = new DateTime(DateTime.Today.AddYears(-64).Year, 1, 1);
+            Teacher.StartedWork = new DateTime(DateTime.Today.AddYears(-64+18).Year, 1, 1);
             this.directorController = directorController;
-            Teacher.DateOfBirth = new DateTime(1900, 1, 1);
-            Teacher.StartedWork = new DateTime(1900, 1, 1);
+
+            SetPlaceholders();
+        }
+
+        private void SetPlaceholders()
+        {
+
+            Teacher.FirstName = "Name";
+            Teacher.LastName = "Surname";
+            Teacher.Email = "example@gmail.com";
+            Teacher.PhoneNumber = "0123456789";
+
+            firstNameTextBox.GotFocus += FirstNameTextBox_GotFocus;
+            lastNameTextBox.GotFocus += LastNameTextBox_GotFocus;
+            emailTextBox.GotFocus += EmailTextBox_GotFocus;
+            phoneNumberTextBox.GotFocus += PhoneNumberTextBox_GotFocus;
+        }
+
+        private void FirstNameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            firstNameTextBox.Text = string.Empty;
+        }
+
+        private void LastNameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            lastNameTextBox.Text = string.Empty;
+        }
+
+        private void EmailTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            emailTextBox.Text = string.Empty;
+        }
+
+        private void PhoneNumberTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            phoneNumberTextBox.Text = string.Empty;
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -60,6 +98,7 @@ namespace LangLang.View.Director
 
         private void Create_Click(object sender, RoutedEventArgs e)
         {
+            DataContext = this;
             PickDataFromListBox();
             PickDataFromDatePicker();
             PickDataFromComboBox();

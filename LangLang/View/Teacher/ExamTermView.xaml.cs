@@ -4,8 +4,11 @@ using LangLang.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace LangLang.View.Teacher
@@ -20,7 +23,6 @@ namespace LangLang.View.Teacher
             public ObservableCollection<MailDTO> ReceivedMails { get; set; }
             public ObservableCollection<MailDTO> SentMails { get; set; }
             public ObservableCollection<StudentDTO> Students { get; set; }
-
             public ViewModel()
             {
                 SentMails = new ObservableCollection<MailDTO>();
@@ -33,6 +35,27 @@ namespace LangLang.View.Teacher
         public ViewModel ReceivedMailsTableViewModel { get; set; }
         public ViewModel StudentsTableViewModel { get; set; }
         public StudentDTO SelectedStudent { get; set; }
+
+        private ExamTermGradeDTO _selectedGrade;
+        public ExamTermGradeDTO SelectedGrade
+        {
+            get { return _selectedGrade; }
+            set
+            {
+                if (_selectedGrade != value)
+                {
+                    _selectedGrade = value;
+                    OnPropertyChanged(nameof(SelectedGrade));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public MailDTO SelectedSentMail { get; set; }
         public MailDTO SelectedReceivedMail { get; set; }
 
@@ -56,25 +79,22 @@ namespace LangLang.View.Teacher
             DataContext = this;
             teacherController.Subscribe(this);
 
-            if (DateTime.Now.AddDays(+7) <= examTerm.ExamTime.Date || examTerm.Confirmed)
-            {
-                Confirm.Visibility = Visibility.Collapsed;
-            }
-
-            if (!HasExamTermStarted())
-            {
-                Suspend.Visibility = Visibility.Collapsed;
-            } 
-
-            if (!HasExamTermFinished())
-            {
-                Mark.Visibility = Visibility.Collapsed;
-            }
-
             AddExamTermInfo();
+            AddExamTermStatus();
+            CheckStudentsGrades();
+            CheckButtons();
             Update();
+
+            Closing += ExamTermView_Closing;
         }
 
+        private void ExamTermView_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            foreach (Window window in Application.Current.Windows.OfType<Window>().Where(w => w != this))
+            {
+                window.Close();
+            }
+        }
         public void Update()
         {
             try
@@ -124,7 +144,11 @@ namespace LangLang.View.Teacher
 
         private void ViewExamTerms_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            if (Owner != null)
+            {
+                Owner.Visibility = Visibility.Visible; 
+                this.Close();
+            }
         }
 
         private void AddExamTermInfo()
@@ -136,7 +160,10 @@ namespace LangLang.View.Teacher
             examTermStartDateTextBlock.Text = examTerm.ExamTime.ToString("yyyy-MM-dd HH:mm");
             examTermMaxStudentsTextBlock.Text = examTerm.MaxStudents.ToString();
             examTermCurrentlyAttendingTextBlock.Text = examTerm.CurrentlyAttending.ToString();
+        }
 
+        private void AddExamTermStatus()
+        {
             string examTermStatusCheck;
 
             if (HasExamTermStarted())
@@ -145,18 +172,49 @@ namespace LangLang.View.Teacher
             }
             else if (HasExamTermFinished())
             {
-                examTermStatusCheck = "ExamTerm has finished. It needs to be graded";
+                if (!HasExamTermBeenGraded())
+                {
+                    examTermStatusCheck = "ExamTerm has finished. It needs to be graded";
+                }
+                else
+                {
+                    examTermStatusCheck = "ExamTerm has been graded";
+                }
+
             }
-            else if(examTerm.Confirmed)
+            else if (examTerm.Confirmed)
             {
                 examTermStatusCheck = "ExamTerm has been confirmed";
-            } 
-            else 
+            }
+            else
             {
                 examTermStatusCheck = "ExamTerm hasn't started";
             }
 
             examTermStatus.Text = examTermStatusCheck;
+        }
+
+        private void CheckButtons()
+        {
+            if (DateTime.Now.AddDays(+7) <= examTerm.ExamTime.Date || examTerm.Confirmed)
+            {
+                Confirm.Visibility = Visibility.Collapsed;
+            }
+
+            if (!HasExamTermStarted())
+            {
+                Suspend.Visibility = Visibility.Collapsed;
+            }
+
+            if (!HasExamTermFinished())
+            {
+                Mark.Visibility = Visibility.Collapsed;
+            }
+
+            if (HasExamTermBeenGraded())
+            {
+                Mark.Visibility = Visibility.Collapsed;
+            }
         }
 
         private bool HasExamTermStarted()
@@ -195,11 +253,50 @@ namespace LangLang.View.Teacher
             return false;
         }
 
+        public bool HasExamTermBeenGraded()
+        {
+            var grades = teacherController.GetExamTermGradesByTeacherExam(teacher.Id, examTerm.ExamID);
+            if (grades.Count==0)
+            {
+                return false;
+            }
+
+            foreach (ExamTermGrade grade in grades)
+            {
+                if (!teacherController.IsStudentGradedExamTerm(grade.StudentId))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public void CheckStudentsGrades()
+        {
+            var examTermStudents = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
+           
+            foreach(Model.Student student in examTermStudents)
+            {
+                var grade = teacherController.GetExamTermGradeByStudentTeacherExam(student.Id, teacher.Id, examTerm.ExamID);
+                SelectedGrade = new ExamTermGradeDTO();
+
+                if (grade != null)
+                {
+                    SelectedGrade.Value = grade.Value;
+                }
+                else
+                {
+                    SelectedGrade.Value = 0;
+                }
+            }
+        }
+
         private void ConfirmExamTerm_Click(object sender, RoutedEventArgs e)
         {
             teacherController.ConfirmExamTerm(this.examTerm.ExamID);
             MessageBox.Show("ExamTerm confirmed.");
-            Confirm.Visibility = Visibility.Collapsed;
+            AddExamTermStatus();
+            CheckButtons();
         }
 
         private void SuspendStudent_Click(object sender, RoutedEventArgs e)
@@ -211,21 +308,37 @@ namespace LangLang.View.Teacher
             else
             {
                 studentController.Delete(SelectedStudent.id);
+                Update();
             }
         }
-
         private void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedStudent == null)
             {
                 MessageBox.Show("Please choose a student to grade!");
             }
+            else if (teacherController.IsStudentGradedExamTerm(SelectedStudent.id))
+            {
+                MessageBox.Show("This student is already graded!");
+            }
             else
             {
                 Model.Student student = studentController.GetStudentById(SelectedStudent.id);
                 GradeStudentForm gradeStudentForm = new GradeStudentForm(examTerm, teacher, student, teacherController, studentController);
+
+                gradeStudentForm.Closed += RefreshPage;
+
                 gradeStudentForm.Show();
+                gradeStudentForm.Activate();
             }
+        }
+
+        private void RefreshPage(object sender, EventArgs e)
+        {
+            AddExamTermStatus();
+            CheckStudentsGrades();
+            CheckButtons();
+            Update();
         }
 
         private void ReadMail_Click(object sender, RoutedEventArgs e)
