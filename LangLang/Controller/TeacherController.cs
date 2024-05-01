@@ -167,6 +167,16 @@ namespace LangLang.Controller
             _teachers.Subscribe(observer);
         }
 
+        public void IncrementCourseCurrentlyEnrolled(int courseId)
+        {
+            _teachers.IncrementCourseCurrentlyEnrolled(courseId);
+        }
+
+        public void DecrementCourseCurrentlyEnrolled(int courseId)
+        {
+            _teachers.DecrementCourseCurrentlyEnrolled(courseId);
+        }
+
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
             return _teachers.FindCoursesByCriteria(language, level, startDate, duration, isOnline);

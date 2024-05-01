@@ -140,13 +140,13 @@ namespace LangLang.Model.DAO
         public List<Mail> GetAllMails()
         {
             List<Mail> filteredMails = new List<Mail>();
-            
+
             foreach (Mail mail in _mails)
             {
                 if (mail.Sender is Teacher || mail.Recevier is Teacher)
                 {
-                    filteredMails.Add(mail);    
-                } 
+                    filteredMails.Add(mail);
+                }
             }
             return filteredMails;
         }
@@ -158,7 +158,7 @@ namespace LangLang.Model.DAO
 
             List<Course> availableCourses = new List<Course>();
 
-            foreach(Course course in allCourses)
+            foreach (Course course in allCourses)
             {
                 if (allTeacherCourses.Contains(course.Id))
                 {
@@ -210,14 +210,14 @@ namespace LangLang.Model.DAO
 
         public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
-           List<ExamTerm> allExams = GetAllExamTerms();
+            List<ExamTerm> allExams = GetAllExamTerms();
 
             var filteredExams = new List<ExamTerm>();
 
             foreach (var exam in allExams)
             {
                 Course course = GetCourseById(exam.CourseID);
-                
+
                 bool matchesLanguage = !language.HasValue || course.Language == language;
                 bool matchesLevel = !level.HasValue || course.Level == level;
                 bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date == examDate.Value.Date;
@@ -234,7 +234,7 @@ namespace LangLang.Model.DAO
         public String FindLanguageAndLevel(int courseID)
         {
             String res = "";
-            
+
             Course course = GetAllCourses().FirstOrDefault(c => c.Id == courseID);
 
             if (course != null)
@@ -248,11 +248,17 @@ namespace LangLang.Model.DAO
 
             return res;
         }
-
+        public void IncrementCourseCurrentlyEnrolled(int courseId)
+        {
+            Course course = GetCourseById(courseId);
+            ++course.CurrentlyEnrolled;
+            UpdateCourse(course);
+        }
         public void DecrementCourseCurrentlyEnrolled(int courseId)
         {
             Course course = GetCourseById(courseId);
             --course.CurrentlyEnrolled;
+            UpdateCourse(course);
         }
         public void DecrementExamTermCurrentlyAttending(int examTermId)
         {
@@ -411,4 +417,3 @@ namespace LangLang.Model.DAO
         }
     }
 }
-        

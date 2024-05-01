@@ -67,9 +67,19 @@ namespace LangLang.Controller
         {
             return _students.GetStudentById(studentId);
         }
-        public List<Student> GetAllStudentsForCourse(int courseId)
+        public List<Student> GetAllStudentsRequestingCourse(int courseId)
+        {
+            return _students.GetAllStudentsRequestingCourse(courseId);
+        }
+
+        public List<Student> GetAllStudentsEnrolledCourse(int courseId)
         {
             return _students.GetAllStudentsForCourse(courseId);
+        }
+
+        public List<Student> GetAllStudentsForCourseGrading(int courseId)
+        {
+            return _students.GetAllStudentsForCourseGrading(courseId);
         }
 
         public List<Student> GetAllStudentsForExamTerm(int examTermId)
@@ -92,6 +102,11 @@ namespace LangLang.Controller
         public bool IsStudentAttendingCourse(int studentId)
         {
             return _students.IsStudentAttendingCourse(studentId);
+        }
+
+        public bool GivePenaltyPoint(int studentId)
+        {
+            return _students.GivePenaltyPoint(studentId);
         }
     }
 }

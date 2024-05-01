@@ -6,6 +6,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace LangLang.View.Teacher
 {
@@ -113,16 +115,26 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("No teachers found.");
                 }
                 StudentsTableViewModel.Students.Clear();
-                var students = studentController.GetAllStudentsForCourse(course.Id);
+
+                var students = studentController.GetAllStudentsRequestingCourse(course.Id);
+                if (HasCourseStarted() && !HasCourseFinished())
+                {
+                    students = studentController.GetAllStudentsEnrolledCourse(course.Id);
+                }
+                else if (HasCourseFinished())
+                {
+                    students = studentController.GetAllStudentsForCourseGrading(course.Id);
+                }
 
                 if (students != null)
                 {
                     foreach (Model.Student student in students)
                         StudentsTableViewModel.Students.Add(new StudentDTO(student));
+
                 }
                 else
                 {
-                    MessageBox.Show("No courses found.");
+                    MessageBox.Show("No students found.");
                 }
             }
             catch (Exception ex)
@@ -175,22 +187,76 @@ namespace LangLang.View.Teacher
 
         private void ConfirmRequest_Click(object sender, RoutedEventArgs e)
         {
-
+            if (SelectedStudent == null)
+            {
+                MessageBox.Show("Please choose a student to accept to the course!");
+            }
+            else
+            {
+                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+                if (student.ActiveCourseId != -1)
+                {
+                    MessageBox.Show("Student has been added to the course already.");
+                }
+                else
+                {
+                    student.ActiveCourseId = course.Id;
+                    teacherController.IncrementCourseCurrentlyEnrolled(course.Id);
+                    student.RegisteredCoursesIds.Remove(course.Id);
+                    studentController.Update(student);
+                }
+            }
         }
 
         private void RejectRequest_Click(object sender, RoutedEventArgs e)
         {
-
+            if (SelectedStudent == null)
+            {
+                MessageBox.Show("Please choose a student to reject from a course!");
+            }
+            else
+            {
+                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+                if (student.ActiveCourseId != -1)
+                {
+                    MessageBox.Show("Student has been added to the course already.");
+                }
+                else
+                {
+                    // page for showing the reason for being rejected
+                    student.RegisteredCoursesIds.Remove(course.Id);
+                    studentController.Update(student);
+                    StudentsTableViewModel.Students.Remove(SelectedStudent);
+                }
+            }
         }
 
         private void PenaltyPoint_Click(object sender, RoutedEventArgs e)
         {
-
+            if (SelectedStudent == null)
+            {
+                MessageBox.Show("Please choose a student to give a penalty point to!");
+            }
+            else
+            {
+                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+                // open window for reason
+                studentController.GivePenaltyPoint(student.Id);
+            }
         }
 
         private void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
-
+            if (SelectedStudent == null)
+            {
+                MessageBox.Show("Please choose a student to grade!");
+            }
+            else
+            {
+                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+                GradeStudentCourseForm gradeStudentForm = new GradeStudentCourseForm(course, teacher, student, teacherController, studentController);
+                gradeStudentForm.Show();
+            }
         }
 
 
