@@ -181,7 +181,11 @@ namespace LangLang.View.Teacher
             TimeSpan examStartTime = TimeSpan.Parse(examTerm.ExamTime.ToString().Split()[1]);
             TimeSpan examEndTime = examStartTime.Add(new TimeSpan(4, 0, 0));
 
-            if (DateTime.Today.Date.ToString("yyyy-MM-dd").Equals(examTerm.ExamTime.Date.ToString("yyyy-MM-dd")))
+            if (DateTime.Today.Date > examTerm.ExamTime.Date)
+            {
+                return true;
+            }
+            else if (DateTime.Today.Date == examTerm.ExamTime.Date)
             {
                 if (currentTime > examEndTime)
                 {
@@ -218,9 +222,12 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                //teacherController.Grade(SelectedStudent.id);
+                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+                GradeStudentForm gradeStudentForm = new GradeStudentForm(examTerm, teacher, student, teacherController, studentController);
+                gradeStudentForm.Show();
             }
         }
+
         private void ReadMail_Click(object sender, RoutedEventArgs e)
         {
 

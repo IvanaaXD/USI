@@ -302,6 +302,9 @@ namespace LangLang.DTO
 
         public TeacherDTO() { }
 
+        public TeacherDTO(Student students) { }
+
+
         public TeacherDTO(Teacher teacher)
         {
             id = teacher.Id;

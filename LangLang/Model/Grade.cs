@@ -1,10 +1,4 @@
-﻿using LangLang.Model.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LangLang.Storage.Serialization;
+﻿using LangLang.Storage.Serialization;
 
 namespace LangLang.Model
 {
@@ -14,6 +8,10 @@ namespace LangLang.Model
         private int studentId;
         private int teacherId;
         private int examId;
+        private int readingPoints;
+        private int speakingPoints;
+        private int writingPoints;
+        private int listeningPoints;
         private int value;
 
         public int Id
@@ -21,6 +19,7 @@ namespace LangLang.Model
             get { return id; }
             set { id = value; }
         }
+
         public int StudentId
         {
             get { return studentId; }
@@ -39,6 +38,30 @@ namespace LangLang.Model
             set { examId = value; }
         }
 
+        public int ReadingPoints
+        {
+            get { return readingPoints; }
+            set { readingPoints = value; }
+        }
+
+        public int SpeakingPoints
+        {
+            get { return speakingPoints; }
+            set { speakingPoints = value; }
+        }
+
+        public int WritingPoints
+        {
+            get { return writingPoints; }
+            set { writingPoints = value; }
+        }
+
+        public int ListeningPoints
+        {
+            get { return listeningPoints; }
+            set { listeningPoints = value; }
+        }
+
         public int Value
         {
             get { return value; }
@@ -49,26 +72,35 @@ namespace LangLang.Model
         {
         }
 
-        public Grade(int studentId, int teacherId, int examTermId, int value)
+        public Grade(int studentId, int teacherId, int examId, int readingPoints, int speakingPoints, int writingPoints, int listeningPoints, int value)
         {
             this.studentId = studentId;
             this.teacherId = teacherId;
             this.examId = examId;
+            this.readingPoints = readingPoints;
+            this.speakingPoints = speakingPoints;
+            this.writingPoints = writingPoints;
+            this.listeningPoints = listeningPoints;
             this.value = value;
         }
 
         public override string ToString()
         {
-            return $"StudentId: {studentId}, TeacherId: {teacherId}, ExamTermId: {examId}, Value: {value}";
+            return $"Id: {id}, StudentId: {studentId}, TeacherId: {teacherId}, ExamTermId: {examId}, ReadingPoints: {readingPoints}, SpeakingPoints: {speakingPoints}, WritingPoints: {writingPoints}, ListeningPoints: {listeningPoints}, Value: {value}";
         }
 
         public string[] ToCSV()
         {
             string[] csvValues =
             {
+                id.ToString(),
                 studentId.ToString(),
                 teacherId.ToString(),
                 examId.ToString(),
+                readingPoints.ToString(),
+                speakingPoints.ToString(),
+                writingPoints.ToString(),
+                listeningPoints.ToString(),
                 value.ToString()
             };
             return csvValues;
@@ -76,10 +108,18 @@ namespace LangLang.Model
 
         public void FromCSV(string[] values)
         {
-            StudentId = int.Parse(values[0]);
-            TeacherId = int.Parse(values[1]);
-            ExamId = int.Parse(values[2]);
-            Value = int.Parse(values[3]);
+            if (values.Length == 0)
+                return;
+
+            Id = int.Parse(values[0]);
+            StudentId = int.Parse(values[1]);
+            TeacherId = int.Parse(values[2]);
+            ExamId = int.Parse(values[3]);
+            ReadingPoints = int.Parse(values[4]);
+            SpeakingPoints = int.Parse(values[5]);
+            WritingPoints = int.Parse(values[6]);
+            ListeningPoints = int.Parse(values[7]);
+            Value = int.Parse(values[8]);
         }
     }
 }
