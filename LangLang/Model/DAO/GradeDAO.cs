@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
 
@@ -41,6 +39,10 @@ namespace LangLang.Model.DAO
             oldGrade.StudentId = grade.StudentId;
             oldGrade.TeacherId = grade.TeacherId;
             oldGrade.ExamId = grade.ExamId;
+            oldGrade.ReadingPoints = grade.ReadingPoints;
+            oldGrade.SpeakingPoints = grade.SpeakingPoints;
+            oldGrade.WritingPoints = grade.WritingPoints;
+            oldGrade.ListeningPoints = grade.ListeningPoints;
             oldGrade.Value = grade.Value;
 
             _storage.Save(_grades);

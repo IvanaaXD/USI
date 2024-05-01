@@ -11,10 +11,12 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly TeacherDAO _teachers;
+        private readonly GradeDAO _grades;
 
         public TeacherController()
         {
             _teachers = new TeacherDAO();
+            _grades = new GradeDAO();
         }
         public Course? GetCourseById(int courseID)
         {
@@ -60,6 +62,12 @@ namespace LangLang.Controller
         {
             _teachers.UpdateExamTerm(examTerm);
         }
+
+        public void GradeStudent(Grade grade)
+        {
+            _grades.AddGrade(grade);
+        }
+
         public bool CheckExamOverlap(int ExamID, DateTime ExamDate)
         {
             int examDurationInMinutes = 240;
