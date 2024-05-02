@@ -65,7 +65,7 @@ namespace LangLang.View.Teacher
 
         public void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
-            if(!string.IsNullOrWhiteSpace(gradeValueTextBox.Text))
+            if (!string.IsNullOrWhiteSpace(gradeValueTextBox.Text))
             {
                 CourseGrade.TeacherId = teacher.Id;
                 CourseGrade.CourseId = course.Id;
