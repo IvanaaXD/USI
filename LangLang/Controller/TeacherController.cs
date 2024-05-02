@@ -42,14 +42,27 @@ namespace LangLang.Controller
             return _teachers.GetAllMails();
         }
 
+        public List<CourseGrade> GetAllCourseGrades()
+        {
+            return _courseGrades.GetAllCourseGrades();
+        }
+
         public List<ExamTermGrade> GetAllExamTermGrades()
         {
             return _examTermGrades.GetAllExamTermGrades();
+        }
+        public List<CourseGrade> GetCourseGradesByTeacherCourse(int teacherId, int courseId)
+        {
+            return _courseGrades.GetCourseGradesByTeacherCourse(teacherId, courseId);
         }
 
         public List<ExamTermGrade> GetExamTermGradesByTeacherExam(int teacherId, int examTermId)
         {
             return _examTermGrades.GetExamTermGradesByTeacherExam(teacherId, examTermId);
+        }
+        public CourseGrade? GetCourseGradesByStudentTeacherCourse(int studentId, int teacherId, int courseId)
+        {
+            return _courseGrades.GetCourseGradeByStudentTeacher(studentId, teacherId, courseId);
         }
 
         public ExamTermGrade? GetExamTermGradeByStudentTeacherExam(int  studentId, int teacherId, int examTermId) 
@@ -85,14 +98,18 @@ namespace LangLang.Controller
             return _examTermGrades.AddGrade(grade);
         }
 
-        public void GradeStudentCourse(CourseGrade grade)
+        public CourseGrade GradeStudentCourse(CourseGrade grade)
         {
-            _courseGrades.AddGrade(grade);
+            return _courseGrades.AddGrade(grade);
         }
 
         public ExamTerm ConfirmExamTerm(int examTermId)
         {
             return _teachers.ConfirmExamTerm(examTermId);
+        }
+        public bool IsStudentGradedCourse(int studentId)
+        {
+            return _courseGrades.IsStudentGraded(studentId);
         }
 
         public bool IsStudentGradedExamTerm(int studentId)

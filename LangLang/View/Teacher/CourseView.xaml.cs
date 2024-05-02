@@ -8,6 +8,8 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.ComponentModel;
+using System.Linq;
 
 namespace LangLang.View.Teacher
 {
@@ -36,6 +38,26 @@ namespace LangLang.View.Teacher
         public MailDTO SelectedSentMail { get; set; }
         public MailDTO SelectedReceivedMail { get; set; }
 
+        private CourseGradeDTO _selectedGrade;
+        public CourseGradeDTO SelectedGrade
+        {
+            get { return _selectedGrade; }
+            set
+            {
+                if (_selectedGrade != value)
+                {
+                    _selectedGrade = value;
+                    OnPropertyChanged(nameof(SelectedGrade));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private readonly Course course;
         private readonly Model.Teacher teacher;
         private readonly TeacherController teacherController;
@@ -57,32 +79,10 @@ namespace LangLang.View.Teacher
 
             teacherController.Subscribe(this);
 
-            if (!HasStudentAcceptingPeriodStarted())
-            {
-                ConfirmRequest.Visibility = Visibility.Collapsed;
-                RejectRequest.Visibility = Visibility.Collapsed;
-                PenaltyPoint.Visibility = Visibility.Collapsed;
-                Mark.Visibility = Visibility.Collapsed;
-            }
-            else if (HasStudentAcceptingPeriodStarted() && !HasCourseStarted())
-            {
-                PenaltyPoint.Visibility = Visibility.Collapsed;
-                Mark.Visibility = Visibility.Collapsed;
-            }
-            else if (HasCourseStarted() && !HasCourseFinished())
-            {
-                ConfirmRequest.Visibility = Visibility.Collapsed;
-                RejectRequest.Visibility = Visibility.Collapsed;
-                Mark.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ConfirmRequest.Visibility = Visibility.Collapsed;
-                RejectRequest.Visibility = Visibility.Collapsed;
-                PenaltyPoint.Visibility = Visibility.Collapsed;
-            }
-
             AddCourseInfo();
+            AddCourseStatus();
+            CheckButtons();
+            CheckStudentsGrades();
 
             Update();
         }
@@ -114,9 +114,10 @@ namespace LangLang.View.Teacher
                 {
                     MessageBox.Show("No teachers found.");
                 }
-                StudentsTableViewModel.Students.Clear();
 
+                StudentsTableViewModel.Students.Clear();
                 var students = studentController.GetAllStudentsRequestingCourse(course.Id);
+
                 if (HasCourseStarted() && !HasCourseFinished())
                 {
                     students = studentController.GetAllStudentsEnrolledCourse(course.Id);
@@ -136,6 +137,7 @@ namespace LangLang.View.Teacher
                 {
                     MessageBox.Show("No students found.");
                 }
+                CheckButtons();
             }
             catch (Exception ex)
             {
@@ -155,19 +157,58 @@ namespace LangLang.View.Teacher
             courseStartDateTextBlock.Text = course.StartDate.ToString("yyyy-MM-dd HH:mm");
             courseDurationTextBlock.Text = course.Duration.ToString();
             courseCurrentyEnrolledTextBlock.Text = course.CurrentlyEnrolled.ToString();
+        }
 
+        private void AddCourseStatus()
+        {
             string courseStatusCheck;
 
             if (HasStudentAcceptingPeriodStarted() && !HasCourseStarted())
                 courseStatusCheck = "Request Accepting Period";
             else if (HasCourseStarted() && !HasCourseFinished())
                 courseStatusCheck = "Course Active";
-            else if (HasCourseFinished())
-                courseStatusCheck = "Course Ended. Students need to be graded.";
+            else if (HasCourseFinished() && !HasCourseBeenGraded())
+                courseStatusCheck = "Course Finished. Student Grading Period";
+            else if (HasCourseBeenGraded())
+                courseStatusCheck = "Course Finished And Students Graded";
             else
                 courseStatusCheck = "Requests Open For Students";
 
             courseStatus.Text = courseStatusCheck;
+        }
+        private void CheckButtons()
+        {
+            if (!HasStudentAcceptingPeriodStarted())
+            {
+                ConfirmRequest.Visibility = Visibility.Collapsed;
+                RejectRequest.Visibility = Visibility.Collapsed;
+                PenaltyPoint.Visibility = Visibility.Collapsed;
+                Mark.Visibility = Visibility.Collapsed;
+            }
+            else if (HasStudentAcceptingPeriodStarted() && !HasCourseStarted())
+            {
+                PenaltyPoint.Visibility = Visibility.Collapsed;
+                Mark.Visibility = Visibility.Collapsed;
+            }
+            else if (HasCourseStarted() && !HasCourseFinished())
+            {
+                ConfirmRequest.Visibility = Visibility.Collapsed;
+                RejectRequest.Visibility = Visibility.Collapsed;
+                Mark.Visibility = Visibility.Collapsed;
+            }
+            else if (HasCourseFinished() && !HasCourseBeenGraded())
+            {
+                ConfirmRequest.Visibility = Visibility.Collapsed;
+                RejectRequest.Visibility = Visibility.Collapsed;
+                PenaltyPoint.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ConfirmRequest.Visibility = Visibility.Collapsed;
+                RejectRequest.Visibility = Visibility.Collapsed;
+                PenaltyPoint.Visibility = Visibility.Collapsed;
+                Mark.Visibility = Visibility.Collapsed;
+            }
         }
 
         private bool HasStudentAcceptingPeriodStarted()
@@ -183,6 +224,50 @@ namespace LangLang.View.Teacher
         private bool HasCourseFinished()
         {
             return (course.StartDate.AddDays(7 * course.Duration) <= DateTime.Now);
+        }
+
+        public bool HasCourseBeenGraded()
+        {
+            var grades = teacherController.GetCourseGradesByTeacherCourse(teacher.Id, course.Id);
+            if (grades.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (CourseGrade grade in grades)
+            {
+                if (!teacherController.IsStudentGradedCourse(grade.StudentId))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public void CheckStudentsGrades()
+        {
+            if (HasCourseFinished())
+            {
+                var courseStudents = studentController.GetAllStudentsForCourseGrading(course.Id);
+
+                foreach (Model.Student student in courseStudents)
+                {
+                    var grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id);
+                    SelectedGrade = new CourseGradeDTO();
+
+                    if (grade != null)
+                    {
+                        SelectedGrade.Value = grade.Value;
+                        student.ActiveCourseId = -1;
+                        studentController.Update(student);
+                        Update();
+                    }
+                    else
+                    {
+                        SelectedGrade.Value = 0;
+                    }
+                }
+            }
         }
 
         private void ConfirmRequest_Click(object sender, RoutedEventArgs e)
@@ -204,6 +289,7 @@ namespace LangLang.View.Teacher
                     teacherController.IncrementCourseCurrentlyEnrolled(course.Id);
                     student.RegisteredCoursesIds.Remove(course.Id);
                     studentController.Update(student);
+                    Update();
                 }
             }
         }
@@ -227,6 +313,7 @@ namespace LangLang.View.Teacher
                     student.RegisteredCoursesIds.Remove(course.Id);
                     studentController.Update(student);
                     StudentsTableViewModel.Students.Remove(SelectedStudent);
+                    Update();
                 }
             }
         }
@@ -242,6 +329,12 @@ namespace LangLang.View.Teacher
                 Model.Student student = studentController.GetStudentById(SelectedStudent.id);
                 // open window for reason
                 studentController.GivePenaltyPoint(student.Id);
+                if (student.PenaltyPoints >= 3)
+                {
+                    studentController.Delete(student.Id);
+                }
+                studentController.Update(student);
+                Update();
             }
         }
 
@@ -251,14 +344,28 @@ namespace LangLang.View.Teacher
             {
                 MessageBox.Show("Please choose a student to grade!");
             }
+            else if (teacherController.IsStudentGradedCourse(SelectedStudent.id))
+            {
+                MessageBox.Show("This student is already graded!");
+            }
             else
             {
                 Model.Student student = studentController.GetStudentById(SelectedStudent.id);
                 GradeStudentCourseForm gradeStudentForm = new GradeStudentCourseForm(course, teacher, student, teacherController, studentController);
+
+                gradeStudentForm.Closed += RefreshPage;
+
                 gradeStudentForm.Show();
+                gradeStudentForm.Activate();
             }
         }
-
+        private void RefreshPage(object sender, EventArgs e)
+        {
+            AddCourseStatus();
+            CheckStudentsGrades();
+            CheckButtons();
+            Update();
+        }
 
         private void ReadMail_Click(object sender, RoutedEventArgs e)
         {
