@@ -146,8 +146,8 @@ namespace LangLang.View.Teacher
         {
             if (Owner != null)
             {
-                Owner.Visibility = Visibility.Visible; 
-                this.Close();
+                Owner.Visibility = Visibility.Visible;
+                this.Visibility = Visibility.Collapsed;
             }
         }
 
