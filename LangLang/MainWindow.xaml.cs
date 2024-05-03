@@ -46,12 +46,16 @@ namespace LangLang
 
             foreach (Student student in studentController.GetAllStudents())
             {
-                if (student.Email == email && student.Password == password)
+                if (student.Email == email && student.Password == password && student.ActiveCourseId != -10)
                 {
                     StudentForm welcomePage = new StudentForm(student.Id, studentController);
                     welcomePage.Show();
                     this.Close();
                     return;
+                }
+                else if(student.ActiveCourseId != -10)
+                {
+                    MessageBox.Show("Your account has been deactivated.");
                 }
             }
 
