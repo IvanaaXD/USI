@@ -93,6 +93,7 @@ namespace LangLang.View.Teacher
                 {
                     MessageBox.Show("No courses found.");
                 }
+                UpdateExam();
             }
             catch (Exception ex)
             {
@@ -222,7 +223,7 @@ namespace LangLang.View.Teacher
 
         private void CreateExam_Click(object sender, RoutedEventArgs e)
         {
-            CreateExamForm examTable = new CreateExamForm(teacherController, teacherId);
+            CreateExamForm examTable = new CreateExamForm(teacherController, directorController ,teacherId);
             examTable.Show();
         }
         private void UpdateExam_Click(object sender, RoutedEventArgs e)
@@ -292,7 +293,7 @@ namespace LangLang.View.Teacher
             Language? selectedLanguage = (Language?)examLanguageComboBox.SelectedItem;
             LanguageLevel? selectedLevel = (LanguageLevel?)examLevelComboBox.SelectedItem;
             DateTime? selectedStartDate = examDatePicker.SelectedDate;
-            
+
             var courses = GetFilteredCourses();
 
             List<ExamTerm> examTerms = teacherController.GetAllExamTerms();

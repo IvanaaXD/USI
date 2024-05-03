@@ -31,8 +31,8 @@ namespace LangLang.View.Teacher
             ExamTerm examTerm = teacherController.GetExamTermById(examId);
             ExamTerm = new ExamTermDTO(examTerm);
             DataContext = ExamTerm;
-            
-            
+
+
             InitializeComponent();
             this.teacherController = teacherController;
 
@@ -41,7 +41,7 @@ namespace LangLang.View.Teacher
 
             string[] parts = languageAndLevel.Split(',');
             languageAndLevel = parts[0].Trim() + " " + parts[1].Trim();
-            
+
             languageComboBox.SelectedItem = languageAndLevel;
             examDatePicker.SelectedDate = ExamTerm.ExamDate;
             examTimeTextBox.Text = ExamTerm.ExamDate.ToString("HH:mm"); //ExamTerm.ExamTime;
@@ -124,8 +124,8 @@ namespace LangLang.View.Teacher
             PickLanguageAndLevel();
             if (ExamTerm.IsValid)
             {
-                    teacherController.UpdateExamTerm(ExamTerm.ToExamTerm());
-                    Close();   
+                teacherController.UpdateExamTerm(ExamTerm.ToExamTerm());
+                Close();
             }
             else
             {

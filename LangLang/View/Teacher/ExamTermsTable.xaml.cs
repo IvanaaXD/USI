@@ -70,8 +70,8 @@ namespace LangLang.View.Teacher
 
         private void Create_Click(object sender, RoutedEventArgs e)
         {
-            CreateExamForm examTable = new CreateExamForm(teacherController, teacherId);
-            examTable.Show();
+            //CreateExamForm examTable = new CreateExamForm(teacherController, teacherId);
+            //examTable.Show();
         }
         private void Update_Click(object sender, RoutedEventArgs e)
         {
