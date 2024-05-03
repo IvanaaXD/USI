@@ -315,6 +315,42 @@ namespace LangLang.Model.DAO
             NotifyObservers();
             return true;
         }
+        public void ProcessPenaltyPoints()
+        {
+            DateTime currentDate = DateTime.Now;
+            if (currentDate.Day == 1)
+            {
+                foreach (Student student in _students)
+                {
+                    if (student.PenaltyPoints > 0)
+                    {
+                        student.PenaltyPoints--;
+                        if (student.PenaltyPoints == 3)
+                        {
+                            DeactivateStudentAccount(student);
+                        }
+                    }
+                }
+                _storage.Save(_students);
+                NotifyObservers();
+            }
+        }
+
+        private void DeactivateStudentAccount(Student student)
+        {
+            if (student.ActiveCourseId != -1)
+            {
+                Course course = teacherDAO.GetCourseById(student.ActiveCourseId);
+                DateTime courseEndDate = course.StartDate.AddDays(course.Duration * 7);
+                if (DateTime.Now < courseEndDate)
+                {
+                    course.CurrentlyEnrolled--;
+                    teacherDAO.UpdateCourse(course);
+                }
+            }
+            student.ActiveCourseId = -10;
+
+        }
 
     }
 }
