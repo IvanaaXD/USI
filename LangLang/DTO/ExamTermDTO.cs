@@ -23,9 +23,18 @@ namespace LangLang.DTO
         private int maxStudents;
         private int currentlyAttending;
         private bool confirmed;
-        private TeacherController teacherController = new TeacherController();
+        private bool informed;
         private string languageAndLevel;
 
+
+        private readonly TeacherController _teacherController;
+        private readonly Teacher teacher;
+
+        public ExamTermDTO(TeacherController teacherController, Teacher teacher)
+        {
+            _teacherController = teacherController;
+            this.teacher = teacher;
+        }
         public List<string> LanguageAndLevelValues
         {
             get
@@ -84,7 +93,11 @@ namespace LangLang.DTO
             get { return confirmed; }
             set { SetProperty(ref confirmed, value); }
         }
-
+        public bool Informed
+        {
+            get { return informed; }
+            set { SetProperty(ref informed, value); }
+        }
         public string LanguageAndLevel
         {
             get { return languageAndLevel; }
@@ -157,8 +170,8 @@ namespace LangLang.DTO
                     return false;
                 if ((ExamDate - DateTime.Now).TotalDays < 14)
                         return false;
-                if (!teacherController.CheckExamOverlap(ExamID, ExamDate)) // =====================
-                    return false;
+                //if (!teacherController.CheckExamOverlap(ExamID, ExamDate)) // =====================
+                //    return false;
                 if (CurrentlyAttending < 0 || (CurrentlyAttending > MaxStudents))
                     return false;
                 if (MaxStudents <= 0)
@@ -183,7 +196,8 @@ namespace LangLang.DTO
                 ExamTime = combinedDateTime,
                 MaxStudents = MaxStudents,
                 CurrentlyAttending = CurrentlyAttending,
-                Confirmed = Confirmed
+                Confirmed = Confirmed,
+                Informed = Informed
             };
         }
 
@@ -200,6 +214,7 @@ namespace LangLang.DTO
             maxStudents = examTerm.MaxStudents;
             currentlyAttending = examTerm.CurrentlyAttending;
             confirmed = examTerm.Confirmed;
+            informed = examTerm.Informed;
 
             TeacherDAO teacherDAO = new TeacherDAO();
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);

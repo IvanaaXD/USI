@@ -15,6 +15,7 @@ namespace LangLang.Model
         private int maxStudents;
         private int currentlyAttending;
         private bool confirmed;
+        private bool informed;
 
         public int ExamID
         {
@@ -52,6 +53,11 @@ namespace LangLang.Model
             set { confirmed = value; }
         }
 
+        public bool Informed
+        {
+            get { return informed; }
+            set { informed = value; }
+        }
         public ExamTerm()
         {
         }
@@ -64,11 +70,12 @@ namespace LangLang.Model
             this.maxStudents = maxStudents;
             this.currentlyAttending = currentlyAttending;
             this.confirmed = false;
+            this.informed = false;  
         }
 
         public override string ToString()
         {
-            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}, CurrentlyAttending:{currentlyAttending}, Confirmed:{confirmed}";
+            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}, CurrentlyAttending:{currentlyAttending}, Confirmed:{confirmed}, Informed:{informed}";
         }
 
         public string[] ToCSV()
@@ -77,11 +84,11 @@ namespace LangLang.Model
             {
                 examID.ToString(),
                 courseID.ToString(),
-                //examTime.ToString(),
                 examTime.ToString("yyyy-MM-dd HH:mm"),
                 maxStudents.ToString(),
                 currentlyAttending.ToString(),
-                confirmed.ToString()
+                confirmed.ToString(),
+                informed.ToString()
             };
             return csvValues;
         }
@@ -90,11 +97,11 @@ namespace LangLang.Model
         {
             ExamID = int.Parse(values[0]);
             CourseID = int.Parse(values[1]);
-            // ExamTime = DateTime.Parse(values[2]);
             ExamTime = DateTime.ParseExact(values[2], "yyyy-MM-dd HH:mm", null);
             MaxStudents = int.Parse(values[3]);
             CurrentlyAttending = int.Parse(values[4]);
             Confirmed = bool.Parse(values[5]);
+            Informed = bool.Parse(values[6]);
         }
     }
 }
