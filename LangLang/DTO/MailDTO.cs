@@ -101,13 +101,17 @@ namespace LangLang.DTO
             {
                 switch (columnName)
                 {
+                    case "Message":
+                        if (Message == null || Message == "")
+                            return "Message cannot have an empty body";
+                        break;
                 }
 
                 return null;
             }
         }
 
-        private readonly string[] _validatedProperties = {};
+        private readonly string[] _validatedProperties = { "Message" };
 
         public bool IsValid
         {
@@ -136,7 +140,7 @@ namespace LangLang.DTO
             };
         }
 
-        public MailDTO() {}
+        public MailDTO() { }
 
         // add MainController mainController, 
         // _teacherController = tc;

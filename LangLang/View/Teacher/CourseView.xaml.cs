@@ -289,6 +289,7 @@ namespace LangLang.View.Teacher
                     teacherController.IncrementCourseCurrentlyEnrolled(course.Id);
                     student.RegisteredCoursesIds.Remove(course.Id);
                     studentController.Update(student);
+                    AddCourseInfo();
                     Update();
                 }
             }
@@ -309,11 +310,12 @@ namespace LangLang.View.Teacher
                 }
                 else
                 {
-                    // page for showing the reason for being rejected
-                    student.RegisteredCoursesIds.Remove(course.Id);
-                    studentController.Update(student);
-                    StudentsTableViewModel.Students.Remove(SelectedStudent);
-                    Update();
+                    CourseRejectionForm rejectionForm = new CourseRejectionForm(course, teacher, student, teacherController, studentController);
+
+                    rejectionForm.Closed += RefreshPage;
+
+                    rejectionForm.Show();
+                    rejectionForm.Activate();
                 }
             }
         }
@@ -327,14 +329,11 @@ namespace LangLang.View.Teacher
             else
             {
                 Model.Student student = studentController.GetStudentById(SelectedStudent.id);
-                // open window for reason
-                studentController.GivePenaltyPoint(student.Id);
-                if (student.PenaltyPoints >= 3)
-                {
-                    studentController.Delete(student.Id);
-                }
-                studentController.Update(student);
-                Update();
+                CoursePenaltyPointForm penaltyPointForm = new CoursePenaltyPointForm(course, teacher, student, teacherController, studentController);
+                penaltyPointForm.Closed += RefreshPage;
+
+                penaltyPointForm.Show();
+                penaltyPointForm.Activate();
             }
         }
 
@@ -361,6 +360,7 @@ namespace LangLang.View.Teacher
         }
         private void RefreshPage(object sender, EventArgs e)
         {
+            AddCourseInfo();
             AddCourseStatus();
             CheckStudentsGrades();
             CheckButtons();
