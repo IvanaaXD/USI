@@ -99,6 +99,15 @@ namespace LangLang.Controller
         {
             return _students.CancelCourseRegistration(studentId, courseId);
         }
+        public bool RegisterForExam(int studentId, int examId)
+        {
+            return _students.RegisterForExam(studentId, examId);
+        }
+        public bool CancelExamRegistration(int studentId, int examId)
+        {
+            return _students.CancelExamRegistration(studentId, examId);
+        }
+
         public bool IsStudentAttendingCourse(int studentId)
         {
             return _students.IsStudentAttendingCourse(studentId);

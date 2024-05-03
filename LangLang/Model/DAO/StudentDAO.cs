@@ -306,6 +306,45 @@ namespace LangLang.Model.DAO
             return true;
         }
 
+        public bool RegisterForExam(int studentId, int examId)
+        {
+            Student student = GetStudentById(studentId);
+            ExamTerm examTerm = teacherDAO.GetExamTermById(examId);
+            if (!examTerm.Informed && examTerm.CurrentlyAttending>=examTerm.MaxStudents) 
+                return false;
+
+            student.RegisteredExamsIds.Add(examId);
+            
+            examTerm.CurrentlyAttending += 1;
+            teacherDAO.UpdateExamTerm(examTerm);    
+            
+            _storage.Save(_students);
+            NotifyObservers();
+            return true;
+        }
+
+        public bool CancelExamRegistration(int studentId, int examTermId)
+        {
+            Student student = GetStudentById(studentId);
+            ExamTerm examTerm = teacherDAO.GetExamTermById(examTermId);
+            DateTime currentDate = DateTime.Now;
+
+            if ((examTerm.ExamTime - currentDate).TotalDays >= 10)
+            {
+                student.RegisteredExamsIds.Remove(examTermId);
+
+                examTerm.CurrentlyAttending -= 1;
+                teacherDAO.UpdateExamTerm(examTerm);
+
+                _storage.Save(_students);
+                NotifyObservers();
+                return true;
+            }
+
+            return false;
+        }
+
+
         public bool GivePenaltyPoint(int studentId)
         {
             Student student = GetStudentById(studentId);
