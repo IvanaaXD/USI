@@ -32,17 +32,21 @@ namespace LangLang.View.Teacher
         public ViewModel TableViewModel { get; set; }
         public CourseDTO SelectedCourse { get; set; }
         public ExamTermDTO SelectedExamTerm { get; set; }
+        public StudentsController studentController { get; set; }
         public TeacherController teacherController { get; set; }
         public DirectorController directorController { get; set; }
-        
+        public MainController mainController { get; set; }
+
         private bool isSearchCourseClicked = false;
         private bool isSearchExamClicked = false;
-        public TeacherPage(int teacherId, DirectorController directorController)
+        public TeacherPage(int teacherId, MainController mainController)
         {
             InitializeComponent();
             this.teacherId = teacherId;
-            this.teacherController = new();
-            this.directorController = directorController;
+            this.mainController = mainController;
+            this.studentController = mainController.GetStudentController();
+            this.teacherController = mainController.GetTeacherController();
+            this.directorController = mainController.GetDirectorController();
 
             this.Courses = Courses;
             this.ExamTerms = ExamTerms;
@@ -53,11 +57,11 @@ namespace LangLang.View.Teacher
             Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             firstAndLastName.Text = teacher.FirstName + " " + teacher.LastName;
 
-            languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
-            levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
+            courseLanguageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
+            courseLevelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
 
 
-            List<Language> languages = new List<Language> ();
+            List<Language> languages = new List<Language>();
             List<LanguageLevel> levels = new List<LanguageLevel>();
 
             var courses = GetFilteredCourses();
@@ -66,15 +70,15 @@ namespace LangLang.View.Teacher
             {
                 languages.Add(course.Language);
                 levels.Add(course.Level);
-                
+
             }
             examLanguageComboBox.ItemsSource = languages;
-            examLevelComboBox.ItemsSource = levels; 
-            
+            examLevelComboBox.ItemsSource = levels;
+
             DataContext = this;
 
             Update();
-            UpdateExam(); 
+            UpdateExam();
         }
 
         public void Update()
@@ -112,12 +116,14 @@ namespace LangLang.View.Teacher
             Update();
             isSearchCourseClicked = true;
         }
+
         private void ResetCourse_Click(object sender, EventArgs e)
         {
             isSearchCourseClicked = false;
             Update();
             ResetCourse_Click();
         }
+
         private void UpdateCourse_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
@@ -135,6 +141,7 @@ namespace LangLang.View.Teacher
                 }
             }
         }
+
         private void DeleteCourse_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
@@ -164,11 +171,11 @@ namespace LangLang.View.Teacher
 
         private void ResetCourse_Click()
         {
-            languageComboBox.SelectedItem = null;
-            levelComboBox.SelectedItem = null;
-            startDateDatePicker.SelectedDate = null;
-            durationTextBox.Text = string.Empty;
-            onlineCheckBox.IsChecked = false;
+            courseLanguageComboBox.SelectedItem = null;
+            courseLevelComboBox.SelectedItem = null;
+            courseStartDateDatePicker.SelectedDate = null;
+            courseDurationTextBox.Text = string.Empty;
+            courseOnlineCheckBox.IsChecked = false;
         }
 
         private List<Course> GetFinalDisplayCourses(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration)
@@ -177,7 +184,7 @@ namespace LangLang.View.Teacher
 
             if (isSearchCourseClicked)
             {
-                bool isOnline = onlineCheckBox.IsChecked ?? false;
+                bool isOnline = courseOnlineCheckBox.IsChecked ?? false;
                 List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
                 foreach (Course course in allFilteredCourses)
                 {
@@ -202,13 +209,13 @@ namespace LangLang.View.Teacher
 
         private List<Course> GetFilteredCourses()
         {
-            Language? selectedLanguage = (Language?)languageComboBox.SelectedItem;
-            LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
-            DateTime? selectedStartDate = startDateDatePicker.SelectedDate;
+            Language? selectedLanguage = (Language?)courseLanguageComboBox.SelectedItem;
+            LanguageLevel? selectedLevel = (LanguageLevel?)courseLevelComboBox.SelectedItem;
+            DateTime? selectedStartDate = courseStartDateDatePicker.SelectedDate;
             int selectedDuration = 0;
-            if (!string.IsNullOrEmpty(durationTextBox.Text))
+            if (!string.IsNullOrEmpty(courseDurationTextBox.Text))
             {
-                if (int.TryParse(durationTextBox.Text, out int duration))
+                if (int.TryParse(courseDurationTextBox.Text, out int duration))
                 {
                     selectedDuration = duration;
                 }
@@ -266,6 +273,37 @@ namespace LangLang.View.Teacher
                     teacherController.DeleteExamTerm(SelectedExamTerm.ExamID);
             }
         }
+
+        private void ViewCourse_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedCourse == null)
+            {
+                MessageBox.Show("Please choose a course to view!");
+            }
+            else
+            {
+                Course course = teacherController.GetCourseById(SelectedCourse.Id);
+                CourseView courseView = new CourseView(course, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
+                courseView.Show();
+            }
+        }
+
+        private void ViewExam_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedExamTerm == null)
+            {
+                MessageBox.Show("Please choose an exam term to view!");
+            }
+            else
+            {
+                ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
+                ExamTermView examTermView = new ExamTermView(examTerm, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
+                examTermView.Owner = this;
+                this.Visibility = Visibility.Collapsed;
+                examTermView.Show();
+            }
+        }
+
         public void UpdateExam()
         {
             try

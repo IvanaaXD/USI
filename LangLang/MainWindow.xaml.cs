@@ -37,7 +37,7 @@ namespace LangLang
             {
                 if (teacher.Email == email && teacher.Password == password)
                 {
-                    TeacherPage teacherPage = new TeacherPage(teacher.Id, directorController);
+                    TeacherPage teacherPage = new TeacherPage(teacher.Id, mainController);
                     teacherPage.Show();
                     this.Close();
                     return;

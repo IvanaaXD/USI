@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:LangLang.View.Director" xmlns:dto="clr-namespace:LangLang.DTO"
         mc:Ignorable="d"
         xmlns:convs="clr-namespace:LangLang.View.Converters" 
+        WindowStartupLocation = "CenterScreen"
         Title="UpdateTeacherForm" Height="600" Width="384">
 
     <Window.Resources>
@@ -14,7 +15,6 @@
         <ControlTemplate x:Key="ValidationTemplate">
             <StackPanel>
                 <!-- Placeholder for the TextBox itself -->
-
                 <AdornedElementPlaceholder x:Name="textBox" />
                 <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" />
             </StackPanel>

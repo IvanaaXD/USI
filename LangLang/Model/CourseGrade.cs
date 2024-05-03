@@ -1,19 +1,13 @@
-﻿using LangLang.Model.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LangLang.Storage.Serialization;
+﻿using LangLang.Storage.Serialization;
 
 namespace LangLang.Model
 {
-    public class Grade : ISerializable
+    public class CourseGrade : ISerializable
     {
         private int id;
         private int studentId;
         private int teacherId;
-        private int examId;
+        private int courseId;
         private int value;
 
         public int Id
@@ -21,6 +15,7 @@ namespace LangLang.Model
             get { return id; }
             set { id = value; }
         }
+
         public int StudentId
         {
             get { return studentId; }
@@ -33,10 +28,10 @@ namespace LangLang.Model
             set { teacherId = value; }
         }
 
-        public int ExamId
+        public int CourseId
         {
-            get { return examId; }
-            set { examId = value; }
+            get { return courseId; }
+            set { courseId = value; }
         }
 
         public int Value
@@ -45,30 +40,31 @@ namespace LangLang.Model
             set { this.value = value; }
         }
 
-        public Grade()
+        public CourseGrade()
         {
         }
 
-        public Grade(int studentId, int teacherId, int examTermId, int value)
+        public CourseGrade(int studentId, int teacherId, int courseId, int value)
         {
             this.studentId = studentId;
             this.teacherId = teacherId;
-            this.examId = examId;
+            this.courseId = courseId;
             this.value = value;
         }
 
         public override string ToString()
         {
-            return $"StudentId: {studentId}, TeacherId: {teacherId}, ExamTermId: {examId}, Value: {value}";
+            return $"Id: {id}, StudentId: {studentId}, TeacherId: {teacherId}, CourseId: {courseId}, Value: {value}";
         }
 
         public string[] ToCSV()
         {
             string[] csvValues =
             {
+                id.ToString(),
                 studentId.ToString(),
                 teacherId.ToString(),
-                examId.ToString(),
+                courseId.ToString(),
                 value.ToString()
             };
             return csvValues;
@@ -76,10 +72,14 @@ namespace LangLang.Model
 
         public void FromCSV(string[] values)
         {
-            StudentId = int.Parse(values[0]);
-            TeacherId = int.Parse(values[1]);
-            ExamId = int.Parse(values[2]);
-            Value = int.Parse(values[3]);
+            if (values.Length == 0)
+                return;
+
+            Id = int.Parse(values[0]);
+            StudentId = int.Parse(values[1]);
+            TeacherId = int.Parse(values[2]);
+            CourseId = int.Parse(values[3]);
+            Value = int.Parse(values[4]);
         }
     }
 }

@@ -137,6 +137,20 @@ namespace LangLang.Model.DAO
             return _examTerms;
         }
 
+        public List<Mail> GetAllMails()
+        {
+            List<Mail> filteredMails = new List<Mail>();
+
+            foreach (Mail mail in _mails)
+            {
+                if (mail.Sender is Teacher || mail.Recevier is Teacher)
+                {
+                    filteredMails.Add(mail);
+                }
+            }
+            return filteredMails;
+        }
+
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
             List<Course> allCourses = GetAllCourses();
@@ -144,7 +158,7 @@ namespace LangLang.Model.DAO
 
             List<Course> availableCourses = new List<Course>();
 
-            foreach(Course course in allCourses)
+            foreach (Course course in allCourses)
             {
                 if (allTeacherCourses.Contains(course.Id))
                 {
@@ -152,6 +166,33 @@ namespace LangLang.Model.DAO
                 }
             }
             return availableCourses;
+        }
+
+        public List<ExamTerm> GetAvailableExamTerms(Teacher teacher)
+        {
+            List<ExamTerm> allExamTerms = GetAllExamTerms();
+            List<Course> allTeacherCourses = GetAvailableCourses(teacher);
+
+            List<ExamTerm> availableExamTerms = new();
+            List<int> examTermIds = new();
+
+            foreach (Course course in allTeacherCourses)
+            {
+                foreach (int examId in course.ExamTerms)
+                {
+                    examTermIds.Add(examId);
+                }
+            }
+
+            foreach (ExamTerm examTerm in allExamTerms)
+            {
+                if (examTermIds.Contains(examTerm.ExamID))
+                {
+                    availableExamTerms.Add(examTerm);
+                }
+            }
+
+            return availableExamTerms;
         }
 
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
@@ -169,14 +210,14 @@ namespace LangLang.Model.DAO
 
         public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
-           List<ExamTerm> allExams = GetAllExamTerms();
+            List<ExamTerm> allExams = GetAllExamTerms();
 
             var filteredExams = new List<ExamTerm>();
 
             foreach (var exam in allExams)
             {
                 Course course = GetCourseById(exam.CourseID);
-                
+
                 bool matchesLanguage = !language.HasValue || course.Language == language;
                 bool matchesLevel = !level.HasValue || course.Level == level;
                 bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date == examDate.Value.Date;
@@ -193,7 +234,7 @@ namespace LangLang.Model.DAO
         public String FindLanguageAndLevel(int courseID)
         {
             String res = "";
-            
+
             Course course = GetAllCourses().FirstOrDefault(c => c.Id == courseID);
 
             if (course != null)
@@ -207,11 +248,17 @@ namespace LangLang.Model.DAO
 
             return res;
         }
-
+        public void IncrementCourseCurrentlyEnrolled(int courseId)
+        {
+            Course course = GetCourseById(courseId);
+            ++course.CurrentlyEnrolled;
+            UpdateCourse(course);
+        }
         public void DecrementCourseCurrentlyEnrolled(int courseId)
         {
             Course course = GetCourseById(courseId);
             --course.CurrentlyEnrolled;
+            UpdateCourse(course);
         }
         public void DecrementExamTermCurrentlyAttending(int examTermId)
         {
@@ -227,6 +274,146 @@ namespace LangLang.Model.DAO
             NotifyObservers();
             return examTerm;
         }
+
+        public bool CheckTeacherCoursesOverlap(Course course, Teacher teacher)
+        {
+            int courseDurationInMinutes = 90;
+
+            DateTime courseStartTime = course.StartDate; // start of first ever course session 
+            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes); // end of last ever course session
+
+            List<Course> teacherCourses = GetAvailableCourses(teacher);
+            foreach (Course secondCourse in teacherCourses)
+            {
+                DateTime secondCourseStartTime = secondCourse.StartDate;
+                DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
+
+                DateTime maxStartTime = courseStartTime > secondCourseStartTime ? courseStartTime : secondCourseStartTime;
+                DateTime minEndTime = courseEndTime < secondCourseEndTime ? courseEndTime : secondCourseEndTime;
+
+                if ((courseStartTime == secondCourseStartTime && courseEndTime == secondCourseEndTime) ||
+                    (maxStartTime < minEndTime))
+                {
+                    bool isSessionOverlap = CheckSessionOverlap(course, secondCourse);
+                    if (isSessionOverlap)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public bool CheckTeacherCourseExamOverlap(Course course, Teacher teacher)
+        {
+            int courseDurationInMinutes = 90;
+            int examDurationInMinutes = 240;
+
+            DateTime courseStartTime = course.StartDate; // start of first ever course session 
+            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes); // end of last ever course session
+
+            List<ExamTerm> teacherExams = GetAvailableExamTerms(teacher);
+            foreach (ExamTerm examTerm in teacherExams)
+            {
+                if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
+                {
+                    continue;
+                }
+                DateTime examStartTime = examTerm.ExamTime;
+                DateTime examEndTime = examTerm.ExamTime.AddMinutes(examDurationInMinutes);
+
+                DateTime maxStartTime = courseStartTime > examStartTime ? courseStartTime : examStartTime;
+                DateTime minEndTime = courseEndTime < examEndTime ? courseEndTime : examEndTime;
+
+                if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
+                    (maxStartTime < minEndTime))
+                {
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool CheckSessionOverlap(Course course, Course secondCourse)
+        {
+            int courseDurationInMinutes = 90;
+            foreach (DayOfWeek day in course.WorkDays)
+            {
+                if (secondCourse.WorkDays.Contains(day))
+                {
+                    TimeSpan sessionOneStart = course.StartDate.TimeOfDay;
+                    TimeSpan sessionTwoStart = secondCourse.StartDate.TimeOfDay;
+
+                    TimeSpan sessionOneEnd = sessionOneStart.Add(TimeSpan.FromMinutes(courseDurationInMinutes));
+                    TimeSpan sessionTwoEnd = sessionTwoStart.Add(TimeSpan.FromMinutes(courseDurationInMinutes));
+
+                    TimeSpan maxStartTime = sessionOneStart > sessionTwoStart ? sessionOneStart : sessionTwoStart;
+                    TimeSpan minEndTime = sessionOneEnd < sessionTwoEnd ? sessionOneEnd : sessionTwoEnd;
+                    if ((sessionOneStart == sessionTwoStart) || (maxStartTime < minEndTime))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool CheckClassroomOverlap(Course course, List<Course> allAvailableCourses, List<ExamTerm> allAvailableExams)
+        {
+            bool isClassroomOneTaken = false;
+
+            int courseDurationInMinutes = 90;
+            int examDurationInMinutes = 240;
+
+            DateTime courseStartTime = course.StartDate; // start of first ever course session 
+            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes); // end of last ever course session
+
+            foreach (Course secondCourse in allAvailableCourses)
+            {
+                if (secondCourse.IsOnline)
+                    continue;
+
+                DateTime secondCourseStartTime = secondCourse.StartDate;
+                DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
+
+                DateTime maxStartTime = courseStartTime > secondCourseStartTime ? courseStartTime : secondCourseStartTime;
+                DateTime minEndTime = courseEndTime < secondCourseEndTime ? courseEndTime : secondCourseEndTime;
+
+                if ((courseStartTime == secondCourseStartTime && courseEndTime == secondCourseEndTime) ||
+                    (maxStartTime < minEndTime))
+                {
+                    bool isSessionOverlap = CheckSessionOverlap(course, secondCourse);
+                    if (isSessionOverlap)
+                        if (isClassroomOneTaken)
+                            return true;
+                        else
+                            isClassroomOneTaken = true;
+                }
+            }
+
+            foreach (ExamTerm examTerm in allAvailableExams)
+            {
+                if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
+                {
+                    continue;
+                }
+
+                DateTime examStartTime = examTerm.ExamTime;
+                DateTime examEndTime = examTerm.ExamTime.AddMinutes(examDurationInMinutes);
+
+                DateTime maxStartTime = courseStartTime > examStartTime ? courseStartTime : examStartTime;
+                DateTime minEndTime = courseEndTime < examEndTime ? courseEndTime : examEndTime;
+
+                if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
+                    (maxStartTime < minEndTime))
+                {
+                    if (isClassroomOneTaken)
+                        return true;
+                    else
+                        isClassroomOneTaken = true;
+                }
+            }
+
+            return false;
+        }
     }
 }
-        

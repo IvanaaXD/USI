@@ -11,10 +11,14 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly TeacherDAO _teachers;
+        private readonly ExamTermGradeDAO _examTermGrades;
+        private readonly CourseGradeDAO _courseGrades;
 
         public TeacherController()
         {
             _teachers = new TeacherDAO();
+            _examTermGrades = new ExamTermGradeDAO();
+            _courseGrades = new CourseGradeDAO();
         }
         public Course? GetCourseById(int courseID)
         {
@@ -32,6 +36,40 @@ namespace LangLang.Controller
         {
             return _teachers.GetAllExamTerms();
         }
+
+        public List<Mail> GetAllMails()
+        {
+            return _teachers.GetAllMails();
+        }
+
+        public List<CourseGrade> GetAllCourseGrades()
+        {
+            return _courseGrades.GetAllCourseGrades();
+        }
+
+        public List<ExamTermGrade> GetAllExamTermGrades()
+        {
+            return _examTermGrades.GetAllExamTermGrades();
+        }
+        public List<CourseGrade> GetCourseGradesByTeacherCourse(int teacherId, int courseId)
+        {
+            return _courseGrades.GetCourseGradesByTeacherCourse(teacherId, courseId);
+        }
+
+        public List<ExamTermGrade> GetExamTermGradesByTeacherExam(int teacherId, int examTermId)
+        {
+            return _examTermGrades.GetExamTermGradesByTeacherExam(teacherId, examTermId);
+        }
+        public CourseGrade? GetCourseGradesByStudentTeacherCourse(int studentId, int teacherId, int courseId)
+        {
+            return _courseGrades.GetCourseGradeByStudentTeacher(studentId, teacherId, courseId);
+        }
+
+        public ExamTermGrade? GetExamTermGradeByStudentTeacherExam(int  studentId, int teacherId, int examTermId) 
+        {
+            return _examTermGrades.GetExamTermGradeByStudentTeacherExam(studentId, teacherId, examTermId);
+        }
+
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
             return _teachers.GetAvailableCourses(teacher);
@@ -54,6 +92,31 @@ namespace LangLang.Controller
         {
             _teachers.UpdateExamTerm(examTerm);
         }
+
+        public ExamTermGrade GradeStudent(ExamTermGrade grade)
+        {
+            return _examTermGrades.AddGrade(grade);
+        }
+
+        public CourseGrade GradeStudentCourse(CourseGrade grade)
+        {
+            return _courseGrades.AddGrade(grade);
+        }
+
+        public ExamTerm ConfirmExamTerm(int examTermId)
+        {
+            return _teachers.ConfirmExamTerm(examTermId);
+        }
+        public bool IsStudentGradedCourse(int studentId)
+        {
+            return _courseGrades.IsStudentGraded(studentId);
+        }
+
+        public bool IsStudentGradedExamTerm(int studentId)
+        {
+            return _examTermGrades.IsStudentGraded(studentId);
+        }
+
         public bool CheckExamOverlap(int ExamID, DateTime ExamDate)
         {
             int examDurationInMinutes = 240;
@@ -102,101 +165,33 @@ namespace LangLang.Controller
 
             return !overlappingExams.Any();
         }
-        public string ValidateCourseTimeslot(Course course)
+        public bool ValidateCourseTimeslot(Course course, Teacher teacher)
         {
-            string overlapResult = CheckOverlap(course, isCourse: true);
-            if (overlapResult != null)
-                return overlapResult;
-
-            return CheckOverlap(course, isCourse: false);
-        }
-        private string CheckOverlap(Course course, bool isCourse)
-        {
-            DateTime sessionStartDateTime = course.StartDate;
-            DateTime sessionEndDateTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(90);
-
-            List<DayOfWeek> courseDays = course.WorkDays;
-            int courseDurationInMinutes = 90;
-            int examDurationInMinutes = 240;
-
-            IEnumerable<dynamic> overlappingItems = isCourse ?
-    (IEnumerable<dynamic>)_teachers.GetAllCourses()
-    .Where(c =>
-    {
-        DateTime courseStartDateTime = c.StartDate;
-        DateTime courseEndDateTime = c.StartDate.AddDays(c.Duration * 7);
-
-        bool isOverlap =
-            (courseStartDateTime >= sessionStartDateTime && courseStartDateTime <= sessionEndDateTime) ||
-            (courseEndDateTime >= sessionStartDateTime && courseEndDateTime <= sessionEndDateTime) ||
-            (courseStartDateTime <= sessionStartDateTime && courseEndDateTime >= sessionEndDateTime);
-
-        return isOverlap;
-    }) :
-    (IEnumerable<dynamic>)_teachers.GetAllExamTerms()
-    .Where(item =>
-    {
-        DateTime examDateTime = item.ExamTime;
-        bool isOverlap = (examDateTime >= sessionStartDateTime && examDateTime <= sessionEndDateTime);
-
-        return isOverlap;
-    });
-
-
-            var overlappingItemsFiltered = overlappingItems
-            .Where(item =>
-            {
-                DateTime itemStartTime = isCourse ? item.StartDate : item.ExamTime;
-                DateTime itemEndTime = itemStartTime.AddMinutes(isCourse ? courseDurationInMinutes : examDurationInMinutes);
-
-                bool isOverlap = (sessionStartDateTime.TimeOfDay >= itemStartTime.TimeOfDay && sessionStartDateTime.TimeOfDay < itemEndTime.TimeOfDay) ||
-                        (sessionStartDateTime.AddMinutes(courseDurationInMinutes).TimeOfDay > itemStartTime.TimeOfDay && sessionStartDateTime.AddMinutes(courseDurationInMinutes).TimeOfDay <= itemEndTime.TimeOfDay) ||
-                        (sessionStartDateTime.TimeOfDay <= itemStartTime.TimeOfDay && sessionStartDateTime.AddMinutes(courseDurationInMinutes).TimeOfDay >= itemEndTime.TimeOfDay);
+            bool isOverlap = CheckCourseOverlap(course, teacher);
+            if (!isOverlap)
                 return isOverlap;
-            });
+            return true;
+        }
+        private bool CheckCourseOverlap(Course course, Teacher teacher)
+        {
+            List<Course> allAvailableCourses = _teachers.GetAllCourses();
+            List<ExamTerm> allAvailableExams = _teachers.GetAllExamTerms();
 
-            int overlapCount = overlappingItemsFiltered.Count();
+            bool isSameTeacherCourseOverlap = _teachers.CheckTeacherCoursesOverlap(course, teacher);
+            if (isSameTeacherCourseOverlap)
+                return false;
 
-            int itemsToRemove = 0;
+            bool isSameTeacherExamOverlap = _teachers.CheckTeacherCourseExamOverlap(course, teacher);
+            if (isSameTeacherExamOverlap)
+                return false;
 
-            foreach (var item in overlappingItemsFiltered)
+            if (!course.IsOnline)
             {
-                if (item is ExamTerm)
-                {
-                    DayOfWeek hep = item.ExamTime.DayOfWeek;
-                    if (!courseDays.Any(d => d == item.ExamTime.DayOfWeek))
-                    {
-                        itemsToRemove++;
-                    }
-                    continue;
-                }
-                if (item.Id == course.Id)
-                {
-                    itemsToRemove++;
-                }
-                bool hasMatchingDay = false;
-                List<DayOfWeek> itemDayOfWeek = item.WorkDays;
-                foreach (var day in courseDays)
-                {
-                    hasMatchingDay = itemDayOfWeek.Any(d => d == day);
-                    if (hasMatchingDay)
-                        break;
-                }
-                if (!hasMatchingDay)
-                {
-                    itemsToRemove++;
-                }
+                bool isClassroomOverlap = _teachers.CheckClassroomOverlap(course, allAvailableCourses, allAvailableExams);
+                if (isClassroomOverlap)
+                    return false;
             }
-            overlapCount -= itemsToRemove;
-
-            if ((isCourse && course.IsOnline && overlapCount > 0) ||
-                (!isCourse && course.IsOnline && overlapCount > 0)) /*||
-                (isCourse && !course.IsOnline && overlapCount >= 2))*/
-            {
-                return $"The timeslot on {sessionStartDateTime.DayOfWeek} at {sessionStartDateTime.TimeOfDay} for the selected duration is not available for {(isCourse ? "an online" : "a")} {(isCourse ? "course." : "exam term.")}";
-            }
-
-            return null;
+            return true;
 
         }
 
@@ -214,6 +209,16 @@ namespace LangLang.Controller
             _teachers.Subscribe(observer);
         }
 
+        public void IncrementCourseCurrentlyEnrolled(int courseId)
+        {
+            _teachers.IncrementCourseCurrentlyEnrolled(courseId);
+        }
+
+        public void DecrementCourseCurrentlyEnrolled(int courseId)
+        {
+            _teachers.DecrementCourseCurrentlyEnrolled(courseId);
+        }
+
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
             return _teachers.FindCoursesByCriteria(language, level, startDate, duration, isOnline);
@@ -221,11 +226,6 @@ namespace LangLang.Controller
         public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
         {
             return _teachers.FindExamTermsByCriteria(language, level, examDate);
-        }
-
-        public ExamTerm ConfirmExamTerm(int examTermId)
-        {
-            return _teachers.ConfirmExamTerm(examTermId);
         }
     }
 }

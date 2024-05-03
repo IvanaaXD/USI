@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace LangLang.Model.Enums
 {
     public enum Gender
@@ -52,11 +47,15 @@ namespace LangLang.Model.Enums
     public enum TypeOfMessage
     {
         EnterCourseRequest,
-        QuitCourseRequest,
-        QuitEnteringCourseRequest,
         AcceptEnterCourseRequestMessage,
         DenyEnterCourseRequestMessage,
-        EnterExamTermRequest,
+
+        QuitCourseRequest,
+        AcceptQuitCourseRequestMessage,
+        DenyQuitCourseRequestMessage,
+
+        QuitEnteringCourseRequest,
+
         PenaltyPointMessage,
         NULL
     }

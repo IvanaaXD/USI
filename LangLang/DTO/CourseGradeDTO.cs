@@ -1,24 +1,21 @@
-﻿using LangLang.Model.Enums;
-using System;
+﻿using LangLang.Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using LangLang.Model;
 
 namespace LangLang.DTO
 {
-    public class MailDTO : INotifyPropertyChanged, IDataErrorInfo
+    public class CourseGradeDTO : INotifyPropertyChanged, IDataErrorInfo
     {
         private int id;
-        private Person sender;
-        private Person recevier;
-        private TypeOfMessage typeOfMessage;
-        private DateTime dateOfMessage;
-        private string message;
-        private bool answered;
+        private int studentId;
+        private int teacherId;
+        private int courseId;
+        private int valueOfCourseGrade;
 
         private string firstName;
         private string lastName;
+        private string email;
 
         public int Id
         {
@@ -26,40 +23,28 @@ namespace LangLang.DTO
             set { SetProperty(ref id, value); }
         }
 
-        public Person Sender
+        public int StudentId
         {
-            get { return sender; }
-            set { SetProperty(ref sender, value); }
+            get { return studentId; }
+            set { SetProperty(ref studentId, value); }
         }
 
-        public Person Recevier
+        public int TeacherId
         {
-            get { return recevier; }
-            set { SetProperty(ref recevier, value); }
+            get { return teacherId; }
+            set { SetProperty(ref teacherId, value); }
         }
 
-        public TypeOfMessage TypeOfMessage
+        public int CourseId
         {
-            get { return typeOfMessage; }
-            set { SetProperty(ref typeOfMessage, value); }
+            get { return courseId; }
+            set { SetProperty(ref courseId, value); }
         }
 
-        public DateTime DateOfMessage
+        public int Value
         {
-            get { return dateOfMessage; }
-            set { SetProperty(ref dateOfMessage, value); }
-        }
-
-        public string Message
-        {
-            get { return message; }
-            set { SetProperty(ref message, value); }
-        }
-
-        public bool Answered
-        {
-            get { return answered; }
-            set { SetProperty(ref answered, value); }
+            get { return valueOfCourseGrade; }
+            set { SetProperty(ref valueOfCourseGrade, value); }
         }
 
         public string FirstName
@@ -72,6 +57,12 @@ namespace LangLang.DTO
         {
             get { return lastName; }
             set { SetProperty(ref lastName, value); }
+        }
+
+        public string Email
+        {
+            get { return email; }
+            set { SetProperty(ref email, value); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -93,6 +84,7 @@ namespace LangLang.DTO
             return true;
         }
 
+
         public string Error => null;
 
         public string this[string columnName]
@@ -101,13 +93,17 @@ namespace LangLang.DTO
             {
                 switch (columnName)
                 {
+                    case "Value":
+                        if (Value <= 0 || Value > 10)
+                            return "Grade value must be between 1 and 10.";
+                        break;
                 }
 
                 return null;
             }
         }
 
-        private readonly string[] _validatedProperties = {};
+        private readonly string[] _validatedProperties = { "Value" };
 
         public bool IsValid
         {
@@ -122,36 +118,30 @@ namespace LangLang.DTO
             }
         }
 
-        public Mail ToMail()
+        public CourseGrade ToCourseGrade()
         {
-            return new Mail
+            return new CourseGrade
             {
                 Id = id,
-                Sender = sender,
-                Recevier = recevier,
-                TypeOfMessage = typeOfMessage,
-                DateOfMessage = dateOfMessage,
-                Message = message,
-                Answered = answered,
+                TeacherId = teacherId,
+                StudentId = studentId,
+                CourseId = courseId,
+                Value = valueOfCourseGrade,
             };
         }
 
-        public MailDTO() {}
+        public CourseGradeDTO() { }
 
-        // add MainController mainController, 
-        // _teacherController = tc;
-
-        public MailDTO(Mail mail)
+        public CourseGradeDTO(CourseGrade grade, Student student)
         {
-            id = mail.Id;
-            sender = mail.Sender;
-            recevier = mail.Recevier;
-            typeOfMessage = mail.TypeOfMessage;
-            dateOfMessage = mail.DateOfMessage;
-            message = mail.Message;
-            answered = mail.Answered;
-            firstName = mail.Sender.FirstName;
-            lastName = mail.Sender.LastName;
+            id = grade.Id;
+            studentId = grade.StudentId;
+            teacherId = grade.TeacherId;
+            courseId = grade.CourseId;
+            valueOfCourseGrade = grade.Value;
+            firstName = student.FirstName;
+            lastName = student.LastName;
+            email = student.Email;
         }
     }
 }

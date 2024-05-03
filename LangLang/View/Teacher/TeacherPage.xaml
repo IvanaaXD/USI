@@ -29,12 +29,12 @@
                     <Image Source="https://cdn0.iconfinder.com/data/icons/people-occupations-icons-rounded/110/Teacher-1024.png" Width="150"></Image>
                 </Border>
 
-                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Center"
-                 FontSize="30">Welcome</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Left"
+                 FontSize="30" Margin="346,0,0,0">Welcome</TextBlock>
                 <Button x:Name="logoutBtn" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="Logout_Click"
              Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Log out</Button>
 
-                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="239,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="270"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -45,8 +45,8 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="Teacher: " VerticalAlignment="Center" FontSize="20"></TextBlock>
-                    <TextBlock x:Name="firstAndLastName" Grid.Row="1" FontSize="20"></TextBlock>
+                    <TextBlock Text="Teacher: " VerticalAlignment="Center" FontSize="20" Grid.ColumnSpan="2" Margin="26,0,-26,0"/>
+                    <TextBlock x:Name="firstAndLastName" FontSize="20" Grid.ColumnSpan="2" Margin="161,6,-161,7"/>
                 </Grid>
             </Grid>
         </TabItem>
@@ -67,11 +67,11 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
-                        <ComboBox x:Name="languageComboBox" Width="150" Margin="5"/>
-                        <ComboBox x:Name="levelComboBox" Width="150" Margin="5"/>
-                        <DatePicker x:Name="startDateDatePicker" Width="150" Margin="5"/>
-                        <TextBox x:Name="durationTextBox" Width="150" Margin="5"/>
-                        <CheckBox x:Name="onlineCheckBox" Content="Online" Margin="5"
+                        <ComboBox x:Name="courseLanguageComboBox" Width="150" Margin="5"/>
+                        <ComboBox x:Name="courseLevelComboBox" Width="150" Margin="5"/>
+                        <DatePicker x:Name="courseStartDateDatePicker" Width="150" Margin="5"/>
+                        <TextBox x:Name="courseDurationTextBox" Width="150" Margin="5"/>
+                        <CheckBox x:Name="courseOnlineCheckBox" Content="Online" Margin="5"
             IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
                     </StackPanel>
                     <Button Grid.Row="1" Content="Search" Click="SearchCourse_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,0,10,20"/>
@@ -83,11 +83,11 @@
                         <TabControl>
                             <TabItem Header="Courses">
                                 <DataGrid Height="350"
-  AutoGenerateColumns="False"
-  x:Name="CoursesDataGrid"
-  ItemsSource="{Binding TableViewModel.Courses, UpdateSourceTrigger=PropertyChanged}"
-  SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
-  SelectionMode="Single" IsReadOnly="True">
+                                  AutoGenerateColumns="False"
+                                  x:Name="CoursesDataGrid"
+                                  ItemsSource="{Binding TableViewModel.Courses, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectionMode="Single" IsReadOnly="True">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Language" Binding="{Binding Language}"/>
                                         <DataGridTextColumn Header="Level" Binding="{Binding Level}"/>
@@ -106,7 +106,7 @@
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </TabItem>
-                           
+
                         </TabControl>
                     </Grid>
 
@@ -114,6 +114,7 @@
                         <Button Content="Create" Click="CreateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
                         <Button Content="Update" Click="UpdateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
                         <Button Content="Delete" Click="DeleteCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                        <Button Content="View" Click="ViewCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#9e9e9e" Width="80"/>
                     </StackPanel>
                 </Grid>
             </DockPanel>
@@ -129,22 +130,22 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,5">
-                            <TextBlock Text="Language:" Width="150" Margin="5,0,5,0" />
-                            <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0" />
-                            <TextBlock Text="Exam Date:" Width="150" Margin="5,0,5,0" />
-                        </StackPanel>
+                        <TextBlock Text="Language:" Width="150" Margin="5,0,5,0" />
+                        <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0" />
+                        <TextBlock Text="Exam Date:" Width="150" Margin="5,0,5,0" />
+                    </StackPanel>
 
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
-                            <ComboBox x:Name="examLanguageComboBox" Width="150" Margin="5" />
-                            <ComboBox x:Name="examLevelComboBox" Width="150" Margin="5" />
-                            <DatePicker x:Name="examDatePicker" Width="150" Margin="5" />
-                            <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
-                        </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+                        <ComboBox x:Name="examLanguageComboBox" Width="150" Margin="5" />
+                        <ComboBox x:Name="examLevelComboBox" Width="150" Margin="5" />
+                        <DatePicker x:Name="examDatePicker" Width="150" Margin="5" />
+                        <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
+                    </StackPanel>
 
-                        <Button Grid.Row="1" Content="Search" Click="SearchExam_Click" HorizontalAlignment="Right" Width="100" Margin="0,0,10,20" />
-                    </Grid>
+                    <Button Grid.Row="1" Content="Search" Click="SearchExam_Click" HorizontalAlignment="Right" Width="100" Margin="0,0,10,20" />
+                </Grid>
 
-                    <Grid>
+                <Grid>
                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
                         <TabControl>
                             <TabItem Header="Exam Terms">
@@ -171,12 +172,13 @@
                         <Button Content="Create" Click="CreateExam_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
                         <Button Content="Update" Click="UpdateExam_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
                         <Button Content="Delete" Click="DeleteExam_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                        <Button Content="View" Click="ViewExam_Click" Margin="10,0,0,0" Foreground="White" Background="#9e9e9e" Width="80"/>
                     </StackPanel>
                 </Grid>
             </DockPanel>
         </TabItem>
-        
-        
-        
+
+
+
     </TabControl>
 </Window>

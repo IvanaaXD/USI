@@ -16,12 +16,14 @@ namespace LangLang.View.Teacher
 
         private readonly TeacherController teacherController;
         private readonly DirectorController directorController;
+        private LangLang.Model.Teacher teacher;
         private int teacherId;
         public TeacherDTO Teacher { get; set; }
 
         public UpdateCourseForm(int courseId, int teacherId, TeacherController teacherController, DirectorController directorController)
         {
-            Course = new CourseDTO(teacherController, teacherController.GetCourseById(courseId));
+            this.teacherId = teacherId;
+            Course = new CourseDTO(teacherController, teacherController.GetCourseById(courseId), directorController.GetTeacherById(teacherId));
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             Course.StartTime = Course.StartDate.ToString("HH:mm");
             DataContext = Course;
