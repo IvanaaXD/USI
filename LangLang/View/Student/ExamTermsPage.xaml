@@ -1,0 +1,233 @@
+﻿<Window x:Class="LangLang.View.Student.ExamTermsPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LangLang.View.Student"
+        mc:Ignorable="d"
+        Title="ExamTermsPage" Height="450" Width="800">
+
+
+    <TabControl>
+        <TabItem Header="Available Exams">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="121*"></ColumnDefinition>
+                    <ColumnDefinition Width="27*"/>
+                    <ColumnDefinition Width="249*"/>
+                    <ColumnDefinition Width="397*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <DockPanel Grid.ColumnSpan="4" Height="auto">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="87*"/>
+                            <ColumnDefinition Width="147*"/>
+                            <ColumnDefinition Width="31*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,10,0,10" Grid.ColumnSpan="2">
+                            <TextBlock Text="Language:" Width="150" Margin="5,0,5,0"></TextBlock>
+                            <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0"></TextBlock>
+                            <TextBlock Text="Exam date:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,15" Grid.ColumnSpan="2">
+                            <ComboBox x:Name="languageComboBox" Width="150" Margin="5"/>
+                            <ComboBox x:Name="levelComboBox" Width="150" Margin="5"/>
+                            <DatePicker x:Name="startDateDatePicker" Width="150" Margin="5"/>
+                            <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
+                        </StackPanel>
+
+                        <Button Grid.Row="1" Content="Search" Click="btnSearch_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,4,10,21" Grid.ColumnSpan="2" Grid.Column="1"/>
+                    </Grid>
+                </DockPanel>
+
+
+                <DockPanel Grid.Row="1" Grid.ColumnSpan="4">
+                    <TabControl>
+                        <TabItem Header="Exam Terms">
+                            <DataGrid Height="350"
+                  AutoGenerateColumns="False"
+                  x:Name="ExamTermsDataGrid"
+                  ItemsSource="{Binding TableViewModel.ExamTerms, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+                  SelectionMode="Single" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
+                                    <DataGridTextColumn Header="Language and Level" Width ="*" Binding="{Binding LanguageAndLevel}"/>
+                                    <DataGridTextColumn Header="Exam Date" Width ="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                                    <DataGridTextColumn Header="Max Students" Width ="*" Binding="{Binding MaxStudents}"/>
+                                    <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="2">
+                    <Button Content="Register the exam" Click="btnSignUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Registered Exams" Margin="-2,0,-2,-2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="121*"></ColumnDefinition>
+                    <ColumnDefinition Width="27*"/>
+                    <ColumnDefinition Width="249*"/>
+                    <ColumnDefinition Width="397*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <DockPanel Grid.ColumnSpan="4" Height="auto">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="87*"/>
+                            <ColumnDefinition Width="147*"/>
+                            <ColumnDefinition Width="31*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,10,0,10" Grid.ColumnSpan="2">
+                            <TextBlock Text="Language:" Width="150" Margin="5,0,5,0"></TextBlock>
+                            <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0"></TextBlock>
+                            <TextBlock Text="Exam date:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,15" Grid.ColumnSpan="2">
+                            <ComboBox x:Name="languageComboBoxRegistered" Width="150" Margin="5"/>
+                            <ComboBox x:Name="levelComboBoxRegistered" Width="150" Margin="5"/>
+                            <DatePicker x:Name="startDateDatePickerRegistered" Width="150" Margin="5"/>
+                            <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
+                        </StackPanel>
+
+                        <Button Grid.Row="1" Content="Search" Click="btnSearch_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,4,10,21" Grid.ColumnSpan="2" Grid.Column="1"/>
+                    </Grid>
+                </DockPanel>
+
+
+                <DockPanel Grid.Row="1" Grid.ColumnSpan="4">
+                    <TabControl>
+                        <TabItem Header="Exam Terms">
+                            <DataGrid Height="350"
+      AutoGenerateColumns="False"
+      x:Name="ExamTermsDataGriddd"
+      ItemsSource="{Binding TableViewModel.ExamTerms, UpdateSourceTrigger=PropertyChanged}"
+      SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+      SelectionMode="Single" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
+                                    <DataGridTextColumn Header="Language and Level" Width ="*" Binding="{Binding LanguageAndLevel}"/>
+                                    <DataGridTextColumn Header="Exam Date" Width ="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                                    <DataGridTextColumn Header="Max Students" Width ="*" Binding="{Binding MaxStudents}"/>
+                                    <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="2">
+                    <Button Content="Unregister the exam" Click="SignOut_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Finished Exams">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="121*"></ColumnDefinition>
+                    <ColumnDefinition Width="27*"/>
+                    <ColumnDefinition Width="249*"/>
+                    <ColumnDefinition Width="397*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <DockPanel Grid.ColumnSpan="4" Height="auto">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="87*"/>
+                            <ColumnDefinition Width="147*"/>
+                            <ColumnDefinition Width="31*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,10,0,10" Grid.ColumnSpan="2">
+                            <TextBlock Text="Language:" Width="150" Margin="5,0,5,0"></TextBlock>
+                            <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0"></TextBlock>
+                            <TextBlock Text="Exam date:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,15" Grid.ColumnSpan="2">
+                            <ComboBox x:Name="languageComboBoxCompleted" Width="150" Margin="5"/>
+                            <ComboBox x:Name="levelComboBoxCompleted" Width="150" Margin="5"/>
+                            <DatePicker x:Name="startDateDatePickerCompleted" Width="150" Margin="5"/>
+                            <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
+                        </StackPanel>
+
+                        <Button Grid.Row="1" Content="Search" Click="btnSearch_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,4,10,21" Grid.ColumnSpan="2" Grid.Column="1"/>
+                    </Grid>
+                </DockPanel>
+
+
+                <DockPanel Grid.Row="1" Grid.ColumnSpan="4">
+                    <TabControl>
+                        <TabItem Header="Exam Terms">
+                            <DataGrid Height="350"
+AutoGenerateColumns="False"
+x:Name="ExamTermsDataGridd"
+ItemsSource="{Binding TableViewModel.ExamTerms, UpdateSourceTrigger=PropertyChanged}"
+SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+SelectionMode="Single" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
+                                    <DataGridTextColumn Header="Language and Level" Width ="*" Binding="{Binding LanguageAndLevel}"/>
+                                    <DataGridTextColumn Header="Exam Date" Width ="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                                    <DataGridTextColumn Header="Max Students" Width ="*" Binding="{Binding MaxStudents}"/>
+                                    <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
+                                    <DataGridTextColumn Header="Grade" Width ="*" Binding="{Binding CurrentlyAttending}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="2">
+                    <Button Content="View the exam" Click="btnSignUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>
