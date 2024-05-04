@@ -28,6 +28,10 @@ namespace LangLang.Controller
         {
             return _teachers.GetExamTermById(examId);
         }
+        public Mail? GetMailById(int mailId)
+        {
+            return _teachers.GetMailById(mailId);
+        }
         public List<Course> GetAllCourses()
         {
             return _teachers.GetAllCourses();
@@ -36,10 +40,17 @@ namespace LangLang.Controller
         {
             return _teachers.GetAllExamTerms();
         }
-
-        public List<Mail> GetAllMails()
+        public List<Mail> GetAllMail()
         {
-            return _teachers.GetAllMails();
+            return _teachers.GetAllMail();
+        }
+        public List<Mail> GetSentCourseMails(Teacher teacher, int courseId)
+        {
+            return _teachers.GetSentCourseMail(teacher, courseId);
+        }
+        public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
+        {
+            return _teachers.GetReceivedCourseMails(teacher, courseId);
         }
 
         public List<CourseGrade> GetAllCourseGrades()
@@ -81,6 +92,15 @@ namespace LangLang.Controller
         public void AddExamTerm(ExamTerm examTerm)
         {
             _teachers.AddExamTerm(examTerm);
+        }
+        public Mail SendMail(Mail mail)
+        {
+            return _teachers.SendMail(mail);
+        }
+
+        public void DeleteMail(int mailId)
+        {
+            _teachers.RemoveMail(mailId);
         }
 
         public void UpdateCourse(Course course)

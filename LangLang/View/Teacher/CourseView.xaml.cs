@@ -38,6 +38,18 @@ namespace LangLang.View.Teacher
         public MailDTO SelectedSentMail { get; set; }
         public MailDTO SelectedReceivedMail { get; set; }
 
+        private MailDTO _mail;
+
+        public MailDTO MailToSend
+        {
+            get { return _mail; }
+            set
+            {
+                _mail = value;
+                OnPropertyChanged(nameof(Course));
+            }
+        }
+
         private CourseGradeDTO _selectedGrade;
         public CourseGradeDTO SelectedGrade
         {
@@ -70,6 +82,7 @@ namespace LangLang.View.Teacher
             this.teacherController = teacherController;
             this.studentController = studentController;
             this.teacher = teacher;
+            MailToSend = new MailDTO();
 
             SentMailsTableViewModel = new ViewModel();
             ReceivedMailsTableViewModel = new ViewModel();
@@ -94,20 +107,22 @@ namespace LangLang.View.Teacher
                 SentMailsTableViewModel.SentMails.Clear();
                 ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
-                var allMails = teacherController.GetAllMails();
+                var receivedMails = teacherController.GetReceivedCourseMails(teacher, course.Id);
+                var sentMails = teacherController.GetSentCourseMails(teacher,course.Id);
 
-                if (allMails != null)
+                if (receivedMails != null)
                 {
-                    foreach (Mail mail in allMails)
+                    foreach (Mail mail in receivedMails)
                     {
-                        if (mail.Recevier == this.teacher)
-                        {
-                            ReceivedMails.Add(new MailDTO(mail));
-                        }
-                        else if (mail.Sender == this.teacher)
-                        {
-                            SentMails.Add(new MailDTO(mail));
-                        }
+                        ReceivedMailsTableViewModel.ReceivedMails.Add(new MailDTO(mail));
+                    }
+                }
+
+                if(sentMails != null)
+                {
+                    foreach(Mail mail in sentMails)
+                    {
+                        SentMailsTableViewModel.SentMails.Add(new MailDTO(mail));
                     }
                 }
                 else
@@ -289,6 +304,17 @@ namespace LangLang.View.Teacher
                     teacherController.IncrementCourseCurrentlyEnrolled(course.Id);
                     student.RegisteredCoursesIds.Remove(course.Id);
                     studentController.Update(student);
+
+                    MailToSend.Sender = teacher.Email;
+                    MailToSend.Receiver = student.Email;
+                    MailToSend.TypeOfMessage = Model.Enums.TypeOfMessage.AcceptEnterCourseRequestMessage;
+                    MailToSend.DateOfMessage = DateTime.Now;
+                    MailToSend.CourseId = course.Id;
+                    MailToSend.Message = "You have been accepted to course " + course.Language.ToString() + " " + course.Level.ToString();
+                    MailToSend.Answered = false;
+
+                    teacherController.SendMail(MailToSend.ToMail());
+
                     AddCourseInfo();
                     Update();
                 }
@@ -375,6 +401,28 @@ namespace LangLang.View.Teacher
         private void AnswerMail_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+        private void ReceivedMailDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SelectedReceivedMail != null)
+            {
+                receivedMailSenderTextBlock.Text = SelectedReceivedMail.Sender;                
+                receivedMailDateTextBlock.Text = SelectedReceivedMail.DateOfMessage.ToString("dd-MM-yyyy HH:mm");
+                receivedMailTypeTextBlock.Text = SelectedReceivedMail.TypeOfMessage.ToString();
+                receivedMailMessageTextBlock.Text = SelectedReceivedMail.Message;
+
+            }
+        }
+        private void SentMailDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SelectedSentMail != null)
+            {
+                sentMailSenderTextBlock.Text = SelectedSentMail.Receiver;
+                sentMailDateTextBlock.Text = SelectedSentMail.DateOfMessage.ToString("dd-MM-yyyy HH:mm");
+                sentMailTypeTextBlock.Text = SelectedSentMail.TypeOfMessage.ToString();
+                sentMailMessageTextBlock.Text = SelectedSentMail.Message;
+
+            }
         }
     }
 }
