@@ -1,1 +1,8 @@
-
+0|marina@gmail.com|janko@gmail.com|4|EnterCourseRequest|2000-04-26|Please accept me|False
+1|lena@gmail.com|janko@gmail.com|4|QuitEnteringCourseRequest|2024-04-26|I dont want to be here|False
+2|janko@gmail.com|marina@gmail.com|4|AcceptEnterCourseRequestMessage|2000-04-26|You've been accepted to the course|False
+3|janko@gmail.com|lena@gmail.com|10|AcceptEnterCourseRequestMessage|2024-05-04|You have been accepted to course English B1|False
+4|janko@gmail.com|marina@gmail.com|10|AcceptEnterCourseRequestMessage|2024-05-04|You have been accepted to course English B1|False
+5|janko@gmail.com|lena@gmail.com|10|DenyEnterCourseRequestMessage|2024-05-04|You have been rejected from course English B1. Reason: awef7duiojkIOUJJKOWEFDSFJIOANKLWEIOAKLWEFPNCWMICPOJWEAKJMCOQWJ|False
+6|janko@gmail.com|safa@ffds.fds|4|PenaltyPointMessage|2024-05-04|You have gotten a penalty point from courseEnglish B1. Reason: Student didn't do homework.|False
+7|janko@gmail.com|safa@ffds.fds|4|PenaltyPointMessage|2024-05-04|You have gotten a penalty point from courseEnglish B1Reason: Student didn't attend a course class.|False

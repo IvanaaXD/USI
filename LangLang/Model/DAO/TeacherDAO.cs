@@ -22,7 +22,7 @@ namespace LangLang.Model.DAO
             _courses = _courseStorage.Load();
             _examTermsStorage = new Storage<ExamTerm>("exam.csv");
             _examTerms = _examTermsStorage.Load();
-            _mailsStorage = new Storage<Mail>("mail.csv");
+            _mailsStorage = new Storage<Mail>("mails.csv");
             _mails = _mailsStorage.Load();
         }
 
@@ -36,6 +36,11 @@ namespace LangLang.Model.DAO
         {
             if (_examTerms.Count == 0) return 0;
             return _examTerms.Last().ExamID + 1;
+        }
+        private int GenerateMailId()
+        {
+            if (_mails.Count == 0) return 0;
+            return _mails.Last().Id + 1;
         }
 
         public Course AddCourse(Course course)
@@ -54,6 +59,14 @@ namespace LangLang.Model.DAO
             _examTermsStorage.Save(_examTerms);
             NotifyObservers();
             return examTerm;
+        }
+        public Mail SendMail(Mail mail)
+        {
+            mail.Id = GenerateMailId();
+            _mails.Add(mail);
+            _mailsStorage.Save(_mails);
+            NotifyObservers();
+            return mail;
         }
 
         public Course? UpdateCourse(Course course)
@@ -105,7 +118,16 @@ namespace LangLang.Model.DAO
             NotifyObservers();
             return course;
         }
+        public Mail? RemoveMail(int id)
+        {
+            Mail? mail = GetMailById(id);
+            if (mail == null) return null;
 
+            _mails.Remove(mail);
+            _mailsStorage.Save(_mails);
+            NotifyObservers();
+            return mail;
+        }
         public ExamTerm? RemoveExamTerm(int id)
         {
             ExamTerm? examTerm = GetExamTermById(id);
@@ -127,6 +149,10 @@ namespace LangLang.Model.DAO
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
+        public Mail? GetMailById(int id)
+        {
+            return _mails.Find(v => v.Id == id);
+        }
         public List<Course> GetAllCourses()
         {
             return _courses;
@@ -137,13 +163,33 @@ namespace LangLang.Model.DAO
             return _examTerms;
         }
 
-        public List<Mail> GetAllMails()
+        public List<Mail> GetAllMail()
+        {
+            return _mails;
+        }
+
+
+        public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
         {
             List<Mail> filteredMails = new List<Mail>();
 
             foreach (Mail mail in _mails)
             {
-                if (mail.Sender is Teacher || mail.Recevier is Teacher)
+                if (mail.Sender == teacher.Email && mail.CourseId == courseId)
+                {
+                    filteredMails.Add(mail);
+                }
+            }
+            return filteredMails;
+        }
+
+        public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
+        {
+            List<Mail> filteredMails = new List<Mail>();
+
+            foreach (Mail mail in _mails)
+            {
+                if (mail.Receiver == teacher.Email && mail.CourseId == courseId)
                 {
                     filteredMails.Add(mail);
                 }

@@ -102,17 +102,17 @@ namespace LangLang.View.Teacher
                 SentMailsTableViewModel.SentMails.Clear();
                 ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
-                var allMails = teacherController.GetAllMails();
+                var allMails = teacherController.GetAllMail();
 
                 if (allMails != null)
                 {
                     foreach (Mail mail in allMails)
                     {
-                        if (mail.Recevier == this.teacher)
+                        if (mail.Receiver == this.teacher.Email)
                         {
                             ReceivedMails.Add(new MailDTO(mail));
                         }
-                        else if (mail.Sender == this.teacher)
+                        else if (mail.Sender == this.teacher.Email)
                         {
                             SentMails.Add(new MailDTO(mail));
                         }

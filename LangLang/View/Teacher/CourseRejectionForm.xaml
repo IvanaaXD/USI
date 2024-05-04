@@ -44,7 +44,7 @@
 
         <StackPanel Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,78,0,0" Orientation="Vertical" Height="80" Width="230">
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBox x:Name="mailBodyTextBlock" Width="230" Height="80" FontSize="16" Text="{Binding Mail.Message, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBox x:Name="mailBodyTextBlock" Width="230" Height="80" FontSize="16" TextWrapping="Wrap" Text="{Binding Mail.Message, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
              Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
         </StackPanel>
