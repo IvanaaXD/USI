@@ -134,6 +134,21 @@ namespace LangLang.Model.DAO
         {
             return _examTerms;
         }
+        public Course GetCourseByExamId(int id)
+        {
+            Course course = null;
+            List<ExamTerm> examTerms = GetAllExamTerms();
+            foreach (ExamTerm examTerm in examTerms)
+            {
+                if (examTerm.ExamID == id)
+                {
+
+                    course = GetCourseById(examTerm.CourseID);
+                    break;
+                }
+            }
+            return course;
+        }
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
             var filteredCourses = _courses.Where(course =>
