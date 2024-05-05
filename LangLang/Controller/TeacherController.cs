@@ -71,6 +71,10 @@ namespace LangLang.Controller
         {
             return _examTermGrades.GetExamTermGradesByTeacherExam(teacherId, examTermId);
         }
+        public ExamTermGrade? GetExamTermGradeByStudentExam(int studentId, int examTermId)
+        {
+            return _examTermGrades.GetExamTermGradeByStudentExam(studentId, examTermId);
+        }
         public CourseGrade? GetCourseGradesByStudentTeacherCourse(int studentId, int teacherId, int courseId)
         {
             return _courseGrades.GetCourseGradeByStudentTeacher(studentId, teacherId, courseId);
