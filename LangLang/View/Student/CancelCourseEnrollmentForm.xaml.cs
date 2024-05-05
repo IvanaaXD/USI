@@ -1,17 +1,8 @@
 ﻿using LangLang.Controller;
+using LangLang.DTO;
+using LangLang.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LangLang.View.Student
 {
@@ -20,18 +11,65 @@ namespace LangLang.View.Student
     /// </summary>
     public partial class CancelCourseEnrollmentForm : Window
     {
-        public CancelCourseEnrollmentForm()
+        int studentId, courseId;
+
+        StudentsController studentController;
+        TeacherController teacherController;
+        DirectorController directorController;
+        MailController mailController;
+
+        MailDTO mailDTO { get; set; }
+
+        // Event handler to turn off drop out button functionality in student form when this window closes.
+        public event EventHandler WindowClosed;
+
+        public CancelCourseEnrollmentForm(int studentId, int courseId)
         {
             InitializeComponent();
+            this.studentId = studentId;
+            this.courseId = courseId;
+            studentController = new StudentsController();
+            teacherController = new TeacherController();
+            directorController = new DirectorController();
+            mailController = new MailController();
+
+            CreateMailDTO();
+
+            courseTextBox.Text = courseTextBox.Text + GetCourseName(courseId);
+
+            DataContext = mailDTO;
         }
 
         private void SendExplanationButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (mailDTO.IsValid)
+            {
+                mailController.Send(mailDTO.ToMail());
+
+                Close();
+            }
         }
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void CreateMailDTO()
+        {
+            Model.Student student = studentController.GetStudentById(studentId);
+            Model.Teacher teacher = directorController.GetTeacherByCourse(courseId);
+            
+            mailDTO = new MailDTO(mailController.PrepareQuitCourseMail(student.Email,teacher.Email,courseId));
+        }
+        private string GetCourseName(int courseId)
+        {
+            Course course = teacherController.GetCourseById(courseId);
+            return course.Language.ToString() + " " + course.Level.ToString();
+        }
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            WindowClosed?.Invoke(this, EventArgs.Empty);
         }
     }
 }

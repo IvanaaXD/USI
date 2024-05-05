@@ -48,7 +48,6 @@ namespace LangLang
             {
                 if (student.Email == email && student.Password == password && student.ActiveCourseId != -10)
                 {
-                    studentController.ProcessPenaltyPoints();
                     StudentForm welcomePage = new StudentForm(student.Id, studentController);
                     welcomePage.Show();
                     this.Close();
@@ -76,7 +75,7 @@ namespace LangLang
 
         private void Registration_Click(object sender, RoutedEventArgs e)
         {
-            RegistrationForm registrationForm = new RegistrationForm(studentController);
+            LangLang.View.Student.RegistrationForm registrationForm = new LangLang.View.Student.RegistrationForm(studentController);
             registrationForm.Show();
         }
 

@@ -134,5 +134,13 @@ namespace LangLang.Model.DAO
 
             return filteredTeachers;
         }
+        public Teacher? GetTeacherByCourse(int courseId)
+        {
+            foreach(Teacher teacher in GetAllTeachers())
+                foreach(int teacherCourseId in teacher.CoursesId)
+                    if (teacherCourseId == courseId) return teacher;
+
+            return null;
+        }
     }
 }

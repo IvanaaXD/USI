@@ -12,6 +12,7 @@ namespace LangLang.Controller
     public class StudentsController
     {
         private readonly StudentDAO _students;
+        private readonly StudentGradeDAO _studentGrades;
 
         public StudentsController()
         {
@@ -27,14 +28,9 @@ namespace LangLang.Controller
         {
             _students.AddStudent(student);
         }
-
         public void Delete(int studentId)
         {
             _students.RemoveStudent(studentId);
-        }
-        public void ProcessPenaltyPoints()
-        {
-            _students.ProcessPenaltyPoints();   
         }
         public void Update(Student student)
         {
@@ -53,16 +49,6 @@ namespace LangLang.Controller
         {
             return _students.GetAvailableExamTerms(studentId);
         }
-
-        public List<ExamTerm> GetRegisteredExamTerms(int studentId)
-        {
-            return _students.GetRegisteredExamTerms(studentId);
-        }
-        public List<ExamTerm> GetCompletedExamTerms(int studentId)
-        {
-            return _students.GetCompletedExamTerms(studentId);
-        }
-
         public List<Course> GetRegisteredCourses(int studentId)
         {
             return _students.GetRegisteredCourses(studentId);
@@ -71,10 +57,17 @@ namespace LangLang.Controller
         {
             return _students.GetCompletedCourses(studentId);
         }
+        public List<ExamTerm> GetRegisteredExamTerms(int studentId)
+        {
+            return _students.GetRegisteredExamTerms(studentId);
+        }
+        public List<ExamTerm> GetCompletedExamTerms(int studentId)
+        {
+            return _students.GetCompletedExamTerms(studentId);
+        }
         public List<Course> GetPassedCourses(int studentId)
         {
             return _students.GetPassedCourses(studentId);
-
         }
 
         public Student? GetStudentById(int studentId)
@@ -121,15 +114,25 @@ namespace LangLang.Controller
         {
             return _students.CancelExamRegistration(studentId, examId);
         }
-
         public bool IsStudentAttendingCourse(int studentId)
         {
             return _students.IsStudentAttendingCourse(studentId);
         }
-
         public bool GivePenaltyPoint(int studentId)
         {
             return _students.GivePenaltyPoint(studentId);
         }
+        public Course GetActiveCourse(int studentId)
+        {
+            return _students.GetActiveCourse(studentId);
         }
-    } 
+        public bool IsQuitCourseMailSent(int studentId, int courseId)
+        {
+            return _students.IsQuitCourseMailSent(studentId, courseId);
+        }
+        public CourseGrade GradeStudentCourse(CourseGrade grade)
+        {
+            return _studentGrades.AddGrade(grade);
+        }
+    }
+}
