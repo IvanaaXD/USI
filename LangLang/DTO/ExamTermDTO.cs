@@ -25,10 +25,14 @@ namespace LangLang.DTO
         private bool confirmed;
         private bool informed;
         private string languageAndLevel;
+        private int gradeValue;
+        private int points;
+
 
 
         private readonly TeacherController _teacherController;
         private readonly Teacher teacher;
+        ExamTermGrade grade; 
 
         public ExamTermDTO(TeacherController teacherController, Teacher teacher)
         {
@@ -52,6 +56,7 @@ namespace LangLang.DTO
                 return languageLevelNames;
             }
         }
+       
         public int ExamID
         {
             get { return examID; }
@@ -104,6 +109,17 @@ namespace LangLang.DTO
             set { SetProperty(ref languageAndLevel, value); }
         }
 
+        public int Points
+        {
+            get { return points; }
+            set { SetProperty(ref points, value); }
+        }
+
+        public int GradeValue
+        {
+            get { return gradeValue; }
+            set { SetProperty(ref gradeValue, value); }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -213,14 +229,30 @@ namespace LangLang.DTO
         {
             examID = examTerm.ExamID;
             courseID = examTerm.CourseID;
-            examDate = examTerm.ExamTime; // preimenuj u klasi
+            examDate = examTerm.ExamTime; 
             maxStudents = examTerm.MaxStudents;
             currentlyAttending = examTerm.CurrentlyAttending;
             confirmed = examTerm.Confirmed;
             informed = examTerm.Informed;
-
             TeacherDAO teacherDAO = new TeacherDAO();
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
+        }
+        public ExamTermDTO(ExamTerm examTerm, int studentId)
+        {
+            examID = examTerm.ExamID;
+            courseID = examTerm.CourseID;
+            examDate = examTerm.ExamTime; 
+            maxStudents = examTerm.MaxStudents;
+            currentlyAttending = examTerm.CurrentlyAttending;
+            confirmed = examTerm.Confirmed;
+            informed = examTerm.Informed;
+            
+            TeacherDAO teacherDAO = new TeacherDAO();
+            languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
+            TeacherController teacherController = new TeacherController();
+            grade = teacherController.GetExamTermGradeByStudentExam(studentId, examTerm.ExamID);
+            gradeValue = grade.Value;
+            points = grade.ReadingPoints + grade.ListeningPoints + grade.SpeakingPoints + grade.WritingPoints;
         }
     }
 }

@@ -31,20 +31,20 @@ namespace LangLang.View.Student
             public ObservableCollection<ExamTermDTO> ExamTerms { get; set; }
             public ObservableCollection<ExamTermDTO> AvailableExamTerms { get; set; }
             public ObservableCollection<ExamTermDTO> RegisteredExamTerms { get; set; }
-            public ObservableCollection<ExamTermDTO> FinishedExamTerms { get; set; }
+            public ObservableCollection<ExamTermDTO> CompletedExamTerms { get; set; }
 
             public ViewModel()
             {
                 ExamTerms = new ObservableCollection<ExamTermDTO>();
                 AvailableExamTerms = new ObservableCollection<ExamTermDTO>();
                 RegisteredExamTerms = new ObservableCollection<ExamTermDTO>();
-                FinishedExamTerms = new ObservableCollection<ExamTermDTO>();
+                CompletedExamTerms = new ObservableCollection<ExamTermDTO>();
             }
         }
         public ViewModel TableViewModel { get; set; }
         public ExamTermDTO SelectedAvailableExamTerm { get; set; }
         public ExamTermDTO SelectedRegisteredExamTerm { get; set; }
-        public ExamTermDTO SelectedFinishedExamTerm { get; set; }
+        public ExamTermDTO SelectedCompletedExamTerm { get; set; }
         private StudentsController studentController { get; set; }
         private TeacherController teacherController { get; set; }
 
@@ -100,14 +100,14 @@ namespace LangLang.View.Student
         {
             try
             {
-                TableViewModel.AvailableExamTerms.Clear();
+                TableViewModel.RegisteredExamTerms.Clear();
 
                 var examTerms = GetFilteredRegisteredExamTerms();   
 
                 if (examTerms != null)
                 {
                     foreach (ExamTerm examTerm in examTerms)
-                        TableViewModel.AvailableExamTerms.Add(new ExamTermDTO(examTerm));
+                        TableViewModel.RegisteredExamTerms.Add(new ExamTermDTO(examTerm));
                 }
                 else
                 {
@@ -124,14 +124,17 @@ namespace LangLang.View.Student
         {
             try
             {
-                TableViewModel.AvailableExamTerms.Clear();
+                TableViewModel.CompletedExamTerms.Clear();
 
                 var examTerms = GetFilteredCompletedExamTerms();
 
                 if (examTerms != null)
                 {
                     foreach (ExamTerm examTerm in examTerms)
-                        TableViewModel.AvailableExamTerms.Add(new ExamTermDTO(examTerm));
+                    {                        
+                        TableViewModel.CompletedExamTerms.Add(new ExamTermDTO(examTerm,studentId));
+                    }
+                        
                 }
                 else
                 {
@@ -154,6 +157,7 @@ namespace LangLang.View.Student
             if (registered) 
             {
                 MessageBox.Show("Uspesno ste se prijavili za ispit.");
+                Update();
             }
             else
             {
@@ -167,6 +171,7 @@ namespace LangLang.View.Student
             if (unregistered)
             {
                 MessageBox.Show("Uspesno ste se odjavili za ispit.");
+                Update();
             }
             else
             {
