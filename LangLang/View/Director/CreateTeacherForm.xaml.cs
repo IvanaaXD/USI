@@ -51,16 +51,18 @@ namespace LangLang.View.Director
 
         private void SetPlaceholders()
         {
-
             Teacher.FirstName = "Name";
             Teacher.LastName = "Surname";
             Teacher.Email = "example@gmail.com";
             Teacher.PhoneNumber = "0123456789";
+            Teacher.Password = "password";
+            passwordBox.Password = "password";
 
             firstNameTextBox.GotFocus += FirstNameTextBox_GotFocus;
             lastNameTextBox.GotFocus += LastNameTextBox_GotFocus;
             emailTextBox.GotFocus += EmailTextBox_GotFocus;
             phoneNumberTextBox.GotFocus += PhoneNumberTextBox_GotFocus;
+            passwordBox.GotFocus += PasswordBox_GotFocus;
         }
 
         private void FirstNameTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -83,6 +85,11 @@ namespace LangLang.View.Director
             phoneNumberTextBox.Text = string.Empty;
         }
 
+        private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            passwordBox.Password = "";
+        }
+
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -98,7 +105,6 @@ namespace LangLang.View.Director
 
         private void Create_Click(object sender, RoutedEventArgs e)
         {
-            DataContext = this;
             PickDataFromListBox();
             PickDataFromDatePicker();
             PickDataFromComboBox();

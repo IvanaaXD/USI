@@ -297,7 +297,8 @@ namespace LangLang.View.Teacher
             else
             {
                 ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
-                ExamTermView examTermView = new ExamTermView(examTerm, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
+                Model.Teacher teacher = directorController.GetTeacherById(this.teacherId);
+                ExamTermView examTermView = new ExamTermView(examTerm, teacher, teacherController, studentController);
                 examTermView.Owner = this;
                 this.Visibility = Visibility.Collapsed;
                 examTermView.Show();
