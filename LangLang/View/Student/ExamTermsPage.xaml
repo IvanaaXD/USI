@@ -76,7 +76,7 @@
                 </DockPanel>
 
                 <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="2">
-                    <Button Content="Register the exam" Click="btnSignUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="Register the exam" Click="SignUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
                     <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
                 </StackPanel>
             </Grid>
