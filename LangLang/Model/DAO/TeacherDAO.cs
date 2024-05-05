@@ -328,6 +328,7 @@ namespace LangLang.Model.DAO
         {
             ExamTerm examTerm = GetExamTermById(examTermId);
             --examTerm.CurrentlyAttending;
+            UpdateExamTerm(examTerm);   
         }
 
         public ExamTerm ConfirmExamTerm(int examTermId)

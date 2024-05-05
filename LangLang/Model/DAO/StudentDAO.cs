@@ -174,7 +174,7 @@ namespace LangLang.Model.DAO
                     if (examTerm.CurrentlyAttending < examTerm.MaxStudents &&
                         (examTerm.ExamTime - currentTime).TotalDays > 30 &&
                         course.Language == secondCourse.Language &&
-                        course.Level == secondCourse.Level)
+                        course.Level == secondCourse.Level && !student.RegisteredExamsIds.Contains(examTerm.ExamID))
                     {
                         availableExamTerms.Add(examTerm);
                     }
@@ -351,7 +351,7 @@ namespace LangLang.Model.DAO
         {
             Student student = GetStudentById(studentId);
             ExamTerm examTerm = teacherDAO.GetExamTermById(examId);
-            if (!examTerm.Informed && examTerm.CurrentlyAttending>=examTerm.MaxStudents) 
+            if (!examTerm.Informed || examTerm.CurrentlyAttending>=examTerm.MaxStudents) 
                 return false;
 
             student.RegisteredExamsIds.Add(examId);
@@ -390,6 +390,10 @@ namespace LangLang.Model.DAO
         {
             Student student = GetStudentById(studentId);
             ++student.PenaltyPoints;
+            if (student.PenaltyPoints == 3)
+            {
+                DeactivateStudentAccount(student);
+            }
 
             _storage.Save(_students);
             NotifyObservers();

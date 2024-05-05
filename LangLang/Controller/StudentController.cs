@@ -32,7 +32,10 @@ namespace LangLang.Controller
         {
             _students.RemoveStudent(studentId);
         }
-
+        public void ProcessPenaltyPoints()
+        {
+            _students.ProcessPenaltyPoints();   
+        }
         public void Update(Student student)
         {
             _students.UpdateStudent(student);
