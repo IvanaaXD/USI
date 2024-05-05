@@ -8,8 +8,9 @@ namespace LangLang.Model
     public class Mail : ISerializable
     {
         private int id;
-        private Person sender;
-        private Person recevier;
+        private string sender;
+        private string receiver;
+        private int courseId;
         private TypeOfMessage typeOfMessage;
         private DateTime dateOfMessage;
         private string message;
@@ -20,16 +21,22 @@ namespace LangLang.Model
             get { return id; }
             set { id = value; }
         }
-        public Person Sender
+        public string Sender
         {
             get { return sender; }
             set { sender = value; }
         }
-        public Person Recevier
+        public string Receiver
         {
-            get { return recevier; }
-            set { recevier = value; }
+            get { return receiver; }
+            set { receiver = value; }
         }
+        public int CourseId
+        {
+            get { return courseId; }
+            set { courseId = value; }
+        }
+
         public TypeOfMessage TypeOfMessage
         {
             get { return typeOfMessage; }
@@ -53,12 +60,13 @@ namespace LangLang.Model
 
         public Mail() { }
 
-        public Mail(int id, Person sender, Person recevier, TypeOfMessage typeOfMessage, DateTime dateOfMessage, string message, bool answered)
+        public Mail(int id, string sender, string receiver, int courseId, TypeOfMessage typeOfMessage, DateTime dateOfMessage, string message, bool answered)
         {
 
             this.id = id;
             this.sender = sender;
-            this.recevier = recevier;
+            this.receiver = receiver;
+            this.courseId = courseId;
             this.typeOfMessage = typeOfMessage;
             this.dateOfMessage = dateOfMessage;
             this.message = message;
@@ -70,8 +78,9 @@ namespace LangLang.Model
             string[] csvValues =
             {
                 Id.ToString(),
-                Sender.Email,
-                Recevier.Email,
+                Sender,
+                Receiver,
+                CourseId.ToString(),
                 TypeOfMessage.ToString(),
                 DateOfMessage.ToString("yyyy-MM-dd"),
                 Message,
@@ -82,81 +91,20 @@ namespace LangLang.Model
 
         public void FromCSV(string[] values)
         {
-            if (values.Length != 7)
+            if (values.Length != 8)
             {
-                throw new ArgumentException("Invalid number of maik values in CSV");
+                throw new ArgumentException("Invalid number of mail values in CSV");
             }
 
             id = int.Parse(values[0]);
 
-            MainController mainController = new MainController();
-            bool found = false;
-
-            foreach (Student student in mainController.GetStudentController().GetAllStudents())
-            {
-                if (sender.Equals(values[1]))
-                {
-                    sender = student;
-                    break;
-                }
-            }
-
-            if (!found) {
-                foreach (Teacher teacher in mainController.GetDirectorController().GetAllTeachers())
-                {
-                    if (sender.Equals(values[1]))
-                    {
-                        sender = teacher;
-                        break;
-                    }
-                }
-            }
-
-            if (!found)
-            {
-                Director director = mainController.GetDirectorController().GetDirector();
-                if (sender.Equals(values[1]))
-                {
-                    sender = director;
-                }
-            }
-
-            found = false;
-
-            foreach (Student student in mainController.GetStudentController().GetAllStudents())
-            {
-                if (recevier.Equals(values[1]))
-                {
-                    recevier = student;
-                    break;
-                }
-            }
-
-            if (!found)
-            {
-                foreach (Teacher teacher in mainController.GetDirectorController().GetAllTeachers())
-                {
-                    if (recevier.Equals(values[1]))
-                    {
-                        recevier = teacher;
-                        break;
-                    }
-                }
-            }
-
-            if (!found)
-            {
-                Director director = mainController.GetDirectorController().GetDirector();
-                if (recevier.Equals(values[1]))
-                {
-                    recevier = director;
-                }
-            }
-
-            typeOfMessage = (TypeOfMessage)Enum.Parse(typeof(TypeOfMessage), values[3]);
-            dateOfMessage = DateTime.ParseExact(values[4], "yyyy-MM-dd", null);
-            message = values[5];
-            answered = bool.Parse(values[6]);
+            sender = values[1];
+            receiver = values[2];
+            courseId = int.Parse(values[3]);
+            typeOfMessage = (TypeOfMessage)Enum.Parse(typeof(TypeOfMessage), values[4]);
+            dateOfMessage = DateTime.ParseExact(values[5], "yyyy-MM-dd", null);
+            message = values[6];
+            answered = bool.Parse(values[7]);
         }
     }
 }

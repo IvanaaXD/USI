@@ -161,13 +161,20 @@ namespace LangLang.Model.DAO
 
             List<ExamTerm> availableExamTerms = new List<ExamTerm>();
 
-            foreach (int courseId in student.CompletedCoursesIds)
+
+            foreach (int courseId in student.CompletedCoursesIds) 
             {
-                List<ExamTerm> examTerms = GetExamTermsByCourse(courseId);
+
+                List<ExamTerm> examTerms = teacherDAO.GetAllExamTerms();
+                Course course = teacherDAO.GetCourseById(courseId);
+
                 foreach (ExamTerm examTerm in examTerms)
                 {
-                    if ((examTerm.CurrentlyAttending < examTerm.MaxStudents) &&
-                        (examTerm.ExamTime - currentTime).TotalDays > 30)
+                    Course secondCourse = teacherDAO.GetCourseByExamId(examTerm.ExamID);
+                    if (examTerm.CurrentlyAttending < examTerm.MaxStudents &&
+                        (examTerm.ExamTime - currentTime).TotalDays > 30 &&
+                        course.Language == secondCourse.Language &&
+                        course.Level == secondCourse.Level)
                     {
                         availableExamTerms.Add(examTerm);
                     }
@@ -175,6 +182,37 @@ namespace LangLang.Model.DAO
             }
 
             return availableExamTerms;
+        }
+        public List<ExamTerm> GetRegisteredExamTerms(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+
+            List<ExamTerm> registeredExamTerms = new List<ExamTerm>();
+
+            foreach (int id in student.RegisteredExamsIds)
+            {
+                registeredExamTerms.Add(teacherDAO.GetExamTermById(id));
+            }
+            return registeredExamTerms;
+        }
+
+        public List<ExamTerm> GetCompletedExamTerms(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+
+            List<ExamTerm> completedExamTerms = new List<ExamTerm>();
+
+            foreach (int id in student.RegisteredExamsIds)
+            {
+
+                ExamTerm examTerm = teacherDAO.GetExamTermById(id);
+                if (examTerm.ExamTime > DateTime.Now)
+                {
+                    completedExamTerms.Add(examTerm);
+                }
+            }
+
+            return completedExamTerms;
         }
 
         private List<ExamTerm> GetExamTermsByCourse(int courseId)
