@@ -53,7 +53,7 @@ namespace LangLang
                     this.Close();
                     return;
                 }
-                else if(student.ActiveCourseId != -10)
+                else if(student.ActiveCourseId == -10)
                 {
                     MessageBox.Show("Your account has been deactivated.");
                 }
