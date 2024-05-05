@@ -220,6 +220,7 @@ SelectionMode="Single" IsReadOnly="True">
                                     <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
                                     <DataGridTextColumn Header="Total points" Width ="*" Binding="{Binding Points}"/>
                                     <DataGridTextColumn Header="Grade" Width ="*" Binding="{Binding GradeValue}"/>
+
                                 </DataGrid.Columns>
                             </DataGrid>
                         </TabItem>

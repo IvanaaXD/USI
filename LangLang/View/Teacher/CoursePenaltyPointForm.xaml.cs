@@ -5,6 +5,8 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using LangLang.Model.Enums;
+using System.Security.RightsManagement;
+using System.Drawing;
 
 namespace LangLang.View.Teacher
 {
@@ -62,7 +64,7 @@ namespace LangLang.View.Teacher
                 _isFirstOptionSelected = value;
                 OnPropertyChanged(nameof(IsFirstOptionSelected));
                 if (value)
-                    Mail.Message = "Student didn't attend a course class.";
+                    Mail.Message = "You have gotten a penalty point from course"+course.Language.ToString()+" "+course.Level.ToString()+"Reason: Student didn't attend a course class.";
             }
         }
         public bool IsSecondOptionSelected
@@ -73,7 +75,7 @@ namespace LangLang.View.Teacher
                 _isSecondOptionSelected = value;
                 OnPropertyChanged(nameof(IsSecondOptionSelected));
                 if (value)
-                    Mail.Message = "Student is bothering other students during class.";
+                    Mail.Message = "You have gotten a penalty point from course"+course.Language.ToString()+" "+course.Level.ToString()+"Reason: Student is bothering other students during class.";
             }
         }
         public bool IsThirdOptionSelected
@@ -84,7 +86,7 @@ namespace LangLang.View.Teacher
                 _isThirdOptionSelected = value;
                 OnPropertyChanged(nameof(IsThirdOptionSelected));
                 if (value)
-                    Mail.Message = "Student didn't do homework.";
+                    Mail.Message = "You have gotten a penalty point from course"+course.Language.ToString()+" "+course.Level.ToString()+"Reason: Student didn't do homework.";
             }
         }
 
@@ -92,13 +94,14 @@ namespace LangLang.View.Teacher
         {
             if (IsFirstOptionSelected || IsSecondOptionSelected || IsThirdOptionSelected)
             {
-                Mail.Sender = teacher;
-                Mail.Recevier = student;
+                Mail.Sender = teacher.Email;
+                Mail.Receiver = student.Email;
                 Mail.TypeOfMessage = TypeOfMessage.PenaltyPointMessage;
                 Mail.DateOfMessage = DateTime.Now;
+                Mail.CourseId = course.Id;
                 Mail.Answered = false;
 
-                // here it gets sent
+                teacherController.SendMail(Mail.ToMail());
 
                 studentController.GivePenaltyPoint(student.Id);
                 studentController.Update(student);

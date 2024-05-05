@@ -10,15 +10,13 @@ namespace LangLang.DTO
     public class MailDTO : INotifyPropertyChanged, IDataErrorInfo
     {
         private int id;
-        private Person sender;
-        private Person recevier;
+        private string sender;
+        private string receiver;
+        private int courseId;
         private TypeOfMessage typeOfMessage;
         private DateTime dateOfMessage;
         private string message;
         private bool answered;
-
-        private string firstName;
-        private string lastName;
 
         public int Id
         {
@@ -26,16 +24,22 @@ namespace LangLang.DTO
             set { SetProperty(ref id, value); }
         }
 
-        public Person Sender
+        public string Sender
         {
             get { return sender; }
             set { SetProperty(ref sender, value); }
         }
 
-        public Person Recevier
+        public string Receiver
         {
-            get { return recevier; }
-            set { SetProperty(ref recevier, value); }
+            get { return receiver; }
+            set { SetProperty(ref receiver, value); }
+        }
+
+        public int CourseId
+        {
+            get { return courseId; }
+            set { SetProperty(ref courseId, value); }
         }
 
         public TypeOfMessage TypeOfMessage
@@ -60,18 +64,6 @@ namespace LangLang.DTO
         {
             get { return answered; }
             set { SetProperty(ref answered, value); }
-        }
-
-        public string FirstName
-        {
-            get { return firstName; }
-            set { SetProperty(ref firstName, value); }
-        }
-
-        public string LastName
-        {
-            get { return lastName; }
-            set { SetProperty(ref lastName, value); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -132,7 +124,8 @@ namespace LangLang.DTO
             {
                 Id = id,
                 Sender = sender,
-                Recevier = recevier,
+                Receiver = receiver,
+                CourseId = courseId,
                 TypeOfMessage = typeOfMessage,
                 DateOfMessage = dateOfMessage,
                 Message = message,
@@ -149,13 +142,12 @@ namespace LangLang.DTO
         {
             id = mail.Id;
             sender = mail.Sender;
-            recevier = mail.Recevier;
+            receiver = mail.Receiver;
+            courseId = mail.CourseId;
             typeOfMessage = mail.TypeOfMessage;
             dateOfMessage = mail.DateOfMessage;
             message = mail.Message;
             answered = mail.Answered;
-            firstName = mail.Sender.FirstName;
-            lastName = mail.Sender.LastName;
         }
     }
 }

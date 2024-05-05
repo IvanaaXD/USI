@@ -55,17 +55,18 @@ namespace LangLang.View.Teacher
         {
             if (!string.IsNullOrWhiteSpace(mailBodyTextBlock.Text))
             {
-                Mail.Sender = teacher;
-                Mail.Recevier = student;
+                Mail.Sender = teacher.Email;
+                Mail.Receiver = student.Email;
                 Mail.TypeOfMessage = TypeOfMessage.DenyEnterCourseRequestMessage;
                 Mail.DateOfMessage = DateTime.Now;
-                Mail.Message = mailBodyTextBlock.Text;
+                Mail.CourseId = course.Id;
+                Mail.Message ="You have been rejected from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: "+mailBodyTextBlock.Text;
                 Mail.Answered = false;
-
-                // here it gets sent
 
                 student.RegisteredCoursesIds.Remove(course.Id);
                 studentController.Update(student);
+
+                teacherController.SendMail(Mail.ToMail());
 
                 Close();
             }

@@ -131,8 +131,7 @@ namespace LangLang.View.Student
                 if (examTerms != null)
                 {
                     foreach (ExamTerm examTerm in examTerms)
-                    {
-                        
+                    {                        
                         TableViewModel.CompletedExamTerms.Add(new ExamTermDTO(examTerm,studentId));
                     }
                         
