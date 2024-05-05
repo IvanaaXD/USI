@@ -50,6 +50,15 @@ namespace LangLang.Controller
         {
             return _students.GetAvailableExamTerms(studentId);
         }
+
+        public List<ExamTerm> GetRegisteredExamTerms(int studentId)
+        {
+            return _students.GetRegisteredExamTerms(studentId);
+        }
+        public List<ExamTerm> GetCompletedExamTerms(int studentId)
+        {
+            return _students.GetCompletedExamTerms(studentId);
+
         public List<Course> GetRegisteredCourses(int studentId)
         {
             return _students.GetRegisteredCourses(studentId);
@@ -61,6 +70,7 @@ namespace LangLang.Controller
         public List<Course> GetPassedCourses(int studentId)
         {
             return _students.GetPassedCourses(studentId);
+
         }
 
         public Student? GetStudentById(int studentId)
