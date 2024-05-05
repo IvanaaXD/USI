@@ -27,7 +27,7 @@ namespace LangLang.DTO
 
         private List<Language> languages;
         private List<LanguageLevel> levelOfLanguages;
-        private List<Gender> genderValues;
+        private List<int> coursesId;
 
         public List<string> LevelAndLanguages
         {
@@ -56,7 +56,6 @@ namespace LangLang.DTO
                             }
                         }
                     }
-
                 }
                 return languageLevelNames;
             }
@@ -149,14 +148,20 @@ namespace LangLang.DTO
             set { SetProperty(ref levelOfLanguages, value); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public List<int> CoursesId
+        {
+            get { return coursesId; }
+            set { SetProperty(ref coursesId, value); }
+        }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public event PropertyChangedEventHandler ?PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))
             {
@@ -168,7 +173,7 @@ namespace LangLang.DTO
             return true;
         }
 
-        public string Error => null;
+        public string? Error => null;
 
         private Regex _FirstNameRegex = new Regex(@"^[A-Za-z]+$");
         private Regex _LastNameRegex = new Regex(@"^[A-Za-z]+$");
@@ -201,6 +206,17 @@ namespace LangLang.DTO
                     case "DateOfBirth":
                         if (DateOfBirth > DateTime.Today)
                             return "Date of birth cannot be in the future";
+                        if (DateOfBirth < DateTime.Today.AddYears(-65))
+                            return "Date of birth cannot be more than 65 years in the past";
+                        break;
+
+                    case "StartedWork":
+                        if (StartedWork > DateTime.Today)
+                            return "Date of starting work cannot be in the future";
+                        if (StartedWork <= DateOfBirth)
+                            return "Date of starting work cannot be before the date of birth";
+                        if (StartedWork < DateOfBirth.AddYears(18))
+                            return "Date of starting work cannot be before the graduation";
                         break;
 
                     case "PhoneNumber":
@@ -238,15 +254,12 @@ namespace LangLang.DTO
                         if (string.IsNullOrEmpty(Password))
                             return "Password is required";
 
-                        if (!_PasswordRegex.IsMatch(Password))
-                            return "Format not good. Try again.";
-
                         directorController = new DirectorController();
                         studentsController = new StudentsController();
 
                         foreach (Teacher teacher in directorController.GetAllTeachers())
                         {
-                            if (teacher.Password.Equals(Password))
+                            if (teacher.Password.Equals(Password) && teacher.Id != Id)
                                 return "Email already exists. Try again.";
                         }
 
@@ -261,7 +274,7 @@ namespace LangLang.DTO
             }
         }
 
-        private readonly string[] _validatedProperties = { "FirstName", "LastName", "DateOfBirth", "PhoneNumber", "Email", "Password" };
+        private readonly string[] _validatedProperties = { "FirstName", "LastName", "DateOfBirth", "StartedWork", "PhoneNumber", "Email", "Password"};
 
         public bool IsValid
         {
@@ -281,6 +294,7 @@ namespace LangLang.DTO
 
             return new Teacher
             {
+                Id = id,
                 FirstName = firstName,
                 LastName = lastName,
                 Gender = gender,
@@ -292,12 +306,15 @@ namespace LangLang.DTO
                 Languages = languages,
                 LevelOfLanguages = levelOfLanguages,
                 StartedWork = startedWork,
-                AverageRating = averageRating
+                AverageRating = averageRating,
+                CoursesId = coursesId
             };
         }
 
-
         public TeacherDTO() { }
+
+        public TeacherDTO(Student students) { }
+
 
         public TeacherDTO(Teacher teacher)
         {
@@ -315,24 +332,7 @@ namespace LangLang.DTO
 
             languages = teacher.Languages;
             levelOfLanguages = teacher.LevelOfLanguages;
-
-            /*foreach (string languageLevel in LevelAndLanguages)
-            {
-                string[] parts = languageLevel.Split(' '); 
-                if (parts.Length == 2)
-                {
-                    if (Enum.TryParse(parts[0], out Language language))
-                    {
-                        languages.Add(language);
-                    }
-
-                    if (Enum.TryParse(parts[1], out LanguageLevel level))
-                    {
-                        levelOfLanguages.Add(level);
-                    }
-                }
-            }*/
+            coursesId = teacher.CoursesId;
         }
-
     }
 }

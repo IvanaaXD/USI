@@ -37,32 +37,32 @@
             
         <TextBlock Grid.Row="1" Text="Name: "  HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <TextBox x:Name="firstNameTextBox" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="160"
-                 Text="{Binding Path=Student.FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Text="{Binding Path=student.FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="1" Text="Last Name:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <TextBox x:Name="lastNameTextBox" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="160"
-                 Text="{Binding Path=Student.LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Text="{Binding Path=student.LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 
         <TextBlock Grid.Row="3" Text="Gender:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <ComboBox x:Name="genderComboBox" Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,10" Width="160" Height="20"
                   ItemsSource="{Binding genderValues}"
-                  SelectedItem="{Binding Path=Student.Gender}"/>
+                  SelectedItem="{Binding Path=student.Gender}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="1" Text="Date of Birth:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <DatePicker x:Name="dateOfBirthDatePicker" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Height="23" Width="160"
-                    SelectedDate="{Binding Path=Student.DateOfBirth, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+                    SelectedDate="{Binding Path=student.DateOfBirth, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
                     Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 
         <TextBlock Grid.Row="5" Text="Phone Number:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <TextBox x:Name="phoneNumberTextBox" Grid.Row="6" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="160"
-                 Text="{Binding Path=Student.PhoneNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Text="{Binding Path=student.PhoneNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 
         <TextBlock Grid.Row="7" Text="Email:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <TextBox x:Name="emailTextBox" Grid.Row="8" HorizontalAlignment="Center" Margin="0,0,0,10" Height="20" Width="160"
-                 Text="{Binding Path=Student.Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Text="{Binding Path=student.Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
 
         <TextBlock Grid.Row="7" Grid.Column="1" Text="Password:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
@@ -73,7 +73,7 @@
         <TextBlock Grid.Row="5" Grid.Column="1" Text="Education Level:" HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <ComboBox x:Name="educationLevelComboBox" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Width="160" Height="20"
                   ItemsSource="{Binding educationLevelValues}"
-                  SelectedItem="{Binding Path=Student.SelectedEducationLevel}"/>
+                  SelectedItem="{Binding Path=student.SelectedEducationLevel}"/>
         <TextBlock Text="Minimum 5 characters with numbers" Grid.Row="8" Grid.Column="1" VerticalAlignment="Bottom" Foreground="#7e8082"></TextBlock>
 
         <StackPanel Grid.Row="9" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">

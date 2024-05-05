@@ -1,0 +1,184 @@
+﻿<Window x:Class="LangLang.View.Teacher.TeacherPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LangLang.View.Teacher"
+        xmlns:converters="clr-namespace:LangLang.View.Converters"
+        mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
+        Title="WelcomePage" Height="450" Width="1000">
+    <Window.Resources>
+        <converters:DayOfWeekToStringConverter x:Key="DayOfWeekToStringConverter"/>
+    </Window.Resources>
+    <TabControl>
+        <TabItem Header="Account">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="60"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"></ColumnDefinition>
+                    <ColumnDefinition Width="600"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0">
+                    <Image Source="https://cdn0.iconfinder.com/data/icons/people-occupations-icons-rounded/110/Teacher-1024.png" Width="150"></Image>
+                </Border>
+
+                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Left"
+                 FontSize="30" Margin="346,0,0,0">Welcome</TextBlock>
+                <Button x:Name="logoutBtn" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="Logout_Click"
+             Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Log out</Button>
+
+                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="239,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="270"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Teacher: " VerticalAlignment="Center" FontSize="20" Grid.ColumnSpan="2" Margin="26,0,-26,0"/>
+                    <TextBlock x:Name="firstAndLastName" FontSize="20" Grid.ColumnSpan="2" Margin="161,6,-161,7"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Courses" Margin="-2,0,-2,-2">
+            <DockPanel Height="auto">
+                <Grid VerticalAlignment="Top" Height="auto" DockPanel.Dock="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"></RowDefinition>
+                        <RowDefinition Height="50"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                        <TextBlock Text="Language:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        <TextBlock Text="Start date:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        <TextBlock Text="Duration:" Width="150" Margin="5,0,5,0"></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+                        <ComboBox x:Name="courseLanguageComboBox" Width="150" Margin="5"/>
+                        <ComboBox x:Name="courseLevelComboBox" Width="150" Margin="5"/>
+                        <DatePicker x:Name="courseStartDateDatePicker" Width="150" Margin="5"/>
+                        <TextBox x:Name="courseDurationTextBox" Width="150" Margin="5"/>
+                        <CheckBox x:Name="courseOnlineCheckBox" Content="Online" Margin="5,10,5,5"
+            IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <Button Grid.Row="1" Content="Search" Click="SearchCourse_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,5,10,20"/>
+                    <Button Content="Reset values" Click="ResetCourse_Click" FontSize="14" Background="#6d6fbf" Foreground="White" Margin="720,5,129,20" Grid.Row="1"/>
+                </Grid>
+
+                <Grid>
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
+                        <TabControl>
+                            <TabItem Header="Courses">
+                                <DataGrid Height="350"
+                                  AutoGenerateColumns="False"
+                                  x:Name="CoursesDataGrid"
+                                  ItemsSource="{Binding TableViewModel.Courses, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectionMode="Single" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Language" Width="*" Binding="{Binding Language}"/>
+                                        <DataGridTextColumn Header="Level" Width="*" Binding="{Binding Level}"/>
+                                        <DataGridTextColumn Header="Duration In Weeks" Width="*" Binding="{Binding Duration}"/>
+                                        <DataGridTemplateColumn Header="Work Days" Width="*"> 
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Start Date" Width="*" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                                        <DataGridTextColumn Header="Online" Width="*" Binding="{Binding IsOnline}"/>
+                                        <DataGridTextColumn Header="Currently Enrolled" Width="*" Binding="{Binding CurrentlyEnrolled}"/>
+                                        <DataGridTextColumn Header="Max Students" Width="*" Binding="{Binding MaxEnrolledStudents}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabItem>
+
+                        </TabControl>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+                        <Button Content="Create" Click="CreateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
+                        <Button Content="Update" Click="UpdateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
+                        <Button Content="Delete" Click="DeleteCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                        <Button Content="View" Click="ViewCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#9e9e9e" Width="80"/>
+                    </StackPanel>
+                </Grid>
+            </DockPanel>
+        </TabItem>
+
+        <TabItem Header="Exams">
+            <DockPanel Height="auto">
+                <Grid VerticalAlignment="Top" Height="auto" DockPanel.Dock="Top">
+                    <!--  <Grid Grid.Row="0">-->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,5">
+                        <TextBlock Text="Language:" Width="150" Margin="5,0,5,0" />
+                        <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0" />
+                        <TextBlock Text="Exam Date:" Width="150" Margin="5,0,5,0" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+                        <ComboBox x:Name="examLanguageComboBox" Width="150" Margin="5" />
+                        <ComboBox x:Name="examLevelComboBox" Width="150" Margin="5" />
+                        <DatePicker x:Name="examDatePicker" Width="150" Margin="5" />
+                        <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
+                    </StackPanel>
+
+                    <Button Grid.Row="1" Content="Search" Click="SearchExam_Click" HorizontalAlignment="Right" Width="100" Margin="0,0,10,20" />
+                </Grid>
+
+                <Grid>
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
+                        <TabControl>
+                            <TabItem Header="Exam Terms">
+                                <DataGrid Height="350"
+          AutoGenerateColumns="False"
+          x:Name="ExamTermsDataGrid"
+          ItemsSource="{Binding TableViewModel.ExamTerms, UpdateSourceTrigger=PropertyChanged}"
+          SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+          SelectionMode="Single" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Exam ID" Binding="{Binding ExamID}"/>
+                                        <DataGridTextColumn Header="Language and Level" Binding="{Binding LanguageAndLevel}"/>
+                                        <DataGridTextColumn Header="Exam Date" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                                        <DataGridTextColumn Header="Max Students" Binding="{Binding MaxStudents}"/>
+                                        <DataGridTextColumn Header="Currently Attending" Binding="{Binding CurrentlyAttending}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabItem>
+
+                        </TabControl>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+                        <Button Content="Create" Click="CreateExam_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
+                        <Button Content="Update" Click="UpdateExam_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
+                        <Button Content="Delete" Click="DeleteExam_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                        <Button Content="View" Click="ViewExam_Click" Margin="10,0,0,0" Foreground="White" Background="#9e9e9e" Width="80"/>
+                    </StackPanel>
+                </Grid>
+            </DockPanel>
+        </TabItem>
+
+
+
+    </TabControl>
+</Window>

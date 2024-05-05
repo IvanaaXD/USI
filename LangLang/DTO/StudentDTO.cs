@@ -15,14 +15,16 @@ namespace LangLang.DTO
     public class StudentDTO : INotifyPropertyChanged, IDataErrorInfo
     {
         public int id { get; set; }
-        private string firstName ;
+        private string firstName;
         private string lastName;
         private Gender gender;
-        private DateTime dateOfBirth = new DateTime(2000,1,1);
+        private DateTime dateOfBirth = new DateTime(2000, 1, 1);
         private string phoneNumber;
         private string email;
         private string password;
         private EducationLevel educationLevel;
+        private int penaltyPoints;
+        private bool addedToCourse;
 
         public string FirstName
         {
@@ -51,8 +53,8 @@ namespace LangLang.DTO
         public Gender Gender
         {
             get { return gender; }
-            set 
-            { 
+            set
+            {
                 gender = value;
                 OnPropertyChanged("Gender");
             }
@@ -61,8 +63,8 @@ namespace LangLang.DTO
         public DateTime DateOfBirth
         {
             get { return dateOfBirth; }
-            set 
-            { 
+            set
+            {
                 dateOfBirth = value;
                 OnPropertyChanged("DateOfBirth");
             }
@@ -71,8 +73,8 @@ namespace LangLang.DTO
         public string PhoneNumber
         {
             get { return phoneNumber; }
-            set 
-            { 
+            set
+            {
                 phoneNumber = value;
                 OnPropertyChanged("PhoneNumber");
             }
@@ -81,8 +83,8 @@ namespace LangLang.DTO
         public string Email
         {
             get { return email; }
-            set 
-            { 
+            set
+            {
                 email = value;
                 OnPropertyChanged("Email");
             }
@@ -91,8 +93,8 @@ namespace LangLang.DTO
         public string Password
         {
             get { return password; }
-            set 
-            { 
+            set
+            {
                 password = value;
                 OnPropertyChanged("Password");
             }
@@ -104,6 +106,26 @@ namespace LangLang.DTO
             {
                 educationLevel = value;
                 OnPropertyChanged("SelectedEducationLevel");
+            }
+        }
+
+        public int PenaltyPoints
+        {
+            get { return penaltyPoints; }
+            set
+            {
+                penaltyPoints = value;
+                OnPropertyChanged("PenaltyPoints");
+            }
+        }
+
+        public bool AddedToCourse
+        {
+            get { return addedToCourse; }
+            set
+            {
+                addedToCourse = value;
+                OnPropertyChanged("AddedToCourse");
             }
         }
 
@@ -167,7 +189,7 @@ namespace LangLang.DTO
                 }
                 else if (columnName == "DateOfBirth")
                 {
-                    if (DateOfBirth < new DateTime(1900,1,1) || DateOfBirth > DateTime.Today)
+                    if (DateOfBirth < new DateTime(1900, 1, 1) || DateOfBirth > DateTime.Today)
                         return "Invalid Date of birth.";
                 }
 
@@ -194,7 +216,7 @@ namespace LangLang.DTO
 
         public Student ToStudent()
         {
-            return new Student(firstName,lastName,gender,dateOfBirth,phoneNumber,email,password,educationLevel);
+            return new Student(firstName, lastName, gender, dateOfBirth, phoneNumber, email, password, educationLevel);
         }
 
         public StudentDTO()
@@ -214,6 +236,7 @@ namespace LangLang.DTO
             Email = student.Email;
             SelectedEducationLevel = student.EducationLevel;
             Password = student.Password;
+            PenaltyPoints = student.PenaltyPoints;
         }
 
         protected virtual void OnPropertyChanged(string name)

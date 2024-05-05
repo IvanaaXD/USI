@@ -1,6 +1,4 @@
-﻿
-using LangLang.Model;
-using LangLang.Storage.Serialization;
+﻿using LangLang.Storage.Serialization;
 using System.Collections.Generic;
 using System.IO;
 

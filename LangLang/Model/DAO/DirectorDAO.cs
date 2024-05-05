@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
-using LangLang.DTO;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -13,18 +9,17 @@ namespace LangLang.Model.DAO
 {
     public class DirectorDAO : Subject
     {
-
         private readonly List<Teacher> _teachers;
         private readonly List<Director> _director;
-        private readonly Storage<Teacher> _storage;
+        private readonly Storage<Teacher> _storageTeacher;
         private readonly Storage<Director> _storageDirector;
 
         private TeacherDAO teacherDAO;
 
         public DirectorDAO() {
-            _storage = new Storage<Teacher>("teachers.csv");
+            _storageTeacher = new Storage<Teacher>("teachers.csv");
             _storageDirector = new Storage<Director>("director.csv");
-            _teachers = _storage.Load();
+            _teachers = _storageTeacher.Load();
             _director = _storageDirector.Load();
             teacherDAO = new TeacherDAO();
         }
@@ -51,7 +46,7 @@ namespace LangLang.Model.DAO
 
             foreach (Course course in allCourses)
             {
-                if (allTeacherCourses.Contains(course.CourseID))
+                if (allTeacherCourses.Contains(course.Id))
                 {
                     availableCourses.Add(course);
                 }
@@ -60,18 +55,11 @@ namespace LangLang.Model.DAO
             return availableCourses;
         }
 
-        public void AddCourseId(int courseId, int teacherId)
-        {
-            Teacher t = GetTeacherById(teacherId);
-            t.CoursesId.Add(courseId);
-            _storage.Save(_teachers);
-            NotifyObservers();
-        }
         public Teacher AddTeacher(Teacher teacher)
         {
             teacher.Id = GenerateId();
             _teachers.Add(teacher);
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return teacher;
         }
@@ -93,8 +81,9 @@ namespace LangLang.Model.DAO
             oldTeacher.LevelOfLanguages = teacher.LevelOfLanguages;
             oldTeacher.StartedWork = teacher.StartedWork;
             oldTeacher.AverageRating = teacher.AverageRating;
+            oldTeacher.CoursesId = teacher.CoursesId;
 
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return oldTeacher;
         }
@@ -109,7 +98,7 @@ namespace LangLang.Model.DAO
             }
 
             _teachers.Remove(teacher);
-            _storage.Save(_teachers);
+            _storageTeacher.Save(_teachers);
             NotifyObservers();
             return teacher;
         }
@@ -140,11 +129,18 @@ namespace LangLang.Model.DAO
             var filteredTeachers = teachers.Where(teacher =>
                 (language == Model.Enums.Language.NULL || teacher.Languages.Contains(language)) &&
                 (levelOfLanguage == Model.Enums.LanguageLevel.NULL || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
-                (startedWork == DateTime.MinValue || teacher.StartedWork.Date == startedWork.Date)
+                (startedWork == DateTime.MinValue || teacher.StartedWork.Date >= startedWork.Date)
             ).ToList();
 
             return filteredTeachers;
         }
+        public Teacher? GetTeacherByCourse(int courseId)
+        {
+            foreach(Teacher teacher in GetAllTeachers())
+                foreach(int teacherCourseId in teacher.CoursesId)
+                    if (teacherCourseId == courseId) return teacher;
 
+            return null;
+        }
     }
 }

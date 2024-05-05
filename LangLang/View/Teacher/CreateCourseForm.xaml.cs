@@ -1,23 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using LangLang.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
 using System.ComponentModel;
 using System.Globalization;
-using System.Reflection.Emit;
-using System.Xml.Serialization;
+using System.Linq;
 
 namespace LangLang.View.Teacher
 {
@@ -34,7 +23,6 @@ namespace LangLang.View.Teacher
 
         private CourseDTO _course;
         public TeacherDTO Teacher { get; set; }
-
 
         public CourseDTO Course
         {
@@ -54,21 +42,47 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
 
-            DataContext = this;
-            Course = new CourseDTO(teacherController);
+            Course = new CourseDTO(teacherController, directorController.GetTeacherById(teacherId));
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             this.directorController = directorController;
             this.teacherController = teacherController;
             this.teacherId = teacherId;
-            Course.StartDate = new DateTime(2024, 04, 02);
-            Course.StartTime = "00:00";
-            List<string> levellanguagestr = new List<string>();
+            DataContext = Course;
+
+            List<string> levelLanguageStr = new List<string>();
 
             for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
             {
-                levellanguagestr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
+                levelLanguageStr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
             }
-            languageComboBox.ItemsSource = levellanguagestr;
+
+            languageComboBox.ItemsSource = levelLanguageStr;
+
+            SetPlaceholders();
+        }
+
+        private void SetPlaceholders()
+        {
+            Course.StartDate = DateTime.Today;
+            Course.StartTime = "00:00";
+            Course.Duration = "1";
+            Course.MaxEnrolledStudents = "50";
+
+            durationTextBox.GotFocus += DurationTextBox_GotFocus;
+            startTimeTextBox.GotFocus += StartTimeTextBox_GotFocus;
+            maxEnrolledTextBox.GotFocus += MaxEnrolledTextBox_GotFocus;
+        }
+        private void DurationTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            durationTextBox.Text = string.Empty;
+        }
+        private void StartTimeTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            startTimeTextBox.Text = string.Empty;
+        }
+        private void MaxEnrolledTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            maxEnrolledTextBox.Text = string.Empty;
         }
 
         private void PickLanguageAndLevel()
@@ -79,42 +93,25 @@ namespace LangLang.View.Teacher
 
                 string[] parts = selectedLanguageAndLevel.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (parts.Length == 2)
+                if (parts.Length == 2 &&
+                    Enum.TryParse(parts[0], out Language language) &&
+                    Enum.TryParse(parts[1], out LanguageLevel level))
                 {
-                    if (Enum.TryParse(parts[0], out Language language))
-                    {
-                        Course.Language = language;
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Invalid language: {parts[0]}");
-                    }
-
-                    if (Enum.TryParse(parts[1], out LanguageLevel level))
-                    {
-                        Course.Level = level;
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Invalid level: {parts[1]}");
-                    }
+                    Course.Language = language;
+                    Course.Level = level;
                 }
                 else
                 {
-                    MessageBox.Show("Invalid language and level format.");
+                    MessageBox.Show("Invalid input format.");
                 }
             }
         }
 
-        private void PickDataFromComboBox()
+        private void PickDataFromCheckBox()
         {
-            if (isOnlineComboBox.SelectedItem != null)
-            {
-                string selectedOption = ((ComboBoxItem)isOnlineComboBox.SelectedItem).Content.ToString();
-
-                Course.IsOnline = selectedOption == "Online";
-            }
+            Course.IsOnline = isOnlineCheckBox.IsChecked ?? false;
         }
+
 
         private void PickDataFromDatePicker()
         {
@@ -148,17 +145,21 @@ namespace LangLang.View.Teacher
                 }
             }
         }
-        private void btnCreate_Click(object sender, RoutedEventArgs e)
+        private void Create_Click(object sender, RoutedEventArgs e)
         {
-            PickDataFromComboBox();
+            PickDataFromCheckBox();
             PickDataFromDatePicker();
             PickLanguageAndLevel();
             PickDataFromListBox();
 
             if (Course.IsValid)
             {
-                LangLang.Model.Course course1 = teacherController.AddCourse(Course.ToCourse());
-                directorController.AddCourseId(course1.CourseID, teacherId);
+                int courseId = teacherController.GetAllCourses().Last().Id;
+                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                teacher.CoursesId.Add(courseId+1);
+                directorController.Update(teacher);
+                teacherController.AddCourse(Course.ToCourse());
+
                 Close();
             }
             else
@@ -167,7 +168,7 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }

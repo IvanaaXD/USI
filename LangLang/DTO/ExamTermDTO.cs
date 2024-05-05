@@ -22,9 +22,23 @@ namespace LangLang.DTO
         private string examTime;
         private int maxStudents;
         private int currentlyAttending;
-        private TeacherController teacherController = new TeacherController();
+        private bool confirmed;
+        private bool informed;
         private string languageAndLevel;
+        private int gradeValue;
+        private int points;
 
+
+
+        private readonly TeacherController _teacherController;
+        private readonly Teacher teacher;
+        ExamTermGrade grade; 
+
+        public ExamTermDTO(TeacherController teacherController, Teacher teacher)
+        {
+            _teacherController = teacherController;
+            this.teacher = teacher;
+        }
         public List<string> LanguageAndLevelValues
         {
             get
@@ -42,6 +56,7 @@ namespace LangLang.DTO
                 return languageLevelNames;
             }
         }
+       
         public int ExamID
         {
             get { return examID; }
@@ -78,12 +93,33 @@ namespace LangLang.DTO
             set { SetProperty(ref currentlyAttending, value); }
         }
 
+        public bool Confirmed
+        {
+            get { return confirmed; }
+            set { SetProperty(ref confirmed, value); }
+        }
+        public bool Informed
+        {
+            get { return informed; }
+            set { SetProperty(ref informed, value); }
+        }
         public string LanguageAndLevel
         {
             get { return languageAndLevel; }
             set { SetProperty(ref languageAndLevel, value); }
         }
 
+        public int Points
+        {
+            get { return points; }
+            set { SetProperty(ref points, value); }
+        }
+
+        public int GradeValue
+        {
+            get { return gradeValue; }
+            set { SetProperty(ref gradeValue, value); }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -117,12 +153,7 @@ namespace LangLang.DTO
                         if (ExamDate < DateTime.Today)
                             return "Exam date cannot be in the past";
                         break;
-                    /*
-                    case "ExamTime":
-                        if (!_TimeRegex.IsMatch(ExamTime))
-                            return "Format is not good. Try again.";
-                        break;
-                    */
+                  
                      case "CurrentlyAttending":
                         if (CurrentlyAttending < 0 ||  (CurrentlyAttending > MaxStudents))
                             return "Number of attending students on the exam can't be less than 0 or greater than max number of students.";
@@ -150,8 +181,6 @@ namespace LangLang.DTO
                     return false;
                 if ((ExamDate - DateTime.Now).TotalDays < 14)
                         return false;
-                if (!teacherController.CheckExamOverlap(ExamID, ExamDate)) // =====================
-                    return false;
                 if (CurrentlyAttending < 0 || (CurrentlyAttending > MaxStudents))
                     return false;
                 if (MaxStudents <= 0)
@@ -175,7 +204,9 @@ namespace LangLang.DTO
                 CourseID = CourseID,
                 ExamTime = combinedDateTime,
                 MaxStudents = MaxStudents,
-                CurrentlyAttending = CurrentlyAttending
+                CurrentlyAttending = CurrentlyAttending,
+                Confirmed = Confirmed,
+                Informed = Informed
             };
         }
 
@@ -188,12 +219,40 @@ namespace LangLang.DTO
         {
             examID = examTerm.ExamID;
             courseID = examTerm.CourseID;
-            examDate = examTerm.ExamTime; // preimenuj u klasi
+            examDate = examTerm.ExamTime; 
             maxStudents = examTerm.MaxStudents;
             currentlyAttending = examTerm.CurrentlyAttending;
-
+            confirmed = examTerm.Confirmed;
+            informed = examTerm.Informed;
             TeacherDAO teacherDAO = new TeacherDAO();
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
+        }
+        public ExamTermDTO(ExamTerm examTerm, int studentId)
+        {
+            examID = examTerm.ExamID;
+            courseID = examTerm.CourseID;
+            examDate = examTerm.ExamTime; 
+            maxStudents = examTerm.MaxStudents;
+            currentlyAttending = examTerm.CurrentlyAttending;
+            confirmed = examTerm.Confirmed;
+            informed = examTerm.Informed;
+            
+            TeacherDAO teacherDAO = new TeacherDAO();
+            languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
+            TeacherController teacherController = new TeacherController();
+            grade = teacherController.GetExamTermGradeByStudentExam(studentId, examTerm.ExamID);
+            if(grade == null )
+            {
+                gradeValue = 0;
+                points = 0;
+
+            }
+            else
+            {
+                gradeValue = grade.Value;
+                points = grade.ReadingPoints + grade.ListeningPoints + grade.SpeakingPoints + grade.WritingPoints;
+            }
+            
         }
     }
 }

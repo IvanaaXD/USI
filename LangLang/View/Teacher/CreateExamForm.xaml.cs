@@ -8,16 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LangLang.View.Teacher
 {
@@ -33,6 +24,7 @@ namespace LangLang.View.Teacher
         public LanguageLevel[] languageLevelValues => (LanguageLevel[])Enum.GetValues(typeof(LanguageLevel));
 
         private ExamTermDTO _examTerm;
+        public TeacherDTO Teacher { get; set; }
 
         public ExamTermDTO ExamTerm
         {
@@ -45,18 +37,25 @@ namespace LangLang.View.Teacher
         }
 
         private TeacherController teacherController;
+        private readonly DirectorController directorController;
         private int teacherId;
-        public CreateExamForm(TeacherController teacherController, int teacherId)
+        public CreateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId)
         {
             InitializeComponent();
 
-            DataContext = this;
-            ExamTerm = new ExamTermDTO();
+            //DataContext = this;
+            ExamTerm = new ExamTermDTO(teacherController, directorController.GetTeacherById(teacherId));
+            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+
+            this.directorController = directorController;
             this.teacherController = teacherController;
             this.teacherId = teacherId;
-            ExamTerm.ExamDate = DateTime.Now; // u dto izmeni examDate i time
+            DataContext = this;
+            //DataContext = ExamTerm;
 
+            ExamTerm.ExamDate = DateTime.Now;
             ExamTerm.ExamTime = "10:00";
+            ExamTerm.MaxStudents = 80;
         }
 
         private void PickLanguageAndLevel()
@@ -94,16 +93,18 @@ namespace LangLang.View.Teacher
                 {
                     MessageBox.Show("Invalid language and level format.");
                 }
-                
-                TeacherDAO teacherDAO = new TeacherDAO();
-                List<Course> courses = teacherDAO.GetAllCourses();
+
+
+
+                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
                 foreach (Course course in courses)
                 {
                     if (course.Language == lang && course.Level == lvl)
                     {
-                        ExamTerm.CourseID = course.CourseID;
-                        break; 
+                        ExamTerm.CourseID = course.Id;
+                        break;
                     }
                 }
 
@@ -130,7 +131,7 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private void btnCreate_Click(object sender, RoutedEventArgs e)
+        private void Create_Click(object sender, RoutedEventArgs e)
         {
 
             PickDataFromDatePicker();
@@ -138,7 +139,22 @@ namespace LangLang.View.Teacher
 
             if (ExamTerm.IsValid)
             {
+                int examId = teacherController.GetAllExamTerms().Last().ExamID;
+                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                List<Course> courses = teacherController.GetAvailableCourses(teacher);
+
+                foreach (Course course in courses)
+                {
+                    if (course.Id == ExamTerm.CourseID)
+                    {
+                        course.ExamTerms.Add(examId + 1);
+                        teacherController.UpdateCourse(course);
+                    }
+
+                }
+
                 teacherController.AddExamTerm(ExamTerm.ToExamTerm());
+
                 Close();
             }
             else
@@ -147,7 +163,7 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
