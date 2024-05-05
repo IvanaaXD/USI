@@ -58,6 +58,7 @@ namespace LangLang.Controller
         public List<ExamTerm> GetCompletedExamTerms(int studentId)
         {
             return _students.GetCompletedExamTerms(studentId);
+        }
 
         public List<Course> GetRegisteredCourses(int studentId)
         {
@@ -127,5 +128,5 @@ namespace LangLang.Controller
         {
             return _students.GivePenaltyPoint(studentId);
         }
-    }
-}
+        }
+    } 
