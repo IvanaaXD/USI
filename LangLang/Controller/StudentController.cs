@@ -134,5 +134,10 @@ namespace LangLang.Controller
         {
             return _studentGrades.AddGrade(grade);
         }
+
+        public Student GetStudentByEmail(string email)
+        {
+            return _students.GetStudentByEmail(email);
+        }
     }
 }

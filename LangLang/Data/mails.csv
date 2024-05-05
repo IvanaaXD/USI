@@ -6,3 +6,5 @@
 7|janko@gmail.com|safa@ffds.fds|4|PenaltyPointMessage|2024-05-04|You have gotten a penalty point from course English B1. Reason: Student didn't attend a course class.|False
 8|janko@gmail.com|safa@ffds.fds|4|PenaltyPointMessage|2024-05-05|You have gotten a penalty point from course English B1. Reason: Student is bothering other students during class.|False
 9|janko@gmail.com|marina@gmail.com|10|AcceptEnterCourseRequestMessage|2024-05-05|You have been accepted to course English B1|False
+10|marina@gmail.com|janko@gmail.com|10|QuitCourseRequest|2024-05-05|I don't have time to attend classes|True
+11|ana@gmail.com|janko@gmail.com|10|QuitCourseRequest|2024-05-05|I don't have time to attend classes|True
