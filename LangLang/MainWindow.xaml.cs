@@ -1,69 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using LangLang.View.Director;
 using LangLang.Controller;
-using LangLang.DTO;
 using LangLang.Model;
 using LangLang.Observer;
 using LangLang.View.Teacher;
 using LangLang.View.Student;
-using RegistrationForm = LangLang.View.Student.RegistrationForm;
-using LangLang.Model.DAO;
 
 namespace LangLang
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IObserver
+    public partial class MainWindow : Window
     {
-        public ObservableCollection<TeacherDTO> Teachers { get; set; }
-        public ObservableCollection<StudentDTO> Students { get; set; }
-        public TeacherDTO SelectedTeacher { get; set; }
-        public StudentDTO SelectedStuent { get; set; }
         private StudentsController studentController { get; set; }
         private DirectorController directorController { get; set; }
+        private MainController mainController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
-            Teachers = new ObservableCollection<TeacherDTO>();
-            Students = new ObservableCollection<StudentDTO>();
-            directorController = new DirectorController();
-            studentController = new StudentsController();
-            directorController.Subscribe(this);
-            studentController.Subscribe(this);
-            Update();
+            mainController = new MainController();
+            directorController = mainController.GetDirectorController();
+            studentController = mainController.GetStudentController();
+
+            SetPlaceholders();
         }
 
-        public void Update()
-        {
-            Teachers.Clear();
-            foreach (Teacher teacher in directorController.GetAllTeachers())
-                Teachers.Add(new TeacherDTO(teacher));
-
-            Students.Clear();
-            foreach (Student student in studentController.GetAllStudents())
-                Students.Add(new StudentDTO(student));
-
-        }
-
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private void Login_Click(object sender, RoutedEventArgs e)
         {
             string email = Email.Text; 
             string password = Password.Password; 
@@ -72,8 +37,8 @@ namespace LangLang
             {
                 if (teacher.Email == email && teacher.Password == password)
                 {
-                    CoursesTable coursesTable = new CoursesTable(teacher.Id);
-                    coursesTable.Show();
+                    TeacherPage teacherPage = new TeacherPage(teacher.Id, mainController);
+                    teacherPage.Show();
                     this.Close();
                     return;
                 }
@@ -81,12 +46,16 @@ namespace LangLang
 
             foreach (Student student in studentController.GetAllStudents())
             {
-                if (student.Email == email && student.Password == password)
+                if (student.Email == email && student.Password == password && student.ActiveCourseId != -10)
                 {
-                    LangLang.View.Student.WelcomePage welcomePage = new LangLang.View.Student.WelcomePage(student.Id, studentController);
+                    StudentForm welcomePage = new StudentForm(student.Id, studentController);
                     welcomePage.Show();
                     this.Close();
                     return;
+                }
+                else if(student.ActiveCourseId != -10)
+                {
+                    MessageBox.Show("Your account has been deactivated.");
                 }
             }
 
@@ -94,24 +63,83 @@ namespace LangLang
 
             if (director.Email == email && director.Password == password)
             {
-                TeachersTable table = new TeachersTable();
-                table.Show();
+                DirectorPage directorPage = new DirectorPage(director.Id, directorController);
+                directorPage.Show();
                 this.Close();
-
                 return;
             }
             
             
              MessageBox.Show("User does not exist.");
+        } 
 
-
-            } 
-
-   
-        private void btnRegistration_Click(object sender, RoutedEventArgs e)
+        private void Registration_Click(object sender, RoutedEventArgs e)
         {
             RegistrationForm registrationForm = new RegistrationForm(studentController);
             registrationForm.Show();
+        }
+
+        private void SetPlaceholders()
+        {
+            EmailPlaceholder.Visibility = Visibility.Visible;
+            PasswordPlaceholder.Visibility = Visibility.Visible;
+
+            Email.GotFocus += EmailTextBox_GotFocus;
+            Password.GotFocus += PasswordBox_GotFocus;
+
+            Email.LostFocus += EmailTextBox_LostFocus;
+            Password.LostFocus += PasswordBox_LostFocus;
+
+            EmailPlaceholder.MouseDown += Placeholder_MouseDown;
+            PasswordPlaceholder.MouseDown += Placeholder_MouseDown;
+        }
+
+        private void EmailTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            EmailPlaceholder.Visibility = Visibility.Collapsed;
+        }
+
+        private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            PasswordPlaceholder.Visibility = Visibility.Collapsed;
+        }
+
+        private void EmailTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Email.Text))
+            {
+                EmailPlaceholder.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Password.Password))
+            {
+                PasswordPlaceholder.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Placeholder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender == EmailPlaceholder)
+            {
+                EmailPlaceholder.Visibility = Visibility.Collapsed;
+                Email.Focus();
+            }
+            else if (sender == PasswordPlaceholder)
+            {
+                PasswordPlaceholder.Visibility = Visibility.Collapsed;
+                Password.Focus();
+            }
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (PasswordPlaceholder != null)
+            {
+                PasswordPlaceholder.Visibility = string.IsNullOrEmpty(Password.Password) ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
     }
 }

@@ -1,0 +1,56 @@
+﻿<Window x:Class="LangLang.View.Teacher.CourseRejectionForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LangLang.View.Teacher"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="Course Rejection" Height="310" Width="300">
+    <Window.Resources>
+
+        <ControlTemplate x:Key="ValidationTemplate">
+            <StackPanel>
+                <AdornedElementPlaceholder x:Name="textBox" />
+                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" />
+            </StackPanel>
+
+        </ControlTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="60"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto" MinHeight="45"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Course Rejection Reason" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" Margin="0,20,0,0" Height="27" Grid.RowSpan="2" Width="auto"/>
+
+        <StackPanel Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0" Orientation="Vertical" Height="60" Width="230">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="First Name:" Width="80" FontSize="16"/>
+                <TextBlock x:Name="firstNameTextBlock" Width="150" FontSize="16" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+         Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Last Name:" Width="80" FontSize="16"/>
+                <TextBlock x:Name="lastNameTextBlock" Width="150" FontSize="16" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+         Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,78,0,0" Orientation="Vertical" Height="80" Width="230">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBox x:Name="mailBodyTextBlock" Width="230" Height="80" FontSize="16" TextWrapping="Wrap" Text="{Binding Mail.Message, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+             Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Button Grid.Column="0" Content="Send Rejection Message" Click="SendRejection_Click" Width="200" FontSize="16" HorizontalAlignment="Right"  Margin="0,10,0,10" Foreground="White" Background="#6d6fbf"/>
+        </StackPanel>
+    </Grid>
+</Window>

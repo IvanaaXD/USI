@@ -1,0 +1,225 @@
+<Window x:Class="LangLang.View.Teacher.ExamTermView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LangLang.View.Teacher"
+        xmlns:converters="clr-namespace:LangLang.View.Converters"
+        mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
+        Title="ExamTerm" Height="450" Width="800">
+
+    <Window.Resources>
+
+        <ControlTemplate x:Key="ValidationTemplate">
+            <StackPanel>
+                <!-- Placeholder for the TextBox itself -->
+                <AdornedElementPlaceholder x:Name="textBox" />
+                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" />
+            </StackPanel>
+
+        </ControlTemplate>
+    </Window.Resources>
+
+    <TabControl>
+
+        <TabItem Header="ExamTerm Info">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="60"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="131.533"></ColumnDefinition>
+                    <ColumnDefinition Width="68.467"/>
+                    <ColumnDefinition Width="600"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Image Source="https://cdn-icons-png.flaticon.com/512/354/354652.png" Width="150"></Image>
+                </Border>
+
+                <TextBlock Grid.Row="1" Grid.Column="2"  VerticalAlignment="Top" HorizontalAlignment="Center"
+    FontSize="30" Margin="0,17,0,0">Welcome</TextBlock>
+                <Button x:Name="examTermPage" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ViewExamTerms_Click"
+Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Back To All ExamTerms</Button>
+
+                <Grid Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="229"></ColumnDefinition>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="0*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Language:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="27" Margin="0,0,21,0"/>
+                    <TextBlock Grid.Row="1" Text="Language Level:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+                    <TextBlock Grid.Row="2" Text="Start Date And Time:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+                    <TextBlock Grid.Row="3" Text="Max num. of students:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+                    <TextBlock Grid.Row="4" Text="Currently attending:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+                    <TextBlock Grid.Row="5" Text="ExamTerm Status:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+
+                    <TextBlock x:Name="examTermLanguageTextBlock" FontSize="16" Grid.Column="1"/>
+                    <TextBlock x:Name="examTermLevelTextBlock" FontSize="16" Grid.Column="1" Margin="0,0,0,26" Grid.RowSpan="2" Grid.Row="1" Text=""/>
+                    <TextBlock x:Name="examTermStartDateTextBlock" FontSize="16" Grid.Column="1" Margin="0,0,0,26" Grid.RowSpan="2" Grid.Row="2"/>
+                    <TextBlock x:Name="examTermMaxStudentsTextBlock" FontSize="16" Grid.Column="1" Grid.Row="3"/>
+                    <TextBlock x:Name="examTermCurrentlyAttendingTextBlock" FontSize="16" Grid.Column="1" Grid.Row="3" Margin="0,26,0,26" Grid.RowSpan="3"/>
+                    <TextBlock x:Name="examTermStatus" FontSize="16" Grid.Column="1" Grid.Row="4" Margin="0,26,0,0" Grid.RowSpan="2" TextWrapping="Wrap"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Students">
+            <DockPanel Height="auto">
+
+                <Grid>
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
+                        <TabControl VerticalAlignment="Center" Grid.ColumnSpan="2">
+                            <DataGrid Height="350"
+                                    AutoGenerateColumns="False"
+                                    x:Name="ExamTermDataGrid"
+                                    ItemsSource="{Binding StudentsTableViewModel.Students, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectedItem="{Binding SelectedStudent, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectionMode="Single" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Id" Width="*" Binding="{Binding id}" />
+                                    <DataGridTextColumn Header="First name" Width="*" Binding="{Binding FirstName}" />
+                                    <DataGridTextColumn Header="Last name" Width="*" Binding="{Binding LastName}" />
+                                    <DataGridTextColumn Header="Gender" Width="*" Binding="{Binding Gender}" />
+                                    <DataGridTextColumn Header="Date of birth" Width="*" Binding="{Binding DateOfBirth, StringFormat={}{0:yyyy-MM-dd}}" />
+                                    <DataGridTextColumn Header="Phone number" Width="*" Binding="{Binding PhoneNumber}" />
+                                    <DataGridTextColumn Header="Email" Width="*" Binding="{Binding Email}" />
+                                    <DataGridTextColumn Header="Grade" Width="*" Binding="{Binding DataContext.SelectedGrade.Value, RelativeSource={RelativeSource AncestorType=DataGrid}, UpdateSourceTrigger=PropertyChanged}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </TabControl>
+
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+                        <Button Name="Confirm" Content="Confirm" Click="ConfirmExamTerm_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
+                        <Button Name="Suspend" Content="Suspend" Click="SuspendStudent_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                        <Button Name="Mark" Content="Grade" Click="GradeStudent_Click" Margin="10,0,0,0" Foreground="White" Background="#6d6fbf" Width="80"/>
+                    </StackPanel>
+
+                </Grid>
+            </DockPanel>
+        </TabItem>
+
+        <TabItem Header="Mail">
+            <TabControl TabStripPlacement="Left">
+
+                <TabItem Header="Received" Height="auto">
+                    <DockPanel Height="auto">
+                        <Grid>
+                            <!-- Left half -->
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TabControl Grid.Column="0" VerticalAlignment="Top" Margin="0,5,0,35">
+                                <DataGrid Height="373"
+                                          AutoGenerateColumns="False"
+                                          x:Name="ReceivedMailDataGrid"
+                                          ItemsSource="{Binding ReceivedMailsTableViewModel.Mail, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedItem="{Binding SelectedReceivedMail, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectionMode="Single" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="First name" Binding="{Binding FirstName}" />
+                                        <DataGridTextColumn Header="Last name" Binding="{Binding LastName}" />
+                                        <DataGridTextColumn Header="Type of Message" Width="*" Binding="{Binding TypeOfMessage}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabControl>
+
+                            <!-- Right half -->
+                            <StackPanel Grid.Column="1" Margin="10,10,10,35">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Sender:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedReceivedMail.FirstName}" Margin="3,0"/>
+                                    <TextBlock Text="{Binding SelectedReceivedMail.LastName}" Margin="3,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Date of message:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedReceivedMail.DateOfMessage}" Margin="3,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Type of message:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedReceivedMail.TypeOfMessage}" Margin="3,0"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding SelectedReceivedMail.Message}" Margin="0,0,0,0" HorizontalAlignment="Stretch" Height="250"/>
+                                <StackPanel Orientation="Horizontal" Height="37" HorizontalAlignment="Right" Width="180" Margin="0,0,10,0">
+                                    <Button Content="READ" Click="ReadMail_Click" Margin="0,10,40,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                    <Button Content="ANSWER" Click="AnswerMail_Click" Margin="0,10,0,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+
+                <TabItem Header="Sent"  Height="30">
+                    <DockPanel Height="auto">
+                        <Grid>
+                            <!-- Left half -->
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TabControl Grid.Column="0" VerticalAlignment="Top" Margin="0,5,0,35">
+                                <DataGrid Height="373"
+                                          AutoGenerateColumns="False"
+                                          x:Name="SentMailDataGrid"
+                                          ItemsSource="{Binding SentMailsTableViewModel.Mail, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedItem="{Binding SelectedSentMail, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectionMode="Single" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="First name" Binding="{Binding FirstName}" />
+                                        <DataGridTextColumn Header="Last name" Binding="{Binding LastName}" />
+                                        <DataGridTextColumn Header="Type of Message" Width="*" Binding="{Binding TypeOfMessage}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </TabControl>
+
+                            <!-- Right half -->
+                            <StackPanel Grid.Column="1" Margin="10,10,10,35">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Sender:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedSentMail.FirstName}" Margin="3,0"/>
+                                    <TextBlock Text="{Binding SelectedSentMail.LastName}" Margin="3,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Date of message:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedSentMail.DateOfMessage}" Margin="3,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Type of message:</TextBlock>
+                                    <TextBlock Text="{Binding SelectedSentMail.TypeOfMessage}" Margin="3,0"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding SelectedSentMail.Message}" Margin="0,0,0,0" HorizontalAlignment="Stretch" Height="250"/>
+                                <StackPanel Orientation="Horizontal" Height="37" HorizontalAlignment="Right" Width="180" Margin="0,0,10,0">
+                                    <Button Content="READ" Click="ReadMail_Click" Margin="0,10,40,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                    <Button Content="ANSWER" Click="AnswerMail_Click" Margin="0,10,0,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
+        </TabItem>
+
+    </TabControl>
+</Window>

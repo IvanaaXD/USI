@@ -45,8 +45,8 @@
 
 
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="25">
-            <Button Content="Create" Click="btnCreate_Click" Width="100"  Margin="0,0,10,0" Foreground="White" Background="#4F519A"/>
-            <Button Content="Cancel" Click="btnCancel_Click" Width="100"/>
+            <Button Content="Create" Click="Create_Click" Width="100"  Margin="0,0,10,0" Foreground="White" Background="#4F519A"/>
+            <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
         </StackPanel>
     </Grid>
 </Window>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace LangLang.Model.Enums
 {
     public enum Gender
@@ -46,6 +41,22 @@ namespace LangLang.Model.Enums
         Japanese,
         Russian,
         French,
+        NULL
+    }
+
+    public enum TypeOfMessage
+    {
+        EnterCourseRequest,
+        AcceptEnterCourseRequestMessage,
+        DenyEnterCourseRequestMessage,
+
+        QuitCourseRequest,
+        AcceptQuitCourseRequestMessage,
+        DenyQuitCourseRequestMessage,
+
+        QuitEnteringCourseRequest,
+
+        PenaltyPointMessage,
         NULL
     }
 }
