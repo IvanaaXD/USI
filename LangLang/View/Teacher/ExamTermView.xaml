@@ -116,13 +116,14 @@ Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGr
             </DockPanel>
         </TabItem>
 
-        <TabItem Header="Mail">
+
+        <!--TabItem Header="Mail">
             <TabControl TabStripPlacement="Left">
 
                 <TabItem Header="Received" Height="auto">
                     <DockPanel Height="auto">
                         <Grid>
-                            <!-- Left half -->
+                            < Left half>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
@@ -143,7 +144,7 @@ Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGr
                                 </DataGrid>
                             </TabControl>
 
-                            <!-- Right half -->
+                            <Right half>
                             <StackPanel Grid.Column="1" Margin="10,10,10,35">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock>Sender:</TextBlock>
@@ -172,7 +173,7 @@ Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGr
                 <TabItem Header="Sent"  Height="30">
                     <DockPanel Height="auto">
                         <Grid>
-                            <!-- Left half -->
+                            <Left half>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
@@ -193,7 +194,7 @@ Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGr
                                 </DataGrid>
                             </TabControl>
 
-                            <!-- Right half -->
+                            <Right half>
                             <StackPanel Grid.Column="1" Margin="10,10,10,35">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock>Sender:</TextBlock>
@@ -219,7 +220,7 @@ Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGr
                     </DockPanel>
                 </TabItem>
             </TabControl>
-        </TabItem>
+        </TabItem -->
 
     </TabControl>
 </Window>

@@ -72,8 +72,8 @@ namespace LangLang.View.Teacher
             this.studentController = studentController;
             this.teacher = teacher;
 
-            SentMailsTableViewModel = new ViewModel();
-            ReceivedMailsTableViewModel = new ViewModel();
+            // SentMailsTableViewModel = new ViewModel();
+            // ReceivedMailsTableViewModel = new ViewModel();
             StudentsTableViewModel = new ViewModel();
 
             DataContext = this;
@@ -99,6 +99,7 @@ namespace LangLang.View.Teacher
         {
             try
             {
+                /*
                 SentMailsTableViewModel.SentMails.Clear();
                 ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
@@ -120,8 +121,9 @@ namespace LangLang.View.Teacher
                 } 
                 else
                 {
-                    MessageBox.Show("No teachers found.");
+                    MessageBox.Show("No mails found.");
                 }
+                */
 
                 StudentsTableViewModel.Students.Clear();
                 var students = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
@@ -176,9 +178,13 @@ namespace LangLang.View.Teacher
                 {
                     examTermStatusCheck = "ExamTerm has finished. It needs to be graded";
                 }
-                else
+                else if (HasExamTermBeenGraded())
                 {
                     examTermStatusCheck = "ExamTerm has been graded";
+                }
+                else
+                {
+                    examTermStatusCheck = "ExamTerm has finished";
                 }
 
             }
@@ -341,6 +347,7 @@ namespace LangLang.View.Teacher
             Update();
         }
 
+        /*
         private void ReadMail_Click(object sender, RoutedEventArgs e)
         {
 
@@ -350,5 +357,6 @@ namespace LangLang.View.Teacher
         {
 
         }
+        */
     }
 }
