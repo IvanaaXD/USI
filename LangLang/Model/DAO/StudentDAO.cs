@@ -192,7 +192,7 @@ namespace LangLang.Model.DAO
             foreach (int id in student.RegisteredExamsIds)
             {
                 ExamTerm exam = teacherDAO.GetExamTermById(id);
-                if (exam.ExamTime < DateTime.Now)
+                if (exam.ExamTime > DateTime.Now)
                 {
                     registeredExamTerms.Add(exam);
                 }
@@ -209,7 +209,7 @@ namespace LangLang.Model.DAO
             foreach (int id in student.RegisteredExamsIds)
             {
                 ExamTerm examTerm = teacherDAO.GetExamTermById(id);
-                if (examTerm.ExamTime > DateTime.Now)
+                if (examTerm.ExamTime < DateTime.Now)
                 {
                     completedExamTerms.Add(examTerm);
                 }

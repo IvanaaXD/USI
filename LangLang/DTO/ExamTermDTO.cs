@@ -251,8 +251,18 @@ namespace LangLang.DTO
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
             TeacherController teacherController = new TeacherController();
             grade = teacherController.GetExamTermGradeByStudentExam(studentId, examTerm.ExamID);
-            gradeValue = grade.Value;
-            points = grade.ReadingPoints + grade.ListeningPoints + grade.SpeakingPoints + grade.WritingPoints;
+            if(grade == null )
+            {
+                gradeValue = 0;
+                points = 0;
+
+            }
+            else
+            {
+                gradeValue = grade.Value;
+                points = grade.ReadingPoints + grade.ListeningPoints + grade.SpeakingPoints + grade.WritingPoints;
+            }
+            
         }
     }
 }
