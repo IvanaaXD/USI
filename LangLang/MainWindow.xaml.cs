@@ -48,6 +48,7 @@ namespace LangLang
             {
                 if (student.Email == email && student.Password == password && student.ActiveCourseId != -10)
                 {
+                    studentController.ProcessPenaltyPoints();
                     StudentForm welcomePage = new StudentForm(student.Id, studentController);
                     welcomePage.Show();
                     this.Close();
