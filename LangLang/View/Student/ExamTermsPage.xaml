@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
         Title="ExamTermsPage" Height="450" Width="800">
 
 
@@ -59,7 +60,7 @@
                         <TabItem Header="Exam Terms">
                             <DataGrid Height="350"
                   AutoGenerateColumns="False"
-                  x:Name="ExamTermsDataGrid"
+                  x:Name="AvailableExamTermsDataGrid"
                   ItemsSource="{Binding TableViewModel.AvailableExamTerms, UpdateSourceTrigger=PropertyChanged}"
                   SelectedItem="{Binding SelectedAvailableExamTerm, UpdateSourceTrigger=PropertyChanged}"
                   SelectionMode="Single" IsReadOnly="True">
@@ -134,7 +135,7 @@
                         <TabItem Header="Exam Terms">
                             <DataGrid Height="350"
       AutoGenerateColumns="False"
-      x:Name="ExamTermsDataGriddd"
+      x:Name="RegisteredExamTermsDataGrid"
       ItemsSource="{Binding TableViewModel.RegisteredExamTerms, UpdateSourceTrigger=PropertyChanged}"
       SelectedItem="{Binding SelectedRegisteredExamTerm, UpdateSourceTrigger=PropertyChanged}"
       SelectionMode="Single" IsReadOnly="True">
@@ -208,7 +209,7 @@
                         <TabItem Header="Exam Terms">
                             <DataGrid Height="350"
 AutoGenerateColumns="False"
-x:Name="ExamTermsDataGridd"
+x:Name="CompletedExamTermsDataGrid"
 ItemsSource="{Binding TableViewModel.CompletedExamTerms, UpdateSourceTrigger=PropertyChanged}"
 SelectedItem="{Binding SelectedCompletedExamTerm, UpdateSourceTrigger=PropertyChanged}"
 SelectionMode="Single" IsReadOnly="True">

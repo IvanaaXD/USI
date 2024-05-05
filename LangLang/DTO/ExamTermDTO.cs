@@ -153,12 +153,7 @@ namespace LangLang.DTO
                         if (ExamDate < DateTime.Today)
                             return "Exam date cannot be in the past";
                         break;
-                    /*
-                    case "ExamTime":
-                        if (!_TimeRegex.IsMatch(ExamTime))
-                            return "Format is not good. Try again.";
-                        break;
-                    */
+                  
                      case "CurrentlyAttending":
                         if (CurrentlyAttending < 0 ||  (CurrentlyAttending > MaxStudents))
                             return "Number of attending students on the exam can't be less than 0 or greater than max number of students.";
@@ -186,11 +181,6 @@ namespace LangLang.DTO
                     return false;
                 if ((ExamDate - DateTime.Now).TotalDays < 14)
                         return false;
-
-               // if (!teacherController.CheckExamOverlap(ExamDate)) // =====================
-               //     return false;
-                //if (!teacherController.CheckExamOverlap(ExamID, ExamDate)) // =====================
-                //    return false;
                 if (CurrentlyAttending < 0 || (CurrentlyAttending > MaxStudents))
                     return false;
                 if (MaxStudents <= 0)
