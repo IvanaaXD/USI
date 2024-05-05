@@ -48,7 +48,7 @@ namespace LangLang.View.Teacher
 
             firstNameTextBlock.Text = student.FirstName;
             lastNameTextBlock.Text = student.LastName;
-            mailBodyTextBlock.Text = " ";
+            Mail.Message = " ";
         }
 
         public void SendRejection_Click(object sender, RoutedEventArgs e)

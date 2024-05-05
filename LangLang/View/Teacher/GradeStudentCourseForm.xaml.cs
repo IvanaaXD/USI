@@ -61,6 +61,8 @@ namespace LangLang.View.Teacher
             firstNameTextBlock.Text = student.FirstName;
             lastNameTextBlock.Text = student.LastName;
             emailTextBlock.Text = student.Email;
+
+            CourseGrade.Value = 1;
         }
 
         public void GradeStudent_Click(object sender, RoutedEventArgs e)

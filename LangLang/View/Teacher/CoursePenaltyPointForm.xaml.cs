@@ -64,7 +64,7 @@ namespace LangLang.View.Teacher
                 _isFirstOptionSelected = value;
                 OnPropertyChanged(nameof(IsFirstOptionSelected));
                 if (value)
-                    Mail.Message = "You have gotten a penalty point from course"+course.Language.ToString()+" "+course.Level.ToString()+"Reason: Student didn't attend a course class.";
+                    Mail.Message = "You have gotten a penalty point from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: Student didn't attend a course class.";
             }
         }
         public bool IsSecondOptionSelected
@@ -75,7 +75,7 @@ namespace LangLang.View.Teacher
                 _isSecondOptionSelected = value;
                 OnPropertyChanged(nameof(IsSecondOptionSelected));
                 if (value)
-                    Mail.Message = "You have gotten a penalty point from course"+course.Language.ToString()+" "+course.Level.ToString()+"Reason: Student is bothering other students during class.";
+                    Mail.Message = "You have gotten a penalty point from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: Student is bothering other students during class.";
             }
         }
         public bool IsThirdOptionSelected
@@ -86,7 +86,7 @@ namespace LangLang.View.Teacher
                 _isThirdOptionSelected = value;
                 OnPropertyChanged(nameof(IsThirdOptionSelected));
                 if (value)
-                    Mail.Message = "You have gotten a penalty point from course"+course.Language.ToString()+" "+course.Level.ToString()+"Reason: Student didn't do homework.";
+                    Mail.Message = "You have gotten a penalty point from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: Student didn't do homework.";
             }
         }
 

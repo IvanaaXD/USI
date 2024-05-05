@@ -24,6 +24,7 @@ namespace LangLang.DTO
         private string password;
         private EducationLevel educationLevel;
         private int penaltyPoints;
+        private bool addedToCourse;
 
         public string FirstName
         {
@@ -115,6 +116,16 @@ namespace LangLang.DTO
             {
                 penaltyPoints = value;
                 OnPropertyChanged("PenaltyPoints");
+            }
+        }
+
+        public bool AddedToCourse
+        {
+            get { return addedToCourse; }
+            set
+            {
+                addedToCourse = value;
+                OnPropertyChanged("AddedToCourse");
             }
         }
 

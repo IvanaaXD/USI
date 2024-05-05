@@ -145,7 +145,18 @@ namespace LangLang.View.Teacher
                 if (students != null)
                 {
                     foreach (Model.Student student in students)
-                        StudentsTableViewModel.Students.Add(new StudentDTO(student));
+                    {
+                        StudentDTO dtoStudent = new StudentDTO(student);
+
+                        if (!HasCourseStarted())
+                        {
+                            if (student.ActiveCourseId == course.Id)
+                                dtoStudent.AddedToCourse = true;
+                        }
+
+                        StudentsTableViewModel.Students.Add(dtoStudent);
+                    }
+
 
                 }
                 else
@@ -314,6 +325,7 @@ namespace LangLang.View.Teacher
                     MailToSend.Answered = false;
 
                     teacherController.SendMail(MailToSend.ToMail());
+                    SelectedStudent.AddedToCourse = true;
 
                     AddCourseInfo();
                     Update();
