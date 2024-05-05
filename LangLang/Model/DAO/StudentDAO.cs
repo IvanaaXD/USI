@@ -162,7 +162,7 @@ namespace LangLang.Model.DAO
             List<ExamTerm> availableExamTerms = new List<ExamTerm>();
 
 
-            foreach (int courseId in student.CompletedCoursesIds) 
+            foreach (int courseId in student.CompletedCoursesIds)
             {
 
                 List<ExamTerm> examTerms = teacherDAO.GetAllExamTerms();
@@ -191,7 +191,12 @@ namespace LangLang.Model.DAO
 
             foreach (int id in student.RegisteredExamsIds)
             {
-                registeredExamTerms.Add(teacherDAO.GetExamTermById(id));
+                ExamTerm exam = teacherDAO.GetExamTermById(id);
+                if (exam.ExamTime < DateTime.Now)
+                {
+                    registeredExamTerms.Add(exam);
+                }
+
             }
             return registeredExamTerms;
         }
@@ -199,12 +204,10 @@ namespace LangLang.Model.DAO
         public List<ExamTerm> GetCompletedExamTerms(int studentId)
         {
             Student student = GetStudentById(studentId);
-
             List<ExamTerm> completedExamTerms = new List<ExamTerm>();
 
             foreach (int id in student.RegisteredExamsIds)
             {
-
                 ExamTerm examTerm = teacherDAO.GetExamTermById(id);
                 if (examTerm.ExamTime > DateTime.Now)
                 {
