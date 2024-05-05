@@ -33,7 +33,7 @@
                         <MenuItem Header="Completed courses" Click="AvailableCourses_Click"></MenuItem>
                         <MenuItem Header="Passed courses" Click="AvailableCourses_Click"></MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Available exam terms" Click="AvailableExamTerms_Click"></MenuItem>
+                    <MenuItem Header="Exam terms" Click="ExamTerms_Click"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Mail"></MenuItem>
             </Menu>

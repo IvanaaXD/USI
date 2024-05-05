@@ -60,8 +60,8 @@
                             <DataGrid Height="350"
                   AutoGenerateColumns="False"
                   x:Name="ExamTermsDataGrid"
-                  ItemsSource="{Binding TableViewModel.ExamTerms, UpdateSourceTrigger=PropertyChanged}"
-                  SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+                  ItemsSource="{Binding TableViewModel.AvailableExamTerms, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding SelectedAvailableExamTerm, UpdateSourceTrigger=PropertyChanged}"
                   SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
@@ -90,51 +90,53 @@
                     <RowDefinition Height="70"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="121*"></ColumnDefinition>
+                    <ColumnDefinition Width="19*"></ColumnDefinition>
+                    <ColumnDefinition Width="102*"/>
                     <ColumnDefinition Width="27*"/>
                     <ColumnDefinition Width="249*"/>
                     <ColumnDefinition Width="397*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <DockPanel Grid.ColumnSpan="4" Height="auto">
+                <DockPanel Grid.ColumnSpan="5" Height="auto">
 
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="87*"/>
-                            <ColumnDefinition Width="147*"/>
-                            <ColumnDefinition Width="31*"/>
+                            <ColumnDefinition Width="24*"/>
+                            <ColumnDefinition Width="237*"/>
+                            <ColumnDefinition Width="440*"/>
+                            <ColumnDefinition Width="93*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"></RowDefinition>
                             <RowDefinition Height="50"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,10,0,10" Grid.ColumnSpan="2">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,10,0,10" Grid.ColumnSpan="3">
                             <TextBlock Text="Language:" Width="150" Margin="5,0,5,0"></TextBlock>
                             <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0"></TextBlock>
                             <TextBlock Text="Exam date:" Width="150" Margin="5,0,5,0"></TextBlock>
                         </StackPanel>
 
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,15" Grid.ColumnSpan="2">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,15" Grid.ColumnSpan="3">
                             <ComboBox x:Name="languageComboBoxRegistered" Width="150" Margin="5"/>
                             <ComboBox x:Name="levelComboBoxRegistered" Width="150" Margin="5"/>
                             <DatePicker x:Name="startDateDatePickerRegistered" Width="150" Margin="5"/>
                             <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
                         </StackPanel>
 
-                        <Button Grid.Row="1" Content="Search" Click="btnSearch_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,4,10,21" Grid.ColumnSpan="2" Grid.Column="1"/>
+                        <Button Grid.Row="1" Content="Search" Click="btnSearch_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,4,10,21" Grid.ColumnSpan="2" Grid.Column="2"/>
                     </Grid>
                 </DockPanel>
 
 
-                <DockPanel Grid.Row="1" Grid.ColumnSpan="4">
+                <DockPanel Grid.Row="1" Grid.ColumnSpan="5">
                     <TabControl>
                         <TabItem Header="Exam Terms">
                             <DataGrid Height="350"
       AutoGenerateColumns="False"
       x:Name="ExamTermsDataGriddd"
-      ItemsSource="{Binding TableViewModel.ExamTerms, UpdateSourceTrigger=PropertyChanged}"
-      SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+      ItemsSource="{Binding TableViewModel.RegisteredExamTerms, UpdateSourceTrigger=PropertyChanged}"
+      SelectedItem="{Binding SelectedRegisteredExamTerm, UpdateSourceTrigger=PropertyChanged}"
       SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
@@ -148,7 +150,7 @@
                     </TabControl>
                 </DockPanel>
 
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="2">
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="3">
                     <Button Content="Unregister the exam" Click="SignOut_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
                     <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
                 </StackPanel>
@@ -207,8 +209,8 @@
                             <DataGrid Height="350"
 AutoGenerateColumns="False"
 x:Name="ExamTermsDataGridd"
-ItemsSource="{Binding TableViewModel.ExamTerms, UpdateSourceTrigger=PropertyChanged}"
-SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+ItemsSource="{Binding TableViewModel.FinishedExamTerms, UpdateSourceTrigger=PropertyChanged}"
+SelectedItem="{Binding SelectedFinishedExamTerm, UpdateSourceTrigger=PropertyChanged}"
 SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
@@ -224,7 +226,7 @@ SelectionMode="Single" IsReadOnly="True">
                 </DockPanel>
 
                 <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="2">
-                    <Button Content="View the exam" Click="btnSignUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="View the exam" Click="SignUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
                     <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
                 </StackPanel>
             </Grid>
