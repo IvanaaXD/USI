@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
         Title="StudentForm" Height="450" Width="800">
 
     <Grid>
@@ -33,7 +34,7 @@
                         <MenuItem Header="Completed courses" Click="CompletedCourses_Click"></MenuItem>
                         <MenuItem Header="Passed courses" Click="PassedCourses_Click"></MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Available exam terms" Click="AvailableExamTerms_Click"></MenuItem>
+                    <MenuItem Header="Exam terms" Click="ExamTerms_Click"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Mail"></MenuItem>
             </Menu>
