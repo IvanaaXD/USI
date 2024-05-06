@@ -66,5 +66,9 @@ namespace LangLang.Controller
         {
             return _directors.FindTeachersByCriteria(language, level, startedWork);
         }
+        public Teacher GetTeacherByCourse(int courseId)
+        {
+            return _directors.GetTeacherByCourse(courseId);
+        }
     }
 }
