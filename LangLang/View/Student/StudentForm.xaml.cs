@@ -78,10 +78,10 @@ namespace LangLang.View.Student
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
-        private void AvailableExamTerms_Click(object sender, RoutedEventArgs e)
+        private void ExamTerms_Click(object sender, RoutedEventArgs e)
         {
-            AvailableExamTermsTable availableExamTermsForm = new AvailableExamTermsTable(studentId);
-            availableExamTermsForm.Show();
+            ExamTermsPage examTermsPage = new ExamTermsPage(studentId);
+            examTermsPage.Show();
         }
 
         private void UpdateAccount_Click(object sender, RoutedEventArgs e)
