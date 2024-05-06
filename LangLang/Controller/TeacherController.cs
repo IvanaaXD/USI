@@ -102,6 +102,11 @@ namespace LangLang.Controller
             return _teachers.SendMail(mail);
         }
 
+        public Mail AnswerMail(int mailId)
+        {
+            return _teachers.AnswerMail(mailId);
+        }
+
         public void DeleteMail(int mailId)
         {
             _teachers.RemoveMail(mailId);

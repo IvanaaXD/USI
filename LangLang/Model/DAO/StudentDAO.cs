@@ -453,5 +453,16 @@ namespace LangLang.Model.DAO
             Student student = GetStudentById(studentId);
             return mailDAO.IsQuitCourseMailSent(student.Email, courseId);
         }
+        public Student GetStudentByEmail(string email)
+        {
+            foreach (Student student in _students)
+            {
+                if (student.Email == email)
+                {
+                    return student;
+                }
+            }
+            return null;
+        }
     }
 }

@@ -34,19 +34,27 @@
                 <Button x:Name="logoutBtn" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="Logout_Click"
              Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Log out</Button>
 
-                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="239,0,0,0">
+                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="270"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="0*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Teacher: " VerticalAlignment="Center" FontSize="20" Grid.ColumnSpan="2" Margin="26,0,-26,0"/>
-                    <TextBlock x:Name="firstAndLastName" FontSize="20" Grid.ColumnSpan="2" Margin="161,6,-161,7"/>
+                    <TextBlock Text="Teacher: " Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Grid.ColumnSpan="2" Margin="26,0,-26,0"/>
+                    <TextBlock x:Name="firstAndLastName" Grid.Row="1" FontSize="20" Margin="225,0,4,0" Grid.ColumnSpan="2"/>
+
+                    <TextBlock Text="Student Rating: " Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Grid.ColumnSpan="2" Margin="26,0,-26,0"/>
+                    <TextBlock x:Name="studentRating" Grid.Row="2" Grid.Column="1" FontSize="20" Margin="1,0,0,0" Height="26" VerticalAlignment="Center"/>
+
                 </Grid>
             </Grid>
         </TabItem>
@@ -92,7 +100,7 @@
                                         <DataGridTextColumn Header="Language" Width="*" Binding="{Binding Language}"/>
                                         <DataGridTextColumn Header="Level" Width="*" Binding="{Binding Level}"/>
                                         <DataGridTextColumn Header="Duration In Weeks" Width="*" Binding="{Binding Duration}"/>
-                                        <DataGridTemplateColumn Header="Work Days" Width="*"> 
+                                        <DataGridTemplateColumn Header="Work Days" Width="*">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>

@@ -68,6 +68,14 @@ namespace LangLang.Model.DAO
             NotifyObservers();
             return mail;
         }
+        public Mail AnswerMail(int mailId)
+        {
+            Mail? mail = GetMailById(mailId);
+            mail.Answered = true;
+            _mailsStorage.Save(_mails);
+            NotifyObservers();
+            return mail;
+        }
 
         public Course? UpdateCourse(Course course)
         {
