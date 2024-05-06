@@ -10,6 +10,7 @@ using System.Printing;
 using System.Windows.Input;
 using System.Windows;
 using System.Linq.Expressions;
+using LangLang.DTO;
 
 namespace LangLang.Model.DAO
 {
@@ -18,12 +19,14 @@ namespace LangLang.Model.DAO
         private readonly List<Student> _students;
         private readonly Storage<Student> _storage;
         private TeacherDAO teacherDAO;
+        private MailDAO mailDAO;
 
         public StudentDAO()
         {
             _storage = new Storage<Student>("students.csv");
             _students = _storage.Load();
             teacherDAO = new TeacherDAO();
+            mailDAO = new MailDAO();
         }
 
         private int GenerateId()
@@ -351,14 +354,14 @@ namespace LangLang.Model.DAO
         {
             Student student = GetStudentById(studentId);
             ExamTerm examTerm = teacherDAO.GetExamTermById(examId);
-            if (!examTerm.Informed || examTerm.CurrentlyAttending>=examTerm.MaxStudents) 
+            if (!examTerm.Informed || examTerm.CurrentlyAttending >= examTerm.MaxStudents)
                 return false;
 
             student.RegisteredExamsIds.Add(examId);
-            
+
             examTerm.CurrentlyAttending += 1;
-            teacherDAO.UpdateExamTerm(examTerm);    
-            
+            teacherDAO.UpdateExamTerm(examTerm);
+
             _storage.Save(_students);
             NotifyObservers();
             return true;
@@ -435,6 +438,20 @@ namespace LangLang.Model.DAO
             student.ActiveCourseId = -10;
 
         }
+        public Course? GetActiveCourse(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+            if (IsStudentAttendingCourse(studentId))
+                return teacherDAO.GetCourseById(student.ActiveCourseId);
 
+            return null;
+        }
+
+        public bool IsQuitCourseMailSent(int studentId, int courseId)
+        {
+            mailDAO = new MailDAO();
+            Student student = GetStudentById(studentId);
+            return mailDAO.IsQuitCourseMailSent(student.Email, courseId);
+        }
     }
 }

@@ -1,0 +1,94 @@
+﻿<Window x:Class="LangLang.View.Student.CoursesView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LangLang.View.Student"
+        mc:Ignorable="d"
+        Title="CoursesView" Height="450" Width="845">
+
+    <TabControl x:Name="myTabControl" SelectionChanged="TabControl_SelectionChanged">
+        <TabItem Header="Available courses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <local:CoursesTable x:Name="StudentCoursesTable0" Grid.ColumnSpan="2"
+                                    SearchButtonClicked="SearchButton_Click"/>
+                
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content= "Reset values" Click="ResetButton_Click" Width="100" FontSize="14" Background="#6d6fbf" Foreground="White"/>
+                    <Button Content="Sign up to course" Click="SignUpButton_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="Cancel" Click="CancelButton_Click" Width="100"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Registered courses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <local:CoursesTable x:Name="StudentCoursesTable1" Grid.ColumnSpan="2"
+                                    SearchButtonClicked="SearchButton_Click"/>
+
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content= "Reset values" Click="ResetButton_Click" Width="100" FontSize="14" Background="#6d6fbf" Foreground="White"/>
+                    <Button x:Name="CancelRequestButton" Content="Cancel the request" Click="CancelRequestButton_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="Cancel" Click="CancelButton_Click" Width="100"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Completed courses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <local:CoursesTable x:Name="StudentCoursesTable2" Grid.ColumnSpan="2"
+                                    SearchButtonClicked="SearchButton_Click"/>
+
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content= "Reset values" Click="ResetButton_Click" Width="100" FontSize="14" Background="#6d6fbf" Foreground="White"/>
+                    <Button Content="Cancel" Click="CancelButton_Click" Width="100" Margin="20,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Passed courses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <local:CoursesTable x:Name="StudentCoursesTable3" Grid.ColumnSpan="2"
+                                    SearchButtonClicked="SearchButton_Click"/>
+                
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content= "Reset values" Click="ResetButton_Click" Width="100" FontSize="14" Background="#6d6fbf" Foreground="White"/>
+                    <Button Content="Cancel" Click="CancelButton_Click" Width="100" Margin="20,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>
