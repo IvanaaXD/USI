@@ -298,7 +298,7 @@ namespace LangLang.Model.DAO
 
                 bool matchesLanguage = !language.HasValue || course.Language == language;
                 bool matchesLevel = !level.HasValue || course.Level == level;
-                bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date == examDate.Value.Date;
+                bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date >= examDate.Value.Date;
 
                 if (matchesLanguage && matchesLevel && matchesExamDate)
                 {
