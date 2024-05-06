@@ -43,7 +43,6 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
 
-            //DataContext = this;
             ExamTerm = new ExamTermDTO(teacherController, directorController.GetTeacherById(teacherId));
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
 
@@ -51,7 +50,6 @@ namespace LangLang.View.Teacher
             this.teacherController = teacherController;
             this.teacherId = teacherId;
             DataContext = this;
-            //DataContext = ExamTerm;
 
             ExamTerm.ExamDate = DateTime.Now;
             ExamTerm.ExamTime = "10:00";

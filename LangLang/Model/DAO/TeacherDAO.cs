@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -140,6 +141,11 @@ namespace LangLang.Model.DAO
         {
             ExamTerm? examTerm = GetExamTermById(id);
             if (examTerm == null) return null;
+
+            int courseId = examTerm.CourseID;
+            Course? course = GetCourseById(courseId);
+            course.ExamTerms.Remove(id);
+            UpdateCourse(course);
 
             _examTerms.Remove(examTerm);
             _examTermsStorage.Save(_examTerms);
