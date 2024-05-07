@@ -10,7 +10,7 @@ namespace LangLang.View.Director
 {
     public partial class DirectorPage : Window, IObserver
     {
-        public ObservableCollection<TeacherDTO> Teachers { get; set; }
+        public ObservableCollection<TeacherDTO>? Teachers { get; set; }
 
         public class ViewModel
         {
@@ -24,7 +24,7 @@ namespace LangLang.View.Director
         readonly int directorId;
         readonly DirectorController directorController;
 
-        public TeacherDTO SelectedTeacher { get; set; }
+        public TeacherDTO? SelectedTeacher { get; set; }
 
         public ViewModel TableViewModel { get; set; }
 
@@ -111,9 +111,7 @@ namespace LangLang.View.Director
         private void UpdateTeacher_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedTeacher == null)
-            {
                 MessageBox.Show("Please choose a teacher to update!");
-            }
             else
             {
                 UpdateTeacherForm updateTeacherForm = new UpdateTeacherForm(SelectedTeacher.Id, directorController);
@@ -125,13 +123,9 @@ namespace LangLang.View.Director
         private void DeleteTeacher_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedTeacher == null)
-            {
                 MessageBox.Show("Please choose a teacher to delete!");
-            }
             else
-            {
                 directorController.Delete(SelectedTeacher.Id);
-            }
         }
 
         private void SearchTeachers_Click(object sender, RoutedEventArgs e)
@@ -161,26 +155,20 @@ namespace LangLang.View.Director
             DateTime selectedStartDate = DateTime.MinValue;
 
             if (languageComboBox.SelectedItem != null)
-            {
                 selectedLanguage = (Language)languageComboBox.SelectedItem;
-            }
 
             if (levelComboBox.SelectedItem != null)
-            {
                 selectedLevel = (LanguageLevel)levelComboBox.SelectedItem;
-            }
 
             if (startedWorkDatePicker.SelectedDate.HasValue)
-            {
                 selectedStartDate = (DateTime)startedWorkDatePicker.SelectedDate;
-            }
 
             return GetDisplayTeachers(selectedLanguage, selectedLevel, selectedStartDate);
         }
 
         private List<Model.Teacher> GetDisplayTeachers(Language selectedLanguage, LanguageLevel selectedLevel, DateTime selectedStartDate)
         {
-            List<Model.Teacher> finalTeachers = new List<Model.Teacher>();
+            List<Model.Teacher> finalTeachers = new();
 
             if (isSearchButtonClicked)
             {

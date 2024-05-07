@@ -12,12 +12,10 @@ namespace LangLang.DTO
         private int teacherId;
         private int examId;
         private int valueOfGrade;
-
         private int readingPoints;
         private int speakingPoints;
         private int writingPoints;
         private int listeningPoints;
-
         private string firstName;
         private string lastName;
         private string email;
@@ -113,7 +111,6 @@ namespace LangLang.DTO
             return true;
         }
 
-
         public string Error => null;
 
         public string this[string columnName]
@@ -147,7 +144,6 @@ namespace LangLang.DTO
                             return "Listening cannot be over 40";
                         break;
                 }
-
                 return null;
             }
         }
