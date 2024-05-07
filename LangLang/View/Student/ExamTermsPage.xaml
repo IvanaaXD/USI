@@ -229,7 +229,7 @@ SelectionMode="Single" IsReadOnly="True">
                 </DockPanel>
 
                 <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="2">
-                    <Button Content="View the exam" Click="SignUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="View the exam" Click="ViewExam_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
                     <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
                 </StackPanel>
             </Grid>
