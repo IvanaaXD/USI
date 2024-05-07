@@ -5,12 +5,8 @@ using LangLang.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace LangLang.DTO
 {
@@ -18,7 +14,7 @@ namespace LangLang.DTO
     {
         private int examID;
         private int courseID;
-        private DateTime examDate; // examTime -> examDate
+        private DateTime examDate;
         private string examTime;
         private int maxStudents;
         private int currentlyAttending;
@@ -28,11 +24,9 @@ namespace LangLang.DTO
         private int gradeValue;
         private int points;
 
-
-
-        private readonly TeacherController _teacherController;
+        private readonly TeacherController _teacherController = new TeacherController();
         private readonly Teacher teacher;
-        ExamTermGrade grade; 
+        ExamTermGrade grade;
 
         public ExamTermDTO(TeacherController teacherController, Teacher teacher)
         {
@@ -50,13 +44,13 @@ namespace LangLang.DTO
 
                 foreach (Course course in courses)
                 {
-                        languageLevelNames.Add($"{course.Language} {course.Level}"); 
+                    languageLevelNames.Add($"{course.Language} {course.Level}");
                 }
 
                 return languageLevelNames;
             }
         }
-       
+
         public int ExamID
         {
             get { return examID; }
@@ -142,7 +136,7 @@ namespace LangLang.DTO
         public string Error => null;
 
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
-        
+
         public string this[string columnName]
         {
             get
@@ -153,12 +147,15 @@ namespace LangLang.DTO
                         if (ExamDate < DateTime.Today)
                             return "Exam date cannot be in the past";
                         break;
-                  
-                     case "CurrentlyAttending":
-                        if (CurrentlyAttending < 0 ||  (CurrentlyAttending > MaxStudents))
+                    case "StartTime":
+                        if (!_TimeRegex.IsMatch(ExamTime))
+                            return "Format is not good. Try again.";
+                        break;
+                    case "CurrentlyAttending":
+                        if (CurrentlyAttending < 0 || (CurrentlyAttending > MaxStudents))
                             return "Number of attending students on the exam can't be less than 0 or greater than max number of students.";
                         break;
-                      
+
                     case "MaxStudents":
                         if (MaxStudents <= 0)
                             return "Max number of students must be above 0 for exam";
@@ -166,37 +163,50 @@ namespace LangLang.DTO
                             return "Max number of students must be <= 550 on the exam";
                         break;
 
+
                 }
                 return null;
             }
         }
+        private readonly string[] _validatedProperties = { "ExamDate", "StartTime", "CurrentlyAttending", "MaxStudents" };
 
         public bool IsValid
         {
             get
             {
-                if (ExamDate < DateTime.Today)
-                    return false;
-                if (!_TimeRegex.IsMatch(ExamTime))
-                    return false;
-                if ((ExamDate - DateTime.Now).TotalDays < 14)
+                foreach (var property in _validatedProperties)
+                {
+                    if (this[property] != null)
                         return false;
-                if (CurrentlyAttending < 0 || (CurrentlyAttending > MaxStudents))
+                }
+                if (!string.IsNullOrEmpty(IsValidExamTermTimeslot()))
                     return false;
-                if (MaxStudents <= 0)
-                    return false;
-                if (MaxStudents > 550)
-                    return false;
-                    
                 return true;
+
             }
         }
 
+        private string IsValidExamTermTimeslot()
+        {
+            DateTime combinedDateTime = examDate.Date + TimeSpan.Parse(examTime);
+
+            ExamTerm exam = new ExamTerm
+            {
+                ExamID = ExamID,
+                CourseID = CourseID,
+                ExamTime = combinedDateTime,
+                MaxStudents = MaxStudents,
+                CurrentlyAttending = CurrentlyAttending,
+                Confirmed = Confirmed,
+                Informed = Informed
+            };
+            if (!_teacherController.ValidateExamTimeslot(exam, this.teacher))
+                return "Cannot create exam because of exam time overlaps!";
+            return null;
+        }
         public ExamTerm ToExamTerm()
         {
-            TimeSpan timeSpan = TimeSpan.Parse(examTime);
-
-            DateTime combinedDateTime = examDate.Date + timeSpan;
+            DateTime combinedDateTime = examDate.Date + TimeSpan.Parse(examTime);
 
             return new ExamTerm
             {
@@ -210,16 +220,24 @@ namespace LangLang.DTO
             };
         }
 
-        public ExamTermDTO()
+        public ExamTermDTO(ExamTerm examTerm, Teacher teacher)
         {
-
+            examID = examTerm.ExamID;
+            courseID = examTerm.CourseID;
+            examDate = examTerm.ExamTime;
+            maxStudents = examTerm.MaxStudents;
+            currentlyAttending = examTerm.CurrentlyAttending;
+            confirmed = examTerm.Confirmed;
+            informed = examTerm.Informed;
+            TeacherDAO teacherDAO = new TeacherDAO();
+            languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
+            this.teacher = teacher;
         }
-
         public ExamTermDTO(ExamTerm examTerm)
         {
             examID = examTerm.ExamID;
             courseID = examTerm.CourseID;
-            examDate = examTerm.ExamTime; 
+            examDate = examTerm.ExamTime;
             maxStudents = examTerm.MaxStudents;
             currentlyAttending = examTerm.CurrentlyAttending;
             confirmed = examTerm.Confirmed;
@@ -231,28 +249,27 @@ namespace LangLang.DTO
         {
             examID = examTerm.ExamID;
             courseID = examTerm.CourseID;
-            examDate = examTerm.ExamTime; 
+            examDate = examTerm.ExamTime;
             maxStudents = examTerm.MaxStudents;
             currentlyAttending = examTerm.CurrentlyAttending;
             confirmed = examTerm.Confirmed;
             informed = examTerm.Informed;
-            
+
             TeacherDAO teacherDAO = new TeacherDAO();
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
             TeacherController teacherController = new TeacherController();
             grade = teacherController.GetExamTermGradeByStudentExam(studentId, examTerm.ExamID);
-            if(grade == null )
+            if (grade == null)
             {
                 gradeValue = 0;
                 points = 0;
-
             }
             else
             {
                 gradeValue = grade.Value;
                 points = grade.ReadingPoints + grade.ListeningPoints + grade.SpeakingPoints + grade.WritingPoints;
             }
-            
+
         }
     }
 }
