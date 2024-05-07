@@ -49,6 +49,11 @@ namespace LangLang.View.Teacher
             this.teacherId = teacherId;
             DataContext = Course;
 
+            SetPlaceholders();
+        }
+
+        private void SetPlaceholders()
+        {
             List<string> levelLanguageStr = new List<string>();
 
             for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
@@ -58,11 +63,6 @@ namespace LangLang.View.Teacher
 
             languageComboBox.ItemsSource = levelLanguageStr;
 
-            SetPlaceholders();
-        }
-
-        private void SetPlaceholders()
-        {
             Course.StartDate = DateTime.Today;
             Course.StartTime = "00:00";
             Course.Duration = "1";
@@ -84,7 +84,6 @@ namespace LangLang.View.Teacher
         {
             maxEnrolledTextBox.Text = string.Empty;
         }
-
         private void PickLanguageAndLevel()
         {
             if (languageComboBox.SelectedItem != null)
@@ -119,31 +118,24 @@ namespace LangLang.View.Teacher
             {
                 DateTime startDate = startDatePicker.SelectedDate.Value.Date;
                 DateTime startTime;
+
                 if (DateTime.TryParseExact(startTimeTextBox.Text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startTime))
-                {
                     Course.StartDate = startDate.Add(startTime.TimeOfDay);
-                }
+
                 else
-                {
                     MessageBox.Show("Please enter a valid start time (HH:mm).");
-                }
             }
             else
-            {
                 MessageBox.Show("Please select a valid start date and time.");
-            }
         }
 
         private void PickDataFromListBox()
         {
             Course.WorkDays = new List<DayOfWeek>();
             foreach (var selectedItem in dayListBox.SelectedItems)
-            {
+
                 if (Enum.TryParse(selectedItem.ToString(), out DayOfWeek day))
-                {
                     Course.WorkDays.Add(day);
-                }
-            }
         }
         private void Create_Click(object sender, RoutedEventArgs e)
         {
@@ -156,16 +148,14 @@ namespace LangLang.View.Teacher
             {
                 int courseId = teacherController.GetAllCourses().Last().Id;
                 Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                teacher.CoursesId.Add(courseId+1);
+                teacher.CoursesId.Add(courseId + 1);
                 directorController.Update(teacher);
                 teacherController.AddCourse(Course.ToCourse());
 
                 Close();
             }
             else
-            {
                 MessageBox.Show("Course cannot be created. Not all fields are valid.");
-            }
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
