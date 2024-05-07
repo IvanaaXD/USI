@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
-                Title="Grade teacher" Height="Auto" Width="450">
+        WindowStartupLocation = "CenterScreen"
+        Title="Grade teacher" Height="380" Width="450">
 
     <Window.Resources>
 
@@ -37,25 +38,25 @@
         <StackPanel Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0" Orientation="Vertical" Height="127" Width="230">
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <TextBlock Text="First Name:" Width="80" FontSize="15"/>
-                <TextBlock x:Name="firstNameTextBlock" Width="150" FontSize="16" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBlock x:Name="firstNameTextBlock" Width="150" FontSize="16" Text="{Binding Path=teacherGrade.FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <TextBlock Text="Last Name:" Width="80" FontSize="15"/>
-                <TextBlock x:Name="lastNameTextBlock" Width="150" FontSize="16" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBlock x:Name="lastNameTextBlock" Width="150" FontSize="16" Text="{Binding Path=teacherGrade.LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <TextBlock Text="Email:" Width="80" FontSize="15"/>
-                <TextBlock x:Name="emailTextBlock" Width="150" FontSize="16" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBlock x:Name="emailTextBlock" Width="150" FontSize="16" Text="{Binding Path=teacherGrade.Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <TextBlock Text="Grade:" Width="80" FontSize="15"/>
-                <TextBox x:Name="gradeValueTextBox" Width="150" FontSize="16" Text="{Binding TeacherGrade.Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBox x:Name="gradeValueTextBox" Width="150" FontSize="16" Text="{Binding Path=teacherGrade.Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
         </StackPanel>

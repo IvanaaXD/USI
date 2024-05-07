@@ -10,10 +10,9 @@ namespace LangLang.View.Student
     /// </summary>
     public partial class GradeTeacher : Window
     {
-        private TeacherDTO teacher { get; set; }
         private StudentGradeDTO teacherGrade { get; set; }
 
-        private int studentId, courseId;
+        private int studentId, courseId, teacherId;
 
         private TeacherController teacherController;
         private StudentsController studentController;
@@ -22,7 +21,6 @@ namespace LangLang.View.Student
         public GradeTeacher(int studentId, int courseId)
         {
             InitializeComponent();
-            DataContext = this;
 
             teacherController = new TeacherController();
             studentController = new StudentsController();
@@ -32,34 +30,34 @@ namespace LangLang.View.Student
             this.courseId = courseId;
 
             InitializeDTO();
-            SetGUIElements();
 
-        }
-
-        private void SetGUIElements()
-        {
             completedCourseName.Text = GetCourseName(courseId);
-            firstNameTextBlock.Text = teacher.FirstName;
-            lastNameTextBlock.Text = teacher.LastName;
-            emailTextBlock.Text = teacher.Email;
+
+            DataContext = teacherGrade;
+
         }
+
         private void InitializeDTO()
         {
             Model.Teacher teacher = directorController.GetTeacherByCourse(courseId);
-            this.teacher = new TeacherDTO(teacher);
-            teacherGrade = new StudentGradeDTO();
+            this.teacherId = teacher.Id;
+            teacherGrade = new StudentGradeDTO(teacher);
         }
 
         public void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
-            if (teacherGrade.IsValid)
+            if (!string.IsNullOrWhiteSpace(gradeValueTextBox.Text))
             {
-                teacherGrade.TeacherId = teacher.Id;
-                teacherGrade.CourseId = courseId;
-                teacherGrade.StudentId = studentId;
-                studentController.GradeStudentCourse(teacherGrade.ToCourseGrade());
+                teacherGrade.Value = int.Parse(gradeValueTextBox.Text);
+                if (teacherGrade.IsValid)
+                {
+                    teacherGrade.TeacherId = teacherId;
+                    teacherGrade.CourseId = courseId;
+                    teacherGrade.StudentId = studentId;
+                    studentController.GradeStudentCourse(teacherGrade.ToCourseGrade());
+                    Close();
+                }
             }
-            Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
