@@ -68,8 +68,10 @@ namespace LangLang.View.Teacher
 
             foreach (Course course in courses)
             {
-                languages.Add(course.Language);
-                levels.Add(course.Level);
+                if(!languages.Contains(course.Language)) 
+                    languages.Add(course.Language);
+                if (!levels.Contains(course.Level))  
+                    levels.Add(course.Level);
 
             }
             examLanguageComboBox.ItemsSource = languages;

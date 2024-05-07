@@ -58,7 +58,9 @@ namespace LangLang.View.Teacher
             {
                 if (Teacher.CoursesId.Contains(course.Id))
                 {
-                    levelLanguageStr.Add($"{course.Language} {course.Level}");
+                    string languageLevel = $"{course.Language} {course.Level}";
+                    if (!levelLanguageStr.Contains(languageLevel))
+                        levelLanguageStr.Add(languageLevel);
                 }
             }
 
@@ -66,7 +68,7 @@ namespace LangLang.View.Teacher
 
             
             examDatePicker.SelectedDate = ExamTerm.ExamDate;
-            examTimeTextBox.Text = ExamTerm.ExamDate.ToString("HH:mm"); //ExamTerm.ExamTime;
+            examTimeTextBox.Text = ExamTerm.ExamDate.ToString("HH:mm"); 
             maxStudentsTextBox.Text = ExamTerm.MaxStudents.ToString();
 
         }
@@ -78,46 +80,41 @@ namespace LangLang.View.Teacher
             if (languageComboBox.SelectedItem != null)
             {
                 string selectedLanguageAndLevel = (string)languageComboBox.SelectedItem;
-
                 string[] parts = selectedLanguageAndLevel.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (parts.Length == 2)
                 {
                     if (Enum.TryParse(parts[0], out Language language))
-                    {
                         lang = language;
-                    }
                     else
-                    {
                         MessageBox.Show($"Invalid language: {parts[0]}");
-                    }
 
                     if (Enum.TryParse(parts[1], out LanguageLevel level))
-                    {
                         lvl = level;
-                    }
                     else
-                    {
                         MessageBox.Show($"Invalid level: {parts[1]}");
-                    }
                 }
                 else
                 {
                     MessageBox.Show("Invalid language and level format.");
                 }
 
-                TeacherDAO teacherDAO = new TeacherDAO();
-                List<Course> courses = teacherDAO.GetAllCourses();
+                FindCourseIdForExam(lang, lvl);
 
-                foreach (Course course in courses)
+            }
+        }
+        private void FindCourseIdForExam(Language lang, LanguageLevel lvl)
+        {
+            TeacherDAO teacherDAO = new TeacherDAO();
+            List<Course> courses = teacherDAO.GetAllCourses();
+
+            foreach (Course course in courses)
+            {
+                if (course.Language == lang && course.Level == lvl)
                 {
-                    if (course.Language == lang && course.Level == lvl)
-                    {
-                        ExamTerm.CourseID = course.Id;
-                        break;
-                    }
+                    ExamTerm.CourseID = course.Id;
+                    break;
                 }
-
             }
         }
         private void PickDataFromDatePicker()

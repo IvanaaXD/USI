@@ -144,7 +144,7 @@ namespace LangLang.DTO
                 switch (columnName)
                 {
                     case "ExamDate":
-                        if (ExamDate < DateTime.Today)
+                        if (ExamDate <= DateTime.Today)
                             return "Exam date cannot be in the past";
                         break;
                     case "StartTime":
