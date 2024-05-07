@@ -42,8 +42,8 @@ namespace LangLang.View.Teacher
         public CreateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId)
         {
             InitializeComponent();
-
-            ExamTerm = new ExamTermDTO(teacherController, directorController.GetTeacherById(teacherId));
+            Model.Teacher teacher= directorController.GetTeacherById(teacherId);
+            ExamTerm = new ExamTermDTO(teacherController, teacher);
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             
 
@@ -59,7 +59,10 @@ namespace LangLang.View.Teacher
             {
                 if (Teacher.CoursesId.Contains(course.Id))
                 {
-                    levelLanguageStr.Add($"{course.Language} {course.Level}");
+                    string languageLevel = $"{course.Language} {course.Level}";
+                    if (!levelLanguageStr.Contains(languageLevel))
+                        levelLanguageStr.Add(languageLevel);
+                    
                 }
             }
 
@@ -84,42 +87,35 @@ namespace LangLang.View.Teacher
                 if (parts.Length == 2)
                 {
                     if (Enum.TryParse(parts[0], out Language language))
-                    {
                         lang = language;
-                    }
                     else
-                    {
                         MessageBox.Show($"Invalid language: {parts[0]}");
-                    }
 
                     if (Enum.TryParse(parts[1], out LanguageLevel level))
-                    {
                         lvl = level;
-                    }
                     else
-                    {
                         MessageBox.Show($"Invalid level: {parts[1]}");
-                    }
+
                 }
                 else
                 {
                     MessageBox.Show("Invalid language and level format.");
                 }
+                FindCourseIdForExam(lang, lvl);
+            }
+        }
+        private void FindCourseIdForExam(Language lang, LanguageLevel lvl)
+        {
+            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
-
-
-                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                List<Course> courses = teacherController.GetAvailableCourses(teacher);
-
-                foreach (Course course in courses)
+            foreach (Course course in courses)
+            {
+                if (course.Language == lang && course.Level == lvl)
                 {
-                    if (course.Language == lang && course.Level == lvl)
-                    {
-                        ExamTerm.CourseID = course.Id;
-                        break;
-                    }
+                    ExamTerm.CourseID = course.Id;
+                    break;
                 }
-
             }
         }
         private void PickDataFromDatePicker()
