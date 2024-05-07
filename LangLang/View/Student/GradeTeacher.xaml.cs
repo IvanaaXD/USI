@@ -11,9 +11,7 @@ namespace LangLang.View.Student
     public partial class GradeTeacher : Window
     {
         private StudentGradeDTO teacherGrade { get; set; }
-
         private int studentId, courseId, teacherId;
-
         private TeacherController teacherController;
         private StudentsController studentController;
         private DirectorController directorController;

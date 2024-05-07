@@ -31,7 +31,7 @@ namespace LangLang.Model.DAO
 
         private int GenerateId()
         {
-            if (_students.Count == 0) return 0;
+            if (_students.Count == 0) return 1;
             return _students.Last().Id + 1;
         }
 
@@ -89,7 +89,7 @@ namespace LangLang.Model.DAO
             {
                 teacherDAO.DecrementExamTermCurrentlyAttending(examTermId);
             }
-            // NotifyObservers();
+            NotifyObservers();
         }
 
         public Student? GetStudentById(int id)
@@ -112,26 +112,30 @@ namespace LangLang.Model.DAO
         {
             Student student = GetStudentById(studentId);
             List<Course> allCourses = teacherDAO.GetAllCourses();
+            List<Course> availableCourses = new List<Course>();
+
+            foreach (Course course in allCourses)
+                if (IsCourseAvailable(course, student))
+                    availableCourses.Add(course);
+
+            return availableCourses;
+        }
+
+        private bool IsCourseAvailable(Course course, Student student)
+        {
             List<int> passedCoursesIds = GetPassedCourses(student);
             List<int> courseIdsByRegisteredExams = GetCourseIdsByRegisteredExams(student);
             DateTime currentTime = DateTime.Now;
 
-            List<Course> availableCourses = new List<Course>();
+            if   (!passedCoursesIds.Contains(course.Id) &&
+                  !courseIdsByRegisteredExams.Contains(course.Id) &&
+                  !student.RegisteredCoursesIds.Contains(course.Id) &&
+                  !student.CompletedCoursesIds.Contains(course.Id) &&
+                  (course.CurrentlyEnrolled < course.MaxEnrolledStudents) &&
+                  (course.StartDate - currentTime).TotalDays > 6)
+                return true;
 
-            foreach (Course course in allCourses)
-            {
-                if (!passedCoursesIds.Contains(course.Id) &&
-                   !courseIdsByRegisteredExams.Contains(course.Id) &&
-                   !student.RegisteredCoursesIds.Contains(course.Id) &&
-                   !student.CompletedCoursesIds.Contains(course.Id) &&
-                   (course.CurrentlyEnrolled < course.MaxEnrolledStudents) &&
-                   (course.StartDate - currentTime).TotalDays > 6)
-                {
-                    availableCourses.Add(course);
-                }
-            }
-
-            return availableCourses;
+            return false;
         }
 
         private List<int> GetCourseIdsByRegisteredExams(Student student)
@@ -167,7 +171,6 @@ namespace LangLang.Model.DAO
 
             foreach (int courseId in student.CompletedCoursesIds)
             {
-
                 List<ExamTerm> examTerms = teacherDAO.GetAllExamTerms();
                 Course course = teacherDAO.GetCourseById(courseId);
 
@@ -232,9 +235,7 @@ namespace LangLang.Model.DAO
             Student student = GetStudentById(studentId);
             List<Course> registeredCourses = new List<Course>();
             foreach (int courseId in student.RegisteredCoursesIds)
-            {
                 registeredCourses.Add(teacherDAO.GetCourseById(courseId));
-            }
 
             return registeredCourses;
         }
@@ -243,9 +244,7 @@ namespace LangLang.Model.DAO
             Student student = GetStudentById(studentId);
             List<Course> completedCourses = new List<Course>();
             foreach (int courseId in student.CompletedCoursesIds)
-            {
                 completedCourses.Add(teacherDAO.GetCourseById(courseId));
-            }
 
             return completedCourses;
         }
@@ -265,24 +264,17 @@ namespace LangLang.Model.DAO
         {
             List<Student> filteredStudents = new List<Student>();
             foreach (Student student in _students)
-            {
                 if (student.RegisteredCoursesIds.Contains(courseId) || student.ActiveCourseId == courseId)
-                {
                     filteredStudents.Add(student);
-                }
-            }
+
             return filteredStudents;
         }
         public List<Student> GetAllStudentsForCourse(int courseId)
         {
             List<Student> filteredStudents = new List<Student>();
             foreach (Student student in _students)
-            {
                 if (student.ActiveCourseId == courseId)
-                {
                     filteredStudents.Add(student);
-                }
-            }
             return filteredStudents;
         }
 
@@ -290,12 +282,8 @@ namespace LangLang.Model.DAO
         {
             List<Student> filteredStudents = new List<Student>();
             foreach (Student student in _students)
-            {
                 if (student.CompletedCoursesIds.Contains(courseId))
-                {
                     filteredStudents.Add(student);
-                }
-            }
             return filteredStudents;
         }
 
@@ -303,21 +291,16 @@ namespace LangLang.Model.DAO
         {
             List<Student> filteredStudents = new List<Student>();
             foreach (Student student in _students)
-            {
                 if (student.RegisteredExamsIds.Contains(examTermId))
-                {
                     filteredStudents.Add(student);
-                }
-            }
             return filteredStudents;
         }
 
         public bool IsEmailUnique(string email)
         {
             foreach (Student student in _students)
-            {
                 if (student.Email.Equals(email)) return false;
-            }
+            
             return true;
         }
 
@@ -343,7 +326,7 @@ namespace LangLang.Model.DAO
                 return false;
 
             Student student = GetStudentById(studentId);
-            student.RegisteredExamsIds.Remove(courseId);
+            student.RegisteredCoursesIds.Remove(courseId);
 
             _storage.Save(_students);
             NotifyObservers();
@@ -464,5 +447,58 @@ namespace LangLang.Model.DAO
             }
             return null;
         }
+
+        public int IsSomeCourseCompleted(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+            List<Mail> unreadReceivedMails = mailDAO.GetUnreadReceivedMails(student);
+
+            foreach(Mail mail in unreadReceivedMails)
+            {
+                if (mail.TypeOfMessage == Enums.TypeOfMessage.TeacherGradeStudentMessage)
+                {
+                    mailDAO.SetMailToAnswered(mail);
+                    return mail.CourseId;
+                }
+            }
+            return -1;
+        }
+
+        public bool IsEnterCourseRequestAccepted(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+            List<Mail> unreadReceivedMails = mailDAO.GetUnreadReceivedMails(student);
+
+            foreach (Mail mail in unreadReceivedMails)
+            {
+                Course course = teacherDAO.GetCourseById(mail.CourseId);
+                if (mail.TypeOfMessage == Enums.TypeOfMessage.AcceptEnterCourseRequestMessage &&
+                    DateTime.Now.Date >= course.StartDate.AddDays(-7).Date)
+                {
+                    mailDAO.SetMailToAnswered(mail);
+                    student.ActiveCourseId = course.Id;
+                    UpdateStudent(student);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public int GetCompletedCourseNumber(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+            return student.CompletedCoursesIds.Count;
+        }
+        public int GetPassedExamsNumber(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+            return student.PassedExamsIds.Count;
+        }
+        public int GetPenaltyPointsNumber(int studentId)
+        {
+            Student student = GetStudentById(studentId);
+            return student.PenaltyPoints;
+        }
+
     }
 }

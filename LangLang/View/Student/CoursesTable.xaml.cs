@@ -12,7 +12,6 @@ namespace LangLang.View.Student
     /// </summary>
     public partial class CoursesTable : UserControl
     {
-
         public event EventHandler SearchButtonClicked;
 
         public CoursesTable()

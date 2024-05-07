@@ -17,6 +17,7 @@ namespace LangLang.Controller
         public StudentsController()
         {
             _students = new StudentDAO();
+            _studentGrades = new StudentGradeDAO();
         }
 
         public List<Student> GetAllStudents()
@@ -138,6 +139,26 @@ namespace LangLang.Controller
         public Student GetStudentByEmail(string email)
         {
             return _students.GetStudentByEmail(email);
+        }
+        public int IsSomeCourseCompleted(int studentId)
+        {
+            return _students.IsSomeCourseCompleted(studentId);
+        }
+        public bool IsEnterCourseRequestAccepted(int studentId)
+        {
+            return _students.IsEnterCourseRequestAccepted(studentId);
+        }
+        public int GetCompletedCourseNumber(int studentId)
+        {
+            return _students.GetCompletedCourseNumber(studentId);
+        }
+        public int GetPassedExamsNumber(int studentId)
+        {
+            return _students.GetPassedExamsNumber(studentId);
+        }
+        public int GetPenaltyPointsNumber(int studentId)
+        {
+            return _students.GetPenaltyPointsNumber(studentId);
         }
     }
 }

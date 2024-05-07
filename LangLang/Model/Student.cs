@@ -59,35 +59,6 @@ namespace LangLang.Model
         public Student() : base() { }
 
         public Student(string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
-                       EducationLevel educationLevel, int penaltyPoints, int activeCourseId,
-                       List<int> passedExamsIds, List<int> registeredCoursesIds, List<int> completedCoursesIds, List<int> registeredExamsIds)
-                       : base(firstName, lastName, gender, dateOfBirth, phoneNumber, email, password)
-        {
-
-            this.educationLevel = educationLevel;
-            this.penaltyPoints = penaltyPoints;
-            this.activeCourseId = activeCourseId;
-            this.passedExamsIds = passedExamsIds;
-            this.registeredCoursesIds = registeredCoursesIds;
-            this.completedCoursesIds = completedCoursesIds;
-            this.registeredExamsIds = registeredExamsIds;
-        }
-        public Student(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
-                       EducationLevel educationLevel, int penaltyPoints, int activeCourseId,
-                       List<int> passedExamsIds, List<int> registeredCoursesIds, List<int> completedCoursesIds, List<int> registeredExamsIds)
-                       : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password)
-        {
-
-            this.educationLevel = educationLevel;
-            this.penaltyPoints = penaltyPoints;
-            this.activeCourseId = activeCourseId;
-            this.passedExamsIds = passedExamsIds;
-            this.registeredCoursesIds = registeredCoursesIds;
-            this.completedCoursesIds = completedCoursesIds;
-            this.registeredExamsIds = registeredExamsIds;
-        }
-
-        public Student(string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
                        EducationLevel educationLevel)
                        : base(firstName, lastName, gender, dateOfBirth, phoneNumber, email, password)
         {
@@ -152,40 +123,26 @@ namespace LangLang.Model
             educationLevel = (EducationLevel)Enum.Parse(typeof(EducationLevel), values[8]);
             penaltyPoints = int.Parse(values[9]);
             activeCourseId = int.Parse(values[10]);
+
             if (!string.IsNullOrEmpty(values[11]))
-            {
                 passedExamsIds = new List<int>(Array.ConvertAll(values[11].Split(','), int.Parse));
-            }
             else
-            {
                 passedExamsIds = new List<int>();
-            }
 
             if (!string.IsNullOrEmpty(values[12]))
-            {
                 registeredCoursesIds = new List<int>(Array.ConvertAll(values[12].Split(','), int.Parse));
-            }
             else
-            {
                 registeredCoursesIds = new List<int>();
-            }
 
             if (!string.IsNullOrEmpty(values[13]))
-            {
                 completedCoursesIds = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
-            }
             else
-            {
                 completedCoursesIds = new List<int>();
-            }
+
             if (!string.IsNullOrEmpty(values[14]))
-            {
                 registeredExamsIds = new List<int>(Array.ConvertAll(values[14].Split(','), int.Parse));
-            }
             else
-            {
                 registeredExamsIds = new List<int>();
-            }
         }
     }
 }

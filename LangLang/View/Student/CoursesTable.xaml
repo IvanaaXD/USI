@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:LangLang.View.Converters"
              xmlns:local="clr-namespace:LangLang.View.Student"
-             mc:Ignorable="d"
+             mc:Ignorable="d" 
+
              d:DesignHeight="380" d:DesignWidth="841">
     <UserControl.Resources>
         <converters:DayOfWeekToStringConverter x:Key="DayOfWeekToStringConverter"/>

@@ -1,4 +1,4 @@
-﻿using LangLang.Controller;
+using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Model;
 using LangLang.Model.Enums;
@@ -35,7 +35,6 @@ namespace LangLang.View.Student
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
         private int selectedTabIndex = 0;
-        private bool tabChanged = false;
 
         private CoursesTable studentCoursesTable;
 
@@ -64,10 +63,14 @@ namespace LangLang.View.Student
                 var courses = GetFilteredCourses();
 
                 if (courses != null)
+                {
                     foreach (Course course in courses)
                         TableViewModel.Courses.Add(new CourseDTO(course));
-                
-                else MessageBox.Show("No courses found.");
+                }
+                else
+                {
+                    MessageBox.Show("No courses found.");
+                }
             }
             catch (Exception ex)
             {
@@ -77,12 +80,9 @@ namespace LangLang.View.Student
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.Source is TabControl)
-            {
-                TabControl tabControl = sender as TabControl;
-                selectedTabIndex = tabControl.SelectedIndex;
-                Update();
-            }
+            TabControl tabControl = sender as TabControl;
+            selectedTabIndex = tabControl.SelectedIndex;
+            Update();
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -126,7 +126,6 @@ namespace LangLang.View.Student
                     selectedDuration = duration;
                 }
             }
-
            return DoFilter(selectedLanguage,selectedLevel,selectedStartDate,selectedDuration);
         }
 
@@ -213,6 +212,7 @@ namespace LangLang.View.Student
                 bool isRequestCanceled = studentsController.CancelCourseRegistration(studentId, SelectedCourse.Id);
                 if (isRequestCanceled)
                 {
+
                     MessageBox.Show("You have canceled your request to register for the course");
                     Update();
                 }

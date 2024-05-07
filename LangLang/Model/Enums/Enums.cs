@@ -54,6 +54,7 @@ namespace LangLang.Model.Enums
         DenyQuitCourseRequestMessage,
 
         PenaltyPointMessage,
+        TeacherGradeStudentMessage,
         NULL
     }
 }
