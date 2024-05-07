@@ -5,7 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
-        Title="Cancel course enrollment" Height="250" Width="500">
+        WindowStartupLocation = "CenterScreen"
+        Title="Cancel course enrollment" Height="250" Width="550">
+
+    <Window.Resources>
+        <ControlTemplate x:Key="ValidationTemplate">
+            <StackPanel>
+                <AdornedElementPlaceholder x:Name="textBox" />
+                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" />
+            </StackPanel>
+        </ControlTemplate>
+    </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
@@ -17,12 +28,17 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Margin="10" Grid.ColumnSpan="2" VerticalAlignment="Center" FontSize="16">Enter an explanation about withdrawing from the course:</TextBlock>
+        <TextBlock x:Name="courseTextBox" Margin="10" Grid.ColumnSpan="2" VerticalAlignment="Center" FontSize="16">
+            Enter an explanation about dropping out from the course:</TextBlock>
+        
         <TextBox Grid.Row="1" Grid.ColumnSpan="2" Margin="10"
           Name="tbMultiLine"
           TextWrapping="Wrap"
           AcceptsReturn="True"
-          VerticalScrollBarVisibility="Visible"/>
+          VerticalScrollBarVisibility="Visible"
+          Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+          Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+        
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="12">
             <Button Content="Send an explanation" Click="SendExplanationButton_Click" Width="150"  Margin="0,0,10,0" Foreground="White" Background="#4F519A"/>
             <Button Content="Cancel" Click="CancelButton_Click" Width="100"/>

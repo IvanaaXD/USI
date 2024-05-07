@@ -1,5 +1,8 @@
-﻿using LangLang.Model.Enums;
+﻿using LangLang.DTO;
+using LangLang.Model.Enums;
+using LangLang.Observer;
 using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 namespace LangLang.View.Student

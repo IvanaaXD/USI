@@ -241,7 +241,7 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                UpdateExamForm modifyDataForm = new UpdateExamForm(SelectedExamTerm.ExamID, teacherController);
+                UpdateExamForm modifyDataForm = new UpdateExamForm(teacherController, directorController, teacherId, SelectedExamTerm.ExamID);
                 modifyDataForm.Show();
                 modifyDataForm.Activate();
             }
@@ -291,13 +291,12 @@ namespace LangLang.View.Teacher
         private void ViewExam_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedExamTerm == null)
-            {
                 MessageBox.Show("Please choose an exam term to view!");
-            }
             else
             {
                 ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
-                ExamTermView examTermView = new ExamTermView(examTerm, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
+                Model.Teacher teacher = directorController.GetTeacherById(this.teacherId);
+                ExamTermView examTermView = new ExamTermView(examTerm, teacher, teacherController, studentController);
                 examTermView.Owner = this;
                 this.Visibility = Visibility.Collapsed;
                 examTermView.Show();

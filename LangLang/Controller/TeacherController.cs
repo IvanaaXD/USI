@@ -102,6 +102,11 @@ namespace LangLang.Controller
             return _teachers.SendMail(mail);
         }
 
+        public Mail AnswerMail(int mailId)
+        {
+            return _teachers.AnswerMail(mailId);
+        }
+
         public void DeleteMail(int mailId)
         {
             _teachers.RemoveMail(mailId);
@@ -159,33 +164,6 @@ namespace LangLang.Controller
 
                     return isOverlap;
                 });
-
-            /*
-            IEnumerable<dynamic> possibleOverlappingCourses =  _teachers.GetAllCourses()
-        .Where(c =>
-        {
-            DateTime courseStartDateTime = c.StartDate;
-            DateTime courseEndDateTime = c.StartDate.AddDays(c.Duration * 7);
-
-            bool possible =
-                (courseStartDateTime >= examStartDateTime && courseStartDateTime <= examEndDateTime) ||
-                (courseEndDateTime >= examStartDateTime && courseEndDateTime <= examEndDateTime) ||
-                (courseStartDateTime <= examStartDateTime && courseEndDateTime >= examEndDateTime);
-            if (possible == true)
-            {
-
-                DayOfWeek dayOfWeek = ExamDate.DayOfWeek;
-                if (c.WorkDays.Any(d => d == ExamDate.DayOfWeek))
-                {
-                    
-                }
-            }
-
-                
-            return true;
-        });*/
-
-
 
             return !overlappingExams.Any();
         }

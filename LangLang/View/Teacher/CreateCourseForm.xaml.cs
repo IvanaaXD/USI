@@ -49,8 +49,6 @@ namespace LangLang.View.Teacher
             this.teacherId = teacherId;
             DataContext = Course;
 
-            Course.StartDate = DateTime.Today;
-            Course.StartTime = "00:00";
             List<string> levelLanguageStr = new List<string>();
 
             for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
@@ -60,6 +58,31 @@ namespace LangLang.View.Teacher
 
             languageComboBox.ItemsSource = levelLanguageStr;
 
+            SetPlaceholders();
+        }
+
+        private void SetPlaceholders()
+        {
+            Course.StartDate = DateTime.Today;
+            Course.StartTime = "00:00";
+            Course.Duration = "1";
+            Course.MaxEnrolledStudents = "50";
+
+            durationTextBox.GotFocus += DurationTextBox_GotFocus;
+            startTimeTextBox.GotFocus += StartTimeTextBox_GotFocus;
+            maxEnrolledTextBox.GotFocus += MaxEnrolledTextBox_GotFocus;
+        }
+        private void DurationTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            durationTextBox.Text = string.Empty;
+        }
+        private void StartTimeTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            startTimeTextBox.Text = string.Empty;
+        }
+        private void MaxEnrolledTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            maxEnrolledTextBox.Text = string.Empty;
         }
 
         private void PickLanguageAndLevel()

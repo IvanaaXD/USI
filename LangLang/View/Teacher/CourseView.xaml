@@ -76,11 +76,11 @@
                     <Grid VerticalAlignment="Top" Margin="0,5,0,0" Grid.ColumnSpan="2">
                         <TabControl VerticalAlignment="Center" Grid.ColumnSpan="2">
                             <DataGrid Height="330"
-                            AutoGenerateColumns="False"
-                            x:Name="StudentDataGrid"
-                            ItemsSource="{Binding StudentsTableViewModel.Students, UpdateSourceTrigger=PropertyChanged}"
-                            SelectedItem="{Binding SelectedStudent, UpdateSourceTrigger=PropertyChanged}"
-                            SelectionMode="Single" IsReadOnly="True">
+                                  AutoGenerateColumns="False"
+                                  x:Name="StudentDataGrid"
+                                  ItemsSource="{Binding StudentsTableViewModel.Students, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding SelectedStudent, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Id" Width="*" Binding="{Binding id}" />
                                     <DataGridTextColumn Header="First name" Width="*" Binding="{Binding FirstName}" />
@@ -92,7 +92,17 @@
                                     <DataGridTextColumn Header="Penalty Points" Width="*" Binding="{Binding PenaltyPoints}" />
                                     <DataGridTextColumn Header="Grade" Width="*" Binding="{Binding DataContext.SelectedGrade.Value, RelativeSource={RelativeSource AncestorType=DataGrid}, UpdateSourceTrigger=PropertyChanged}" />
                                 </DataGrid.Columns>
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding AddedToCourse}" Value="True">
+                                                <Setter Property="Background" Value="LightGray" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
                             </DataGrid>
+
                         </TabControl>
 
                     </Grid>
@@ -119,14 +129,14 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <TabControl Grid.Column="0" VerticalAlignment="Top" Margin="0,5,0,35">
-                                <DataGrid Height="373"
-          AutoGenerateColumns="False"
-          x:Name="ReceivedMailDataGrid"
-          ItemsSource="{Binding ReceivedMailsTableViewModel.ReceivedMails, UpdateSourceTrigger=PropertyChanged}"
-          SelectedItem="{Binding SelectedReceivedMail, UpdateSourceTrigger=PropertyChanged}"
-          SelectionMode="Single" IsReadOnly="True"
-          SelectionChanged="ReceivedMailDataGrid_SelectionChanged">
+                            <TabControl Grid.Column="0" VerticalAlignment="Top" Margin="0,5,0,10">
+                                <DataGrid Height="400"
+                                      AutoGenerateColumns="False"
+                                      x:Name="ReceivedMailDataGrid"
+                                      ItemsSource="{Binding ReceivedMailsTableViewModel.ReceivedMails, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedItem="{Binding SelectedReceivedMail, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectionMode="Single" IsReadOnly="True"
+                                      SelectionChanged="ReceivedMailDataGrid_SelectionChanged">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Sender" Binding="{Binding Sender}" />
                                         <DataGridTextColumn Header="Type of Message" Width="*" Binding="{Binding TypeOfMessage}" />
@@ -135,7 +145,7 @@
                             </TabControl>
 
                             <!-- Right half -->
-                            <StackPanel Grid.Column="1" Margin="10,10,10,35">
+                            <StackPanel Grid.Column="1" Margin="10,10,10,10" Height="400">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock>Sender:</TextBlock>
                                     <TextBlock Name="receivedMailSenderTextBlock" Margin="3,0"/>
@@ -150,9 +160,9 @@
                                 </StackPanel>
                                 <TextBlock>Mail body:</TextBlock>
                                 <TextBlock Name="receivedMailMessageTextBlock" Margin="10,5,10,0" HorizontalAlignment="Stretch" TextWrapping="Wrap" Height="250"/>
-                                <StackPanel Orientation="Horizontal" Height="37" HorizontalAlignment="Right" Width="180" Margin="0,0,10,0">
-                                    <Button Content="READ" Click="ReadMail_Click" Margin="0,10,40,0" Foreground="White" Background="#6d6fbf" Width="70"/>
-                                    <Button Content="ANSWER" Click="AnswerMail_Click" Margin="0,10,0,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                <StackPanel Orientation="Horizontal" Height="37" HorizontalAlignment="Right" Width="180" Margin="0,0,10,10">
+                                    <Button Name="approveDropOut" Content="APPROVE" Click="ApproveDroppingOut_Click" Margin="0,10,40,0" Foreground="White" Background="#6d6fbf" Width="70"/>
+                                    <Button Name="rejectDropOut" Content="REJECT" Click="RejectDroppingOut_Click" Margin="0,10,0,0" Foreground="White" Background="#6d6fbf" Width="70"/>
                                 </StackPanel>
                             </StackPanel>
 
@@ -169,8 +179,8 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <TabControl Grid.Column="0" VerticalAlignment="Top" Margin="0,5,0,35">
-                                <DataGrid Height="373"
+                            <TabControl Grid.Column="0" VerticalAlignment="Top" Margin="0,5,0,10">
+                                <DataGrid Height="400"
                                   AutoGenerateColumns="False"
                                   x:Name="SentMailDataGrid"
                                   ItemsSource="{Binding SentMailsTableViewModel.SentMails, UpdateSourceTrigger=PropertyChanged}"
@@ -185,7 +195,7 @@
                             </TabControl>
 
                             <!-- Right half -->
-                            <StackPanel Grid.Column="1" Margin="10,10,10,35">
+                            <StackPanel Grid.Column="1" Margin="10,10,10,10">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock>Sent To:</TextBlock>
                                     <TextBlock Name="sentMailSenderTextBlock" Margin="3,0"/>
@@ -199,7 +209,7 @@
                                     <TextBlock Name="sentMailTypeTextBlock" Margin="3,0"/>
                                 </StackPanel>
                                 <TextBlock>Mail body:</TextBlock>
-                                <TextBlock Name="sentMailMessageTextBlock" Margin="10,5,10,0" HorizontalAlignment="Stretch" Height="250"/>
+                                <TextBlock Name="sentMailMessageTextBlock" Margin="10,5,10,0" HorizontalAlignment="Stretch" TextWrapping="Wrap" Height="250"/>
 
                             </StackPanel>
 

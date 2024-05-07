@@ -1,21 +1,7 @@
 ﻿using LangLang.Controller;
-using LangLang.Observer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 using LangLang.Model;
-using LangLang.View.Converters;
+using System;
+using System.Windows;
 
 namespace LangLang.View.Student
 {
@@ -31,17 +17,97 @@ namespace LangLang.View.Student
             InitializeComponent();
             this.studentId = studentId;
             this.studentController = studentController;
+
+            SetWelcomeHeading();
+            SetStudentInformations();
+            DisplayAcceptedCourseRequest();
+            SetActiveCourse();
+        }
+
+        private void SetWelcomeHeading()
+        {
+            Model.Student student = studentController.GetStudentById(studentId);
+            welcomeTextBlock.Text = welcomeTextBlock.Text + " " + student.FirstName;
+        }
+        private void SetStudentInformations()
+        {
+            completedCoursesTextBlock.Text = studentController.GetCompletedCourseNumber(studentId).ToString();
+            passedExamsTextBlock.Text = studentController.GetPassedExamsNumber(studentId).ToString();
+            penaltyPoinsTextBlcok.Text = studentController.GetPenaltyPointsNumber(studentId).ToString();
+        }
+
+        private void SetActiveCourse()
+        {
+            Course? activeCourse = studentController.GetActiveCourse(studentId);
+            if (activeCourse != null)
+            {
+                activeCourseTextBlock.Text = GetCourseName(activeCourse);
+
+                if (studentController.IsQuitCourseMailSent(studentId, activeCourse.Id) ||
+                    (DateTime.Now - activeCourse.StartDate).TotalDays < 7)
+                {
+                    dropOutButton.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                activeCourseTextBlock.Text = "/";
+                dropOutButton.Visibility = Visibility.Collapsed;
+
+                int currentlyCompletedCourseId = studentController.IsSomeCourseCompleted(studentId);
+                if (currentlyCompletedCourseId >= 0)
+                {
+                    DisplayCompletedCourseForm(currentlyCompletedCourseId);
+                }
+            }
+        }
+        private void DisplayCompletedCourseForm(int courseId)
+        {
+            GradeTeacher gradeTeacherForm = new GradeTeacher(studentId, courseId);
+            gradeTeacherForm.Show();
+        }
+
+        private void DisplayAcceptedCourseRequest()
+        {
+            if(studentController.IsEnterCourseRequestAccepted(studentId))
+            {
+                Course activeCourse = studentController.GetActiveCourse(studentId);
+                AcceptedEnterCourseRequestForm acceptedCourseForm = new AcceptedEnterCourseRequestForm(GetCourseName(activeCourse));
+                acceptedCourseForm.Show();
+            }
+        }
+        private void DropOutFromCourseBoutton_Click(object sender, RoutedEventArgs e)
+        {
+            CancelCourseEnrollmentForm cancelCourseEnrollmentForm = new CancelCourseEnrollmentForm(studentId,studentController.GetStudentById(studentId).ActiveCourseId);
+            cancelCourseEnrollmentForm.Owner = this;
+            cancelCourseEnrollmentForm.WindowClosed += CancelCourseEnrollmentForm_WindowClosed;
+            cancelCourseEnrollmentForm.ShowDialog();
+            
         }
 
         private void AvailableCourses_Click(object sender, RoutedEventArgs e)
         {
-            AvailableCoursesTable availableCoursesTable = new AvailableCoursesTable(studentId);
-            availableCoursesTable.Show();
+            CoursesView coursesView = new CoursesView(studentId,0);
+            coursesView.Owner = this;
+            coursesView.ShowDialog();
         }
         private void RegisteredCourses_Click(object sender, RoutedEventArgs e)
         {
-            RegisteredCoursesTable registeredCoursesTable = new RegisteredCoursesTable(studentId);
-            registeredCoursesTable.Show();
+            CoursesView coursesView = new CoursesView(studentId, 1);
+            coursesView.Owner = this;
+            coursesView.ShowDialog();
+        }
+        private void CompletedCourses_Click(object sender, RoutedEventArgs e)
+        {
+            CoursesView coursesView = new CoursesView(studentId, 2);
+            coursesView.Owner = this;
+            coursesView.ShowDialog();
+        }
+        private void PassedCourses_Click(object sender, RoutedEventArgs e)
+        {
+            CoursesView coursesView = new CoursesView(studentId, 3);
+            coursesView.Owner = this;
+            coursesView.ShowDialog();
         }
         private void ExamTerms_Click(object sender, RoutedEventArgs e)
         {
@@ -52,7 +118,7 @@ namespace LangLang.View.Student
         private void UpdateAccount_Click(object sender, RoutedEventArgs e)
         {
             LangLang.Model.Student student = studentController.GetStudentById(studentId);
-            if (student.ActiveCourseId != -1 && student.RegisteredExamsIds != null)
+            if (student.ActiveCourseId != -1)
             {
                 MessageBox.Show("The student attends the course and cannot change the data.");
             }
@@ -65,16 +131,24 @@ namespace LangLang.View.Student
         }
         private void DeleteAccount_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
             studentController.Delete(studentId);
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
+            Close();
         }
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            Close();
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
+            Close();
+        }
+        private string GetCourseName(Course course)
+        {
+            return course.Language.ToString() + " " + course.Level.ToString();
+        }
+        private void CancelCourseEnrollmentForm_WindowClosed(object sender, System.EventArgs e)
+        {
+            SetActiveCourse();
         }
     }
 }

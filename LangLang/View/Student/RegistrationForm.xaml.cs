@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using LangLang.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model.DAO;
 
 namespace LangLang.View.Student
 {
@@ -23,27 +12,28 @@ namespace LangLang.View.Student
         public Gender[] genderValues => (Gender[])Enum.GetValues(typeof(Gender));
         public EducationLevel[] educationLevelValues => (EducationLevel[])Enum.GetValues(typeof(EducationLevel));
 
-        public StudentDTO Student { get; set; }
+        public StudentDTO student { get; set; }
 
         private StudentsController studentsController;
 
         public RegistrationForm(StudentsController studentsController)
         {
             InitializeComponent();
-            Student = new StudentDTO();
-            Student.Password = passwordBox.Password;
+            student = new StudentDTO();
+            student.Password = passwordBox.Password;
             this.studentsController = studentsController;
             DataContext = this;
 
+            SetPlaceholders();
         }
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
-            if (Student.IsValid)
+            if (student.IsValid)
             {
-                if (studentsController.IsEmailUnique(Student.Email))
+                if (studentsController.IsEmailUnique(student.Email))
                 {
-                    studentsController.Add(Student.ToStudent());
+                    studentsController.Add(student.ToStudent());
                     Close();
                 }
                 else
@@ -53,7 +43,7 @@ namespace LangLang.View.Student
             }
             else
             {
-                MessageBox.Show("Student can not be created. Not all fields are valid.");
+                MessageBox.Show("student can not be created. Not all fields are valid.");
             }
         }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -65,8 +55,47 @@ namespace LangLang.View.Student
         {
             if (sender is PasswordBox passwordBox)
             {
-                Student.Password = passwordBox.Password;
+                student.Password = passwordBox.Password;
             }
+        }
+        private void SetPlaceholders()
+        {
+            student.FirstName = "Name";
+            student.LastName = "Surname";
+            student.Email = "example@gmail.com";
+            student.PhoneNumber = "0123456789";
+            student.Password = "password12";
+            passwordBox.Password = student.Password;
+
+            firstNameTextBox.GotFocus += FirstNameTextBox_GotFocus;
+            lastNameTextBox.GotFocus += LastNameTextBox_GotFocus;
+            emailTextBox.GotFocus += EmailTextBox_GotFocus;
+            phoneNumberTextBox.GotFocus += PhoneNumberTextBox_GotFocus;
+            passwordBox.GotFocus += PasswordBox_GotFocus;
+        }
+
+        private void FirstNameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            firstNameTextBox.Text = string.Empty;
+        }
+
+        private void LastNameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            lastNameTextBox.Text = string.Empty;
+        }
+
+        private void EmailTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            emailTextBox.Text = string.Empty;
+        }
+
+        private void PhoneNumberTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            phoneNumberTextBox.Text = string.Empty;
+        }
+        private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            passwordBox.Password = "";
         }
     }
 }

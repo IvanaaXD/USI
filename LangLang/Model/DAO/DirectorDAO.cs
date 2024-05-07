@@ -129,7 +129,7 @@ namespace LangLang.Model.DAO
             var filteredTeachers = teachers.Where(teacher =>
                 (language == Model.Enums.Language.NULL || teacher.Languages.Contains(language)) &&
                 (levelOfLanguage == Model.Enums.LanguageLevel.NULL || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
-                (startedWork == DateTime.MinValue || teacher.StartedWork.Date == startedWork.Date)
+                (startedWork == DateTime.MinValue || teacher.StartedWork.Date >= startedWork.Date)
             ).ToList();
 
             return filteredTeachers;

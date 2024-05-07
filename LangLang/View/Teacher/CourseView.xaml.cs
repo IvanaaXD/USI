@@ -108,7 +108,7 @@ namespace LangLang.View.Teacher
                 ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
                 var receivedMails = teacherController.GetReceivedCourseMails(teacher, course.Id);
-                var sentMails = teacherController.GetSentCourseMails(teacher,course.Id);
+                var sentMails = teacherController.GetSentCourseMails(teacher, course.Id);
 
                 if (receivedMails != null)
                 {
@@ -118,9 +118,9 @@ namespace LangLang.View.Teacher
                     }
                 }
 
-                if(sentMails != null)
+                if (sentMails != null)
                 {
-                    foreach(Mail mail in sentMails)
+                    foreach (Mail mail in sentMails)
                     {
                         SentMailsTableViewModel.SentMails.Add(new MailDTO(mail));
                     }
@@ -145,7 +145,18 @@ namespace LangLang.View.Teacher
                 if (students != null)
                 {
                     foreach (Model.Student student in students)
-                        StudentsTableViewModel.Students.Add(new StudentDTO(student));
+                    {
+                        StudentDTO dtoStudent = new StudentDTO(student);
+
+                        if (!HasCourseStarted())
+                        {
+                            if (student.ActiveCourseId == course.Id)
+                                dtoStudent.AddedToCourse = true;
+                        }
+
+                        StudentsTableViewModel.Students.Add(dtoStudent);
+                    }
+
 
                 }
                 else
@@ -314,6 +325,7 @@ namespace LangLang.View.Teacher
                     MailToSend.Answered = false;
 
                     teacherController.SendMail(MailToSend.ToMail());
+                    SelectedStudent.AddedToCourse = true;
 
                     AddCourseInfo();
                     Update();
@@ -393,24 +405,72 @@ namespace LangLang.View.Teacher
             Update();
         }
 
-        private void ReadMail_Click(object sender, RoutedEventArgs e)
+        private void ApproveDroppingOut_Click(object sender, RoutedEventArgs e)
         {
+            if (SelectedReceivedMail != null)
+            {
+                MailDTO mail = SelectedReceivedMail;
+                teacherController.AnswerMail(mail.Id);
+                Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
+                studentSender.ActiveCourseId = -1;
+                studentController.Update(studentSender);
+                teacherController.DecrementCourseCurrentlyEnrolled(course.Id);
 
+                approveDropOut.Visibility = Visibility.Collapsed;
+                rejectDropOut.Visibility = Visibility.Collapsed;
+
+                AddCourseInfo();
+                Update();
+            }
+            else
+            {
+                MessageBox.Show("Please select mail you want to view!");
+            }
         }
 
-        private void AnswerMail_Click(object sender, RoutedEventArgs e)
+        private void RejectDroppingOut_Click(object sender, RoutedEventArgs e)
         {
+            if (SelectedReceivedMail != null)
+            {
+                MailDTO mail = SelectedReceivedMail;
+                teacherController.AnswerMail(mail.Id);
+                Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
+                studentController.GivePenaltyPoint(studentSender.Id);
+                studentSender = studentController.GetStudentByEmail(mail.Sender);
+                studentSender.ActiveCourseId = -1;
+                studentController.Update(studentSender);
+                teacherController.DecrementCourseCurrentlyEnrolled(course.Id);
 
+                approveDropOut.Visibility = Visibility.Collapsed;
+                rejectDropOut.Visibility = Visibility.Collapsed;
+
+                AddCourseInfo();
+                Update();
+            }
+            else
+            {
+                MessageBox.Show("Please select mail you want to view!");
+            }
         }
         private void ReceivedMailDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SelectedReceivedMail != null)
             {
-                receivedMailSenderTextBlock.Text = SelectedReceivedMail.Sender;                
+                receivedMailSenderTextBlock.Text = SelectedReceivedMail.Sender;
                 receivedMailDateTextBlock.Text = SelectedReceivedMail.DateOfMessage.ToString("dd-MM-yyyy HH:mm");
                 receivedMailTypeTextBlock.Text = SelectedReceivedMail.TypeOfMessage.ToString();
                 receivedMailMessageTextBlock.Text = SelectedReceivedMail.Message;
 
+                if (SelectedReceivedMail.TypeOfMessage == Model.Enums.TypeOfMessage.QuitCourseRequest && SelectedReceivedMail.Answered == false)
+                {
+                    approveDropOut.Visibility = Visibility.Visible;
+                    rejectDropOut.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    approveDropOut.Visibility = Visibility.Collapsed;
+                    rejectDropOut.Visibility = Visibility.Collapsed;
+                }
             }
         }
         private void SentMailDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

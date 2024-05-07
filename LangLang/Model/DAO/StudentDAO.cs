@@ -499,5 +499,6 @@ namespace LangLang.Model.DAO
             Student student = GetStudentById(studentId);
             return student.PenaltyPoints;
         }
+
     }
 }

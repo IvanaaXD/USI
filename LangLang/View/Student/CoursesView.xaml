@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
         Title="CoursesView" Height="450" Width="845">
 
     <TabControl x:Name="myTabControl" SelectionChanged="TabControl_SelectionChanged">

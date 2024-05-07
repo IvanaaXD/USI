@@ -43,15 +43,27 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
 
-            //DataContext = this;
             ExamTerm = new ExamTermDTO(teacherController, directorController.GetTeacherById(teacherId));
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            
 
             this.directorController = directorController;
             this.teacherController = teacherController;
             this.teacherId = teacherId;
             DataContext = this;
-            //DataContext = ExamTerm;
+
+            List<Course> courses = teacherController.GetAllCourses();
+            List<string> levelLanguageStr = new List<string>();
+
+            foreach (Course course in courses)
+            {
+                if (Teacher.CoursesId.Contains(course.Id))
+                {
+                    levelLanguageStr.Add($"{course.Language} {course.Level}");
+                }
+            }
+
+            languageComboBox.ItemsSource = levelLanguageStr;
 
             ExamTerm.ExamDate = DateTime.Now;
             ExamTerm.ExamTime = "10:00";

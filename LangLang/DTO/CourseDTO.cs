@@ -182,12 +182,14 @@ namespace LangLang.DTO
                             return "Number of enrolled students can't be less than 0 or greater than max enrolled";
                         break;
                     case "MaxEnrolledStudents":
-                        if (MaxEnrolledStudents == null)
-                            return "Max enrolled students must be >=0";
+                        if (MaxEnrolledStudents == null || MaxEnrolledStudents == "")
+                            return "Value must be >=0";
                         if (int.Parse(MaxEnrolledStudents) < 0)
-                            return "Max enrolled students must be >= 0";
+                            return "Value must be >= 0";
                         if (int.Parse(MaxEnrolledStudents) > 150)
-                            return "Max enrolled students must be <= 150";
+                            return "Value must be <= 150";
+                        if (int.Parse(MaxEnrolledStudents) == 0 && !IsOnline)
+                            return "Offline courses can't have 0 students";
                         break;
                     case "WorkDays":
                         if (WorkDays == null || !WorkDays.Any())

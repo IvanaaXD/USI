@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -64,6 +65,14 @@ namespace LangLang.Model.DAO
         {
             mail.Id = GenerateMailId();
             _mails.Add(mail);
+            _mailsStorage.Save(_mails);
+            NotifyObservers();
+            return mail;
+        }
+        public Mail AnswerMail(int mailId)
+        {
+            Mail? mail = GetMailById(mailId);
+            mail.Answered = true;
             _mailsStorage.Save(_mails);
             NotifyObservers();
             return mail;
@@ -132,6 +141,11 @@ namespace LangLang.Model.DAO
         {
             ExamTerm? examTerm = GetExamTermById(id);
             if (examTerm == null) return null;
+
+            int courseId = examTerm.CourseID;
+            Course? course = GetCourseById(courseId);
+            course.ExamTerms.Remove(id);
+            UpdateCourse(course);
 
             _examTerms.Remove(examTerm);
             _examTermsStorage.Save(_examTerms);
@@ -284,7 +298,7 @@ namespace LangLang.Model.DAO
 
                 bool matchesLanguage = !language.HasValue || course.Language == language;
                 bool matchesLevel = !level.HasValue || course.Level == level;
-                bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date == examDate.Value.Date;
+                bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date >= examDate.Value.Date;
 
                 if (matchesLanguage && matchesLevel && matchesExamDate)
                 {
@@ -328,7 +342,7 @@ namespace LangLang.Model.DAO
         {
             ExamTerm examTerm = GetExamTermById(examTermId);
             --examTerm.CurrentlyAttending;
-            UpdateExamTerm(examTerm);   
+            UpdateExamTerm(examTerm);
         }
 
         public ExamTerm ConfirmExamTerm(int examTermId)
@@ -350,6 +364,10 @@ namespace LangLang.Model.DAO
             List<Course> teacherCourses = GetAvailableCourses(teacher);
             foreach (Course secondCourse in teacherCourses)
             {
+                if (course.Id == secondCourse.Id)
+                {
+                    continue;
+                }
                 DateTime secondCourseStartTime = secondCourse.StartDate;
                 DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
 
