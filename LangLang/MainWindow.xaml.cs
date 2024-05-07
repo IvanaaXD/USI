@@ -54,9 +54,7 @@ namespace LangLang
                     return;
                 }
                 else if(student.ActiveCourseId == -10)
-                {
                     MessageBox.Show("Your account has been deactivated.");
-                }
             }
 
             Director director = directorController.GetDirector();
@@ -75,7 +73,7 @@ namespace LangLang
 
         private void Registration_Click(object sender, RoutedEventArgs e)
         {
-            LangLang.View.Student.RegistrationForm registrationForm = new LangLang.View.Student.RegistrationForm(studentController);
+            RegistrationForm registrationForm = new RegistrationForm(studentController);
             registrationForm.Show();
         }
 
@@ -107,17 +105,13 @@ namespace LangLang
         private void EmailTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(Email.Text))
-            {
                 EmailPlaceholder.Visibility = Visibility.Visible;
-            }
         }
 
         private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(Password.Password))
-            {
                 PasswordPlaceholder.Visibility = Visibility.Visible;
-            }
         }
 
         private void Placeholder_MouseDown(object sender, MouseButtonEventArgs e)
@@ -137,9 +131,7 @@ namespace LangLang
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (PasswordPlaceholder != null)
-            {
                 PasswordPlaceholder.Visibility = string.IsNullOrEmpty(Password.Password) ? Visibility.Visible : Visibility.Collapsed;
-            }
         }
     }
 }
