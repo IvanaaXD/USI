@@ -128,7 +128,7 @@ namespace LangLang.DTO
                 OnPropertyChanged("AddedToCourse");
             }
         }
-
+        public int Grade { get; set; }
         public string? Error => null;
 
         private Regex _FirstNameRegex = new Regex(@"^[A-Za-z]+$");

@@ -64,6 +64,24 @@ namespace LangLang.View.Teacher
 
             CourseGrade.Value = 1;
         }
+        public void SendGradeMail()
+        {
+            Mail mail = new Mail();
+            mail.Sender = teacher.Email;
+            mail.Receiver = student.Email;
+            mail.TypeOfMessage = Model.Enums.TypeOfMessage.TeacherGradeStudentMessage;
+            mail.DateOfMessage = DateTime.Now;
+            mail.CourseId = course.Id;
+            mail.Message = "Your final grade from course " + course.Language.ToString() + " " + course.Level.ToString() + " is " + gradeValueTextBox.Text;
+            mail.Answered = false;
+
+            teacherController.SendMail(mail);
+
+            student.ActiveCourseId = -1;
+            student.CompletedCoursesIds.Add(course.Id);
+
+            studentController.Update(student);
+        }
 
         public void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
@@ -73,6 +91,8 @@ namespace LangLang.View.Teacher
                 CourseGrade.CourseId = course.Id;
                 CourseGrade.StudentId = student.Id;
                 teacherController.GradeStudentCourse(CourseGrade.ToCourseGrade());
+
+                SendGradeMail();
             }
             Close();
         }

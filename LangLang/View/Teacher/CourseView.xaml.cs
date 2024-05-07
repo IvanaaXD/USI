@@ -18,6 +18,7 @@ namespace LangLang.View.Teacher
         public ObservableCollection<MailDTO> ReceivedMails { get; set; }
         public ObservableCollection<MailDTO> SentMails { get; set; }
         public ObservableCollection<StudentDTO> Students { get; set; }
+
         public class ViewModel
         {
             public ObservableCollection<MailDTO> ReceivedMails { get; set; }
@@ -92,11 +93,6 @@ namespace LangLang.View.Teacher
 
             teacherController.Subscribe(this);
 
-            AddCourseInfo();
-            AddCourseStatus();
-            CheckButtons();
-            CheckStudentsGrades();
-
             Update();
         }
 
@@ -104,6 +100,10 @@ namespace LangLang.View.Teacher
         {
             try
             {
+                AddCourseInfo();
+                AddCourseStatus();
+                CheckButtons();
+
                 SentMailsTableViewModel.SentMails.Clear();
                 ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
@@ -139,7 +139,7 @@ namespace LangLang.View.Teacher
                 }
                 else if (HasCourseFinished())
                 {
-                    students = studentController.GetAllStudentsForCourseGrading(course.Id);
+                    students = studentController.GetAllStudentsCompletedCourse(course.Id);
                 }
 
                 if (students != null)
@@ -147,11 +147,15 @@ namespace LangLang.View.Teacher
                     foreach (Model.Student student in students)
                     {
                         StudentDTO dtoStudent = new StudentDTO(student);
-
+                        dtoStudent.Grade = 0;
                         if (!HasCourseStarted())
                         {
                             if (student.ActiveCourseId == course.Id)
                                 dtoStudent.AddedToCourse = true;
+                        }
+                        if (HasCourseFinished())
+                        {
+                            dtoStudent.Grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id).Value;
                         }
 
                         StudentsTableViewModel.Students.Add(dtoStudent);
@@ -180,7 +184,7 @@ namespace LangLang.View.Teacher
         {
             courseLanguageTextBlock.Text = $"{course.Language}";
             courseLevelTextBlock.Text = $"{course.Level}";
-            courseStartDateTextBlock.Text = course.StartDate.ToString("yyyy-MM-dd HH:mm");
+            courseStartDateTextBlock.Text = course.StartDate.ToString("dd-MM-yyyy HH:mm");
             courseDurationTextBlock.Text = course.Duration.ToString();
             courseCurrentyEnrolledTextBlock.Text = course.CurrentlyEnrolled.ToString();
         }
@@ -191,11 +195,11 @@ namespace LangLang.View.Teacher
 
             if (HasStudentAcceptingPeriodStarted() && !HasCourseStarted())
                 courseStatusCheck = "Request Accepting Period";
-            else if (HasCourseStarted() && !HasCourseFinished())
+            else if (HasCourseStarted() && !HasGradingPeriodStarted())
                 courseStatusCheck = "Course Active";
-            else if (HasCourseFinished() && !HasCourseBeenGraded())
-                courseStatusCheck = "Course Finished. Student Grading Period";
-            else if (HasCourseBeenGraded())
+            else if (HasGradingPeriodStarted() && !HasCourseFinished())
+                courseStatusCheck = "Student Grading Period";
+            else if (HasCourseFinished())
                 courseStatusCheck = "Course Finished And Students Graded";
             else
                 courseStatusCheck = "Requests Open For Students";
@@ -216,13 +220,13 @@ namespace LangLang.View.Teacher
                 PenaltyPoint.Visibility = Visibility.Collapsed;
                 Mark.Visibility = Visibility.Collapsed;
             }
-            else if (HasCourseStarted() && !HasCourseFinished())
+            else if (HasCourseStarted() && !HasGradingPeriodStarted())
             {
                 ConfirmRequest.Visibility = Visibility.Collapsed;
                 RejectRequest.Visibility = Visibility.Collapsed;
                 Mark.Visibility = Visibility.Collapsed;
             }
-            else if (HasCourseFinished() && !HasCourseBeenGraded())
+            else if (HasGradingPeriodStarted() && !HasCourseFinished())
             {
                 ConfirmRequest.Visibility = Visibility.Collapsed;
                 RejectRequest.Visibility = Visibility.Collapsed;
@@ -247,53 +251,19 @@ namespace LangLang.View.Teacher
             return (course.StartDate <= DateTime.Now);
         }
 
-        private bool HasCourseFinished()
+        private bool HasGradingPeriodStarted()
         {
             return (course.StartDate.AddDays(7 * course.Duration) <= DateTime.Now);
         }
 
-        public bool HasCourseBeenGraded()
+        public bool HasCourseFinished()
         {
-            var grades = teacherController.GetCourseGradesByTeacherCourse(teacher.Id, course.Id);
-            if (grades.Count == 0)
-            {
-                return false;
-            }
+            var students = studentController.GetAllStudentsEnrolledCourse(course.Id);
 
-            foreach (CourseGrade grade in grades)
-            {
-                if (!teacherController.IsStudentGradedCourse(grade.StudentId))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+            if (students.Count == 0)
+                return true;
 
-        public void CheckStudentsGrades()
-        {
-            if (HasCourseFinished())
-            {
-                var courseStudents = studentController.GetAllStudentsForCourseGrading(course.Id);
-
-                foreach (Model.Student student in courseStudents)
-                {
-                    var grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id);
-                    SelectedGrade = new CourseGradeDTO();
-
-                    if (grade != null)
-                    {
-                        SelectedGrade.Value = grade.Value;
-                        student.ActiveCourseId = -1;
-                        studentController.Update(student);
-                        Update();
-                    }
-                    else
-                    {
-                        SelectedGrade.Value = 0;
-                    }
-                }
-            }
+            return false;
         }
 
         private void ConfirmRequest_Click(object sender, RoutedEventArgs e)
@@ -381,7 +351,7 @@ namespace LangLang.View.Teacher
             {
                 MessageBox.Show("Please choose a student to grade!");
             }
-            else if (teacherController.IsStudentGradedCourse(SelectedStudent.id))
+            else if (teacherController.IsStudentGradedCourse(SelectedStudent.id, course.Id))
             {
                 MessageBox.Show("This student is already graded!");
             }
@@ -400,7 +370,6 @@ namespace LangLang.View.Teacher
         {
             AddCourseInfo();
             AddCourseStatus();
-            CheckStudentsGrades();
             CheckButtons();
             Update();
         }
