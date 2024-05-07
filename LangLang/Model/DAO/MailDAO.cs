@@ -42,11 +42,9 @@ namespace LangLang.Model.DAO
         }
 
         public Mail? UpdateMail(Mail mail)
-
         {
             Mail? oldMail = GetMailById(mail.Id);
             if (oldMail == null) return null;
-
 
             oldMail.Sender = mail.Sender;
             oldMail.Receiver = mail.Receiver;
@@ -56,9 +54,9 @@ namespace LangLang.Model.DAO
             oldMail.Message = mail.Message;
             oldMail.Answered = mail.Answered;
 
-
             _storage.Save(_mails);
             NotifyObservers();
+            return oldMail;
         }
 
         public void SetMailToAnswered(Mail mail)
@@ -85,7 +83,6 @@ namespace LangLang.Model.DAO
         {
             return _mails;
         }
-
         public List<Mail> GetSentMails(Student student)
         {
             List<Mail> filteredMails = new List<Mail>();
@@ -99,7 +96,6 @@ namespace LangLang.Model.DAO
             }
             return filteredMails;
         }
-
 
         public List<Mail> GetReceivedMails(Student student)
         {

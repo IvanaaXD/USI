@@ -92,7 +92,7 @@ namespace LangLang
 
         private void Registration_Click(object sender, RoutedEventArgs e)
         {
-            RegistrationForm registrationForm = new RegistrationForm(studentController);
+            View.Student.RegistrationForm registrationForm = new View.Student.RegistrationForm(studentController);
             registrationForm.Show();
         }
 

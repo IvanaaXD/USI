@@ -80,9 +80,12 @@ namespace LangLang.View.Student
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabControl tabControl = sender as TabControl;
-            selectedTabIndex = tabControl.SelectedIndex;
-            Update();
+            if (e.Source is TabControl)
+            {
+                TabControl tabControl = sender as TabControl;
+                selectedTabIndex = tabControl.SelectedIndex;
+                Update();
+            }
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
