@@ -291,9 +291,7 @@ namespace LangLang.View.Teacher
         private void ViewExam_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedExamTerm == null)
-            {
                 MessageBox.Show("Please choose an exam term to view!");
-            }
             else
             {
                 ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);

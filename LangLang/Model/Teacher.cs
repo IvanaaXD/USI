@@ -7,19 +7,19 @@ namespace LangLang.Model
 {
     public class Teacher : Employee, ISerializable
     {
-        protected List<Language> languages;
-        protected List<LanguageLevel> levelOfLanguages;
+        protected List<Language>? languages;
+        protected List<LanguageLevel>? levelOfLanguages;
         protected DateTime startedWork;
         protected int averageRating;
-        protected List<int> coursesId;
+        protected List<int>? coursesId;
 
-        public List<Language> Languages
+        public List<Language>? Languages
         {
             get { return languages; }
             set { languages = value; }
         }
 
-        public List<LanguageLevel> LevelOfLanguages
+        public List<LanguageLevel>? LevelOfLanguages
         {
             get { return levelOfLanguages; }
             set { levelOfLanguages = value; }
@@ -37,7 +37,7 @@ namespace LangLang.Model
             set { averageRating = value; }
         }
 
-        public List<int> CoursesId
+        public List<int>? CoursesId
         {
             get { return coursesId; }
             set { coursesId = value; }
@@ -46,7 +46,7 @@ namespace LangLang.Model
         public Teacher() : base() { }
 
         public Teacher(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
-                       int title, List<Language> languages, List<LanguageLevel> levelOfLanguages, DateTime startedWork, int averageRating)
+                       int title, List<Language>? languages, List<LanguageLevel>? levelOfLanguages, DateTime startedWork, int averageRating)
                        : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password, title)
         { 
             this.languages = languages;
@@ -57,16 +57,14 @@ namespace LangLang.Model
 
         public override string[] ToCSV()
         {
-            string languagesCsv = string.Join(",", languages);
+            string languagesCsv = string.Join(",", languages) ;
             string levelOfLanguagesCsv = string.Join(",", levelOfLanguages);
             string startedWorkString = startedWork.Date.ToString("yyyy-MM-dd");
             string dateOfBirthString = dateOfBirth.Date.ToString("yyyy-MM-dd");
 
             string coursesIdCsv = "";
             if (coursesId != null)
-            {
                 coursesIdCsv = string.Join(",", coursesId);
-            }
 
             return new string[] {
                 Id.ToString(),
@@ -114,13 +112,9 @@ namespace LangLang.Model
             averageRating = int.Parse(values[12]);
 
             if (!string.IsNullOrEmpty(values[13]))
-            {
                 coursesId = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
-            }
             else
-            {
                 coursesId = new List<int>();
-            }
         }
     }
 }
