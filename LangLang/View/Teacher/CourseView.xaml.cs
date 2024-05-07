@@ -103,75 +103,75 @@ namespace LangLang.View.Teacher
                 AddCourseInfo();
                 AddCourseStatus();
                 CheckButtons();
+                RefreshMails();
+                RefreshStudents();
 
-                SentMailsTableViewModel.SentMails.Clear();
-                ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
-                var receivedMails = teacherController.GetReceivedCourseMails(teacher, course.Id);
-                var sentMails = teacherController.GetSentCourseMails(teacher, course.Id);
-
-                if (receivedMails != null)
-                {
-                    foreach (Mail mail in receivedMails)
-                    {
-                        ReceivedMailsTableViewModel.ReceivedMails.Add(new MailDTO(mail));
-                    }
-                }
-
-                if (sentMails != null)
-                {
-                    foreach (Mail mail in sentMails)
-                    {
-                        SentMailsTableViewModel.SentMails.Add(new MailDTO(mail));
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("No teachers found.");
-                }
-
-                StudentsTableViewModel.Students.Clear();
-                var students = studentController.GetAllStudentsRequestingCourse(course.Id);
-
-                if (HasCourseStarted() && !HasCourseFinished())
-                {
-                    students = studentController.GetAllStudentsEnrolledCourse(course.Id);
-                }
-                else if (HasCourseFinished())
-                {
-                    students = studentController.GetAllStudentsCompletedCourse(course.Id);
-                }
-
-                if (students != null)
-                {
-                    foreach (Model.Student student in students)
-                    {
-                        StudentDTO dtoStudent = new StudentDTO(student);
-                        dtoStudent.Grade = 0;
-                        if (!HasCourseStarted())
-                        {
-                            if (teacherController.IsStudentAccepted(student, course.Id))
-                                dtoStudent.AddedToCourse = true;
-                        }
-                        if (HasCourseFinished())
-                        {
-                            dtoStudent.Grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id).Value;
-                        }
-
-                        StudentsTableViewModel.Students.Add(dtoStudent);
-                    }
-
-                }
-                else
-                {
-                    MessageBox.Show("No students found.");
-                }
-                CheckButtons();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
+        }
+
+        private void RefreshStudents()
+        {
+            StudentsTableViewModel.Students.Clear();
+            var students = studentController.GetAllStudentsRequestingCourse(course.Id);
+
+            if (HasCourseStarted() && !HasCourseFinished())
+            {
+                students = studentController.GetAllStudentsEnrolledCourse(course.Id);
+            }
+            else if (HasCourseFinished())
+            {
+                students = studentController.GetAllStudentsCompletedCourse(course.Id);
+            }
+
+            if (students != null)
+                foreach (Model.Student student in students)
+                {
+                    StudentDTO dtoStudent = new StudentDTO(student);
+                    dtoStudent.Grade = 0;
+                    if (!HasCourseStarted())
+                    {
+                        if (teacherController.IsStudentAccepted(student, course.Id))
+                            dtoStudent.AddedToCourse = true;
+                    }
+                    if (HasCourseFinished())
+                    {
+                        dtoStudent.Grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id).Value;
+                    }
+
+                    StudentsTableViewModel.Students.Add(dtoStudent);
+                }
+
+            else
+                MessageBox.Show("No students found.");
+        }
+
+        private void RefreshMails()
+        {
+            SentMailsTableViewModel.SentMails.Clear();
+            ReceivedMailsTableViewModel.ReceivedMails.Clear();
+
+            var receivedMails = teacherController.GetReceivedCourseMails(teacher, course.Id);
+            var sentMails = teacherController.GetSentCourseMails(teacher, course.Id);
+
+            if (receivedMails != null)
+                foreach (Mail mail in receivedMails)
+                {
+                    ReceivedMailsTableViewModel.ReceivedMails.Add(new MailDTO(mail));
+                }
+
+            if (sentMails != null)
+                foreach (Mail mail in sentMails)
+                {
+                    SentMailsTableViewModel.SentMails.Add(new MailDTO(mail));
+                }
+
+            else
+                MessageBox.Show("No teachers found.");
         }
 
         private void ViewCourses_Click(object sender, RoutedEventArgs e)
@@ -207,14 +207,6 @@ namespace LangLang.View.Teacher
         }
         private void CheckButtons()
         {
-            /*if (!HasStudentAcceptingPeriodStarted())
-            {
-                ConfirmRequest.Visibility = Visibility.Collapsed;
-                RejectRequest.Visibility = Visibility.Collapsed;
-                PenaltyPoint.Visibility = Visibility.Collapsed;
-                Mark.Visibility = Visibility.Collapsed;
-            }
-            else */
             if (!HasStudentAcceptingPeriodEnded())
             {
                 PenaltyPoint.Visibility = Visibility.Collapsed;
@@ -279,9 +271,7 @@ namespace LangLang.View.Teacher
         private void ConfirmRequest_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedStudent == null)
-            {
                 MessageBox.Show("Please choose a student to accept to the course!");
-            }
             else
             {
                 StudentDTO selected = SelectedStudent;
@@ -314,16 +304,13 @@ namespace LangLang.View.Teacher
         private void RejectRequest_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedStudent == null)
-            {
                 MessageBox.Show("Please choose a student to reject from a course!");
-            }
             else
             {
                 Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+
                 if (SelectedStudent.AddedToCourse == true)
-                {
                     MessageBox.Show("Student has been added to the course already.");
-                }
                 else
                 {
                     CourseRejectionForm rejectionForm = new CourseRejectionForm(course, teacher, student, teacherController, studentController);
@@ -339,9 +326,8 @@ namespace LangLang.View.Teacher
         private void PenaltyPoint_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedStudent == null)
-            {
                 MessageBox.Show("Please choose a student to give a penalty point to!");
-            }
+
             else
             {
                 Model.Student student = studentController.GetStudentById(SelectedStudent.id);
@@ -356,13 +342,11 @@ namespace LangLang.View.Teacher
         private void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedStudent == null)
-            {
                 MessageBox.Show("Please choose a student to grade!");
-            }
+
             else if (teacherController.IsStudentGradedCourse(SelectedStudent.id, course.Id))
-            {
                 MessageBox.Show("This student is already graded!");
-            }
+
             else
             {
                 Model.Student student = studentController.GetStudentById(SelectedStudent.id);
@@ -382,6 +366,13 @@ namespace LangLang.View.Teacher
             Update();
         }
 
+        private void KickStudentOut(Model.Student student)
+        {
+            student.ActiveCourseId = -1;
+            studentController.Update(student);
+            teacherController.DecrementCourseCurrentlyEnrolled(course.Id);
+        }
+
         private void ApproveDroppingOut_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedReceivedMail != null)
@@ -389,9 +380,8 @@ namespace LangLang.View.Teacher
                 MailDTO mail = SelectedReceivedMail;
                 teacherController.AnswerMail(mail.Id);
                 Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
-                studentSender.ActiveCourseId = -1;
-                studentController.Update(studentSender);
-                teacherController.DecrementCourseCurrentlyEnrolled(course.Id);
+
+                KickStudentOut(studentSender);
 
                 approveDropOut.Visibility = Visibility.Collapsed;
                 rejectDropOut.Visibility = Visibility.Collapsed;
@@ -400,9 +390,7 @@ namespace LangLang.View.Teacher
                 Update();
             }
             else
-            {
                 MessageBox.Show("Please select mail you want to view!");
-            }
         }
 
         private void RejectDroppingOut_Click(object sender, RoutedEventArgs e)
@@ -414,9 +402,8 @@ namespace LangLang.View.Teacher
                 Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
                 studentController.GivePenaltyPoint(studentSender.Id);
                 studentSender = studentController.GetStudentByEmail(mail.Sender);
-                studentSender.ActiveCourseId = -1;
-                studentController.Update(studentSender);
-                teacherController.DecrementCourseCurrentlyEnrolled(course.Id);
+
+                KickStudentOut(studentSender);
 
                 approveDropOut.Visibility = Visibility.Collapsed;
                 rejectDropOut.Visibility = Visibility.Collapsed;
@@ -425,9 +412,7 @@ namespace LangLang.View.Teacher
                 Update();
             }
             else
-            {
                 MessageBox.Show("Please select mail you want to view!");
-            }
         }
         private void ReceivedMailDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

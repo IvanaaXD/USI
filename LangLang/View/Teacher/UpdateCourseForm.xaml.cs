@@ -81,9 +81,7 @@ namespace LangLang.View.Teacher
                     Course.Level = level;
                 }
                 else
-                {
                     MessageBox.Show("Invalid input format.");
-                }
             }
         }
         private void PickDataFromDatePicker()
@@ -92,30 +90,22 @@ namespace LangLang.View.Teacher
             {
                 DateTime startDate = startDatePicker.SelectedDate.Value.Date;
                 DateTime startTime;
+
                 if (DateTime.TryParseExact(startTimeTextBox.Text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startTime))
-                {
                     Course.StartDate = startDate.Add(startTime.TimeOfDay);
-                }
+
                 else
-                {
                     MessageBox.Show("Please enter a valid start time (HH:mm).");
-                }
             }
             else
-            {
                 MessageBox.Show("Please select a valid start date and time.");
-            }
         }
         private void PickDataFromListBox()
         {
             Course.WorkDays = new List<DayOfWeek>();
             foreach (var selectedItem in dayListBox.SelectedItems)
-            {
                 if (Enum.TryParse(selectedItem.ToString(), out DayOfWeek day))
-                {
                     Course.WorkDays.Add(day);
-                }
-            }
         }
         private void Save_Click(object sender, RoutedEventArgs e)
         {
@@ -128,9 +118,7 @@ namespace LangLang.View.Teacher
                 Close();
             }
             else
-            {
                 MessageBox.Show("Course can not be updated. Not all fields are valid.");
-            }
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
