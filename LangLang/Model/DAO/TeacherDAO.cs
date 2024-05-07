@@ -555,5 +555,17 @@ namespace LangLang.Model.DAO
             }
             return false;
         }
+        public bool IsStudentAccepted(Student student, int courseId)
+        {
+            List<Mail> sentMail = GetAllMail();
+            foreach (Mail mail in sentMail)
+            {
+                if (mail.Receiver == student.Email && mail.CourseId == courseId && mail.TypeOfMessage == TypeOfMessage.AcceptEnterCourseRequestMessage)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

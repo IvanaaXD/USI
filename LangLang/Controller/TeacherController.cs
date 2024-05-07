@@ -249,5 +249,10 @@ namespace LangLang.Controller
         {
             return _teachers.FindExamTermsByCriteria(language, level, examDate);
         }
+
+        public bool IsStudentAccepted(Student student, int courseId)
+        {
+            return _teachers.IsStudentAccepted(student, courseId);
+        }
     }
 }
