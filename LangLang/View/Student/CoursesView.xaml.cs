@@ -35,6 +35,7 @@ namespace LangLang.View.Student
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
         private int selectedTabIndex = 0;
+        private bool tabChanged = false;
 
         private CoursesTable studentCoursesTable;
 
@@ -63,14 +64,10 @@ namespace LangLang.View.Student
                 var courses = GetFilteredCourses();
 
                 if (courses != null)
-                {
                     foreach (Course course in courses)
                         TableViewModel.Courses.Add(new CourseDTO(course));
-                }
-                else
-                {
-                    MessageBox.Show("No courses found.");
-                }
+                
+                else MessageBox.Show("No courses found.");
             }
             catch (Exception ex)
             {
@@ -80,9 +77,12 @@ namespace LangLang.View.Student
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabControl tabControl = sender as TabControl;
-            selectedTabIndex = tabControl.SelectedIndex;
-            Update();
+            if (e.Source is TabControl)
+            {
+                TabControl tabControl = sender as TabControl;
+                selectedTabIndex = tabControl.SelectedIndex;
+                Update();
+            }
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -127,33 +127,32 @@ namespace LangLang.View.Student
                 }
             }
 
-            List<Course> studentsAvailableCourses = GetSelectedTabCourses();
-            List<Course> finalCourses = new List<Course>();
+           return DoFilter(selectedLanguage,selectedLevel,selectedStartDate,selectedDuration);
+        }
 
-            if (isSearchButtonClicked)
+        private List<Course> DoFilter(Language? language, LanguageLevel? languageLevel, DateTime? startDate, int duration)
+        {
+            List<Course> courses = GetSelectedTabCourses();
+ 
+            if (!isSearchButtonClicked)
+                return courses;
+
+            List<Course> filteredCourses = new List<Course>();
+            bool isOnline = studentCoursesTable.onlineCheckBox.IsChecked ?? false;
+            List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(language, languageLevel, startDate, duration, isOnline);
+
+            foreach (Course course in allFilteredCourses)
             {
-                bool isOnline = studentCoursesTable.onlineCheckBox.IsChecked ?? false;
-                List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
-
-                foreach (Course course in allFilteredCourses)
+                foreach (Course studentCourse in courses)
                 {
-                    foreach (Course studentCourse in studentsAvailableCourses)
+                    if (studentCourse.Id == course.Id && !filteredCourses.Contains(course))
                     {
-                        if (studentCourse.Id == course.Id && !finalCourses.Contains(course))
-                        {
-                            finalCourses.Add(course);
-                        }
+                        filteredCourses.Add(course);
                     }
                 }
             }
-            else
-            {
-                foreach (Course studentCourse in studentsAvailableCourses)
-                {
-                    finalCourses.Add(studentCourse);
-                }
-            }
-            return finalCourses;
+            
+            return filteredCourses;
         }
 
         private List<Course>? GetSelectedTabCourses()
@@ -194,9 +193,7 @@ namespace LangLang.View.Student
                 bool isRegisteredForCourse = studentsController.RegisterForCourse(studentId, SelectedCourse.Id);
                 if (isRegisteredForCourse)
                 {
-                    /* MessageBox.Show("You have sent a request to register for the course: " +
-                                     $"{SelectedCourse.Language} {SelectedCourse.Level}");*/
-                    MessageBox.Show("You have sent a request to register for the course: ");
+                    MessageBox.Show("You have sent a request to register for the course");
                     Update();
                 }
                 else
@@ -216,9 +213,7 @@ namespace LangLang.View.Student
                 bool isRequestCanceled = studentsController.CancelCourseRegistration(studentId, SelectedCourse.Id);
                 if (isRequestCanceled)
                 {
-                    /* MessageBox.Show("You have canceled your request to register for the course: " +
-                                     $"{SelectedCourse.Language} {SelectedCourse.Level}");*/
-                    MessageBox.Show("You have canceled your request to register for the course: ");
+                    MessageBox.Show("You have canceled your request to register for the course");
                     Update();
                 }
                 else

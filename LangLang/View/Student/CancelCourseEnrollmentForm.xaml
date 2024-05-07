@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
         Title="Cancel course enrollment" Height="250" Width="550">
 
     <Window.Resources>
