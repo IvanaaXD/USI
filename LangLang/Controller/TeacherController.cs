@@ -20,9 +20,9 @@ namespace LangLang.Controller
             _examTermGrades = new ExamTermGradeDAO();
             _courseGrades = new CourseGradeDAO();
         }
-        public Course? GetCourseById(int courseID)
+        public Course? GetCourseById(int courseId)
         {
-            return _teachers.GetCourseById(courseID);
+            return _teachers.GetCourseById(courseId);
         }
         public ExamTerm? GetExamTermById(int examId)
         {
@@ -136,9 +136,9 @@ namespace LangLang.Controller
         {
             return _teachers.ConfirmExamTerm(examTermId);
         }
-        public bool IsStudentGradedCourse(int studentId)
+        public bool IsStudentGradedCourse(int studentId, int courseId)
         {
-            return _courseGrades.IsStudentGraded(studentId);
+            return _courseGrades.IsStudentGraded(studentId, courseId);
         }
 
         public bool IsStudentGradedExamTerm(int studentId)

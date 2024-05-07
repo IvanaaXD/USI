@@ -90,7 +90,7 @@
                                     <DataGridTextColumn Header="Phone number" Width="*" Binding="{Binding PhoneNumber}" />
                                     <DataGridTextColumn Header="Email" Width="*" Binding="{Binding Email}" />
                                     <DataGridTextColumn Header="Penalty Points" Width="*" Binding="{Binding PenaltyPoints}" />
-                                    <DataGridTextColumn Header="Grade" Width="*" Binding="{Binding DataContext.SelectedGrade.Value, RelativeSource={RelativeSource AncestorType=DataGrid}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <DataGridTextColumn Header="Grade" Width="*" Binding="{Binding Grade}" />
                                 </DataGrid.Columns>
                                 <DataGrid.RowStyle>
                                     <Style TargetType="DataGridRow">

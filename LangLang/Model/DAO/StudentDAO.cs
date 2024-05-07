@@ -278,7 +278,7 @@ namespace LangLang.Model.DAO
             return filteredStudents;
         }
 
-        public List<Student> GetAllStudentsForCourseGrading(int courseId)
+        public List<Student> GetAllStudentsCompletedCourse(int courseId)
         {
             List<Student> filteredStudents = new List<Student>();
             foreach (Student student in _students)

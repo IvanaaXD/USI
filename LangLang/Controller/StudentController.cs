@@ -85,9 +85,9 @@ namespace LangLang.Controller
             return _students.GetAllStudentsForCourse(courseId);
         }
 
-        public List<Student> GetAllStudentsForCourseGrading(int courseId)
+        public List<Student> GetAllStudentsCompletedCourse(int courseId)
         {
-            return _students.GetAllStudentsForCourseGrading(courseId);
+            return _students.GetAllStudentsCompletedCourse(courseId);
         }
 
         public List<Student> GetAllStudentsForExamTerm(int examTermId)

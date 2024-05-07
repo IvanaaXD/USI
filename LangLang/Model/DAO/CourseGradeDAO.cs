@@ -57,11 +57,11 @@ namespace LangLang.Model.DAO
             NotifyObservers();
             return grade;
         }
-        public bool IsStudentGraded(int studentId)
+        public bool IsStudentGraded(int studentId, int courseId)
         {
             foreach (var grade in _grades)
             {
-                if (grade.StudentId == studentId)
+                if (grade.StudentId == studentId && grade.CourseId == courseId)
                 {
                     return true;
                 }

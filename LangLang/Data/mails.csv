@@ -9,3 +9,5 @@
 10|marina@gmail.com|janko@gmail.com|10|QuitCourseRequest|2024-05-05|I don't have time to attend classes|True
 11|ana@gmail.com|janko@gmail.com|10|QuitCourseRequest|2024-05-05|I don't have time to attend classes|True
 12|marina@gmail.com|maja@gmail.com|4|QuitCourseRequest|2024-05-07|hvm |False
+13|janko@gmail.com|safa@ffds.fds|4|TeacherGradeStudentMessage|2024-05-07|Your final grade from course English B1 is 1|False
+14|janko@gmail.com|marina@gmail.com|4|TeacherGradeStudentMessage|2024-05-07|Your final grade from course English B1 is 10|True
