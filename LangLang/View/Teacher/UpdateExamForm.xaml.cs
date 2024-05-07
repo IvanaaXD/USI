@@ -23,10 +23,14 @@ namespace LangLang.View.Teacher
     public partial class UpdateExamForm : Window
     {
         public ExamTermDTO ExamTerm { get; set; }
+        public TeacherDTO Teacher { get; set; }
 
-        private readonly TeacherController teacherController;
+        private TeacherController teacherController;
+        private readonly DirectorController directorController;
+        private int teacherId;
+        private int examId;
 
-        public UpdateExamForm(int examId, TeacherController teacherController)
+        public UpdateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId, int examId)
         {
             ExamTerm examTerm = teacherController.GetExamTermById(examId);
             ExamTerm = new ExamTermDTO(examTerm);
@@ -35,14 +39,32 @@ namespace LangLang.View.Teacher
 
             InitializeComponent();
             this.teacherController = teacherController;
+            this.directorController = directorController;
+            this.teacherId = teacherId;
+            this.examId = examId;
 
+            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             TeacherDAO teacherDAO = new TeacherDAO();
             string languageAndLevel = teacherDAO.FindLanguageAndLevel(examTerm.CourseID);
 
             string[] parts = languageAndLevel.Split(',');
             languageAndLevel = parts[0].Trim() + " " + parts[1].Trim();
-
             languageComboBox.SelectedItem = languageAndLevel;
+
+            List<Course> courses = teacherController.GetAllCourses();
+            List<string> levelLanguageStr = new List<string>();
+
+            foreach (Course course in courses)
+            {
+                if (Teacher.CoursesId.Contains(course.Id))
+                {
+                    levelLanguageStr.Add($"{course.Language} {course.Level}");
+                }
+            }
+
+            languageComboBox.ItemsSource = levelLanguageStr;
+
+            
             examDatePicker.SelectedDate = ExamTerm.ExamDate;
             examTimeTextBox.Text = ExamTerm.ExamDate.ToString("HH:mm"); //ExamTerm.ExamTime;
             maxStudentsTextBox.Text = ExamTerm.MaxStudents.ToString();
