@@ -63,9 +63,6 @@ namespace LangLang.View.Teacher
                 Mail.Message ="You have been rejected from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: "+mailBodyTextBlock.Text;
                 Mail.Answered = false;
 
-                student.RegisteredCoursesIds.Remove(course.Id);
-                studentController.Update(student);
-
                 teacherController.SendMail(Mail.ToMail());
 
                 Close();

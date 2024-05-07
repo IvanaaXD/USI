@@ -150,7 +150,7 @@ namespace LangLang.View.Teacher
                         dtoStudent.Grade = 0;
                         if (!HasCourseStarted())
                         {
-                            if (student.ActiveCourseId == course.Id)
+                            if (teacherController.IsStudentAccepted(student, course.Id))
                                 dtoStudent.AddedToCourse = true;
                         }
                         if (HasCourseFinished())
@@ -160,7 +160,6 @@ namespace LangLang.View.Teacher
 
                         StudentsTableViewModel.Students.Add(dtoStudent);
                     }
-
 
                 }
                 else
@@ -193,8 +192,8 @@ namespace LangLang.View.Teacher
         {
             string courseStatusCheck;
 
-            if (HasStudentAcceptingPeriodStarted() && !HasCourseStarted())
-                courseStatusCheck = "Request Accepting Period";
+            if (HasStudentAcceptingPeriodEnded() && !HasCourseStarted())
+                courseStatusCheck = "Final Student Enrollments";
             else if (HasCourseStarted() && !HasGradingPeriodStarted())
                 courseStatusCheck = "Course Active";
             else if (HasGradingPeriodStarted() && !HasCourseFinished())
@@ -208,15 +207,23 @@ namespace LangLang.View.Teacher
         }
         private void CheckButtons()
         {
-            if (!HasStudentAcceptingPeriodStarted())
+            /*if (!HasStudentAcceptingPeriodStarted())
             {
                 ConfirmRequest.Visibility = Visibility.Collapsed;
                 RejectRequest.Visibility = Visibility.Collapsed;
                 PenaltyPoint.Visibility = Visibility.Collapsed;
                 Mark.Visibility = Visibility.Collapsed;
             }
-            else if (HasStudentAcceptingPeriodStarted() && !HasCourseStarted())
+            else */
+            if (!HasStudentAcceptingPeriodEnded())
             {
+                PenaltyPoint.Visibility = Visibility.Collapsed;
+                Mark.Visibility = Visibility.Collapsed;
+            }
+            else if (HasStudentAcceptingPeriodEnded() && !HasCourseStarted())
+            {
+                ConfirmRequest.Visibility = Visibility.Collapsed;
+                RejectRequest.Visibility = Visibility.Collapsed;
                 PenaltyPoint.Visibility = Visibility.Collapsed;
                 Mark.Visibility = Visibility.Collapsed;
             }
@@ -241,7 +248,7 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private bool HasStudentAcceptingPeriodStarted()
+        private bool HasStudentAcceptingPeriodEnded()
         {
             return (course.StartDate <= DateTime.Now.AddDays(7));
         }
@@ -258,6 +265,9 @@ namespace LangLang.View.Teacher
 
         public bool HasCourseFinished()
         {
+            if (course.StartDate.AddDays(course.Duration * 7) >= DateTime.Now)
+                return false;
+
             var students = studentController.GetAllStudentsEnrolledCourse(course.Id);
 
             if (students.Count == 0)
@@ -274,17 +284,15 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
-                if (student.ActiveCourseId != -1)
+                StudentDTO selected = SelectedStudent;
+                Model.Student student = studentController.GetStudentById(selected.id);
+                if (SelectedStudent.AddedToCourse == true)
                 {
                     MessageBox.Show("Student has been added to the course already.");
                 }
                 else
                 {
-                    student.ActiveCourseId = course.Id;
                     teacherController.IncrementCourseCurrentlyEnrolled(course.Id);
-                    student.RegisteredCoursesIds.Remove(course.Id);
-                    studentController.Update(student);
 
                     MailToSend.Sender = teacher.Email;
                     MailToSend.Receiver = student.Email;
@@ -295,7 +303,7 @@ namespace LangLang.View.Teacher
                     MailToSend.Answered = false;
 
                     teacherController.SendMail(MailToSend.ToMail());
-                    SelectedStudent.AddedToCourse = true;
+                    selected.AddedToCourse = true;
 
                     AddCourseInfo();
                     Update();
@@ -312,7 +320,7 @@ namespace LangLang.View.Teacher
             else
             {
                 Model.Student student = studentController.GetStudentById(SelectedStudent.id);
-                if (student.ActiveCourseId != -1)
+                if (SelectedStudent.AddedToCourse == true)
                 {
                     MessageBox.Show("Student has been added to the course already.");
                 }
