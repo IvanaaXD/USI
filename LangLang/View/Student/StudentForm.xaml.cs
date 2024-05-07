@@ -19,6 +19,8 @@ namespace LangLang.View.Student
             this.studentController = studentController;
 
             SetWelcomeHeading();
+            SetStudentInformations();
+            DisplayAcceptedCourseRequest();
             SetActiveCourse();
         }
 
@@ -27,6 +29,12 @@ namespace LangLang.View.Student
             Model.Student student = studentController.GetStudentById(studentId);
             welcomeTextBlock.Text = welcomeTextBlock.Text + " " + student.FirstName;
         }
+        private void SetStudentInformations()
+        {
+            completedCoursesTextBlock.Text = studentController.GetCompletedCourseNumber(studentId).ToString();
+            passedExamsTextBlock.Text = studentController.GetPassedExamsNumber(studentId).ToString();
+            penaltyPoinsTextBlcok.Text = studentController.GetPenaltyPointsNumber(studentId).ToString();
+        }
 
         private void SetActiveCourse()
         {
@@ -34,17 +42,40 @@ namespace LangLang.View.Student
             if (activeCourse != null)
             {
                 activeCourseTextBlock.Text = GetCourseName(activeCourse);
+
                 if (studentController.IsQuitCourseMailSent(studentId, activeCourse.Id) ||
                     (DateTime.Now - activeCourse.StartDate).TotalDays < 7)
+                {
                     dropOutButton.Visibility = Visibility.Collapsed;
+                }
             }
             else
             {
                 activeCourseTextBlock.Text = "/";
                 dropOutButton.Visibility = Visibility.Collapsed;
+
+                int currentlyCompletedCourseId = studentController.IsSomeCourseCompleted(studentId);
+                if (currentlyCompletedCourseId >= 0)
+                {
+                    DisplayCompletedCourseForm(currentlyCompletedCourseId);
+                }
             }
         }
+        private void DisplayCompletedCourseForm(int courseId)
+        {
+            GradeTeacher gradeTeacherForm = new GradeTeacher(studentId, courseId);
+            gradeTeacherForm.Show();
+        }
 
+        private void DisplayAcceptedCourseRequest()
+        {
+            if(studentController.IsEnterCourseRequestAccepted(studentId))
+            {
+                Course activeCourse = studentController.GetActiveCourse(studentId);
+                AcceptedEnterCourseRequestForm acceptedCourseForm = new AcceptedEnterCourseRequestForm(GetCourseName(activeCourse));
+                acceptedCourseForm.Show();
+            }
+        }
         private void DropOutFromCourseBoutton_Click(object sender, RoutedEventArgs e)
         {
             CancelCourseEnrollmentForm cancelCourseEnrollmentForm = new CancelCourseEnrollmentForm(studentId,studentController.GetStudentById(studentId).ActiveCourseId);
@@ -87,7 +118,7 @@ namespace LangLang.View.Student
         private void UpdateAccount_Click(object sender, RoutedEventArgs e)
         {
             LangLang.Model.Student student = studentController.GetStudentById(studentId);
-            if (student.ActiveCourseId != -1 || student.RegisteredExamsIds != null)
+            if (student.ActiveCourseId != -1)
             {
                 MessageBox.Show("The student attends the course and cannot change the data.");
             }

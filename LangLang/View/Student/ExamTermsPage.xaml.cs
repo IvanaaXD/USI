@@ -17,7 +17,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using LangLang.View.Teacher;
 
 namespace LangLang.View.Student
 {
@@ -180,7 +179,7 @@ namespace LangLang.View.Student
 
             }
         }
-        private void Search_Click(object sender, EventArgs e)
+        private void btnSearch_Click(object sender, EventArgs e)
         {
             Update();
             isSearchButtonClicked = true;
@@ -201,7 +200,6 @@ namespace LangLang.View.Student
             languageComboBoxRegistered.SelectedItem = null;
             levelComboBoxRegistered.SelectedItem = null;
             startDateDatePickerRegistered.SelectedDate = null;
-
             languageComboBoxCompleted.SelectedItem = null;
             levelComboBoxCompleted.SelectedItem = null;
             startDateDatePickerCompleted.SelectedDate = null;
@@ -243,9 +241,9 @@ namespace LangLang.View.Student
 
         private List<ExamTerm> GetFilteredRegisteredExamTerms()
         {
-            Language? selectedLanguage = (Language?)languageComboBoxRegistered.SelectedItem;
-            LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBoxRegistered.SelectedItem;
-            DateTime? selectedStartDate = startDateDatePickerRegistered.SelectedDate;
+            Language? selectedLanguage = (Language?)languageComboBox.SelectedItem;
+            LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
+            DateTime? selectedStartDate = startDateDatePicker.SelectedDate;
 
             List<ExamTerm> studentsAvailableExamTerms = studentController.GetRegisteredExamTerms(studentId);
             List<ExamTerm> finalExamTerms = new List<ExamTerm>();
@@ -277,9 +275,9 @@ namespace LangLang.View.Student
 
         private List<ExamTerm> GetFilteredCompletedExamTerms()
         {
-            Language? selectedLanguage = (Language?)languageComboBoxCompleted.SelectedItem;
-            LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBoxCompleted.SelectedItem;
-            DateTime? selectedStartDate = startDateDatePickerCompleted.SelectedDate;
+            Language? selectedLanguage = (Language?)languageComboBox.SelectedItem;
+            LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
+            DateTime? selectedStartDate = startDateDatePicker.SelectedDate;
 
             List<ExamTerm> studentsAvailableExamTerms = studentController.GetCompletedExamTerms(studentId);
             List<ExamTerm> finalExamTerms = new List<ExamTerm>();
@@ -307,23 +305,6 @@ namespace LangLang.View.Student
                 }
             }
             return finalExamTerms;
-        }
-
-        private void ViewExam_Click(object sender, RoutedEventArgs e)
-        {
-            if (SelectedCompletedExamTerm == null)
-            {
-                MessageBox.Show("Please choose an exam term to view!");
-            }
-            else
-            {
-                ExamTerm examTerm = teacherController.GetExamTermById(SelectedCompletedExamTerm.ExamID);
-                Model.Student student = studentController.GetStudentById(studentId);
-                ExamTermStudentView examTermStudentView = new ExamTermStudentView(examTerm,student, teacherController, studentController);
-                examTermStudentView.Owner = this;
-                this.Visibility = Visibility.Collapsed;
-                examTermStudentView.Show();
-            }
         }
 
 
