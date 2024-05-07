@@ -230,17 +230,6 @@ namespace LangLang.View.Student
             if (isSearchButtonClicked)
             {
                 List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
-                /*
-                foreach (ExamTerm examTerm in allFilteredExamTerms)
-                {
-                    foreach (ExamTerm studentExamTerm in studentsAvailableExamTerms)
-                    {
-                        if (studentExamTerm.ExamID == examTerm.ExamID && !finalExamTerms.Contains(examTerm))
-                        {
-                            finalExamTerms.Add(examTerm);
-                        }
-                    }
-                }*/
                 finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsAvailableExamTerms);
 
             }
@@ -265,18 +254,7 @@ namespace LangLang.View.Student
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
-                /*
-                foreach (ExamTerm examTerm in allFilteredExamTerms)
-                {
-                    foreach (ExamTerm studentExamTerm in studentsAvailableExamTerms)
-                    {
-                        if (studentExamTerm.ExamID == examTerm.ExamID && !finalExamTerms.Contains(examTerm))
-                        {
-                            finalExamTerms.Add(examTerm);
-                        }
-                    }
-                }*/
+                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);           
                 finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsRegisteredExamTerms);
             }
             else
@@ -301,17 +279,6 @@ namespace LangLang.View.Student
             if (isSearchButtonClicked)
             {
                 List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
-                /*
-                foreach (ExamTerm examTerm in allFilteredExamTerms)
-                {
-                    foreach (ExamTerm studentExamTerm in studentsAvailableExamTerms)
-                    {
-                        if (studentExamTerm.ExamID == examTerm.ExamID && !finalExamTerms.Contains(examTerm))
-                        {
-                            finalExamTerms.Add(examTerm);
-                        }
-                    }
-                }*/
                 finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsCompletedExamTerms);
             }
             else
