@@ -342,7 +342,7 @@ namespace LangLang.Model.DAO
         {
             ExamTerm examTerm = GetExamTermById(examTermId);
             --examTerm.CurrentlyAttending;
-            UpdateExamTerm(examTerm);   
+            UpdateExamTerm(examTerm);
         }
 
         public ExamTerm ConfirmExamTerm(int examTermId)
@@ -364,6 +364,10 @@ namespace LangLang.Model.DAO
             List<Course> teacherCourses = GetAvailableCourses(teacher);
             foreach (Course secondCourse in teacherCourses)
             {
+                if (course.Id == secondCourse.Id)
+                {
+                    continue;
+                }
                 DateTime secondCourseStartTime = secondCourse.StartDate;
                 DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
 

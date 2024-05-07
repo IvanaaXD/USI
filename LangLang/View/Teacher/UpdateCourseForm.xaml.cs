@@ -32,6 +32,10 @@ namespace LangLang.View.Teacher
             this.teacherController = teacherController;
             this.directorController = directorController;
 
+            SetPlaceholders();
+        }
+        private void SetPlaceholders()
+        {
             List<string> levelLanguageStr = new List<string>();
 
             for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
@@ -48,6 +52,10 @@ namespace LangLang.View.Teacher
 
             startDatePicker.SelectedDate = Course.StartDate;
             startTimeTextBox.Text = Course.StartTime;
+
+            List<string> dayOfWeek = new List<string> { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+
+            dayListBox.ItemsSource = dayOfWeek;
 
             for (int i = 0; i < Course.WorkDays.Count; i++)
             {

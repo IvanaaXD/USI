@@ -57,7 +57,7 @@
 
         <TextBlock Grid.Row="5" HorizontalAlignment="Center" Margin="0,0,0,5"><Run Text="Work days"/><Run Text=":"/></TextBlock>
         <ListBox x:Name="dayListBox" SelectionMode="Multiple" Margin="0,0,0,15" Grid.Row="6" Grid.RowSpan="3"
-        ItemsSource="{Binding Path= DayOfWeekValues}"/>
+        ItemsSource="{Binding DayOfWeekValues}"/>
 
         <CheckBox x:Name="isOnlineCheckBox" Grid.Row="6" HorizontalAlignment="Center" Margin="0,12,0,13" Content="Online Course" Grid.Column="1"
           IsChecked="{Binding IsOnline, UpdateSourceTrigger=PropertyChanged}"/>
