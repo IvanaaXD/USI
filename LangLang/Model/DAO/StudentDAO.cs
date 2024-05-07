@@ -337,8 +337,13 @@ namespace LangLang.Model.DAO
         {
             Student student = GetStudentById(studentId);
             ExamTerm examTerm = teacherDAO.GetExamTermById(examId);
-            // registeredList
-            if (!examTerm.Informed || examTerm.CurrentlyAttending >= examTerm.MaxStudents)
+            List<ExamTerm> completedExams = GetCompletedExamTerms(studentId); 
+            foreach(ExamTerm term in completedExams)
+            {
+                if (!term.Informed)
+                    return false;
+            }
+            if (examTerm.CurrentlyAttending >= examTerm.MaxStudents)
                 return false;
 
             student.RegisteredExamsIds.Add(examId);

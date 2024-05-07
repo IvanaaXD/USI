@@ -160,5 +160,10 @@ namespace LangLang.Controller
         {
             return _students.GetPenaltyPointsNumber(studentId);
         }
+        public void ProcessPenaltyPoints()
+        {
+           _students.ProcessPenaltyPoints();
+        }
+       
     }
 }
