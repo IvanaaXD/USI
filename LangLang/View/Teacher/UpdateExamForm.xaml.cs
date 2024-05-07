@@ -29,11 +29,13 @@ namespace LangLang.View.Teacher
         private readonly DirectorController directorController;
         private int teacherId;
         private int examId;
+        private Model.Teacher teacher;
 
         public UpdateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId, int examId)
         {
+            teacher = directorController.GetTeacherById(teacherId);
             ExamTerm examTerm = teacherController.GetExamTermById(examId);
-            ExamTerm = new ExamTermDTO(examTerm);
+            ExamTerm = new ExamTermDTO(examTerm, teacher);
             DataContext = ExamTerm;
 
 
@@ -51,12 +53,14 @@ namespace LangLang.View.Teacher
             languageAndLevel = parts[0].Trim() + " " + parts[1].Trim();
             languageComboBox.SelectedItem = languageAndLevel;
 
+            teacher = directorController.GetTeacherById(teacherId);
             List<Course> courses = teacherController.GetAllCourses();
+          
             List<string> levelLanguageStr = new List<string>();
 
             foreach (Course course in courses)
             {
-                if (Teacher.CoursesId.Contains(course.Id))
+                if (teacher.CoursesId.Contains(course.Id))
                 {
                     string languageLevel = $"{course.Language} {course.Level}";
                     if (!levelLanguageStr.Contains(languageLevel))
@@ -99,24 +103,22 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("Invalid language and level format.");
                 }
 
-                FindCourseIdForExam(lang, lvl);
+                TeacherDAO teacherDAO = new TeacherDAO();
+                teacher = directorController.GetTeacherById(teacherId);
+                List<Course> courses = teacherDAO.GetAvailableCourses(teacher);
 
-            }
-        }
-        private void FindCourseIdForExam(Language lang, LanguageLevel lvl)
-        {
-            TeacherDAO teacherDAO = new TeacherDAO();
-            List<Course> courses = teacherDAO.GetAllCourses();
-
-            foreach (Course course in courses)
-            {
-                if (course.Language == lang && course.Level == lvl)
+                foreach (Course course in courses)
                 {
-                    ExamTerm.CourseID = course.Id;
-                    break;
+                    if (course.Language == lang && course.Level == lvl)
+                    {
+                        ExamTerm.CourseID = course.Id;
+                        break;
+                    }
                 }
+
             }
         }
+        
         private void PickDataFromDatePicker()
         {
             if (examDatePicker.SelectedDate.HasValue && !string.IsNullOrWhiteSpace(examTimeTextBox.Text))
