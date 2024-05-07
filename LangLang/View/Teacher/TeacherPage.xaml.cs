@@ -241,7 +241,7 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                UpdateExamForm modifyDataForm = new UpdateExamForm(SelectedExamTerm.ExamID, teacherController);
+                UpdateExamForm modifyDataForm = new UpdateExamForm(teacherController, directorController, teacherId, SelectedExamTerm.ExamID);
                 modifyDataForm.Show();
                 modifyDataForm.Activate();
             }
