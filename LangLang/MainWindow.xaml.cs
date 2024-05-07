@@ -3,7 +3,6 @@ using System.Windows.Input;
 using LangLang.View.Director;
 using LangLang.Controller;
 using LangLang.Model;
-using LangLang.Observer;
 using LangLang.View.Teacher;
 using LangLang.View.Student;
 
@@ -31,51 +30,78 @@ namespace LangLang
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             string email = Email.Text; 
-            string password = Password.Password; 
+            string password = Password.Password;
 
-            foreach (Teacher teacher in directorController.GetAllTeachers())
+            if (HasStudentLoggedIn(email, password))
             {
-                if (teacher.Email == email && teacher.Password == password)
-                {
-                    TeacherPage teacherPage = new TeacherPage(teacher.Id, mainController);
-                    teacherPage.Show();
-                    this.Close();
-                    return;
-                }
+                this.Close();
+                return;
             }
 
+            if (HasTeacherLoggedIn(email, password))
+            {
+                this.Close();
+                return;
+            }
+
+            if (HasDirectorLoggedIn(email, password))
+            {
+                this.Close();
+                return;
+            }
+            
+             MessageBox.Show("User does not exist.");
+        } 
+
+        private bool HasStudentLoggedIn(string email, string password)
+        {
             foreach (Student student in studentController.GetAllStudents())
             {
                 if (student.Email == email && student.Password == password && student.ActiveCourseId != -10)
                 {
                     StudentForm welcomePage = new StudentForm(student.Id, studentController);
                     welcomePage.Show();
-                    this.Close();
-                    return;
+                    return true;
                 }
-                else if(student.ActiveCourseId == -10)
+                else if (student.ActiveCourseId == -10)
                 {
                     MessageBox.Show("Your account has been deactivated.");
+                    return false;
                 }
             }
+            return false;
+        }
 
+        private bool HasTeacherLoggedIn(string email, string password)
+        {
+            foreach (Teacher teacher in directorController.GetAllTeachers())
+            {
+                if (teacher.Email == email && teacher.Password == password)
+                {
+                    TeacherPage teacherPage = new TeacherPage(teacher.Id, mainController);
+                    teacherPage.Show();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool HasDirectorLoggedIn(string email, string password)
+        {
             Director director = directorController.GetDirector();
 
             if (director.Email == email && director.Password == password)
             {
                 DirectorPage directorPage = new DirectorPage(director.Id, directorController);
                 directorPage.Show();
-                this.Close();
-                return;
+                return true;
             }
-            
-            
-             MessageBox.Show("User does not exist.");
-        } 
+            return false;
+        }
 
         private void Registration_Click(object sender, RoutedEventArgs e)
         {
-            LangLang.View.Student.RegistrationForm registrationForm = new LangLang.View.Student.RegistrationForm(studentController);
+            RegistrationForm registrationForm = new RegistrationForm(studentController);
             registrationForm.Show();
         }
 
@@ -107,17 +133,13 @@ namespace LangLang
         private void EmailTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(Email.Text))
-            {
                 EmailPlaceholder.Visibility = Visibility.Visible;
-            }
         }
 
         private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(Password.Password))
-            {
                 PasswordPlaceholder.Visibility = Visibility.Visible;
-            }
         }
 
         private void Placeholder_MouseDown(object sender, MouseButtonEventArgs e)
@@ -137,9 +159,7 @@ namespace LangLang
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (PasswordPlaceholder != null)
-            {
                 PasswordPlaceholder.Visibility = string.IsNullOrEmpty(Password.Password) ? Visibility.Visible : Visibility.Collapsed;
-            }
         }
     }
 }
