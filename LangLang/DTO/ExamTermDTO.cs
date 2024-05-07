@@ -144,11 +144,11 @@ namespace LangLang.DTO
                 switch (columnName)
                 {
                     case "ExamDate":
-                        if (ExamDate <= DateTime.Today)
+                        if (ExamDate != null && ExamDate <= DateTime.Today)
                             return "Exam date cannot be in the past";
                         break;
                     case "StartTime":
-                        if (!_TimeRegex.IsMatch(ExamTime))
+                        if (ExamTime != null && !_TimeRegex.IsMatch(ExamTime))
                             return "Format is not good. Try again.";
                         break;
                     case "CurrentlyAttending":
@@ -176,6 +176,7 @@ namespace LangLang.DTO
             {
                 foreach (var property in _validatedProperties)
                 {
+                   
                     if (this[property] != null)
                         return false;
                 }

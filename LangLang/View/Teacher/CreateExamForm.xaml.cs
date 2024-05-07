@@ -101,23 +101,20 @@ namespace LangLang.View.Teacher
                 {
                     MessageBox.Show("Invalid language and level format.");
                 }
-                FindCourseIdForExam(lang, lvl);
-            }
-        }
-        private void FindCourseIdForExam(Language lang, LanguageLevel lvl)
-        {
-            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-            List<Course> courses = teacherController.GetAvailableCourses(teacher);
+                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
-            foreach (Course course in courses)
-            {
-                if (course.Language == lang && course.Level == lvl)
+                foreach (Course course in courses)
                 {
-                    ExamTerm.CourseID = course.Id;
-                    break;
+                    if (course.Language == lang && course.Level == lvl)
+                    {
+                        ExamTerm.CourseID = course.Id;
+                        break;
+                    }
                 }
             }
         }
+        
         private void PickDataFromDatePicker()
         {
             if (dpExamDate.SelectedDate.HasValue && !string.IsNullOrWhiteSpace(txtExamTime.Text))
