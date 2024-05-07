@@ -196,6 +196,26 @@ namespace LangLang.Controller
             return true;
 
         }
+        public bool ValidateExamTimeslot(ExamTerm exam, Teacher teacher)
+        {
+            bool isOverlap = CheckExamOverlap(exam, teacher);
+            if (!isOverlap)
+                return isOverlap;
+            return true;
+        }
+        private bool CheckExamOverlap(ExamTerm exam, Teacher teacher)
+        {
+            bool isSameTeacherCourseOverlap = _teachers.CheckTeacherExamOverlapsCourses(exam, teacher);
+            if (isSameTeacherCourseOverlap)
+                return false;
+
+            bool isSameTeacherExamOverlap = _teachers.CheckTeacherExamsOverlap(exam, teacher);
+            if (isSameTeacherExamOverlap)
+                return false;
+
+            return true;
+
+        }
 
         public void DeleteCourse(int courseId)
         {

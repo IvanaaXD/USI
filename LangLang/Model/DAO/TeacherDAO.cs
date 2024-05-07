@@ -498,5 +498,62 @@ namespace LangLang.Model.DAO
 
             return false;
         }
+        public bool CheckTeacherExamOverlapsCourses(ExamTerm examTerm, Teacher teacher)
+        {
+            int courseDurationInMinutes = 90;
+            int examDurationInMinutes = 240;
+
+            DateTime examStartTime = examTerm.ExamTime;
+            DateTime examEndTime = examStartTime.AddMinutes(examDurationInMinutes);
+
+            List<Course> teacherCourses = GetAvailableCourses(teacher);
+            foreach (Course course in teacherCourses)
+            {
+                if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
+                {
+                    continue;
+                }
+                DateTime courseStartTime = course.StartDate;
+                DateTime courseEndTime = courseStartTime.AddMinutes(courseDurationInMinutes);
+
+                DateTime maxStartTime = courseStartTime > examStartTime ? courseStartTime : examStartTime;
+                DateTime minEndTime = courseEndTime < examEndTime ? courseEndTime : examEndTime;
+
+                if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
+                    (maxStartTime < minEndTime))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool CheckTeacherExamsOverlap(ExamTerm examTerm, Teacher teacher)
+        {
+            int examDurationInMinutes = 240;
+
+            DateTime examStartTime = examTerm.ExamTime;
+            DateTime examEndTime = examStartTime.AddMinutes(examDurationInMinutes);
+
+            List<ExamTerm> teacherExams = GetAvailableExamTerms(teacher);
+            foreach (ExamTerm secondExam in teacherExams)
+            {
+                if (examTerm.ExamID == secondExam.ExamID)
+                {
+                    continue;
+                }
+                DateTime secondExamStartTime = secondExam.ExamTime;
+                DateTime secondExamEndTime = secondExamStartTime.AddMinutes(examDurationInMinutes);
+
+                DateTime maxStartTime = examStartTime > secondExamStartTime ? examStartTime : secondExamStartTime;
+                DateTime minEndTime = examEndTime < secondExamEndTime ? examEndTime : secondExamEndTime;
+
+                if ((examStartTime == secondExamStartTime && examEndTime == secondExamEndTime) ||
+                    (maxStartTime < minEndTime))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
