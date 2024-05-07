@@ -46,7 +46,6 @@ namespace LangLang.Model.Enums
 
     public enum TypeOfMessage
     {
-        EnterCourseRequest,
         AcceptEnterCourseRequestMessage,
         DenyEnterCourseRequestMessage,
 
@@ -54,9 +53,8 @@ namespace LangLang.Model.Enums
         AcceptQuitCourseRequestMessage,
         DenyQuitCourseRequestMessage,
 
-        QuitEnteringCourseRequest,
-
         PenaltyPointMessage,
+        TeacherGradeStudentMessage,
         NULL
     }
 }

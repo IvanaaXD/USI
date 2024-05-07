@@ -41,17 +41,29 @@ namespace LangLang.Model.DAO
             return mail;
         }
 
-        /*public Mail? UpdateMail(Mail mail)
+        public Mail? UpdateMail(Mail mail)
         {
             Mail? oldMail = GetMailById(mail.Id);
             if (oldMail == null) return null;
 
-            // update
+            oldMail.Sender = mail.Sender;
+            oldMail.Receiver = mail.Receiver;
+            oldMail.CourseId = mail.CourseId;
+            oldMail.TypeOfMessage = mail.TypeOfMessage;
+            oldMail.DateOfMessage = mail.DateOfMessage;
+            oldMail.Message = mail.Message;
+            oldMail.Answered = mail.Answered;
 
             _storage.Save(_mails);
             NotifyObservers();
             return oldMail;
-        }*/
+        }
+
+        public void SetMailToAnswered(Mail mail)
+        {
+            mail.Answered = true;
+            UpdateMail(mail);
+        }
 
         public Mail? RemoveMail(int id)
         {
@@ -71,13 +83,13 @@ namespace LangLang.Model.DAO
         {
             return _mails;
         }
-        public List<Mail> GetSentMails(Teacher teacher, int courseId)
+        public List<Mail> GetSentMails(Student student)
         {
             List<Mail> filteredMails = new List<Mail>();
 
             foreach (Mail mail in _mails)
             {
-                if (mail.Sender == teacher.Email)
+                if (mail.Sender == student.Email)
                 {
                     filteredMails.Add(mail);
                 }
@@ -85,18 +97,36 @@ namespace LangLang.Model.DAO
             return filteredMails;
         }
 
-        public List<Mail> GetReceivedMails(Teacher teacher, int courseId)
+        public List<Mail> GetReceivedMails(Student student)
         {
             List<Mail> filteredMails = new List<Mail>();
 
             foreach (Mail mail in _mails)
             {
-                if (mail.Receiver == teacher.Email)
+                if (mail.Receiver == student.Email)
                 {
                     filteredMails.Add(mail);
                 }
             }
             return filteredMails;
+        }
+        public List<Mail> GetUnreadReceivedMails(Student student)
+        {
+            List<Mail> filteredMails = new List<Mail>();
+
+            foreach (Mail mail in _mails)
+            {
+                if (mail.Receiver == student.Email && mail.Answered == false)
+                {
+                    filteredMails.Add(mail);
+                }
+            }
+            return filteredMails;
+        }
+
+        public bool IsCompletedCourseMailReceived(Student student)
+        {
+            return true;
         }
         public Mail PrepareQuitCourseMail(string senderEmail, string receiverEmail, int courseId)
         {
