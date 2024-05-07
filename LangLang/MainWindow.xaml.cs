@@ -32,19 +32,7 @@ namespace LangLang
             string email = Email.Text; 
             string password = Password.Password;
 
-            if (HasStudentLoggedIn(email, password))
-            {
-                this.Close();
-                return;
-            }
-
-            if (HasTeacherLoggedIn(email, password))
-            {
-                this.Close();
-                return;
-            }
-
-            if (HasDirectorLoggedIn(email, password))
+            if (HasStudentLoggedIn(email, password) || HasTeacherLoggedIn(email, password) || HasDirectorLoggedIn(email, password))
             {
                 this.Close();
                 return;
@@ -57,16 +45,19 @@ namespace LangLang
         {
             foreach (Student student in studentController.GetAllStudents())
             {
-                if (student.Email == email && student.Password == password && student.ActiveCourseId != -10)
+                if (student.Email == email && student.Password == password)
                 {
-                    StudentForm welcomePage = new StudentForm(student.Id, studentController);
-                    welcomePage.Show();
-                    return true;
-                }
-                else if (student.ActiveCourseId == -10)
-                {
-                    MessageBox.Show("Your account has been deactivated.");
-                    return false;
+                    if (student.ActiveCourseId != -10)
+                    {
+                        StudentForm welcomePage = new StudentForm(student.Id, studentController);
+                        welcomePage.Show();
+                        return true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Your account has been deactivated.");
+                        return false;
+                    }
                 }
             }
             return false;
