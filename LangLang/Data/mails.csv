@@ -1,13 +1,6 @@
-2|janko@gmail.com|marina@gmail.com|4|AcceptEnterCourseRequestMessage|2000-04-26|You've been accepted to the course|True
-3|janko@gmail.com|lena@gmail.com|10|AcceptEnterCourseRequestMessage|2024-05-04|You have been accepted to course English B1|False
-4|janko@gmail.com|marina@gmail.com|10|AcceptEnterCourseRequestMessage|2024-05-04|You have been accepted to course English B1|True
-5|janko@gmail.com|lena@gmail.com|10|DenyEnterCourseRequestMessage|2024-05-04|You have been rejected from course English B1. Reason: awef7duiojkIOUJJKOWEFDSFJIOANKLWEIOAKLWEFPNCWMICPOJWEAKJMCOQWJ|False
-6|janko@gmail.com|safa@ffds.fds|4|PenaltyPointMessage|2024-05-04|You have gotten a penalty point from course English B1. Reason: Student didn't do homework.|False
-7|janko@gmail.com|safa@ffds.fds|4|PenaltyPointMessage|2024-05-04|You have gotten a penalty point from course English B1. Reason: Student didn't attend a course class.|False
-8|janko@gmail.com|safa@ffds.fds|4|PenaltyPointMessage|2024-05-05|You have gotten a penalty point from course English B1. Reason: Student is bothering other students during class.|False
-9|janko@gmail.com|marina@gmail.com|10|TeacherGradeStudentMessage|2024-05-05|You have been accepted to course English B1|True
-10|marina@gmail.com|janko@gmail.com|10|QuitCourseRequest|2024-05-05|I don't have time to attend classes|True
-11|ana@gmail.com|janko@gmail.com|10|QuitCourseRequest|2024-05-05|I don't have time to attend classes|True
-12|marina@gmail.com|maja@gmail.com|4|QuitCourseRequest|2024-05-07|hvm |False
-13|janko@gmail.com|safa@ffds.fds|4|TeacherGradeStudentMessage|2024-05-07|Your final grade from course English B1 is 1|False
-14|janko@gmail.com|marina@gmail.com|4|TeacherGradeStudentMessage|2024-05-07|Your final grade from course English B1 is 10|True
+0|janko@gmail.com|marina@gmail.com|3|AcceptEnterCourseRequestMessage|2024-05-10|You have been accepted to course Japanese A1|True
+1|marina@gmail.com|janko@gmail.com|3|QuitCourseRequest|2024-05-10|razlog|True
+2|janko@gmail.com|marina@gmail.com|3|TeacherGradeStudentMessage|2024-05-10|Your final grade from course Japanese A1 is 10|True
+3|janko@gmail.com|marina@gmail.com|9|AcceptEnterCourseRequestMessage|2024-05-10|You have been accepted to course English B1|True
+4|marina@gmail.com|janko@gmail.com|9|QuitCourseRequest|2024-05-10|razlog|True
+5|janko@gmail.com|marina@gmail.com|9|TeacherGradeStudentMessage|2024-05-10|Your final grade from course English B1 is 10|True

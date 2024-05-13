@@ -117,10 +117,10 @@ namespace LangLang.View.Student
 
         private void UpdateAccount_Click(object sender, RoutedEventArgs e)
         {
-            LangLang.Model.Student student = studentController.GetStudentById(studentId);
-            if (student.ActiveCourseId != -1)
+            Model.Student student = studentController.GetStudentById(studentId);
+            if (student.ActiveCourseId != -1 || student.RegisteredExamsIds.Count != 0)
             {
-                MessageBox.Show("The student attends the course and cannot change the data.");
+                MessageBox.Show("The student cannot change the data.");
             }
             else
             {
