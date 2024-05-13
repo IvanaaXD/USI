@@ -52,13 +52,13 @@ namespace LangLang
                         studentController.ProcessPenaltyPoints();
                         StudentForm welcomePage = new StudentForm(student.Id, studentController);
                         welcomePage.Show();
-                        return true;
                     }
                     else
                     {
                         MessageBox.Show("Your account has been deactivated.");
-                        return false;
                     }
+
+                    return true;
                 }
             }
             return false;
