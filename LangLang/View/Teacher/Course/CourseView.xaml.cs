@@ -156,7 +156,7 @@ namespace LangLang.View.Teacher
             ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
             var receivedMails = teacherController.GetReceivedCourseMails(teacher, course.Id);
-            var sentMails = teacherController.GetSentCourseMails(teacher, course.Id);
+            var sentMails = teacherController.GetSentCourseMail(teacher, course.Id);
 
             if (receivedMails != null)
                 foreach (Mail mail in receivedMails)

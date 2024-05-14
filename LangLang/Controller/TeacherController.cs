@@ -44,7 +44,7 @@ namespace LangLang.Controller
         {
             return _teachers.GetAllMail();
         }
-        public List<Mail> GetSentCourseMails(Teacher teacher, int courseId)
+        public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
         {
             return _teachers.GetSentCourseMail(teacher, courseId);
         }
@@ -253,6 +253,14 @@ namespace LangLang.Controller
         public bool IsStudentAccepted(Student student, int courseId)
         {
             return _teachers.IsStudentAccepted(student, courseId);
+        }
+        public List<ExamTerm> GetAvailableExamTerms(Teacher teacher)
+        {
+            return _teachers.GetAvailableExamTerms(teacher);
+        }
+        public List<Course>? GetCoursesForDisplay(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)
+        {
+            return _teachers.GetCoursesForDisplay(availableCourses, selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
         }
     }
 }
