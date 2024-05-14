@@ -207,37 +207,22 @@ namespace LangLang.View.Teacher
         }
         private void CheckButtons()
         {
+            ConfirmRequest.Visibility = Visibility.Collapsed;
+            RejectRequest.Visibility = Visibility.Collapsed;
+            PenaltyPoint.Visibility = Visibility.Collapsed;
+            Mark.Visibility = Visibility.Collapsed;
+
             if (!HasStudentAcceptingPeriodEnded())
             {
-                PenaltyPoint.Visibility = Visibility.Collapsed;
-                Mark.Visibility = Visibility.Collapsed;
+                ConfirmRequest.Visibility = Visibility.Visible;
+                RejectRequest.Visibility = Visibility.Visible;
             }
-            else if (HasStudentAcceptingPeriodEnded() && !HasCourseStarted())
-            {
-                ConfirmRequest.Visibility = Visibility.Collapsed;
-                RejectRequest.Visibility = Visibility.Collapsed;
-                PenaltyPoint.Visibility = Visibility.Collapsed;
-                Mark.Visibility = Visibility.Collapsed;
-            }
+
             else if (HasCourseStarted() && !HasGradingPeriodStarted())
-            {
-                ConfirmRequest.Visibility = Visibility.Collapsed;
-                RejectRequest.Visibility = Visibility.Collapsed;
-                Mark.Visibility = Visibility.Collapsed;
-            }
+                PenaltyPoint.Visibility = Visibility.Visible;
+
             else if (HasGradingPeriodStarted() && !HasCourseFinished())
-            {
-                ConfirmRequest.Visibility = Visibility.Collapsed;
-                RejectRequest.Visibility = Visibility.Collapsed;
-                PenaltyPoint.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ConfirmRequest.Visibility = Visibility.Collapsed;
-                RejectRequest.Visibility = Visibility.Collapsed;
-                PenaltyPoint.Visibility = Visibility.Collapsed;
-                Mark.Visibility = Visibility.Collapsed;
-            }
+                Mark.Visibility = Visibility.Visible;
         }
 
         private bool HasStudentAcceptingPeriodEnded()
@@ -276,10 +261,10 @@ namespace LangLang.View.Teacher
             {
                 StudentDTO selected = SelectedStudent;
                 Model.Student student = studentController.GetStudentById(selected.id);
+
                 if (SelectedStudent.AddedToCourse == true)
-                {
                     MessageBox.Show("Student has been added to the course already.");
-                }
+
                 else
                 {
                     teacherController.IncrementCourseCurrentlyEnrolled(course.Id);

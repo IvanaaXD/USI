@@ -156,9 +156,7 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("Cannot delete a course that starts in less than a week.");
                 else
                 {
-                    Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                    teacher.CoursesId.RemoveAll(x => x == SelectedCourse.Id);
-                    directorController.Update(teacher);
+                    directorController.RemoveCourseFromList(teacherId, SelectedCourse.Id);
                     teacherController.DeleteCourse(SelectedCourse.Id);
                 }
             }
@@ -180,9 +178,9 @@ namespace LangLang.View.Teacher
             courseOnlineCheckBox.IsChecked = false;
         }
 
-        private List<Course> GetFinalDisplayCourses(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration)
+        private List<Course>? GetFinalDisplayCourses(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration)
         {
-            List<Course> finalCourses = new List<Course>();
+            List<Course> finalCourses = new();
 
             if (isSearchCourseClicked)
             {
@@ -193,23 +191,19 @@ namespace LangLang.View.Teacher
                     foreach (Course teacherCourse in availableCourses)
                     {
                         if (teacherCourse.Id == course.Id)
-                        {
                             finalCourses.Add(course);
-                        }
                     }
                 }
             }
             else
             {
                 foreach (Course course in availableCourses)
-                {
                     finalCourses.Add(course);
-                }
             }
             return finalCourses;
         }
 
-        private List<Course> GetFilteredCourses()
+        private List<Course>? GetFilteredCourses()
         {
             Language? selectedLanguage = (Language?)courseLanguageComboBox.SelectedItem;
             LanguageLevel? selectedLevel = (LanguageLevel?)courseLevelComboBox.SelectedItem;
@@ -223,7 +217,7 @@ namespace LangLang.View.Teacher
                 }
             }
 
-            LangLang.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
 
             List<Course> availableCourses = teacherController.GetAvailableCourses(teacher);
 

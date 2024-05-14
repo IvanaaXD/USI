@@ -60,10 +60,13 @@ namespace LangLang.View.Teacher
                 Mail.TypeOfMessage = TypeOfMessage.DenyEnterCourseRequestMessage;
                 Mail.DateOfMessage = DateTime.Now;
                 Mail.CourseId = course.Id;
-                Mail.Message ="You have been rejected from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: "+mailBodyTextBlock.Text;
+                Mail.Message = "You have been rejected from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: " + mailBodyTextBlock.Text;
                 Mail.Answered = false;
 
                 teacherController.SendMail(Mail.ToMail());
+
+                student.RegisteredCoursesIds.Remove(course.Id);
+                studentController.Update(student);
 
                 Close();
             }
@@ -71,7 +74,7 @@ namespace LangLang.View.Teacher
             {
                 MessageBox.Show("Please name the reason for rejecting the student from the course.");
             }
-            
+
         }
     }
 }

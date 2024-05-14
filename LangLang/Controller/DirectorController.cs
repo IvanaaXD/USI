@@ -70,5 +70,9 @@ namespace LangLang.Controller
         {
             return _directors.GetTeacherByCourse(courseId);
         }
+        public void RemoveCourseFromList(int teacherId, int courseId)
+        {
+            _directors.RemoveCourseFromList(teacherId, courseId);
+        }
     }
 }
