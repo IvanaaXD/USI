@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LangLang.View.Teacher" xmlns:dto="clr-namespace:LangLang.DTO" d:DataContext="{d:DesignInstance Type=dto:CourseDTO}"
         mc:Ignorable="d"
         WindowStartupLocation = "CenterScreen"
-        Title="AddExamTerm" Height="450" Width="800">
+        Title="AddExamTerm" Height="400" Width="400">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
