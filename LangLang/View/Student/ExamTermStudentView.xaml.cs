@@ -40,14 +40,22 @@ namespace LangLang.View.Student
             Course course = teacherController.GetCourseById(examTerm.CourseID);
             ExamTermGrade grade = teacherController.GetExamTermGradeByStudentExam(student.Id, examTerm.ExamID);
 
-            examTermLanguageTextBlock.Text = $"{course.Language}";
-            examTermLevelTextBlock.Text = $"{course.Level}";
-            examTermReadingPointsTextBlock.Text = $"{grade.ReadingPoints}";
-            examTermSpeakingPointsTextBlock.Text = $"{grade.SpeakingPoints}";
-            examTermWritingPointsTextBlock.Text = $"{grade.WritingPoints}";
-            examTermListeningPointsTextBlock.Text = $"{grade.ListeningPoints}";
-            examTermGradeTextBlock.Text = $"{grade.Value}";
-        }
+            if (grade != null)
+            {
+                examTermReadingPointsTextBlock.Text = $"{grade.ReadingPoints}";
+                examTermSpeakingPointsTextBlock.Text = $"{grade.SpeakingPoints}";
+                examTermWritingPointsTextBlock.Text = $"{grade.WritingPoints}";
+                examTermListeningPointsTextBlock.Text = $"{grade.ListeningPoints}";
+                examTermGradeTextBlock.Text = $"{grade.Value}";
+            }
+            else
+            {
+                examTermReadingPointsTextBlock.Text = "/";
+                examTermSpeakingPointsTextBlock.Text = "/";
+                examTermWritingPointsTextBlock.Text = "/";
+                examTermListeningPointsTextBlock.Text = "/";
+                examTermGradeTextBlock.Text = "not graded yet";
+            }
  
         private void resultClose_Click(object sender, RoutedEventArgs e)
         {
