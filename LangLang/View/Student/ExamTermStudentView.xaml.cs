@@ -18,12 +18,12 @@ namespace LangLang.View.Student
     /// </summary>
     public partial class ExamTermStudentView : Window
     {
-      
+
         private readonly ExamTerm examTerm;
         private readonly Model.Student student;
         private readonly TeacherController teacherController;
 
-        public ExamTermStudentView(ExamTerm examTerm,Model.Student student, TeacherController teacherController, StudentsController studentController)
+        public ExamTermStudentView(ExamTerm examTerm, Model.Student student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             this.examTerm = examTerm;
@@ -33,13 +33,15 @@ namespace LangLang.View.Student
             DataContext = this;
 
             AddExamTermInfo();
-           
+
         }
         private void AddExamTermInfo()
         {
             Course course = teacherController.GetCourseById(examTerm.CourseID);
             ExamTermGrade grade = teacherController.GetExamTermGradeByStudentExam(student.Id, examTerm.ExamID);
 
+            examTermLanguageTextBlock.Text = $"{course.Language}";
+            examTermLevelTextBlock.Text = $"{course.Level}";
             if (grade != null)
             {
                 examTermReadingPointsTextBlock.Text = $"{grade.ReadingPoints}";
@@ -56,7 +58,9 @@ namespace LangLang.View.Student
                 examTermListeningPointsTextBlock.Text = "/";
                 examTermGradeTextBlock.Text = "not graded yet";
             }
- 
+
+            
+        }
         private void resultClose_Click(object sender, RoutedEventArgs e)
         {
             Close();
