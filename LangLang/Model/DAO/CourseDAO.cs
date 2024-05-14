@@ -11,40 +11,24 @@ using LangLang.Storage;
 
 namespace LangLang.Model.DAO
 {
-    public class TeacherDAO : Subject
+    public class CourseDAO : Subject
     {
         private readonly List<Course> _courses;
         private readonly Storage<Course> _courseStorage;
-        private readonly List<ExamTerm> _examTerms;
-        private readonly Storage<ExamTerm> _examTermsStorage;
-        private readonly List<Mail> _mails;
-        private readonly Storage<Mail> _mailsStorage;
 
-        public TeacherDAO()
+        private readonly TeacherController teacherController;
+
+        public CourseDAO(TeacherController teacherController)
         {
             _courseStorage = new Storage<Course>("course.csv");
             _courses = _courseStorage.Load();
-            _examTermsStorage = new Storage<ExamTerm>("exam.csv");
-            _examTerms = _examTermsStorage.Load();
-            _mailsStorage = new Storage<Mail>("mails.csv");
-            _mails = _mailsStorage.Load();
+            this.teacherController = teacherController;
         }
 
         private int GenerateCourseId()
         {
             if (_courses.Count == 0) return 0;
             return _courses.Last().Id + 1;
-        }
-
-        private int GenerateExamId()
-        {
-            if (_examTerms.Count == 0) return 0;
-            return _examTerms.Last().ExamID + 1;
-        }
-        private int GenerateMailId()
-        {
-            if (_mails.Count == 0) return 0;
-            return _mails.Last().Id + 1;
         }
 
         public Course AddCourse(Course course)
@@ -54,31 +38,6 @@ namespace LangLang.Model.DAO
             _courseStorage.Save(_courses);
             NotifyObservers();
             return course;
-        }
-
-        public ExamTerm AddExamTerm(ExamTerm examTerm)
-        {
-            examTerm.ExamID = GenerateExamId();
-            _examTerms.Add(examTerm);
-            _examTermsStorage.Save(_examTerms);
-            NotifyObservers();
-            return examTerm;
-        }
-        public Mail SendMail(Mail mail)
-        {
-            mail.Id = GenerateMailId();
-            _mails.Add(mail);
-            _mailsStorage.Save(_mails);
-            NotifyObservers();
-            return mail;
-        }
-        public Mail AnswerMail(int mailId)
-        {
-            Mail? mail = GetMailById(mailId);
-            mail.Answered = true;
-            _mailsStorage.Save(_mails);
-            NotifyObservers();
-            return mail;
         }
 
         public Course? UpdateCourse(Course course)
@@ -101,20 +60,6 @@ namespace LangLang.Model.DAO
             return oldCourse;
         }
 
-        public ExamTerm? UpdateExamTerm(ExamTerm examTerm)
-        {
-            ExamTerm? oldExamTerm = GetExamTermById(examTerm.ExamID);
-            if (oldExamTerm == null) return null;
-
-            oldExamTerm.CourseID = examTerm.CourseID;
-            oldExamTerm.ExamTime = examTerm.ExamTime;
-            oldExamTerm.MaxStudents = examTerm.MaxStudents;
-
-            _examTermsStorage.Save(_examTerms);
-            NotifyObservers();
-            return oldExamTerm;
-        }
-
         public Course? RemoveCourse(int id)
         {
             Course? course = GetCourseById(id);
@@ -123,37 +68,12 @@ namespace LangLang.Model.DAO
             _courses.Remove(course);
             foreach (int examTermId in course.ExamTerms)
             {
-                RemoveExamTerm(examTermId);
+                teacherController.DeleteExamTerm(examTermId);
             }
 
             _courseStorage.Save(_courses);
             NotifyObservers();
             return course;
-        }
-        public Mail? RemoveMail(int id)
-        {
-            Mail? mail = GetMailById(id);
-            if (mail == null) return null;
-
-            _mails.Remove(mail);
-            _mailsStorage.Save(_mails);
-            NotifyObservers();
-            return mail;
-        }
-        public ExamTerm? RemoveExamTerm(int id)
-        {
-            ExamTerm? examTerm = GetExamTermById(id);
-            if (examTerm == null) return null;
-
-            int courseId = examTerm.CourseID;
-            Course? course = GetCourseById(courseId);
-            course.ExamTerms.Remove(id);
-            UpdateCourse(course);
-
-            _examTerms.Remove(examTerm);
-            _examTermsStorage.Save(_examTerms);
-            NotifyObservers();
-            return examTerm;
         }
 
         public Course? GetCourseById(int id)
@@ -161,75 +81,11 @@ namespace LangLang.Model.DAO
             return _courses.Find(v => v.Id == id);
         }
 
-        public ExamTerm GetExamTermById(int id)
-
-        {
-            return _examTerms.Find(et => et.ExamID == id);
-        }
-        public Mail? GetMailById(int id)
-        {
-            return _mails.Find(v => v.Id == id);
-        }
         public List<Course> GetAllCourses()
         {
             return _courses;
         }
 
-        public List<ExamTerm> GetAllExamTerms()
-        {
-            return _examTerms;
-        }
-
-        public Course GetCourseByExamId(int id)
-        {
-            Course course = null;
-            List<ExamTerm> examTerms = GetAllExamTerms();
-            foreach (ExamTerm examTerm in examTerms)
-            {
-                if (examTerm.ExamID == id)
-                {
-
-                    course = GetCourseById(examTerm.CourseID);
-                    break;
-                }
-            }
-            return course;
-        }
-
-
-        public List<Mail> GetAllMail()
-        {
-            return _mails;
-        }
-
-
-        public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
-        {
-            List<Mail> filteredMails = new List<Mail>();
-
-            foreach (Mail mail in _mails)
-            {
-                if (mail.Sender == teacher.Email && mail.CourseId == courseId)
-                {
-                    filteredMails.Add(mail);
-                }
-            }
-            return filteredMails;
-        }
-
-        public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
-        {
-            List<Mail> filteredMails = new List<Mail>();
-
-            foreach (Mail mail in _mails)
-            {
-                if (mail.Receiver == teacher.Email && mail.CourseId == courseId)
-                {
-                    filteredMails.Add(mail);
-                }
-            }
-            return filteredMails;
-        }
 
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
@@ -248,34 +104,6 @@ namespace LangLang.Model.DAO
             return availableCourses;
         }
 
-        public List<ExamTerm> GetAvailableExamTerms(Teacher teacher)
-        {
-            List<ExamTerm> allExamTerms = GetAllExamTerms();
-            List<Course> allTeacherCourses = GetAvailableCourses(teacher);
-
-            List<ExamTerm> availableExamTerms = new();
-            List<int> examTermIds = new();
-
-            foreach (Course course in allTeacherCourses)
-            {
-                foreach (int examId in course.ExamTerms)
-                {
-                    examTermIds.Add(examId);
-                }
-            }
-
-            foreach (ExamTerm examTerm in allExamTerms)
-            {
-                if (examTermIds.Contains(examTerm.ExamID))
-                {
-                    availableExamTerms.Add(examTerm);
-                }
-            }
-
-            return availableExamTerms;
-        }
-
-
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
             var filteredCourses = _courses.Where(course =>
@@ -288,30 +116,6 @@ namespace LangLang.Model.DAO
 
             return filteredCourses;
         }
-
-        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
-        {
-            List<ExamTerm> allExams = GetAllExamTerms();
-
-            var filteredExams = new List<ExamTerm>();
-
-            foreach (var exam in allExams)
-            {
-                Course course = GetCourseById(exam.CourseID);
-
-                bool matchesLanguage = !language.HasValue || course.Language == language;
-                bool matchesLevel = !level.HasValue || course.Level == level;
-                bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date >= examDate.Value.Date;
-
-                if (matchesLanguage && matchesLevel && matchesExamDate)
-                {
-                    filteredExams.Add(exam);
-                }
-            }
-
-            return filteredExams;
-        }
-
         public String FindLanguageAndLevel(int courseID)
         {
             String res = "";
@@ -340,21 +144,6 @@ namespace LangLang.Model.DAO
             Course course = GetCourseById(courseId);
             --course.CurrentlyEnrolled;
             UpdateCourse(course);
-        }
-        public void DecrementExamTermCurrentlyAttending(int examTermId)
-        {
-            ExamTerm examTerm = GetExamTermById(examTermId);
-            --examTerm.CurrentlyAttending;
-            UpdateExamTerm(examTerm);
-        }
-
-        public ExamTerm ConfirmExamTerm(int examTermId)
-        {
-            ExamTerm examTerm = GetExamTermById(examTermId);
-            examTerm.Confirmed = true;
-            _examTermsStorage.Save(_examTerms);
-            NotifyObservers();
-            return examTerm;
         }
 
         public bool CheckTeacherCoursesOverlap(Course course, Teacher teacher)
@@ -396,7 +185,7 @@ namespace LangLang.Model.DAO
             DateTime courseStartTime = course.StartDate; // start of first ever course session 
             DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes); // end of last ever course session
 
-            List<ExamTerm> teacherExams = GetAvailableExamTerms(teacher);
+            List<ExamTerm> teacherExams = teacherController.GetAvailableExamTerms(teacher);
             foreach (ExamTerm examTerm in teacherExams)
             {
                 if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
@@ -510,66 +299,10 @@ namespace LangLang.Model.DAO
 
             return false;
         }
-        public bool CheckTeacherExamOverlapsCourses(ExamTerm examTerm, Teacher teacher)
-        {
-            int courseDurationInMinutes = 90;
-            int examDurationInMinutes = 240;
-
-            DateTime examStartTime = examTerm.ExamTime;
-            DateTime examEndTime = examStartTime.AddMinutes(examDurationInMinutes);
-
-            List<Course> teacherCourses = GetAvailableCourses(teacher);
-            foreach (Course course in teacherCourses)
-            {
-                if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
-                {
-                    continue;
-                }
-                DateTime courseStartTime = course.StartDate;
-                DateTime courseEndTime = courseStartTime.AddMinutes(courseDurationInMinutes);
-
-                DateTime maxStartTime = courseStartTime > examStartTime ? courseStartTime : examStartTime;
-                DateTime minEndTime = courseEndTime < examEndTime ? courseEndTime : examEndTime;
-
-                if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
-                    (maxStartTime < minEndTime))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public bool CheckTeacherExamsOverlap(ExamTerm examTerm, Teacher teacher)
-        {
-            int examDurationInMinutes = 240;
-
-            DateTime examStartTime = examTerm.ExamTime;
-            DateTime examEndTime = examStartTime.AddMinutes(examDurationInMinutes);
-
-            List<ExamTerm> teacherExams = GetAvailableExamTerms(teacher);
-            foreach (ExamTerm secondExam in teacherExams)
-            {
-                if (examTerm.ExamID == secondExam.ExamID)
-                {
-                    continue;
-                }
-                DateTime secondExamStartTime = secondExam.ExamTime;
-                DateTime secondExamEndTime = secondExamStartTime.AddMinutes(examDurationInMinutes);
-
-                DateTime maxStartTime = examStartTime > secondExamStartTime ? examStartTime : secondExamStartTime;
-                DateTime minEndTime = examEndTime < secondExamEndTime ? examEndTime : secondExamEndTime;
-
-                if ((examStartTime == secondExamStartTime && examEndTime == secondExamEndTime) ||
-                    (maxStartTime < minEndTime))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        
         public bool IsStudentAccepted(Student student, int courseId)
         {
-            List<Mail> sentMail = GetAllMail();
+            List<Mail> sentMail = teacherController.GetAllMail();
             foreach (Mail mail in sentMail)
             {
                 if (mail.Receiver == student.Email && mail.CourseId == courseId && mail.TypeOfMessage == TypeOfMessage.AcceptEnterCourseRequestMessage)
@@ -607,7 +340,7 @@ namespace LangLang.Model.DAO
         public List<Course> GetCoursesLastYear()
         {
             List<Course> courses = new List<Course>();
-            foreach(Course course in GetAllCourses())
+            foreach (Course course in GetAllCourses())
                 if (IsCourseLastYear(course) && !courses.Contains(course))
                     courses.Add(course);
             return courses;
@@ -621,7 +354,7 @@ namespace LangLang.Model.DAO
             if (teacher == null) return 0;
 
             int penaltyPoints = 0;
-            foreach (Mail mail in GetSentCourseMail(teacher, courseId))
+            foreach (Mail mail in teacherController.GetSentCourseMail(teacher, courseId))
                 if (mail.TypeOfMessage.Equals(TypeOfMessage.PenaltyPointMessage))
                     ++penaltyPoints;
             return penaltyPoints;
@@ -630,25 +363,9 @@ namespace LangLang.Model.DAO
         public Dictionary<Course, int> GetPenaltyPointsLastYearPerCourse()
         {
             Dictionary<Course, int> coursePenaltyPoints = new Dictionary<Course, int>();
-            foreach(Course course in GetCoursesLastYear())
+            foreach (Course course in GetCoursesLastYear())
                 coursePenaltyPoints[course] = GetCoursePenaltyPoints(course.Id);
             return coursePenaltyPoints;
-        }
-        public List<Course>? GetCoursesForDisplay(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)
-        {
-            List<Course> finalCourses = new();
-
-            List<Course> allFilteredCourses = FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
-            foreach (Course course in allFilteredCourses)
-            {
-                foreach (Course teacherCourse in availableCourses)
-                {
-                    if (teacherCourse.Id == course.Id)
-                        finalCourses.Add(course);
-                }
-            }
-
-            return finalCourses;
         }
     }
 }
