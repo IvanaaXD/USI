@@ -442,6 +442,19 @@ namespace LangLang.Model.DAO
             }
             return false;
         }
+        public (DateTime, DateTime) GetCourseDates(Course course, Course secondCourse)
+        {
+            DateTime courseStartTime = course.StartDate;
+            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(90);
+
+            DateTime secondCourseStartTime = secondCourse.StartDate;
+            DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(90);
+
+            DateTime maxStartTime = courseStartTime > secondCourseStartTime ? courseStartTime : secondCourseStartTime;
+            DateTime minEndTime = courseEndTime < secondCourseEndTime ? courseEndTime : secondCourseEndTime;
+
+            return (maxStartTime, minEndTime);
+        }
 
         public bool CheckClassroomOverlap(Course course, List<Course> allAvailableCourses, List<ExamTerm> allAvailableExams)
         {
@@ -450,21 +463,17 @@ namespace LangLang.Model.DAO
             int courseDurationInMinutes = 90;
             int examDurationInMinutes = 240;
 
-            DateTime courseStartTime = course.StartDate; // start of first ever course session 
-            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes); // end of last ever course session
+            DateTime courseStartTime = course.StartDate;
+            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
 
             foreach (Course secondCourse in allAvailableCourses)
             {
                 if (secondCourse.IsOnline)
                     continue;
 
-                DateTime secondCourseStartTime = secondCourse.StartDate;
-                DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
+                (DateTime maxStartTime, DateTime minEndTime) = GetCourseDates(course, secondCourse);
 
-                DateTime maxStartTime = courseStartTime > secondCourseStartTime ? courseStartTime : secondCourseStartTime;
-                DateTime minEndTime = courseEndTime < secondCourseEndTime ? courseEndTime : secondCourseEndTime;
-
-                if ((courseStartTime == secondCourseStartTime && courseEndTime == secondCourseEndTime) ||
+                if ((courseStartTime == secondCourse.StartDate && courseEndTime == secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(90)) ||
                     (maxStartTime < minEndTime))
                 {
                     bool isSessionOverlap = CheckSessionOverlap(course, secondCourse);

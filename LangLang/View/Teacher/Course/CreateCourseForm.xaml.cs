@@ -57,9 +57,7 @@ namespace LangLang.View.Teacher
             List<string> levelLanguageStr = new List<string>();
 
             for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
-            {
                 levelLanguageStr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
-            }
 
             languageComboBox.ItemsSource = levelLanguageStr;
 
@@ -100,9 +98,7 @@ namespace LangLang.View.Teacher
                     Course.Level = level;
                 }
                 else
-                {
                     MessageBox.Show("Invalid input format.");
-                }
             }
         }
 

@@ -142,5 +142,11 @@ namespace LangLang.Model.DAO
 
             return null;
         }
+        public void RemoveCourseFromList(int teacherId, int courseId)
+        {
+            Teacher teacher = GetTeacherById(teacherId);
+            teacher.CoursesId.Remove(courseId);
+            UpdateTeacher(teacher);
+        }
     }
 }
