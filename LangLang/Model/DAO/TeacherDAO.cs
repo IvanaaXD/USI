@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Input;
+using LangLang.Controller;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -566,6 +569,61 @@ namespace LangLang.Model.DAO
                 }
             }
             return false;
+        }
+        private bool IsDateWithinLastYear(DateTime date)
+        {
+            DateTime todayDate = DateTime.Now;
+            DateTime oneYearAgoDate = DateTime.Now.AddYears(-1);
+
+            return date >= oneYearAgoDate && date <= todayDate;
+        }
+
+        private bool IsCourseYearlong(DateTime courseStartDate, DateTime courseEndDate)
+        {
+            DateTime todayDate = DateTime.Now;
+            DateTime oneYearAgoDate = DateTime.Now.AddYears(-1);
+
+            return courseStartDate < oneYearAgoDate && courseEndDate > todayDate;
+        }
+
+        private bool IsCourseLastYear(Course course)
+        {
+            DateTime courseStartDate = course.StartDate;
+            DateTime courseEndDate = course.StartDate.AddDays(course.Duration * 7);
+
+            return IsDateWithinLastYear(courseStartDate) || IsDateWithinLastYear(courseEndDate) ||
+                   IsCourseYearlong(courseStartDate, courseEndDate);
+
+        }
+        public List<Course> GetCoursesLastYear()
+        {
+            List<Course> courses = new List<Course>();
+            foreach(Course course in GetAllCourses())
+                if (IsCourseLastYear(course) && !courses.Contains(course))
+                    courses.Add(course);
+            return courses;
+        }
+
+        private int GetCoursePenaltyPoints(int courseId)
+        {
+            DirectorController directorController = new DirectorController();
+            Teacher teacher = directorController.GetTeacherByCourse(courseId);
+
+            if (teacher == null) return 0;
+
+            int penaltyPoints = 0;
+            foreach (Mail mail in GetSentCourseMail(teacher, courseId))
+                if (mail.TypeOfMessage.Equals(TypeOfMessage.PenaltyPointMessage))
+                    ++penaltyPoints;
+            return penaltyPoints;
+        }
+
+        public Dictionary<Course, int> GetPenaltyPointsLastYearPerCourse()
+        {
+            Dictionary<Course, int> coursePenaltyPoints = new Dictionary<Course, int>();
+            foreach(Course course in GetCoursesLastYear())
+                coursePenaltyPoints[course] = GetCoursePenaltyPoints(course.Id);
+            return coursePenaltyPoints;
         }
     }
 }
