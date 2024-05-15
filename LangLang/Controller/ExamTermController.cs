@@ -18,7 +18,7 @@ namespace LangLang.Controller
 
         public ExamTermController(TeacherController teacherController)
         {
-            _exams = new ExamTermDAO();
+            _exams = new ExamTermDAO(teacherController);
             _examTermGrades = new ExamTermGradeDAO();
             this.teacherController = teacherController;
         }
