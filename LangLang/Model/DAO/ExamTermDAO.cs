@@ -1,7 +1,10 @@
-﻿using LangLang.Controller;
+﻿using System;
+using System.Linq;
+using LangLang.Controller;
 using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
+using System.Collections.Generic;
 
 namespace LangLang.Model.DAO
 {
@@ -69,7 +72,7 @@ namespace LangLang.Model.DAO
             return filteredExams;
         }
 
-        public String FindLanguageAndLevel(int courseID)
+        public System.String FindLanguageAndLevel(int courseID)
         {
             String res = "";
             Course course = teacherController.GetAllCourses().FirstOrDefault(c => c.Id == courseID);
@@ -99,7 +102,7 @@ namespace LangLang.Model.DAO
             int courseDurationInMinutes = 90;
             int examDurationInMinutes = 240;
 
-            DateTime examStartTime = examTerm.ExamTime;
+            System.DateTime examStartTime = examTerm.ExamTime;
             DateTime examEndTime = examStartTime.AddMinutes(examDurationInMinutes);
 
             List<Course> teacherCourses = teacherController.GetAvailableCourses(teacher);
@@ -124,10 +127,10 @@ namespace LangLang.Model.DAO
         {
             int examDurationInMinutes = 240;
 
-            DateTime examStartTime = examTerm.ExamTime;
+            System.DateTime examStartTime = examTerm.ExamTime;
             DateTime examEndTime = examStartTime.AddMinutes(examDurationInMinutes);
 
-            List<ExamTerm> teacherExams = GetAvailableExamTerms(teacher);
+            List<ExamTerm> teacherExams = teacherController.GetAvailableExamTerms(teacher);
             foreach (ExamTerm secondExam in teacherExams)
             {
                 if (examTerm.ExamID == secondExam.ExamID)
