@@ -279,7 +279,7 @@ namespace LangLang.View.Teacher
             else
             {
                 Course course = teacherController.GetCourseById(SelectedCourse.Id);
-                CourseView courseView = new CourseView(course, directorController.GetTeacherById(this.teacherId), teacherController, studentController);
+                CourseView courseView = new CourseView(course, directorController.GetTeacherById(this.teacherId), mainController);
                 courseView.Show();
             }
         }
