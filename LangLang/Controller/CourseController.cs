@@ -1,10 +1,9 @@
-﻿using LangLang.Model.DAO;
-using LangLang.Model;
+﻿using LangLang.Model;
+using LangLang.Model.DAO;
+using LangLang.Model.Enums;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using LangLang.Model.Enums;
 
 namespace LangLang.Controller
 {
@@ -74,7 +73,7 @@ namespace LangLang.Controller
             return true;
 
         }
-        
+
         public void DeleteCourse(int courseId)
         {
             _courses.RemoveCourse(courseId);
@@ -103,6 +102,48 @@ namespace LangLang.Controller
         public bool IsStudentAccepted(Student student, int courseId)
         {
             return _courses.IsStudentAccepted(student, courseId);
+        }
+        public bool HasStudentAcceptingPeriodEnded(Course course)
+        {
+            return (course.StartDate <= DateTime.Now.AddDays(7));
+        }
+
+        public bool HasCourseStarted(Course course)
+        {
+            return (course.StartDate <= DateTime.Now);
+        }
+
+        public bool HasGradingPeriodStarted(Course course)
+        {
+            return (course.StartDate.AddDays(7 * course.Duration) <= DateTime.Now);
+        }
+
+        public bool HasCourseFinished(Course course, int studentCount)
+        {
+            if (course.StartDate.AddDays(course.Duration * 7) >= DateTime.Now)
+                return false;
+
+            if (studentCount == 0)
+                return true;
+
+            return false;
+        }
+        public List<Student> GetCourseStudents(StudentsController studentController, Course course)
+        {
+            var students = studentController.GetAllStudentsRequestingCourse(course.Id);
+
+            if (HasCourseStarted(course) && !HasCourseFinished(course, GetStudentCount(studentController, course)))
+                students = studentController.GetAllStudentsEnrolledCourse(course.Id);
+
+            else if (HasCourseFinished(course, GetStudentCount(studentController, course)))
+                students = studentController.GetAllStudentsCompletedCourse(course.Id);
+
+            return students;
+        }
+
+        public int GetStudentCount(StudentsController studentController, Course course)
+        {
+            return studentController.GetAllStudentsEnrolledCourse(course.Id).Count;
         }
     }
 }

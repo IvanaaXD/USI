@@ -1,15 +1,12 @@
-﻿using LangLang.Model;
-using LangLang.Controller;
+﻿using LangLang.Controller;
 using LangLang.DTO;
+using LangLang.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Controls;
-using System.Windows.Media;
 using System.ComponentModel;
-using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace LangLang.View.Teacher
 {
@@ -75,13 +72,15 @@ namespace LangLang.View.Teacher
         private readonly Model.Teacher teacher;
         private readonly TeacherController teacherController;
         private readonly StudentsController studentController;
+        private readonly CourseController courseController;
 
-        public CourseView(Course course, Model.Teacher teacher, TeacherController teacherController, StudentsController studentController)
+        public CourseView(Course course, Model.Teacher teacher, MainController mainController)
         {
             InitializeComponent();
             this.course = course;
-            this.teacherController = teacherController;
-            this.studentController = studentController;
+            this.teacherController = mainController.GetTeacherController();
+            this.studentController = mainController.GetStudentController();
+            this.courseController = mainController.GetCourseController();
             this.teacher = teacher;
             MailToSend = new MailDTO();
 
@@ -105,8 +104,6 @@ namespace LangLang.View.Teacher
                 CheckButtons();
                 RefreshMails();
                 RefreshStudents();
-
-
             }
             catch (Exception ex)
             {
@@ -117,30 +114,30 @@ namespace LangLang.View.Teacher
         private void RefreshStudents()
         {
             StudentsTableViewModel.Students.Clear();
-            var students = studentController.GetAllStudentsRequestingCourse(course.Id);
 
-            if (HasCourseStarted() && !HasCourseFinished())
-            {
-                students = studentController.GetAllStudentsEnrolledCourse(course.Id);
-            }
-            else if (HasCourseFinished())
-            {
-                students = studentController.GetAllStudentsCompletedCourse(course.Id);
-            }
+            var students = courseController.GetCourseStudents(studentController, course);
 
             if (students != null)
                 foreach (Model.Student student in students)
                 {
                     StudentDTO dtoStudent = new StudentDTO(student);
                     dtoStudent.Grade = 0;
-                    if (!HasCourseStarted())
+                    if (!courseController.HasCourseStarted(course))
                     {
                         if (teacherController.IsStudentAccepted(student, course.Id))
                             dtoStudent.AddedToCourse = true;
                     }
-                    if (HasCourseFinished())
+                    if (courseController.HasCourseFinished(course, courseController.GetStudentCount(studentController, course)))
                     {
-                        dtoStudent.Grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id).Value;
+                        CourseGrade grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id);
+                        if (grade == null)
+                        {
+                            dtoStudent.Grade = 0;
+                        }
+                        else
+                        {
+                            dtoStudent.Grade = grade.Value;
+                        }
                     }
 
                     StudentsTableViewModel.Students.Add(dtoStudent);
@@ -192,13 +189,13 @@ namespace LangLang.View.Teacher
         {
             string courseStatusCheck;
 
-            if (HasStudentAcceptingPeriodEnded() && !HasCourseStarted())
+            if (courseController.HasStudentAcceptingPeriodEnded(course) && !courseController.HasCourseStarted(course))
                 courseStatusCheck = "Final Student Enrollments";
-            else if (HasCourseStarted() && !HasGradingPeriodStarted())
+            else if (courseController.HasStudentAcceptingPeriodEnded(course) && !courseController.HasGradingPeriodStarted(course))
                 courseStatusCheck = "Course Active";
-            else if (HasGradingPeriodStarted() && !HasCourseFinished())
+            else if (courseController.HasStudentAcceptingPeriodEnded(course) && !courseController.HasCourseFinished(course, courseController.GetStudentCount(studentController, course)))
                 courseStatusCheck = "Student Grading Period";
-            else if (HasCourseFinished())
+            else if (courseController.HasCourseFinished(course, courseController.GetStudentCount(studentController, course)))
                 courseStatusCheck = "Course Finished And Students Graded";
             else
                 courseStatusCheck = "Requests Open For Students";
@@ -212,45 +209,17 @@ namespace LangLang.View.Teacher
             PenaltyPoint.Visibility = Visibility.Collapsed;
             Mark.Visibility = Visibility.Collapsed;
 
-            if (!HasStudentAcceptingPeriodEnded())
+            if (!courseController.HasStudentAcceptingPeriodEnded(course))
             {
                 ConfirmRequest.Visibility = Visibility.Visible;
                 RejectRequest.Visibility = Visibility.Visible;
             }
 
-            else if (HasCourseStarted() && !HasGradingPeriodStarted())
+            else if (courseController.HasStudentAcceptingPeriodEnded(course) && !courseController.HasGradingPeriodStarted(course))
                 PenaltyPoint.Visibility = Visibility.Visible;
 
-            else if (HasGradingPeriodStarted() && !HasCourseFinished())
+            else if (courseController.HasStudentAcceptingPeriodEnded(course) && !courseController.HasCourseFinished(course, courseController.GetStudentCount(studentController, course)))
                 Mark.Visibility = Visibility.Visible;
-        }
-
-        private bool HasStudentAcceptingPeriodEnded()
-        {
-            return (course.StartDate <= DateTime.Now.AddDays(7));
-        }
-
-        private bool HasCourseStarted()
-        {
-            return (course.StartDate <= DateTime.Now);
-        }
-
-        private bool HasGradingPeriodStarted()
-        {
-            return (course.StartDate.AddDays(7 * course.Duration) <= DateTime.Now);
-        }
-
-        public bool HasCourseFinished()
-        {
-            if (course.StartDate.AddDays(course.Duration * 7) >= DateTime.Now)
-                return false;
-
-            var students = studentController.GetAllStudentsEnrolledCourse(course.Id);
-
-            if (students.Count == 0)
-                return true;
-
-            return false;
         }
 
         private void ConfirmRequest_Click(object sender, RoutedEventArgs e)
