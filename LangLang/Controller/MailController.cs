@@ -45,5 +45,9 @@ namespace LangLang.Controller
         {
             return _mails.PrepareQuitCourseMail(senderEmail, receiverEmail, courseId);
         }
+        public bool IsTopStudentsMailSent(int courseId)
+        {
+            return _mails.IsTopStudentsMailSent(courseId);
+        }
     }
 }

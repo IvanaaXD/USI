@@ -299,7 +299,16 @@ namespace LangLang.Repository
 
             return false;
         }
-        
+        public bool HasCourseFinished(Course course, int studentCount)
+        {
+            if (course.StartDate.AddDays(course.Duration * 7) >= DateTime.Now)
+                return false;
+
+            if (studentCount == 0)
+                return true;
+
+            return false;
+        }
         public bool IsStudentAccepted(Student student, int courseId)
         {
             List<Mail> sentMail = teacherController.GetAllMail();
@@ -358,6 +367,27 @@ namespace LangLang.Repository
             foreach (Course course in GetCoursesLastYear())
                 coursePenaltyPoints[course] = GetCoursePenaltyPoints(course.Id);
             return coursePenaltyPoints;
+        }
+        private List<Course> GetCompletedCourses()
+        {
+            StudentsController studentController = new StudentsController();
+            List<Course> courses = GetAllCourses();
+            List<Course> completedCourses = new List<Course>();
+            foreach (Course course in courses)
+                if (HasCourseFinished(course, studentController.GetAllStudentsEnrolledCourse(course.Id).Count))
+                    completedCourses.Add(course);
+            return completedCourses;
+        }
+        public List<Course> GetCoursesForTopStudentMails()
+        {
+            MailController mailController = new MailController();
+            List<Course> courses = GetCompletedCourses();
+            List<Course> sendMailCourses = new List<Course>();
+
+            foreach (Course course in courses)
+                if (!mailController.IsTopStudentsMailSent(course.Id))
+                    sendMailCourses.Add(course);
+            return sendMailCourses;
         }
     }
 }

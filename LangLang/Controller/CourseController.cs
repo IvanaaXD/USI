@@ -120,13 +120,7 @@ namespace LangLang.Controller
 
         public bool HasCourseFinished(Course course, int studentCount)
         {
-            if (course.StartDate.AddDays(course.Duration * 7) >= DateTime.Now)
-                return false;
-
-            if (studentCount == 0)
-                return true;
-
-            return false;
+            return _courses.HasCourseFinished(course, studentCount);
         }
         public List<Student> GetCourseStudents(StudentsController studentController, Course course)
         {
@@ -144,6 +138,10 @@ namespace LangLang.Controller
         public int GetStudentCount(StudentsController studentController, Course course)
         {
             return studentController.GetAllStudentsEnrolledCourse(course.Id).Count;
+        }
+        public List<Course> GetCoursesForTopStudentMails()
+        {
+            return _courses.GetCoursesForTopStudentMails();
         }
     }
 }

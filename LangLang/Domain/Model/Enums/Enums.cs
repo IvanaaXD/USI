@@ -55,6 +55,7 @@ namespace LangLang.Domain.Model.Enums
 
         PenaltyPointMessage,
         TeacherGradeStudentMessage,
+        TopStudentsMessage,
         NULL
     }
 }

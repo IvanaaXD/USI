@@ -1,6 +1,7 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Domain.Model.Enums;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,10 +16,12 @@ namespace LangLang.View.Director
         public class ViewModel
         {
             public ObservableCollection<TeacherDTO> Teachers { get; set; }
+            public ObservableCollection<CourseDTO> Courses { get; set; }
 
             public ViewModel()
             {
                 Teachers = new ObservableCollection<TeacherDTO>();
+                Courses = new ObservableCollection<CourseDTO>();
             }
         }
         readonly int directorId;
@@ -26,6 +29,7 @@ namespace LangLang.View.Director
         readonly MainController mainController;
 
         public TeacherDTO? SelectedTeacher { get; set; }
+        public CourseDTO SelectedCourse { get; set; }
 
         public ViewModel TableViewModel { get; set; }
 
@@ -42,13 +46,14 @@ namespace LangLang.View.Director
             DataContext = this;
             directorController.Subscribe(this);
 
-            Domain.Model.Director? director = directorController.GetDirector();
-            firstAndLastName.Text = director?.FirstName + " " + director?.LastName;
+            Domain.Model.Director director = directorController.GetDirector();
+            firstAndLastName.Text = director.FirstName + " " + director.LastName;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
 
             Update();
+            UpdateCourses();
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
@@ -190,6 +195,44 @@ namespace LangLang.View.Director
                 }
             }
             return finalTeachers;
+        }
+
+        private void SearchButton_Click(object sender, EventArgs e)
+        {
+            UpdateCourses();
+            isSearchButtonClicked = true;
+        }
+        public void UpdateCourses()
+        {
+            try
+            {
+                TableViewModel.Courses.Clear();
+                var courses = mainController.GetCourseController().GetCoursesForTopStudentMails();
+
+                if (courses != null)
+                    foreach (Course course in courses)
+                        TableViewModel.Courses.Add(new CourseDTO(course));
+                else
+                    MessageBox.Show("No courses found.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+
+        private void ViewCourseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedCourse == null)
+            {
+                MessageBox.Show("Please choose a course to view!");
+            }
+            else
+            {
+                /*Course course = mainController.GetCourseController().GetCourseById(SelectedCourse.Id);
+                CourseView courseView = new CourseView(course, directorController.GetTeacherById(SelectedTeacher.Id), mainController);
+                courseView.Show();*/
+            }
         }
     }
 }
