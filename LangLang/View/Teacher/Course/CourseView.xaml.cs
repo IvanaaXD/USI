@@ -121,7 +121,8 @@ namespace LangLang.View.Teacher
                 foreach (Model.Student student in students)
                 {
                     StudentDTO dtoStudent = new StudentDTO(student);
-                    dtoStudent.Grade = 0;
+                    dtoStudent.ActivityGrade = 0;
+                    dtoStudent.KnowledgeGrade = 0;
                     if (!courseController.HasCourseStarted(course))
                     {
                         if (teacherController.IsStudentAccepted(student, course.Id))
@@ -132,11 +133,13 @@ namespace LangLang.View.Teacher
                         CourseGrade grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id);
                         if (grade == null)
                         {
-                            dtoStudent.Grade = 0;
+                            dtoStudent.ActivityGrade = 0;
+                            dtoStudent.KnowledgeGrade = 0;
                         }
                         else
                         {
-                            dtoStudent.Grade = grade.Value;
+                            dtoStudent.ActivityGrade = grade.StudentActivityValue;
+                            dtoStudent.KnowledgeGrade = grade.StudentKnowledgeValue;
                         }
                     }
 
