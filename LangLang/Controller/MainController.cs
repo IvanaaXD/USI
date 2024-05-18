@@ -10,6 +10,7 @@ namespace LangLang.Controller
         private DirectorController _directorController;
         private CourseController _courseController;
         private ExamTermController _examTermController;
+        private MailController _mailController;
 
         public MainController()
         {
@@ -23,6 +24,7 @@ namespace LangLang.Controller
 
             IExamTermGradeRepository examTermGradeRepository = new ExamTermGradeRepository();
             _examTermController = new ExamTermController(_teacherController, examTermGradeRepository);
+            _mailController = new MailController();
         }
 
         public StudentsController GetStudentController()
@@ -47,6 +49,10 @@ namespace LangLang.Controller
         public ExamTermController GetExamTermController()
         {
             return _examTermController;
+        }
+        public MailController GetMailController()
+        {
+            return _mailController;
         }
     }
 }

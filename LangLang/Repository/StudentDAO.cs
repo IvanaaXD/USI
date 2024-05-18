@@ -327,6 +327,14 @@ namespace LangLang.Repository
             NotifyObservers();
             return true;
         }
+        public bool RejectStudentApplication(Student student, Course course)
+        {
+            student.RegisteredCoursesIds.Remove(course.Id);
+
+            _storage.Save(_students);
+            NotifyObservers();
+            return true;
+        }
 
         public bool RegisterForExam(int studentId, int examId)
         {
@@ -551,6 +559,12 @@ namespace LangLang.Repository
                 studentsAveragePointsPerPenalty.Add(i,GetStudentsAverageScore(studentsPerPenalties[i]));
 
             return studentsAveragePointsPerPenalty;
+        }
+        public void CompleteCourse(Student student, Course course)
+        {
+            student.ActiveCourseId = -1;
+            student.CompletedCoursesIds.Add(course.Id);
+            UpdateStudent(student);
         }
     }
 }
