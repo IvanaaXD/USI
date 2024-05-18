@@ -3,65 +3,66 @@ using System.Collections.Generic;
 using System.Linq;
 using LangLang.Observer;
 using LangLang.Storage;
+using LangLang.Domain.Model;
 
 namespace LangLang.Model.DAO
 {
     public class StudentGradeDAO : Subject
     {
-        private readonly List<CourseGrade> _grades;
-        private readonly Storage<CourseGrade> _storage;
+        private readonly List<StudentGrade> _StudentGrades;
+        private readonly Storage<StudentGrade> _storage;
 
         public StudentGradeDAO()
         {
-            _storage = new Storage<CourseGrade>("studentGrades.csv");
-            _grades = _storage.Load();
+            _storage = new Storage<StudentGrade>("studentGrades.csv");
+            _StudentGrades = _storage.Load();
         }
 
         private int GenerateId()
         {
-            if (_grades.Count == 0) return 0;
-            return _grades.Last().Id + 1;
+            if (_StudentGrades.Count == 0) return 0;
+            return _StudentGrades.Last().Id + 1;
         }
 
-        public CourseGrade AddGrade(CourseGrade grade)
+        public StudentGrade AddGrade(StudentGrade StudentGrade)
         {
-            grade.Id = GenerateId();
-            _grades.Add(grade);
-            _storage.Save(_grades);
+            StudentGrade.Id = GenerateId();
+            _StudentGrades.Add(StudentGrade);
+            _storage.Save(_StudentGrades);
             NotifyObservers();
-            return grade;
+            return StudentGrade;
         }
 
-        public CourseGrade? UpdateGrade(CourseGrade grade)
+        public StudentGrade? UpdateGrade(StudentGrade StudentGrade)
         {
-            CourseGrade? oldGrade = GetGradeById(grade.Id);
-            if (oldGrade == null) return null;
+            StudentGrade? oldStudentGrade = GetStudentGradeById(StudentGrade.Id);
+            if (oldStudentGrade == null) return null;
 
-            oldGrade.StudentId = grade.StudentId;
-            oldGrade.TeacherId = grade.TeacherId;
-            oldGrade.CourseId = grade.CourseId;
-            oldGrade.Value = grade.Value;
+            oldStudentGrade.StudentId = StudentGrade.StudentId;
+            oldStudentGrade.TeacherId = StudentGrade.TeacherId;
+            oldStudentGrade.CourseId = StudentGrade.CourseId;
+            oldStudentGrade.Value = StudentGrade.Value;
 
-            _storage.Save(_grades);
+            _storage.Save(_StudentGrades);
             NotifyObservers();
-            return oldGrade;
+            return oldStudentGrade;
         }
 
-        public CourseGrade? RemoveGrade(int id)
+        public StudentGrade? RemoveGrade(int id)
         {
-            CourseGrade? grade = GetGradeById(id);
-            if (grade == null) return null;
+            StudentGrade? StudentGrade = GetStudentGradeById(id);
+            if (StudentGrade == null) return null;
 
-            _grades.Remove(grade);
-            _storage.Save(_grades);
+            _StudentGrades.Remove(StudentGrade);
+            _storage.Save(_StudentGrades);
             NotifyObservers();
-            return grade;
+            return StudentGrade;
         }
-        public bool IsTeachertGraded(int teacherId)
+        public bool IsTeacherStudentGraded(int teacherId)
         {
-            foreach (var grade in _grades)
+            foreach (var StudentGrade in _StudentGrades)
             {
-                if (grade.TeacherId == teacherId)
+                if (StudentGrade.TeacherId == teacherId)
                 {
                     return true;
                 }
@@ -69,26 +70,26 @@ namespace LangLang.Model.DAO
             return false;
         }
 
-        public CourseGrade? GetGradeById(int id)
+        public StudentGrade? GetStudentGradeById(int id)
         {
-            return _grades.Find(v => v.Id == id);
+            return _StudentGrades.Find(v => v.Id == id);
         }
-        public CourseGrade? GetCourseGradeByStudentTeacher(int studentId, int teacherId, int courseId)
+        public StudentGrade? GetStudentGradeByStudentTeacher(int studentId, int teacherId, int courseId)
         {
-            return _grades.Find(grade => grade.StudentId == studentId && grade.TeacherId == teacherId && grade.CourseId == courseId);
+            return _StudentGrades.Find(StudentGrade => StudentGrade.StudentId == studentId && StudentGrade.TeacherId == teacherId && StudentGrade.CourseId == courseId);
         }
-        public CourseGrade? GetCourseGradeByStudent(int studentId, int courseId)
+        public StudentGrade? GetStudentGradeByStudent(int studentId, int courseId)
         {
-            return _grades.Find(grade => grade.StudentId == studentId && grade.CourseId == courseId);
+            return _StudentGrades.Find(StudentGrade => StudentGrade.StudentId == studentId && StudentGrade.CourseId == courseId);
         }
-        public List<CourseGrade> GetCourseGradesByTeacherCourse(int teacherId, int courseId)
+        public List<StudentGrade> GetStudentGradesByTeacherCourse(int teacherId, int courseId)
         {
-            return _grades.Where(grade => grade.TeacherId == teacherId && grade.CourseId == courseId).ToList();
+            return _StudentGrades.Where(StudentGrade => StudentGrade.TeacherId == teacherId && StudentGrade.CourseId == courseId).ToList();
         }
 
-        public List<CourseGrade> GetAllCourseGrades()
+        public List<StudentGrade> GetAllStudentGrades()
         {
-            return _grades;
+            return _StudentGrades;
         }
     }
 }

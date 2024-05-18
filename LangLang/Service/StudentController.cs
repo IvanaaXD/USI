@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LangLang.Model;
 using LangLang.Model.DAO;
 using LangLang.Observer;
+using LangLang.Domain.Model;
 
 namespace LangLang.Controller
 {
@@ -131,7 +132,7 @@ namespace LangLang.Controller
         {
             return _students.IsQuitCourseMailSent(studentId, courseId);
         }
-        public CourseGrade GradeStudentCourse(CourseGrade grade)
+        public StudentGrade GradeStudentCourse(StudentGrade grade)
         {
             return _studentGrades.AddGrade(grade);
         }

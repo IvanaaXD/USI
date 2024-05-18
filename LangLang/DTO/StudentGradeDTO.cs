@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using LangLang.Domain.Model;
 
 namespace LangLang.DTO
 {
@@ -118,9 +119,9 @@ namespace LangLang.DTO
             }
         }
 
-        public CourseGrade ToCourseGrade()
+        public StudentGrade ToStudentGrade()
         {
-            return new CourseGrade
+            return new StudentGrade
             {
                 Id = id,
                 TeacherId = teacherId,
@@ -139,7 +140,7 @@ namespace LangLang.DTO
             email = teacher.Email;
         }
 
-        public StudentGradeDTO(CourseGrade grade, Teacher teacher)
+        public StudentGradeDTO(StudentGrade grade, Teacher teacher)
         {
             id = grade.Id;
             studentId = grade.StudentId;

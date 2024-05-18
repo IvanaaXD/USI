@@ -52,7 +52,7 @@ namespace LangLang.View.Student
                     teacherGrade.TeacherId = teacherId;
                     teacherGrade.CourseId = courseId;
                     teacherGrade.StudentId = studentId;
-                    studentController.GradeStudentCourse(teacherGrade.ToCourseGrade());
+                    studentController.GradeStudentCourse(teacherGrade.ToStudentGrade());
                     Close();
                 }
             }
