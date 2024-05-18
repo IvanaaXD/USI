@@ -79,23 +79,27 @@ namespace LangLang.View.Teacher
         {
             try
             {
-                AddExamTermInfo();
-                AddExamTermStatus();
-                CheckStudentsGrades();
-                CheckButtons();
-
                 StudentsTableViewModel.Students?.Clear();
                 var students = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
 
                 if (students != null)
                 {
                     foreach (Model.Student student in students)
-                        StudentsTableViewModel.Students?.Add(new StudentDTO(student));
+                    {
+                        StudentDTO studentDTO = new StudentDTO(student);
+                        studentDTO = CheckStudentsGrades(studentDTO);
+
+                        StudentsTableViewModel.Students?.Add(studentDTO);
+                    }
                 }
                 else
                 {
                     MessageBox.Show("No teachers found.");
                 }
+
+                AddExamTermInfo();
+                AddExamTermStatus();
+                CheckButtons();
             }
             catch (Exception ex)
             {
@@ -194,31 +198,34 @@ namespace LangLang.View.Teacher
         public bool HasExamTermBeenGraded()
         {
             var grades = teacherController.GetExamTermGradesByTeacherExam(teacher.Id, examTerm.ExamID);
+            var examTermStudents = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
+
             if (grades.Count==0)
                 return false;
 
-            foreach (ExamTermGrade grade in grades)
-            {
-                if (!teacherController.IsStudentGradedExamTerm(grade.StudentId))
-                    return false;
-            }
+            if (examTermStudents.Count != grades.Count)
+                return false;
+
             return true;
         }
 
-        public void CheckStudentsGrades()
+        public StudentDTO CheckStudentsGrades(StudentDTO selectedStudent)
         {
             var examTermStudents = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
            
             foreach(Model.Student student in examTermStudents)
             {
-                var grade = teacherController.GetExamTermGradeByStudentTeacherExam(student.Id, teacher.Id, examTerm.ExamID);
-                SelectedGrade = new ExamTermGradeDTO();
+                if (selectedStudent.id == student.Id)
+                {
+                    var grade = teacherController.GetExamTermGradeByStudentTeacherExam(student.Id, teacher.Id, examTerm.ExamID);
 
-                if (grade != null)
-                    SelectedGrade.Value = grade.Value;
-                else
-                    SelectedGrade.Value = 0;
+                    if (grade != null)
+                        selectedStudent.ExamTermGrade = grade.Value;
+                    else
+                        selectedStudent.ExamTermGrade = 0;
+                }
             }
+            return selectedStudent;
         }
 
         private void ConfirmExamTerm_Click(object sender, RoutedEventArgs e)
@@ -234,7 +241,7 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Please choose a student to delete!");
             else
             {
-                studentController.Delete(SelectedStudent.id);
+                studentController.DeactivateStudentAccount(SelectedStudent.ToStudent());
                 Update();
             }
         }

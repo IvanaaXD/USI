@@ -97,7 +97,7 @@ Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGr
                                     <DataGridTextColumn Header="Date of birth" Width="*" Binding="{Binding DateOfBirth, StringFormat={}{0:yyyy-MM-dd}}" />
                                     <DataGridTextColumn Header="Phone number" Width="*" Binding="{Binding PhoneNumber}" />
                                     <DataGridTextColumn Header="Email" Width="*" Binding="{Binding Email}" />
-                                    <DataGridTextColumn Header="Grade" Width="*" Binding="{Binding DataContext.SelectedGrade.Value, RelativeSource={RelativeSource AncestorType=DataGrid}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <DataGridTextColumn Header="Grade" Width="*" Binding="{Binding ExamTermGrade}" />
                                 </DataGrid.Columns>
                             </DataGrid>
 

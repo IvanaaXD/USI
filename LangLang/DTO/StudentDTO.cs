@@ -129,6 +129,9 @@ namespace LangLang.DTO
             }
         }
         public int Grade { get; set; }
+
+        public int ExamTermGrade { get; set; }
+
         public string? Error => null;
 
         private Regex _FirstNameRegex = new Regex(@"^[A-Za-z]+$");
