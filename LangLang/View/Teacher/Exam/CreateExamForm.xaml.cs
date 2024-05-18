@@ -1,7 +1,8 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Domain.Model;
-using LangLang.Domain.Model.Enums;
+using LangLang.Model;
+using LangLang.Model.DAO;
+using LangLang.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ namespace LangLang.View.Teacher
 {
     public partial class CreateExamForm : Window, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {
@@ -36,21 +37,28 @@ namespace LangLang.View.Teacher
         }
 
         private TeacherController teacherController;
-        private readonly DirectorService directorController;
+        private readonly DirectorController directorController;
         private int teacherId;
-        public CreateExamForm(TeacherController teacherController, DirectorService directorController, int teacherId)
+        public CreateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId)
         {
             InitializeComponent();
-            Domain.Model.Teacher teacher= directorController.GetTeacherById(teacherId);
+            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             ExamTerm = new ExamTermDTO(teacherController, teacher);
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
-            
 
             this.directorController = directorController;
             this.teacherController = teacherController;
             this.teacherId = teacherId;
             DataContext = this;
 
+            FillLanguageAndLevelCombobox();
+
+            ExamTerm.ExamDate = DateTime.Now;
+            ExamTerm.ExamTime = "10:00";
+            ExamTerm.MaxStudents = 80;
+        }
+        private void FillLanguageAndLevelCombobox()
+        {
             List<Course> courses = teacherController.GetAllCourses();
             List<string> levelLanguageStr = new List<string>();
 
@@ -61,59 +69,55 @@ namespace LangLang.View.Teacher
                     string languageLevel = $"{course.Language} {course.Level}";
                     if (!levelLanguageStr.Contains(languageLevel))
                         levelLanguageStr.Add(languageLevel);
-                    
                 }
             }
-
             languageComboBox.ItemsSource = levelLanguageStr;
-
-            ExamTerm.ExamDate = DateTime.Now;
-            ExamTerm.ExamTime = "10:00";
-            ExamTerm.MaxStudents = 80;
         }
-
         private void PickLanguageAndLevel()
         {
-            Language lang = Domain.Model.Enums.Language.German;
-            LanguageLevel lvl = LanguageLevel.A1;
-
             if (languageComboBox.SelectedItem != null)
             {
                 string selectedLanguageAndLevel = (string)languageComboBox.SelectedItem;
+                SetLanguageAndLevel(selectedLanguageAndLevel);
+            }
+        }
+        private void SetLanguageAndLevel(string selectedLanguageAndLevel)
+        {
+            Language lang = Model.Enums.Language.German;
+            LanguageLevel lvl = LanguageLevel.A1;
+            string[] parts = selectedLanguageAndLevel.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                string[] parts = selectedLanguageAndLevel.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                if (parts.Length == 2)
-                {
-                    if (Enum.TryParse(parts[0], out Language language))
-                        lang = language;
-                    else
-                        MessageBox.Show($"Invalid language: {parts[0]}");
-
-                    if (Enum.TryParse(parts[1], out LanguageLevel level))
-                        lvl = level;
-                    else
-                        MessageBox.Show($"Invalid level: {parts[1]}");
-
-                }
+            if (parts.Length == 2)
+            {
+                if (Enum.TryParse(parts[0], out Language language))
+                    lang = language;
                 else
-                {
-                    MessageBox.Show("Invalid language and level format.");
-                }
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                List<Course> courses = teacherController.GetAvailableCourses(teacher);
+                    MessageBox.Show($"Invalid language: {parts[0]}");
+                if (Enum.TryParse(parts[1], out LanguageLevel level))
+                    lvl = level;
+                else
+                    MessageBox.Show($"Invalid level: {parts[1]}");
+                SetCourseForExamTerm(lang, lvl);
+            }
+            else
+            {
+                MessageBox.Show("Invalid language and level format.");
+            }
+        }
+        public void SetCourseForExamTerm(Language lang, LanguageLevel lvl)
+        {
+            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
-                foreach (Course course in courses)
+            foreach (Course course in courses)
+            {
+                if (course.Language == lang && course.Level == lvl)
                 {
-                    if (course.Language == lang && course.Level == lvl)
-                    {
-                        ExamTerm.CourseID = course.Id;
-                        break;
-                    }
+                    ExamTerm.CourseID = course.Id;
+                    break;
                 }
             }
         }
-        
         private void PickDataFromDatePicker()
         {
             if (dpExamDate.SelectedDate.HasValue && !string.IsNullOrWhiteSpace(txtExamTime.Text))
@@ -143,22 +147,7 @@ namespace LangLang.View.Teacher
 
             if (ExamTerm.IsValid)
             {
-                int examId = teacherController.GetAllExamTerms().Last().ExamID;
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                List<Course> courses = teacherController.GetAvailableCourses(teacher);
-
-                foreach (Course course in courses)
-                {
-                    if (course.Id == ExamTerm.CourseID)
-                    {
-                        course.ExamTerms.Add(examId + 1);
-                        teacherController.UpdateCourse(course);
-                    }
-
-                }
-
-                teacherController.AddExamTerm(ExamTerm.ToExamTerm());
-
+                CreateExamTerm();
                 Close();
             }
             else
@@ -166,7 +155,22 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Exam Term cannot be created. Not all fields are valid.");
             }
         }
+        private void CreateExamTerm()
+        {
+            int examId = teacherController.GetAllExamTerms().Last().ExamID;
+            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
+            foreach (Course course in courses)
+            {
+                if (course.Id == ExamTerm.CourseID)
+                {
+                    course.ExamTerms.Add(examId + 1);
+                    teacherController.UpdateCourse(course);
+                }
+            }
+            teacherController.AddExamTerm(ExamTerm.ToExamTerm());
+        }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();

@@ -1,12 +1,23 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Domain.Model;
-using LangLang.Domain.Model.Enums;
+using LangLang.Model.Enums;
+using LangLang.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using LangLang.View.Teacher;
 
 namespace LangLang.View.Student
 {
@@ -146,12 +157,12 @@ namespace LangLang.View.Student
            bool registered = studentController.RegisterForExam(studentId, SelectedAvailableExamTerm.ExamID);
             if (registered) 
             {
-                MessageBox.Show("Uspesno ste se prijavili za ispit.");
+                MessageBox.Show("You have successfully registered for the exam.");
                 Update();
             }
             else
             {
-                MessageBox.Show("Nije moguce da se prijavi na dati ispit.");
+                MessageBox.Show("It is not possible to register for the given exam.");
 
             }
         }
@@ -160,12 +171,12 @@ namespace LangLang.View.Student
             bool unregistered = studentController.CancelExamRegistration(studentId, SelectedRegisteredExamTerm.ExamID);
             if (unregistered)
             {
-                MessageBox.Show("Uspesno ste se odjavili za ispit.");
+                MessageBox.Show("You have successfully checked out for the exam.");
                 Update();
             }
             else
             {
-                MessageBox.Show("Nije moguce da se odjavi na dati ispit.");
+                MessageBox.Show("It is not possible to unregister from the given exam.");
 
             }
         }
@@ -175,9 +186,9 @@ namespace LangLang.View.Student
                 MessageBox.Show("Please choose an exam term to view!");
             else
             {
-                ExamTerm examTerm = teacherController.GetExamTermById(SelectedCompletedExamTerm.ExamID);
-                Domain.Model.Student student = studentController.GetStudentById(this.studentId);
-                ExamTermStudentView examTermView = new ExamTermStudentView(examTerm, student, teacherController, studentController);
+                ExamTerm? examTerm = teacherController.GetExamTermById(SelectedCompletedExamTerm.ExamID);
+                Model.Student? student = studentController.GetStudentById(this.studentId);
+                ExamTermStudentView? examTermView = new ExamTermStudentView(examTerm, student, teacherController, studentController);
                 examTermView.Show();
             }
         }
