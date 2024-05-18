@@ -34,6 +34,7 @@ namespace LangLang.View.Teacher
         public StudentsController studentController { get; set; }
         public TeacherController teacherController { get; set; }
         public DirectorController directorController { get; set; }
+        public ExamTermController examTermController { get; set; }
         public MainController mainController { get; set; }
 
         private bool isSearchCourseClicked = false;
@@ -46,6 +47,7 @@ namespace LangLang.View.Teacher
             this.studentController = mainController.GetStudentController();
             this.teacherController = mainController.GetTeacherController();
             this.directorController = mainController.GetDirectorController();
+            this.examTermController = mainController.GetExamTermController();
 
             this.Courses = Courses;
             this.ExamTerms = ExamTerms;
@@ -289,9 +291,9 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Please choose an exam term to view!");
             else
             {
-                ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(this.teacherId);
-                ExamTermView examTermView = new ExamTermView(examTerm, teacher, teacherController, studentController);
+                ExamTerm? examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
+                Domain.Model.Teacher? teacher = directorController.GetTeacherById(this.teacherId);
+                ExamTermView examTermView = new ExamTermView(examTerm, teacher, mainController);
                 examTermView.Owner = this;
                 this.Visibility = Visibility.Collapsed;
                 examTermView.Show();

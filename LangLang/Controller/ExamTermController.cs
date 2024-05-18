@@ -4,19 +4,20 @@ using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
+using LangLang.Domain.IRepository;
 
 namespace LangLang.Controller
 {
     public class ExamTermController
     {
         private readonly ExamTermDAO _exams;
-        private readonly ExamTermGradeRepository _examTermGrades;
+        private readonly IExamTermGradeRepository _examTermGrades;
         private readonly TeacherController teacherController;
 
-        public ExamTermController(TeacherController teacherController)
+        public ExamTermController(TeacherController teacherController, IExamTermGradeRepository examTermGrades)
         {
             _exams = new ExamTermDAO(teacherController);
-            _examTermGrades = new ExamTermGradeRepository();
+            _examTermGrades = examTermGrades ?? throw new ArgumentNullException(nameof(examTermGrades));
             this.teacherController = teacherController;
         }
         public ExamTerm? GetExamTermById(int examId)
@@ -63,9 +64,9 @@ namespace LangLang.Controller
             return _exams.ConfirmExamTerm(examTermId);
         }
         
-        public bool IsStudentGradedExamTerm(int studentId)
+        public bool IsStudentGraded(int studentId, int examId)
         {
-            return _examTermGrades.IsStudentGraded(studentId);
+            return _examTermGrades.IsStudentGraded(studentId, examId);
         }
         public bool ValidateExamTimeslot(ExamTerm exam, Teacher teacher)
         {
