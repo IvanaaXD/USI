@@ -28,27 +28,27 @@ namespace LangLang.View.Teacher
         }
 
         private CourseGradeDTO _grade;
-        public CourseGradeDTO CourseGrade
+        public CourseGradeDTO StudentCourseGrade
         {
             get { return _grade; }
             set
             {
                 _grade = value;
-                OnPropertyChanged(nameof(CourseGrade));
+                OnPropertyChanged(nameof(StudentCourseGrade));
             }
         }
 
-        private Course course;
+        private Model.Course course;
         private Model.Teacher teacher;
         private Model.Student student;
         private TeacherController teacherController;
         private StudentsController studentController;
 
-        public GradeStudentCourseForm(Course course, Model.Teacher teacher, Model.Student student, TeacherController teacherController, StudentsController studentController)
+        public GradeStudentCourseForm(Model.Course course, Model.Teacher teacher, Model.Student student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             DataContext = this;
-            CourseGrade = new CourseGradeDTO();
+            StudentCourseGrade = new CourseGradeDTO();
 
             Student = new StudentDTO(student);
 
@@ -62,17 +62,19 @@ namespace LangLang.View.Teacher
             lastNameTextBlock.Text = student.LastName;
             emailTextBlock.Text = student.Email;
 
-            CourseGrade.Value = 1;
+            StudentCourseGrade.StudentActivityValue = 1;
+            StudentCourseGrade.StudentKnowledgeValue = 1;
         }
         public void SendGradeMail()
         {
-            Mail mail = new Mail();
+            Model.Mail mail = new Model.Mail();
             mail.Sender = teacher.Email;
             mail.Receiver = student.Email;
             mail.TypeOfMessage = Model.Enums.TypeOfMessage.TeacherGradeStudentMessage;
             mail.DateOfMessage = DateTime.Now;
             mail.CourseId = course.Id;
-            mail.Message = "Your final grade from course " + course.Language.ToString() + " " + course.Level.ToString() + " is " + gradeValueTextBox.Text;
+            mail.Message = "Your final grade from course " + course.Language.ToString() + " " + course.Level.ToString() + " is " + activityValueTextBox.Text +
+                " for your activity on course, and " + knowledgeValueTextBox.Text + " for knowledge shown during course.";
             mail.Answered = false;
 
             teacherController.SendMail(mail);
@@ -85,12 +87,13 @@ namespace LangLang.View.Teacher
 
         public void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(gradeValueTextBox.Text))
+            if (!string.IsNullOrWhiteSpace(activityValueTextBox.Text) && !string.IsNullOrWhiteSpace(knowledgeValueTextBox.Text))
             {
-                CourseGrade.TeacherId = teacher.Id;
-                CourseGrade.CourseId = course.Id;
-                CourseGrade.StudentId = student.Id;
-                teacherController.GradeStudentCourse(CourseGrade.ToCourseGrade());
+                StudentCourseGrade.TeacherId = teacher.Id;
+                StudentCourseGrade.CourseId = course.Id;
+                StudentCourseGrade.StudentId = student.Id;
+                // BUG - to be fixed
+                //teacherController.GradeStudentCourse(StudentCourseGrade.ToCourseGrade());
 
                 SendGradeMail();
             }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Markup;
 using LangLang.Observer;
 using LangLang.Storage;
+using LangLang.Model;
 
 namespace LangLang.Model.DAO
 {
@@ -40,7 +42,8 @@ namespace LangLang.Model.DAO
             oldGrade.StudentId = grade.StudentId;
             oldGrade.TeacherId = grade.TeacherId;
             oldGrade.CourseId = grade.CourseId;
-            oldGrade.Value = grade.Value;
+            oldGrade.StudentActivityValue = grade.StudentActivityValue;
+            oldGrade.StudentKnowledgeValue = grade.StudentKnowledgeValue;
 
             _storage.Save(_grades);
             NotifyObservers();

@@ -128,9 +128,9 @@ namespace LangLang.DTO
                 OnPropertyChanged("AddedToCourse");
             }
         }
-        public int Grade { get; set; }
-
         public int ExamTermGrade { get; set; }
+        public int ActivityGrade { get; set; }
+        public int KnowledgeGrade { get; set; }
 
         public string? Error => null;
 

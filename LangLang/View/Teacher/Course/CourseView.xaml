@@ -90,7 +90,8 @@
                                     <DataGridTextColumn Header="Phone number" Width="*" Binding="{Binding PhoneNumber}" />
                                     <DataGridTextColumn Header="Email" Width="*" Binding="{Binding Email}" />
                                     <DataGridTextColumn Header="Penalty Points" Width="*" Binding="{Binding PenaltyPoints}" />
-                                    <DataGridTextColumn Header="Grade" Width="*" Binding="{Binding Grade}" />
+                                    <DataGridTextColumn Header="Activity Grade" Width="*" Binding="{Binding ActivityGrade}" />
+                                    <DataGridTextColumn Header="Knowledge Grade" Width="*" Binding="{Binding KnowledgeGrade}" />
                                 </DataGrid.Columns>
                                 <DataGrid.RowStyle>
                                     <Style TargetType="DataGridRow">
