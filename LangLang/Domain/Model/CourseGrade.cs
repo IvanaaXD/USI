@@ -2,38 +2,10 @@
 
 namespace LangLang.Domain.Model
 {
-    public class CourseGrade : ISerializable
+    public class CourseGrade : Grade, ISerializable
     {
-        private int id;
-        private int studentId;
-        private int teacherId;
-        private int courseId;
         private int studentActivityValue;
         private int studentKnowledgeValue;
-
-        public int Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
-
-        public int StudentId
-        {
-            get { return studentId; }
-            set { studentId = value; }
-        }
-
-        public int TeacherId
-        {
-            get { return teacherId; }
-            set { teacherId = value; }
-        }
-
-        public int CourseId
-        {
-            get { return courseId; }
-            set { courseId = value; }
-        }
 
         public int StudentActivityValue
         {

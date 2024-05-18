@@ -348,17 +348,8 @@ namespace LangLang.Repository
 
         private int GetCoursePenaltyPoints(int courseId)
         {
-            IDirectorRepository directorRepository = new DirectorRepository();
-            DirectorService directorService = new DirectorService(directorRepository);
-            Teacher teacher = directorService.GetTeacherByCourse(courseId);
-
-            if (teacher == null) return 0;
-
-            int penaltyPoints = 0;
-            foreach (Mail mail in teacherController.GetSentCourseMail(teacher, courseId))
-                if (mail.TypeOfMessage.Equals(TypeOfMessage.PenaltyPointMessage))
-                    ++penaltyPoints;
-            return penaltyPoints;
+            PenaltyPointController penaltyPointController = new PenaltyPointController();
+            return penaltyPointController.GetPointsByCourseId(courseId).Count;
         }
 
         public Dictionary<Course, int> GetPenaltyPointsLastYearPerCourse()

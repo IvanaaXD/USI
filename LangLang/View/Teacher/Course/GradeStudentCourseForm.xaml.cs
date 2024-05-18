@@ -91,8 +91,7 @@ namespace LangLang.View.Teacher
                 StudentCourseGrade.TeacherId = teacher.Id;
                 StudentCourseGrade.CourseId = course.Id;
                 StudentCourseGrade.StudentId = student.Id;
-                // BUG - to be fixed
-                //teacherController.GradeStudentCourse(StudentCourseGrade.ToCourseGrade());
+                teacherController.GradeStudentCourse(StudentCourseGrade.ToCourseGrade());
 
                 SendGradeMail();
             }
