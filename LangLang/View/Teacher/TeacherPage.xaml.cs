@@ -58,6 +58,8 @@ namespace LangLang.View.Teacher
             Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             firstAndLastName.Text = teacher.FirstName + " " + teacher.LastName;
 
+            studentRating.Text = directorController.GetAverageTeacherGrade(teacherId).ToString();
+
             courseLanguageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             courseLevelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));
 
