@@ -236,10 +236,10 @@ namespace LangLang.DTO
                             return "Format not good. Try again.";
 
                         IDirectorRepository directorRepository = new DirectorRepository();
-                        DirectorService directorService = new DirectorService(directorRepository);
+                        DirectorController _directorController = new DirectorController(directorRepository);
                         StudentsController studentsController = new StudentsController();
 
-                        foreach (Teacher teacher in directorService.GetAllTeachers())
+                        foreach (Teacher teacher in _directorController.GetAllTeachers())
                         {
                             if (teacher.Email.Equals(Email) && teacher.Id != Id)
                                 return "Email already exists. Try again.";
@@ -257,10 +257,10 @@ namespace LangLang.DTO
                             return "Password is required";
 
                         directorRepository = new DirectorRepository();
-                        directorService = new DirectorService(directorRepository);
+                        _directorController = new DirectorController(directorRepository);
                         studentsController = new StudentsController();
 
-                        foreach (Teacher teacher in directorService.GetAllTeachers())
+                        foreach (Teacher teacher in _directorController.GetAllTeachers())
                         {
                             if (teacher.Password.Equals(Password) && teacher.Id != Id)
                                 return "Email already exists. Try again.";

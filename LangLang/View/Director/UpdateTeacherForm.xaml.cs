@@ -12,14 +12,13 @@ namespace LangLang.View.Director
     /// </summary>
     public partial class UpdateTeacherForm : Window
     {
+        public TeacherDTO? Teacher { get; set; }
 
-        public TeacherDTO Teacher { get; set; }
-
-        private readonly DirectorService directorController;
+        private readonly DirectorController directorController;
 
         private readonly string teacherEmail;
 
-        public UpdateTeacherForm(int teacherId, DirectorService directorController)
+        public UpdateTeacherForm(int teacherId, DirectorController directorController)
         {
             InitializeComponent();
             this.directorController = directorController;

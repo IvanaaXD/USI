@@ -20,12 +20,12 @@ namespace LangLang.View.Teacher
         public TeacherDTO Teacher { get; set; }
 
         private TeacherController teacherController;
-        private readonly DirectorService directorController;
+        private readonly DirectorController directorController;
         private int teacherId;
         private int examId;
         private Domain.Model.Teacher teacher;
 
-        public UpdateExamForm(TeacherController teacherController, DirectorService directorController, int teacherId, int examId)
+        public UpdateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId, int examId)
         {
             teacher = directorController.GetTeacherById(teacherId);
             ExamTerm examTerm = teacherController.GetExamTermById(examId);

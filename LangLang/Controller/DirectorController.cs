@@ -9,22 +9,22 @@ using LangLang.Domain.IRepository;
 
 namespace LangLang.Controller
 {
-    public class DirectorService
+    public class DirectorController
     {
         private readonly IDirectorRepository _directors;
         private readonly TeacherDAO? _teachers;
 
-        public DirectorService(IDirectorRepository directors)
+        public DirectorController(IDirectorRepository directors)
         {
             _directors = directors ?? throw new ArgumentNullException(nameof(directors));
         }
 
-        public Director GetDirector()
+        public Director? GetDirector()
         {
             return _directors.GetDirector();
         }
 
-        public Teacher GetTeacherById(int teacherId)
+        public Teacher? GetTeacherById(int teacherId)
         {
             return _directors.GetTeacherById(teacherId);
         }
@@ -59,9 +59,9 @@ namespace LangLang.Controller
             List<Teacher> teachers = GetAllTeachers();
 
             var filteredTeachers = teachers.Where(teacher =>
-                (language == Language.NULL || teacher.Languages.Contains(language)) &&
-                (levelOfLanguage == LanguageLevel.NULL || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
-                (startedWork == DateTime.MinValue || teacher.StartedWork.Date >= startedWork.Date)
+                (language == Language.NULL || (teacher.Languages != null && teacher.Languages.Contains(language))) &&
+                (levelOfLanguage == LanguageLevel.NULL || (teacher.LevelOfLanguages != null && teacher.LevelOfLanguages.Contains(levelOfLanguage))) &&
+                (startedWork == DateTime.MinValue || (teacher.StartedWork.Date >= startedWork.Date))
             ).ToList();
 
             return filteredTeachers;
@@ -70,26 +70,33 @@ namespace LangLang.Controller
         public Teacher? GetTeacherByCourse(int courseId)
         {
             foreach (Teacher teacher in GetAllTeachers())
-                foreach (int teacherCourseId in teacher.CoursesId)
-                    if (teacherCourseId == courseId) return teacher;
-
+            {
+                if (teacher.CoursesId != null)
+                {
+                    foreach (int teacherCourseId in teacher.CoursesId)
+                        if (teacherCourseId == courseId) return teacher;
+                }
+            }
             return null;
         }
 
         public List<Course> GetAvailableCourses(int teacherId)
         {
-            Teacher teacher = GetTeacherById(teacherId);
-            List<Course> allCourses = _teachers.GetAllCourses();
-            List<int> allTeacherCourses = teacher.CoursesId;
+            Teacher? teacher = GetTeacherById(teacherId);
+            List<Course>? allCourses = _teachers?.GetAllCourses();
+            List<int>? allTeacherCourses = teacher?.CoursesId;
             DateTime currentTime = DateTime.Now;
 
             List<Course> availableCourses = new List<Course>();
 
-            foreach (Course course in allCourses)
+            if (allCourses != null && allTeacherCourses != null)
             {
-                if (allTeacherCourses.Contains(course.Id))
+                foreach (Course course in allCourses)
                 {
-                    availableCourses.Add(course);
+                    if (allTeacherCourses.Contains(course.Id))
+                    {
+                        availableCourses.Add(course);
+                    }
                 }
             }
 
@@ -98,8 +105,8 @@ namespace LangLang.Controller
 
         public void RemoveCourseFromList(int teacherId, int courseId)
         {
-            Teacher teacher = GetTeacherById(teacherId);
-            teacher.CoursesId.Remove(courseId);
+            Teacher? teacher = GetTeacherById(teacherId);
+            teacher?.CoursesId?.Remove(courseId);
             Update(teacher);
         }
     }
