@@ -9,6 +9,7 @@ namespace LangLang.Controller
         private TeacherController _teacherController;
         private DirectorController _directorController;
         private CourseController _courseController;
+        private ExamTermController _examTermController;
 
         public MainController()
         {
@@ -19,6 +20,7 @@ namespace LangLang.Controller
             _directorController = new DirectorController(directorRepository);
 
             _courseController = new CourseController(_teacherController);
+            _examTermController = new ExamTermController(_teacherController);
         }
 
         public StudentsController GetStudentController()
@@ -38,6 +40,11 @@ namespace LangLang.Controller
         public CourseController GetCourseController()
         {
             return _courseController;
+        }
+
+        public ExamTermController GetExamTermController()
+        {
+            return _examTermController;
         }
     }
 }

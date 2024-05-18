@@ -141,11 +141,6 @@ namespace LangLang.Controller
             return _courseGrades.IsStudentGraded(studentId, courseId);
         }
 
-        public bool IsStudentGradedExamTerm(int studentId)
-        {
-            return _examTermGrades.IsStudentGraded(studentId);
-        }
-
         public bool CheckExamOverlap(int ExamID, DateTime ExamDate)
         {
             int examDurationInMinutes = 240;

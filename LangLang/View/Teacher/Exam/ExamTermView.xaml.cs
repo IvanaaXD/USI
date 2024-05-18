@@ -44,17 +44,21 @@ namespace LangLang.View.Teacher
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private readonly ExamTerm examTerm;
-        private readonly Domain.Model.Teacher teacher;
+        private readonly ExamTerm? examTerm;
+        private readonly Domain.Model.Teacher? teacher;
         private readonly TeacherController teacherController;
         private readonly StudentsController studentController;
+        private readonly ExamTermController examTermController;
+        private readonly MainController mainController;
 
-        public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, TeacherController teacherController, StudentsController studentController)
+        public ExamTermView(ExamTerm? examTerm, Domain.Model.Teacher? teacher, MainController mainController)
         {
             InitializeComponent();
             this.examTerm = examTerm;
-            this.teacherController = teacherController;
-            this.studentController = studentController;
+            this.teacherController = mainController.GetTeacherController();
+            this.studentController = mainController.GetStudentController();
+            this.examTermController = mainController.GetExamTermController();
+            this.mainController = mainController;
             this.teacher = teacher;
 
             StudentsTableViewModel = new ViewModel();
@@ -249,7 +253,7 @@ namespace LangLang.View.Teacher
         {
             if (SelectedStudent == null)
                 MessageBox.Show("Please choose a student to grade!");
-            else if (teacherController.IsStudentGradedExamTerm(SelectedStudent.id))
+            else if (examTermController.IsStudentGraded(SelectedStudent.id, examTerm.ExamID))
                 MessageBox.Show("This student is already graded!");
             else
             {

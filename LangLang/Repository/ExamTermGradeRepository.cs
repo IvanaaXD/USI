@@ -3,10 +3,12 @@ using System.Linq;
 using LangLang.Observer;
 using LangLang.Storage;
 using LangLang.Domain.Model;
+using LangLang.Domain.IRepository;
+using System;
 
 namespace LangLang.Repository
 {
-    public class ExamTermGradeRepository : Subject
+    public class ExamTermGradeRepository : Subject, IExamTermGradeRepository
     {
         private readonly List<ExamTermGrade> _grades;
         private readonly Storage<ExamTermGrade> _storage;
@@ -62,11 +64,11 @@ namespace LangLang.Repository
             return grade;
         }
 
-        public bool IsStudentGraded(int studentId)
+        public bool IsStudentGraded(int studentId, int examId)
         {
             foreach (var grade in _grades)
             {
-                if (grade.StudentId == studentId)
+                if (grade.StudentId == studentId && grade.ExamId == examId)
                 {
                     return true;
                 }
@@ -97,6 +99,11 @@ namespace LangLang.Repository
         public List<ExamTermGrade> GetAllExamTermGrades()
         {
             return _grades;
+        }
+
+        public void Update()
+        {
+            throw new NotImplementedException();
         }
     }
 }

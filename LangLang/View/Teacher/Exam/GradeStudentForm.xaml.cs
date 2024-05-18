@@ -38,12 +38,12 @@ namespace LangLang.View.Teacher
         }
 
         private ExamTerm examTerm;
-        private Domain.Model.Teacher teacher;
+        private Domain.Model.Teacher? teacher;
         private Domain.Model.Student student;
         private TeacherController teacherController;
         private StudentsController studentController;
 
-        public GradeStudentForm(ExamTerm examTerm, Domain.Model.Teacher teacher, Domain.Model.Student? student, TeacherController teacherController, StudentsController studentController)
+        public GradeStudentForm(ExamTerm examTerm, Domain.Model.Teacher? teacher, Domain.Model.Student? student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             DataContext = this;
@@ -96,7 +96,7 @@ namespace LangLang.View.Teacher
 
         public void Done_Click(object sender, RoutedEventArgs e)
         {
-            if (Grade != null && !valueTextBlock.Equals('-'))
+            if (teacher != null && Grade != null && !valueTextBlock.Equals('-'))
             {
                 Grade.TeacherId = teacher.Id;
                 Grade.ExamId = examTerm.ExamID;
