@@ -85,6 +85,10 @@ namespace LangLang.Repository
         {
             return _StudentGrades.Where(StudentGrade => StudentGrade.TeacherId == teacherId && StudentGrade.CourseId == courseId).ToList();
         }
+        public List<StudentGrade> GetStudentGradeByTeacher(int teacherId)
+        {
+            return _StudentGrades.Where(StudentGrade => StudentGrade.TeacherId == teacherId).ToList();
+        }
 
         public List<StudentGrade> GetAllStudentGrades()
         {
