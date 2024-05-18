@@ -1,8 +1,9 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model.DAO;
-using LangLang.Model;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
+using LangLang.Repository;
+using LangLang.Controller;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,12 +20,12 @@ namespace LangLang.View.Teacher
         public TeacherDTO Teacher { get; set; }
 
         private TeacherController teacherController;
-        private readonly DirectorController directorController;
+        private readonly DirectorService directorController;
         private int teacherId;
         private int examId;
-        private Model.Teacher teacher;
+        private Domain.Model.Teacher teacher;
 
-        public UpdateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId, int examId)
+        public UpdateExamForm(TeacherController teacherController, DirectorService directorController, int teacherId, int examId)
         {
             teacher = directorController.GetTeacherById(teacherId);
             ExamTerm examTerm = teacherController.GetExamTermById(examId);
@@ -74,7 +75,7 @@ namespace LangLang.View.Teacher
         }
         private void PickLanguageAndLevel()
         {
-            Language lang = Model.Enums.Language.German;
+            Language lang = Domain.Model.Enums.Language.German;
             LanguageLevel lvl = LanguageLevel.A1;
 
             if (languageComboBox.SelectedItem != null)
@@ -86,7 +87,7 @@ namespace LangLang.View.Teacher
         private void SetLanguageAndLevelToUpdate(string selectedLanguageAndLevel)
         {
             string[] parts = selectedLanguageAndLevel.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            Language lang = Model.Enums.Language.German;
+            Language lang = Domain.Model.Enums.Language.German;
             LanguageLevel lvl = LanguageLevel.A1;
             if (parts.Length == 2)
             {
@@ -107,7 +108,7 @@ namespace LangLang.View.Teacher
             }
 
         }
-        private void SetCourseForExamTerm(Model.Enums.Language lang, Model.Enums.LanguageLevel lvl)
+        private void SetCourseForExamTerm(Domain.Model.Enums.Language lang, Domain.Model.Enums.LanguageLevel lvl)
         {
             //TeacherDAO teacherDAO = new TeacherDAO();
             teacher = directorController.GetTeacherById(teacherId);

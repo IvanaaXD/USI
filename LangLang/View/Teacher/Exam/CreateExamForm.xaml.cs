@@ -1,8 +1,8 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
-using LangLang.Model.DAO;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model;
+using LangLang.Controller;
+using LangLang.Domain.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,12 +37,12 @@ namespace LangLang.View.Teacher
         }
 
         private TeacherController teacherController;
-        private readonly DirectorController directorController;
+        private readonly DirectorService directorController;
         private int teacherId;
-        public CreateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId)
+        public CreateExamForm(TeacherController teacherController, DirectorService directorController, int teacherId)
         {
             InitializeComponent();
-            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             ExamTerm = new ExamTermDTO(teacherController, teacher);
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
 
@@ -83,7 +83,7 @@ namespace LangLang.View.Teacher
         }
         private void SetLanguageAndLevel(string selectedLanguageAndLevel)
         {
-            Language lang = Model.Enums.Language.German;
+            Language lang = Domain.Model.Enums.Language.German;
             LanguageLevel lvl = LanguageLevel.A1;
             string[] parts = selectedLanguageAndLevel.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -106,7 +106,7 @@ namespace LangLang.View.Teacher
         }
         public void SetCourseForExamTerm(Language lang, LanguageLevel lvl)
         {
-            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
             foreach (Course course in courses)
@@ -158,7 +158,7 @@ namespace LangLang.View.Teacher
         private void CreateExamTerm()
         {
             int examId = teacherController.GetAllExamTerms().Last().ExamID;
-            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
             foreach (Course course in courses)
