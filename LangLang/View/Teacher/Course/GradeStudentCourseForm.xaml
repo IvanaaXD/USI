@@ -30,7 +30,7 @@
 
         <TextBlock Text="Grade Student" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" Margin="0,20,0,0" Height="27" Grid.RowSpan="2" Width="126"/>
 
-        <StackPanel Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,78,0,0" Orientation="Vertical" Height="155" Width="300">
+        <StackPanel Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,78,0,0" Orientation="Vertical" Height="170" Width="300">
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <TextBlock Text="First Name:" Width="150" FontSize="16"/>
                 <TextBlock x:Name="firstNameTextBlock" Width="150" FontSize="16" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
@@ -48,15 +48,15 @@
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                 <TextBlock Text="Activity Grade:" Width="150" FontSize="16"/>
-                <TextBox x:Name="activityValueTextBox" Width="150" FontSize="16" Text="{Binding CourseGrade.StudentActivityValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBox x:Name="activityValueTextBox" Width="150" FontSize="16" Text="{Binding StudentCourseGrade.StudentActivityValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <TextBlock Text="Knowledge Grade:" Width="150" FontSize="16"/>
-                <TextBox x:Name="knowledgeValueTextBox" Width="150" FontSize="16" Text="{Binding CourseGrade.StudentKnowledgeValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBox x:Name="knowledgeValueTextBox" Width="150" FontSize="16" Text="{Binding StudentCourseGrade.StudentKnowledgeValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
      Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
         </StackPanel>

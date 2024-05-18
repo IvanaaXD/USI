@@ -67,7 +67,7 @@ namespace LangLang.View.Teacher
         }
         public void SendGradeMail()
         {
-            Model.Mail mail = new Model.Mail();
+            Mail mail = new();
             mail.Sender = teacher.Email;
             mail.Receiver = student.Email;
             mail.TypeOfMessage = Model.Enums.TypeOfMessage.TeacherGradeStudentMessage;
@@ -92,8 +92,7 @@ namespace LangLang.View.Teacher
                 StudentCourseGrade.TeacherId = teacher.Id;
                 StudentCourseGrade.CourseId = course.Id;
                 StudentCourseGrade.StudentId = student.Id;
-                // BUG - to be fixed
-                //teacherController.GradeStudentCourse(StudentCourseGrade.ToCourseGrade());
+                teacherController.GradeStudentCourse(StudentCourseGrade.ToCourseGrade());
 
                 SendGradeMail();
             }
