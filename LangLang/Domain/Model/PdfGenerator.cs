@@ -2,7 +2,7 @@
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
     public class PdfGenerator
     {

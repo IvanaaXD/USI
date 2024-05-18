@@ -44,14 +44,14 @@ namespace LangLang.View.Teacher
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private readonly ExamTerm? examTerm;
-        private readonly Domain.Model.Teacher? teacher;
+        private readonly ExamTerm examTerm;
+        private readonly Domain.Model.Teacher teacher;
         private readonly TeacherController teacherController;
         private readonly StudentsController studentController;
         private readonly ExamTermController examTermController;
         private readonly MainController mainController;
 
-        public ExamTermView(ExamTerm? examTerm, Domain.Model.Teacher? teacher, MainController mainController)
+        public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, MainController mainController)
         {
             InitializeComponent();
             this.examTerm = examTerm;
@@ -234,7 +234,7 @@ namespace LangLang.View.Teacher
 
         private void ConfirmExamTerm_Click(object sender, RoutedEventArgs e)
         {
-            teacherController.ConfirmExamTerm(this.examTerm.ExamID);
+            examTermController.ConfirmExamTerm(examTerm.ExamID);
             MessageBox.Show("ExamTerm confirmed.");
             Update();
         }

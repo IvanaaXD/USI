@@ -14,6 +14,7 @@ namespace LangLang.Controller
         private readonly IDirectorRepository _directors;
         private readonly TeacherDAO? _teachers;
         private readonly StudentGradeDAO? _studentGrades;
+        private readonly PenaltyPointDAO? _penaltyPoints;
 
         public DirectorController(IDirectorRepository directors)
         {
@@ -112,6 +113,7 @@ namespace LangLang.Controller
             teacher?.CoursesId?.Remove(courseId);
             Update(teacher);
         }
+
         public int GetAverageTeacherGrade(int teacherId)
         {
             int result = 0;
@@ -121,6 +123,111 @@ namespace LangLang.Controller
                 result += grade.Value;
             }
             return result == 0 ? 0 : result / teachersGrades.Count;
+        }
+
+        public void GetLanguageReport()
+        {
+            Dictionary<Language, int> numberOfCourses = GetNumberOfCourses();
+            Dictionary<Language, int> numberOfExamTerms = GetNumberOfExamTerms();
+            Dictionary<Language, int> penaltyPoints = new Dictionary<Language, int>();
+            Dictionary<Language, int> values = new Dictionary<Language, int>();
+
+        }
+
+        public Dictionary<Language, int> GetLanguagesInt()
+        {
+            Dictionary<Language, int> languages = new Dictionary<Language, int>();
+            var langs = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
+
+            foreach (Language language in langs)
+            {
+                languages.Add(language, 0);
+            }
+
+            return languages;
+        }
+
+        public Dictionary<Language, double> GetLanguagesDouble()
+        {
+            Dictionary<Language, double> languages = new Dictionary<Language, double>();
+            var langs = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
+
+            foreach (Language language in langs)
+            {
+                languages.Add(language, 0);
+            }
+
+            return languages;
+        }
+
+        public Dictionary<LanguageLevel, int> GetLanguageLevels()
+        {
+            Dictionary<LanguageLevel, int> levels = new Dictionary<LanguageLevel, int>();
+            var languages = Enum.GetValues(typeof(LanguageLevel)).Cast<LanguageLevel>().ToList();
+
+            foreach (LanguageLevel language in languages)
+            {
+                levels.Add(language, 0);
+            }
+
+            return levels;
+        }
+
+        public Dictionary<Language, int> GetNumberOfCourses()
+        {
+            Dictionary<Language, int> numberOfCourses = GetLanguagesInt();
+            var courses = _teachers.FindCoursesByCriteria(Language.NULL, LanguageLevel.NULL, DateTime.Now.AddYears(-1), 0, null);
+
+            foreach (var course in courses)
+                numberOfCourses[course.Language] += 1;
+
+            return numberOfCourses;
+        }
+
+        public Dictionary<Language, int> GetNumberOfExamTerms()
+        {
+            Dictionary<Language, int> numberOfExamTerms = GetLanguagesInt();
+            var examTerms = _teachers.FindExamTermsByCriteria(Language.NULL, LanguageLevel.NULL, DateTime.Now.AddYears(-1));
+
+            foreach (var examTerm in examTerms)
+            {
+                var course = _teachers.GetCourseById(examTerm.CourseID);
+                numberOfExamTerms[course.Language] += 1;
+            }
+
+            return numberOfExamTerms;
+        }
+
+        public Dictionary<Language, double> GetNumberOfPenaltyPoints()
+        {
+            Dictionary<Language, double> numberOfPenaltyPoints = GetLanguagesDouble();
+
+            var penaltyPoints = _penaltyPoints.GetAllPenaltyPoints();
+
+            foreach (var number in numberOfPenaltyPoints)
+            {
+                List<LanguageLevel> levels = new List<LanguageLevel>();
+                int sum = 0;
+
+                foreach (var penaltyPoint in penaltyPoints)
+                {
+                    var course = _teachers.GetCourseById(penaltyPoint.CourseId);
+
+                    if (course.Language == number.Key)
+                    {
+                        if (!levels.Contains(course.Level))
+                        {
+                            levels.Add(course.Level);
+                            sum += 1;
+                        }
+                    }
+                }
+
+                double averageNumber = levels.Count() / sum;
+                numberOfPenaltyPoints.Add(number.Key, averageNumber);
+            }
+
+            return numberOfPenaltyPoints;
         }
     }
 }
