@@ -119,6 +119,10 @@ namespace LangLang.Controller
         {
             return _students.GivePenaltyPoint(studentId);
         }
+        public int GetPenaltyPointCount(int studentId)
+        {
+            return _students.GetPenaltyPointCount(studentId);
+        }
         public Course GetActiveCourse(int studentId)
         {
             return _students.GetActiveCourse(studentId);

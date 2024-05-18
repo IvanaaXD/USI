@@ -386,6 +386,10 @@ namespace LangLang.Repository
             NotifyObservers();
             return true;
         }
+        public int GetPenaltyPointCount(int studentId)
+        {
+            return penaltyPointDAO.GetPenaltyPointsByStudentId(studentId).Count;
+        }
         public void ProcessPenaltyPoints()
         {
             DateTime currentDate = DateTime.Now;

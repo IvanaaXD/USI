@@ -142,6 +142,7 @@ namespace LangLang.View.Teacher
                             dtoStudent.KnowledgeGrade = grade.StudentKnowledgeValue;
                         }
                     }
+                    dtoStudent.PenaltyPoints = studentController.GetPenaltyPointCount(student.Id);
 
                     StudentsTableViewModel.Students.Add(dtoStudent);
                 }
