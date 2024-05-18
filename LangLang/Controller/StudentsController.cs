@@ -167,5 +167,9 @@ namespace LangLang.Controller
         {
             _students.DeactivateStudentAccount(student);
         }
+        public Dictionary<int, Dictionary<Student, double>> GetStudentsAveragePointsPerPenalty()
+        {
+            return _students.GetStudentsAveragePointsPerPenalty();
+        }
     }
 }
