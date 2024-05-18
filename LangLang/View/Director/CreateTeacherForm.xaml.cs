@@ -2,12 +2,10 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
 using System.Collections.Generic;
-using LangLang.Model;
-using System.Windows.Input;
 
 namespace LangLang.View.Director
 {

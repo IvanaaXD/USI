@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using LangLang.Domain.Model;
 using LangLang.Storage;
 using LangLang.Observer;
-using System.Printing;
-using System.Windows.Input;
-using System.Windows;
-using System.Linq.Expressions;
-using LangLang.DTO;
 
-namespace LangLang.Model.DAO
+namespace LangLang.Repository
 {
     public class StudentDAO : Subject
     {
@@ -461,7 +454,7 @@ namespace LangLang.Model.DAO
 
             foreach(Mail mail in unreadReceivedMails)
             {
-                if (mail.TypeOfMessage == Enums.TypeOfMessage.TeacherGradeStudentMessage)
+                if (mail.TypeOfMessage == Domain.Model.Enums.TypeOfMessage.TeacherGradeStudentMessage)
                 {
                     mailDAO.SetMailToAnswered(mail);
                     return mail.CourseId;
@@ -478,7 +471,7 @@ namespace LangLang.Model.DAO
             foreach (Mail mail in unreadReceivedMails)
             {
                 Course course = teacherDAO.GetCourseById(mail.CourseId);
-                if (mail.TypeOfMessage == Enums.TypeOfMessage.AcceptEnterCourseRequestMessage &&
+                if (mail.TypeOfMessage == Domain.Model.Enums.TypeOfMessage.AcceptEnterCourseRequestMessage &&
                     DateTime.Now.Date >= course.StartDate.AddDays(-7).Date)
                 {
                     mailDAO.SetMailToAnswered(mail);

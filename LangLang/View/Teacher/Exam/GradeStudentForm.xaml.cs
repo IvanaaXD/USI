@@ -1,7 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
-using System;
+using LangLang.Domain.Model;
 using System.ComponentModel;
 using System.Windows;
 
@@ -39,12 +38,12 @@ namespace LangLang.View.Teacher
         }
 
         private ExamTerm examTerm;
-        private Model.Teacher teacher;
-        private Model.Student student;
+        private Domain.Model.Teacher teacher;
+        private Domain.Model.Student student;
         private TeacherController teacherController;
         private StudentsController studentController;
 
-        public GradeStudentForm(ExamTerm examTerm, Model.Teacher teacher, Model.Student student, TeacherController teacherController, StudentsController studentController)
+        public GradeStudentForm(ExamTerm examTerm, Domain.Model.Teacher teacher, Domain.Model.Student student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             DataContext = this;

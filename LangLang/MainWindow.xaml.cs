@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using LangLang.View.Director;
 using LangLang.Controller;
-using LangLang.Model;
+using LangLang.Domain.Model;
 using LangLang.View.Teacher;
 using LangLang.View.Student;
 
@@ -84,7 +84,7 @@ namespace LangLang
 
             if (director.Email == email && director.Password == password)
             {
-                DirectorPage directorPage = new DirectorPage(director.Id, directorController);
+                DirectorPage directorPage = new DirectorPage(director.Id, mainController);
                 directorPage.Show();
                 return true;
             }

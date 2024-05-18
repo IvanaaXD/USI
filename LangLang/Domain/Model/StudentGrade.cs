@@ -1,5 +1,4 @@
-﻿using LangLang.Model;
-using LangLang.Storage.Serialization;
+﻿using LangLang.Storage.Serialization;
 
 namespace LangLang.Domain.Model
 {

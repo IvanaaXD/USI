@@ -1,6 +1,6 @@
-﻿using LangLang.Model;
-using LangLang.Model.DAO;
-using LangLang.Model.Enums;
+﻿using LangLang.Domain.Model;
+using LangLang.Repository;
+using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;

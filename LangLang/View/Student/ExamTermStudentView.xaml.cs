@@ -1,14 +1,5 @@
 ﻿using LangLang.Controller;
-using LangLang.DTO;
-using LangLang.Model;
-using LangLang.View.Teacher;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LangLang.Domain.Model;
 using System.Windows;
 
 namespace LangLang.View.Student
@@ -20,10 +11,10 @@ namespace LangLang.View.Student
     {
 
         private readonly ExamTerm examTerm;
-        private readonly Model.Student student;
+        private readonly Domain.Model.Student student;
         private readonly TeacherController teacherController;
 
-        public ExamTermStudentView(ExamTerm examTerm, Model.Student student, TeacherController teacherController, StudentsController studentController)
+        public ExamTermStudentView(ExamTerm examTerm, Domain.Model.Student student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             this.examTerm = examTerm;

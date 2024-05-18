@@ -1,14 +1,13 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
-using LangLang.Model.DAO;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
+using LangLang.Repository;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace LangLang.View.Teacher
 {
@@ -54,7 +53,7 @@ namespace LangLang.View.Teacher
             TableViewModel = new ViewModel();
             teacherController.Subscribe(this);
 
-            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             firstAndLastName.Text = teacher.FirstName + " " + teacher.LastName;
 
             courseLanguageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
@@ -217,7 +216,7 @@ namespace LangLang.View.Teacher
                 }
             }
 
-            Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
 
             List<Course> availableCourses = teacherController.GetAvailableCourses(teacher);
 
@@ -291,7 +290,7 @@ namespace LangLang.View.Teacher
             else
             {
                 ExamTerm examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
-                Model.Teacher teacher = directorController.GetTeacherById(this.teacherId);
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(this.teacherId);
                 ExamTermView examTermView = new ExamTermView(examTerm, teacher, teacherController, studentController);
                 examTermView.Owner = this;
                 this.Visibility = Visibility.Collapsed;

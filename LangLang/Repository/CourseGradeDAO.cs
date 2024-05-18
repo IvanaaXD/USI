@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Markup;
 using LangLang.Observer;
 using LangLang.Storage;
-using LangLang.Model;
+using LangLang.Domain.Model;
 
-namespace LangLang.Model.DAO
+namespace LangLang.Repository
 {
     public class CourseGradeDAO : Subject
     {

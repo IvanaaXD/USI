@@ -1,5 +1,5 @@
 ﻿
-namespace LangLang.Model.Enums
+namespace LangLang.Domain.Model.Enums
 {
     public enum Gender
     {

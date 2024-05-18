@@ -1,6 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +23,7 @@ namespace LangLang.View.Director
         }
         readonly int directorId;
         readonly DirectorService directorController;
+        readonly MainController mainController;
 
         public TeacherDTO? SelectedTeacher { get; set; }
 
@@ -30,17 +31,18 @@ namespace LangLang.View.Director
 
         private bool isSearchButtonClicked = false;
 
-        public DirectorPage(int directorId, DirectorService directorController)
+        public DirectorPage(int directorId, MainController mainController)
         {
             InitializeComponent();
             this.directorId = directorId;
-            this.directorController = directorController;
+            this.mainController = mainController;
+            this.directorController = mainController.GetDirectorController();
 
             TableViewModel = new ViewModel();
             DataContext = this;
             directorController.Subscribe(this);
 
-            Model.Director director = directorController.GetDirector();
+            Domain.Model.Director director = directorController.GetDirector();
             firstAndLastName.Text = director.FirstName + " " + director.LastName;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
@@ -65,7 +67,7 @@ namespace LangLang.View.Director
 
                 if (teachers != null)
                 {
-                    foreach (Model.Teacher teacher in teachers)
+                    foreach (Domain.Model.Teacher teacher in teachers)
                         TableViewModel.Teachers.Add(new TeacherDTO(teacher));
                 }
                 else
@@ -84,11 +86,11 @@ namespace LangLang.View.Director
             try
             {
                 TableViewModel.Teachers.Clear();
-                List<Model.Teacher> teachers = GetFilteredTeachers();
+                List<Domain.Model.Teacher> teachers = GetFilteredTeachers();
 
                 if (teachers != null)
                 {
-                    foreach (Model.Teacher teacher in teachers)
+                    foreach (Domain.Model.Teacher teacher in teachers)
                         TableViewModel.Teachers.Add(new TeacherDTO(teacher));
                 }
                 else
@@ -148,9 +150,9 @@ namespace LangLang.View.Director
             startedWorkDatePicker.SelectedDate = null;
         }
 
-        private List<Model.Teacher> GetFilteredTeachers()
+        private List<Domain.Model.Teacher> GetFilteredTeachers()
         {
-            Language selectedLanguage = Model.Enums.Language.NULL;
+            Language selectedLanguage = Domain.Model.Enums.Language.NULL;
             LanguageLevel selectedLevel = LanguageLevel.NULL;
             DateTime selectedStartDate = DateTime.MinValue;
 
@@ -166,15 +168,15 @@ namespace LangLang.View.Director
             return GetDisplayTeachers(selectedLanguage, selectedLevel, selectedStartDate);
         }
 
-        private List<Model.Teacher> GetDisplayTeachers(Language selectedLanguage, LanguageLevel selectedLevel, DateTime selectedStartDate)
+        private List<Domain.Model.Teacher> GetDisplayTeachers(Language selectedLanguage, LanguageLevel selectedLevel, DateTime selectedStartDate)
         {
-            List<Model.Teacher> finalTeachers = new();
+            List<Domain.Model.Teacher> finalTeachers = new();
 
             if (isSearchButtonClicked)
             {
-                List<Model.Teacher> allFilteredTeachers = directorController.FindTeachersByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                List<Domain.Model.Teacher> allFilteredTeachers = directorController.FindTeachersByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
 
-                foreach (Model.Teacher teacher in allFilteredTeachers)
+                foreach (Domain.Model.Teacher teacher in allFilteredTeachers)
                 {
 
                     finalTeachers.Add(teacher);
@@ -182,7 +184,7 @@ namespace LangLang.View.Director
             }
             else
             {
-                foreach (Model.Teacher teacher in directorController.GetAllTeachers())
+                foreach (Domain.Model.Teacher teacher in directorController.GetAllTeachers())
                 {
                     finalTeachers.Add(teacher);
                 }

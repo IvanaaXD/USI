@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using LangLang.Storage.Serialization;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
     public class Course : ISerializable
     {

@@ -1,9 +1,10 @@
-﻿using LangLang.Model.Enums;
+﻿using LangLang.Domain.Model.Enums;
 using LangLang.Storage.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
     public class Teacher : Employee, ISerializable
     {
@@ -57,8 +58,8 @@ namespace LangLang.Model
 
         public override string[] ToCSV()
         {
-            string languagesCsv = string.Join(",", languages) ;
-            string levelOfLanguagesCsv = string.Join(",", levelOfLanguages);
+            string languagesCsv = string.Join(",", languages ?? Enumerable.Empty<Language>());
+            string levelOfLanguagesCsv = string.Join(",", levelOfLanguages ?? Enumerable.Empty<LanguageLevel>());
             string startedWorkString = startedWork.Date.ToString("yyyy-MM-dd");
             string dateOfBirthString = dateOfBirth.Date.ToString("yyyy-MM-dd");
 

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
-    public class Employee : Person
+   public class Employee : Person
     {
         protected int title;
 

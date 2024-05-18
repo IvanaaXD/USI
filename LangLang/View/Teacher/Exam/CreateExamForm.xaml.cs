@@ -1,8 +1,7 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
-using LangLang.Model.DAO;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,7 +41,7 @@ namespace LangLang.View.Teacher
         public CreateExamForm(TeacherController teacherController, DirectorService directorController, int teacherId)
         {
             InitializeComponent();
-            Model.Teacher teacher= directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher= directorController.GetTeacherById(teacherId);
             ExamTerm = new ExamTermDTO(teacherController, teacher);
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             
@@ -75,7 +74,7 @@ namespace LangLang.View.Teacher
 
         private void PickLanguageAndLevel()
         {
-            Language lang = Model.Enums.Language.German;
+            Language lang = Domain.Model.Enums.Language.German;
             LanguageLevel lvl = LanguageLevel.A1;
 
             if (languageComboBox.SelectedItem != null)
@@ -101,7 +100,7 @@ namespace LangLang.View.Teacher
                 {
                     MessageBox.Show("Invalid language and level format.");
                 }
-                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
                 List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
                 foreach (Course course in courses)
@@ -145,7 +144,7 @@ namespace LangLang.View.Teacher
             if (ExamTerm.IsValid)
             {
                 int examId = teacherController.GetAllExamTerms().Last().ExamID;
-                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
                 List<Course> courses = teacherController.GetAvailableCourses(teacher);
 
                 foreach (Course course in courses)

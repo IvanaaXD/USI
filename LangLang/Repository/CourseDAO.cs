@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection;
-using System.Windows.Input;
+using LangLang.Domain.Model;
 using LangLang.Controller;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
+using LangLang.Domain.IRepository;
 
-namespace LangLang.Model.DAO
+namespace LangLang.Repository
 {
     public class CourseDAO : Subject
     {

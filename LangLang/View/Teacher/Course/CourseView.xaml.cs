@@ -1,6 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.ObjectModel;
@@ -69,12 +69,12 @@ namespace LangLang.View.Teacher
         }
 
         private readonly Course course;
-        private readonly Model.Teacher teacher;
+        private readonly Domain.Model.Teacher teacher;
         private readonly TeacherController teacherController;
         private readonly StudentsController studentController;
         private readonly CourseController courseController;
 
-        public CourseView(Course course, Model.Teacher teacher, MainController mainController)
+        public CourseView(Course course, Domain.Model.Teacher teacher, MainController mainController)
         {
             InitializeComponent();
             this.course = course;
@@ -118,7 +118,7 @@ namespace LangLang.View.Teacher
             var students = courseController.GetCourseStudents(studentController, course);
 
             if (students != null)
-                foreach (Model.Student student in students)
+                foreach (Domain.Model.Student student in students)
                 {
                     StudentDTO dtoStudent = new StudentDTO(student);
                     dtoStudent.ActivityGrade = 0;
@@ -232,7 +232,7 @@ namespace LangLang.View.Teacher
             else
             {
                 StudentDTO selected = SelectedStudent;
-                Model.Student student = studentController.GetStudentById(selected.id);
+                Domain.Model.Student student = studentController.GetStudentById(selected.id);
 
                 if (SelectedStudent.AddedToCourse == true)
                     MessageBox.Show("Student has been added to the course already.");
@@ -243,7 +243,7 @@ namespace LangLang.View.Teacher
 
                     MailToSend.Sender = teacher.Email;
                     MailToSend.Receiver = student.Email;
-                    MailToSend.TypeOfMessage = Model.Enums.TypeOfMessage.AcceptEnterCourseRequestMessage;
+                    MailToSend.TypeOfMessage = Domain.Model.Enums.TypeOfMessage.AcceptEnterCourseRequestMessage;
                     MailToSend.DateOfMessage = DateTime.Now;
                     MailToSend.CourseId = course.Id;
                     MailToSend.Message = "You have been accepted to course " + course.Language.ToString() + " " + course.Level.ToString();
@@ -264,7 +264,7 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Please choose a student to reject from a course!");
             else
             {
-                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+                Domain.Model.Student student = studentController.GetStudentById(SelectedStudent.id);
 
                 if (SelectedStudent.AddedToCourse == true)
                     MessageBox.Show("Student has been added to the course already.");
@@ -287,7 +287,7 @@ namespace LangLang.View.Teacher
 
             else
             {
-                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+                Domain.Model.Student student = studentController.GetStudentById(SelectedStudent.id);
                 CoursePenaltyPointForm penaltyPointForm = new CoursePenaltyPointForm(course, teacher, student, teacherController, studentController);
                 penaltyPointForm.Closed += RefreshPage;
 
@@ -306,7 +306,7 @@ namespace LangLang.View.Teacher
 
             else
             {
-                Model.Student student = studentController.GetStudentById(SelectedStudent.id);
+                Domain.Model.Student student = studentController.GetStudentById(SelectedStudent.id);
                 GradeStudentCourseForm gradeStudentForm = new GradeStudentCourseForm(course, teacher, student, teacherController, studentController);
 
                 gradeStudentForm.Closed += RefreshPage;
@@ -323,7 +323,7 @@ namespace LangLang.View.Teacher
             Update();
         }
 
-        private void KickStudentOut(Model.Student student)
+        private void KickStudentOut(Domain.Model.Student student)
         {
             student.ActiveCourseId = -1;
             studentController.Update(student);
@@ -336,7 +336,7 @@ namespace LangLang.View.Teacher
             {
                 MailDTO mail = SelectedReceivedMail;
                 teacherController.AnswerMail(mail.Id);
-                Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
+                Domain.Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
 
                 KickStudentOut(studentSender);
 
@@ -356,7 +356,7 @@ namespace LangLang.View.Teacher
             {
                 MailDTO mail = SelectedReceivedMail;
                 teacherController.AnswerMail(mail.Id);
-                Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
+                Domain.Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
                 studentController.GivePenaltyPoint(studentSender.Id);
                 studentSender = studentController.GetStudentByEmail(mail.Sender);
 
@@ -380,7 +380,7 @@ namespace LangLang.View.Teacher
                 receivedMailTypeTextBlock.Text = SelectedReceivedMail.TypeOfMessage.ToString();
                 receivedMailMessageTextBlock.Text = SelectedReceivedMail.Message;
 
-                if (SelectedReceivedMail.TypeOfMessage == Model.Enums.TypeOfMessage.QuitCourseRequest && SelectedReceivedMail.Answered == false)
+                if (SelectedReceivedMail.TypeOfMessage == Domain.Model.Enums.TypeOfMessage.QuitCourseRequest && SelectedReceivedMail.Answered == false)
                 {
                     approveDropOut.Visibility = Visibility.Visible;
                     rejectDropOut.Visibility = Visibility.Visible;

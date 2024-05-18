@@ -1,6 +1,6 @@
 ﻿using LangLang.Storage.Serialization;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
     public class CourseGrade : Grade, ISerializable
     {

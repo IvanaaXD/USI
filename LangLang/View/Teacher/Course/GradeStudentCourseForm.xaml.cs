@@ -1,6 +1,5 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
 using System;
 using System.ComponentModel;
 using System.Windows;
@@ -38,13 +37,13 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private Model.Course course;
-        private Model.Teacher teacher;
-        private Model.Student student;
+        private Domain.Model.Course course;
+        private Domain.Model.Teacher teacher;
+        private Domain.Model.Student student;
         private TeacherController teacherController;
         private StudentsController studentController;
 
-        public GradeStudentCourseForm(Model.Course course, Model.Teacher teacher, Model.Student student, TeacherController teacherController, StudentsController studentController)
+        public GradeStudentCourseForm(Domain.Model.Course course, Domain.Model.Teacher teacher, Domain.Model.Student student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             DataContext = this;
@@ -67,10 +66,10 @@ namespace LangLang.View.Teacher
         }
         public void SendGradeMail()
         {
-            Mail mail = new();
+            Domain.Model.Mail mail = new Domain.Model.Mail();
             mail.Sender = teacher.Email;
             mail.Receiver = student.Email;
-            mail.TypeOfMessage = Model.Enums.TypeOfMessage.TeacherGradeStudentMessage;
+            mail.TypeOfMessage = Domain.Model.Enums.TypeOfMessage.TeacherGradeStudentMessage;
             mail.DateOfMessage = DateTime.Now;
             mail.CourseId = course.Id;
             mail.Message = "Your final grade from course " + course.Language.ToString() + " " + course.Level.ToString() + " is " + activityValueTextBox.Text +

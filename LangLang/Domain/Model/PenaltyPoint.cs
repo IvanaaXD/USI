@@ -1,12 +1,7 @@
-﻿using LangLang.Model.Enums;
-using LangLang.Storage.Serialization;
+﻿using LangLang.Storage.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
     public class PenaltyPoint : ISerializable
     {

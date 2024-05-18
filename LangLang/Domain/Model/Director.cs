@@ -1,7 +1,7 @@
 ﻿using System;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
     public class Director : Employee
     {

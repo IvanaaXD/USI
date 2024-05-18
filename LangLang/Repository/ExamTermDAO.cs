@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
 using LangLang.Controller;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
 using System.Collections.Generic;
+using LangLang.Domain.Model;
 
-namespace LangLang.Model.DAO
+namespace LangLang.Repository
 {
     public class ExamTermDAO : Subject
     {

@@ -1,7 +1,6 @@
 ﻿using LangLang.Controller;
-using LangLang.Model;
-using LangLang.Model.DAO;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model;
+using LangLang.Repository;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

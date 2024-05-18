@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Markup;
-using LangLang.Model.Enums;
-using LangLang.Storage.Serialization;
+using LangLang.Domain.Model.Enums;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
     public class Student : Person
     {

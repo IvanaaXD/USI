@@ -1,6 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.ObjectModel;
@@ -45,11 +45,11 @@ namespace LangLang.View.Teacher
         }
 
         private readonly ExamTerm examTerm;
-        private readonly Model.Teacher teacher;
+        private readonly Domain.Model.Teacher teacher;
         private readonly TeacherController teacherController;
         private readonly StudentsController studentController;
 
-        public ExamTermView(ExamTerm examTerm, Model.Teacher teacher, TeacherController teacherController, StudentsController studentController)
+        public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             this.examTerm = examTerm;
@@ -84,7 +84,7 @@ namespace LangLang.View.Teacher
 
                 if (students != null)
                 {
-                    foreach (Model.Student student in students)
+                    foreach (Domain.Model.Student student in students)
                     {
                         StudentDTO studentDTO = new StudentDTO(student);
                         studentDTO = CheckStudentsGrades(studentDTO);
@@ -213,7 +213,7 @@ namespace LangLang.View.Teacher
         {
             var examTermStudents = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
            
-            foreach(Model.Student student in examTermStudents)
+            foreach(Domain.Model.Student student in examTermStudents)
             {
                 if (selectedStudent.id == student.Id)
                 {
@@ -253,7 +253,7 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("This student is already graded!");
             else
             {
-                Model.Student? student = studentController.GetStudentById(SelectedStudent.id);
+                Domain.Model.Student? student = studentController.GetStudentById(SelectedStudent.id);
                 GradeStudentForm gradeStudentForm = new GradeStudentForm(examTerm, teacher, student, teacherController, studentController);
 
                 gradeStudentForm.Closed += RefreshPage;

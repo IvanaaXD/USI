@@ -1,4 +1,4 @@
-﻿using LangLang.Model;
+﻿using LangLang.Domain.Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

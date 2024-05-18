@@ -1,5 +1,5 @@
 ﻿using LangLang.Controller;
-using LangLang.Model;
+using LangLang.Domain.Model;
 using System;
 using System.Windows;
 
@@ -26,7 +26,7 @@ namespace LangLang.View.Student
  
         private void SetWelcomeHeading()
         {
-            Model.Student student = studentController.GetStudentById(studentId);
+            Domain.Model.Student student = studentController.GetStudentById(studentId);
             welcomeTextBlock.Text = welcomeTextBlock.Text + " " + student.FirstName;
         }
         private void SetStudentInformations()
@@ -118,7 +118,7 @@ namespace LangLang.View.Student
 
         private void UpdateAccount_Click(object sender, RoutedEventArgs e)
         {
-            Model.Student student = studentController.GetStudentById(studentId);
+            Domain.Model.Student student = studentController.GetStudentById(studentId);
             if (student.ActiveCourseId != -1 || student.RegisteredExamsIds.Count != 0)
             {
                 MessageBox.Show("The student cannot change the data.");
