@@ -1,10 +1,10 @@
-﻿using LangLang.Model.DAO;
-using LangLang.Model;
+﻿using LangLang.Repository;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 
 namespace LangLang.Controller
 {
@@ -167,17 +167,17 @@ namespace LangLang.Controller
 
             return !overlappingExams.Any();
         }
-        public bool ValidateCourseTimeslot(Course course, Teacher teacher)
+        public bool ValidateCourseTimeslot(Domain.Model.Course course, Domain.Model.Teacher teacher)
         {
             bool isOverlap = CheckCourseOverlap(course, teacher);
             if (!isOverlap)
                 return isOverlap;
             return true;
         }
-        private bool CheckCourseOverlap(Course course, Teacher teacher)
+        private bool CheckCourseOverlap(Domain.Model.Course course, Domain.Model.Teacher teacher)
         {
-            List<Course> allAvailableCourses = _teachers.GetAllCourses();
-            List<ExamTerm> allAvailableExams = _teachers.GetAllExamTerms();
+            List<Domain.Model.Course> allAvailableCourses = _teachers.GetAllCourses();
+            List<Domain.Model.ExamTerm> allAvailableExams = _teachers.GetAllExamTerms();
 
             bool isSameTeacherCourseOverlap = _teachers.CheckTeacherCoursesOverlap(course, teacher);
             if (isSameTeacherCourseOverlap)

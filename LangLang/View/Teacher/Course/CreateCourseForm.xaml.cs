@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
 using System.ComponentModel;
@@ -143,7 +143,7 @@ namespace LangLang.View.Teacher
             if (Course.IsValid)
             {
                 int courseId = teacherController.GetAllCourses().Last().Id;
-                Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
                 teacher.CoursesId.Add(courseId + 1);
                 directorController.Update(teacher);
                 teacherController.AddCourse(Course.ToCourse());

@@ -1,4 +1,4 @@
-﻿using LangLang.Model;
+﻿using LangLang.Domain.Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -16,9 +16,9 @@ namespace LangLang.DTO
         private int speakingPoints;
         private int writingPoints;
         private int listeningPoints;
-        private string firstName;
-        private string lastName;
-        private string email;
+        private string? firstName;
+        private string? lastName;
+        private string? email;
 
         public int Id
         {
@@ -74,32 +74,32 @@ namespace LangLang.DTO
             set { SetProperty(ref listeningPoints, value); }
         }
 
-        public string FirstName
+        public string? FirstName
         {
             get { return firstName; }
             set { SetProperty(ref firstName, value); }
         }
 
-        public string LastName
+        public string? LastName
         {
             get { return lastName; }
             set { SetProperty(ref lastName, value); }
         }
 
-        public string Email
+        public string? Email
         {
             get { return email; }
             set { SetProperty(ref email, value); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))
             {

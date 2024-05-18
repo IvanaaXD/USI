@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using LangLang.Model.Enums;
-using System.Xml.Linq;
-using LangLang.Model;
-using System.Security;
+using LangLang.Domain.Model.Enums;
+using LangLang.Domain.Model;
 
 namespace LangLang.DTO
 {

@@ -1,9 +1,8 @@
-﻿using LangLang.Model.Enums;
+﻿using LangLang.Domain.Model.Enums;
 using System;
 using LangLang.Storage.Serialization;
-using LangLang.Controller;
 
-namespace LangLang.Model
+namespace LangLang.Domain.Model
 {
     public class Mail : ISerializable
     {

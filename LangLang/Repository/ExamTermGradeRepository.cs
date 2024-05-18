@@ -2,8 +2,9 @@
 using System.Linq;
 using LangLang.Observer;
 using LangLang.Storage;
+using LangLang.Domain.Model;
 
-namespace LangLang.Model.DAO
+namespace LangLang.Repository
 {
     public class ExamTermGradeRepository : Subject
     {

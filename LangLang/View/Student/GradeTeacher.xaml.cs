@@ -1,7 +1,9 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
+using LangLang.Domain.Model;
+using LangLang.Repository;
 using System.Windows;
+using LangLang.Domain.IRepository;
 
 namespace LangLang.View.Student
 {
@@ -14,7 +16,7 @@ namespace LangLang.View.Student
         private int studentId, courseId, teacherId;
         private TeacherController teacherController;
         private StudentsController studentController;
-        private DirectorService directorController;
+        private DirectorService directorService;
 
         public GradeTeacher(int studentId, int courseId)
         {
@@ -22,7 +24,8 @@ namespace LangLang.View.Student
 
             teacherController = new TeacherController();
             studentController = new StudentsController();
-            directorController = new DirectorService();
+            IDirectorRepository directorRepository = new DirectorRepository();
+            directorService = new DirectorService(directorRepository);
 
             this.studentId = studentId;
             this.courseId = courseId;
@@ -37,7 +40,7 @@ namespace LangLang.View.Student
 
         private void InitializeDTO()
         {
-            Model.Teacher teacher = directorController.GetTeacherByCourse(courseId);
+            Domain.Model.Teacher teacher = directorService.GetTeacherByCourse(courseId);
             this.teacherId = teacher.Id;
             teacherGrade = new StudentGradeDTO(teacher);
         }

@@ -1,12 +1,11 @@
 using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 

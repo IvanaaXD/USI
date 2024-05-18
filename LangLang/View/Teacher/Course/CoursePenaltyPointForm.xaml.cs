@@ -1,12 +1,10 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
 using System;
 using System.ComponentModel;
 using System.Windows;
-using LangLang.Model.Enums;
-using System.Security.RightsManagement;
-using System.Drawing;
+using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
 
 namespace LangLang.View.Teacher
 {
@@ -31,8 +29,8 @@ namespace LangLang.View.Teacher
         }
 
         private Course course;
-        private Model.Teacher teacher;
-        private Model.Student student;
+        private Domain.Model.Teacher teacher;
+        private Domain.Model.Student student;
         private TeacherController teacherController;
         private StudentsController studentController;
 
@@ -40,7 +38,7 @@ namespace LangLang.View.Teacher
         private bool _isSecondOptionSelected;
         private bool _isThirdOptionSelected;
 
-        public CoursePenaltyPointForm(Course course, Model.Teacher teacher, Model.Student student, TeacherController teacherController, StudentsController studentController)
+        public CoursePenaltyPointForm(Course course,Domain.Model.Teacher teacher, Domain.Model.Student student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             DataContext = this;

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LangLang.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
+using LangLang.Domain.Model;
+using LangLang.Domain.IRepository;
 
-namespace LangLang.Model.DAO
+namespace LangLang.Repository
 {
-    public class DirectorRepository : Subject
+    public class DirectorRepository : Subject, IDirectorRepository
     {
         private readonly List<Teacher> _teachers;
         private readonly List<Director> _director;
@@ -16,7 +17,8 @@ namespace LangLang.Model.DAO
 
         private TeacherDAO teacherDAO;
 
-        public DirectorRepository() {
+        public DirectorRepository()
+        {
             _storageTeacher = new Storage<Teacher>("teachers.csv");
             _storageDirector = new Storage<Director>("director.csv");
             _teachers = _storageTeacher.Load();
@@ -33,26 +35,6 @@ namespace LangLang.Model.DAO
         {
             if (_teachers.Count == 0) return 0;
             return _teachers.Last().Id + 1;
-        }
-
-        public List<Course> GetAvailableCourses(int teacherId)
-        {
-            Teacher teacher = GetTeacherById(teacherId);
-            List<Course> allCourses = teacherDAO.GetAllCourses();
-            List<int> allTeacherCourses = teacher.CoursesId;
-            DateTime currentTime = DateTime.Now;
-
-            List<Course> availableCourses = new List<Course>();
-
-            foreach (Course course in allCourses)
-            {
-                if (allTeacherCourses.Contains(course.Id))
-                {
-                    availableCourses.Add(course);
-                }
-            }
-
-            return availableCourses;
         }
 
         public Teacher AddTeacher(Teacher teacher)
@@ -92,7 +74,7 @@ namespace LangLang.Model.DAO
         {
             Teacher teacher = GetTeacherById(id);
             if (teacher == null) return null;
-            foreach(int courseid in teacher.CoursesId)
+            foreach (int courseid in teacher.CoursesId)
             {
                 teacherDAO.RemoveCourse(courseid);
             }
@@ -113,40 +95,9 @@ namespace LangLang.Model.DAO
             return _teachers;
         }
 
-        public bool IsEmailUnique(string email)
+        public void Update()
         {
-            foreach (Teacher teacher in _teachers)
-            {
-                if (teacher.Email.Equals(email)) return false;
-            }
-            return true;
-        }
-
-        public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)
-        {
-            List<Teacher> teachers = GetAllTeachers();
-
-            var filteredTeachers = teachers.Where(teacher =>
-                (language == Model.Enums.Language.NULL || teacher.Languages.Contains(language)) &&
-                (levelOfLanguage == Model.Enums.LanguageLevel.NULL || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
-                (startedWork == DateTime.MinValue || teacher.StartedWork.Date >= startedWork.Date)
-            ).ToList();
-
-            return filteredTeachers;
-        }
-        public Teacher? GetTeacherByCourse(int courseId)
-        {
-            foreach(Teacher teacher in GetAllTeachers())
-                foreach(int teacherCourseId in teacher.CoursesId)
-                    if (teacherCourseId == courseId) return teacher;
-
-            return null;
-        }
-        public void RemoveCourseFromList(int teacherId, int courseId)
-        {
-            Teacher teacher = GetTeacherById(teacherId);
-            teacher.CoursesId.Remove(courseId);
-            UpdateTeacher(teacher);
+            throw new NotImplementedException();
         }
     }
 }

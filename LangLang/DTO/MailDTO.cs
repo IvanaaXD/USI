@@ -1,9 +1,9 @@
-﻿using LangLang.Model.Enums;
+﻿using LangLang.Domain.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using LangLang.Model;
+using LangLang.Domain.Model;
 
 namespace LangLang.DTO
 {

@@ -1,6 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

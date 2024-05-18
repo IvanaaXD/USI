@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
-using LangLang.Model.Enums;
-using LangLang.Model;
+using LangLang.Domain.Model.Enums;
+using LangLang.Domain.Model;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using LangLang.Controller;
-
+using LangLang.Repository;
+using LangLang.Domain.IRepository;
 
 namespace LangLang.DTO
 {
@@ -234,10 +235,11 @@ namespace LangLang.DTO
                         if (!_EmailRegex.IsMatch(Email))
                             return "Format not good. Try again.";
 
-                        DirectorService directorController = new DirectorService();
+                        IDirectorRepository directorRepository = new DirectorRepository();
+                        DirectorService directorService = new DirectorService(directorRepository);
                         StudentsController studentsController = new StudentsController();
 
-                        foreach (Teacher teacher in directorController.GetAllTeachers())
+                        foreach (Teacher teacher in directorService.GetAllTeachers())
                         {
                             if (teacher.Email.Equals(Email) && teacher.Id != Id)
                                 return "Email already exists. Try again.";
@@ -254,10 +256,11 @@ namespace LangLang.DTO
                         if (string.IsNullOrEmpty(Password))
                             return "Password is required";
 
-                        directorController = new DirectorService();
+                        directorRepository = new DirectorRepository();
+                        directorService = new DirectorService(directorRepository);
                         studentsController = new StudentsController();
 
-                        foreach (Teacher teacher in directorController.GetAllTeachers())
+                        foreach (Teacher teacher in directorService.GetAllTeachers())
                         {
                             if (teacher.Password.Equals(Password) && teacher.Id != Id)
                                 return "Email already exists. Try again.";

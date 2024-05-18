@@ -1,13 +1,10 @@
 ﻿using LangLang.Observer;
 using LangLang.Storage;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
+using LangLang.Domain.Model;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LangLang.Model.DAO
+namespace LangLang.Repository
 {
     public class PenaltyPointDAO : Subject
     {

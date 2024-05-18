@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LangLang.Model;
-using LangLang.Model.DAO;
+﻿using System.Collections.Generic;
+using LangLang.Repository;
 using LangLang.Observer;
 using LangLang.Domain.Model;
 

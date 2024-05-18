@@ -1,19 +1,22 @@
 ﻿using LangLang.Observer;
 using System;
 using System.Collections.Generic;
-using LangLang.Model.DAO;
-using LangLang.Model;
-using LangLang.Model.Enums;
+using LangLang.Repository;
+using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
+using System.Linq;
+using LangLang.Domain.IRepository;
 
 namespace LangLang.Controller
 {
     public class DirectorService
     {
-        private readonly DirectorRepository _directors;
+        private readonly IDirectorRepository _directors;
+        private readonly TeacherDAO? _teachers;
 
-        public DirectorService()
+        public DirectorService(IDirectorRepository directors)
         {
-            _directors = new DirectorRepository();
+            _directors = directors ?? throw new ArgumentNullException(nameof(directors));
         }
 
         public Director GetDirector()
@@ -31,14 +34,14 @@ namespace LangLang.Controller
             return _directors.GetAllTeachers();
         }
 
-        public bool IsEmailUnique(string email)
-        {
-            return _directors.IsEmailUnique(email);
-        }
-
         public void Add(Teacher teacher)
         {
             _directors.AddTeacher(teacher);
+        }
+
+        public void Update(Teacher teacher)
+        {
+            _directors.UpdateTeacher(teacher);
         }
 
         public void Delete(int teacherId)
@@ -46,33 +49,58 @@ namespace LangLang.Controller
             _directors.RemoveTeacher(teacherId);
         }
 
-        public List<Course> GetAvailableCourses(int teacherId)
-        {
-            return _directors.GetAvailableCourses(teacherId);
-        }
-
-        public void Update(Teacher teacher)
-        {
-            _directors.UpdateTeacher(teacher);
-
-        }
-
         public void Subscribe(IObserver observer)
         {
             _directors.Subscribe(observer);
         }
 
-        public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel level, DateTime startedWork)
+        public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)
         {
-            return _directors.FindTeachersByCriteria(language, level, startedWork);
+            List<Teacher> teachers = GetAllTeachers();
+
+            var filteredTeachers = teachers.Where(teacher =>
+                (language == Language.NULL || teacher.Languages.Contains(language)) &&
+                (levelOfLanguage == LanguageLevel.NULL || teacher.LevelOfLanguages.Contains(levelOfLanguage)) &&
+                (startedWork == DateTime.MinValue || teacher.StartedWork.Date >= startedWork.Date)
+            ).ToList();
+
+            return filteredTeachers;
         }
-        public Teacher GetTeacherByCourse(int courseId)
+
+        public Teacher? GetTeacherByCourse(int courseId)
         {
-            return _directors.GetTeacherByCourse(courseId);
+            foreach (Teacher teacher in GetAllTeachers())
+                foreach (int teacherCourseId in teacher.CoursesId)
+                    if (teacherCourseId == courseId) return teacher;
+
+            return null;
         }
+
+        public List<Course> GetAvailableCourses(int teacherId)
+        {
+            Teacher teacher = GetTeacherById(teacherId);
+            List<Course> allCourses = _teachers.GetAllCourses();
+            List<int> allTeacherCourses = teacher.CoursesId;
+            DateTime currentTime = DateTime.Now;
+
+            List<Course> availableCourses = new List<Course>();
+
+            foreach (Course course in allCourses)
+            {
+                if (allTeacherCourses.Contains(course.Id))
+                {
+                    availableCourses.Add(course);
+                }
+            }
+
+            return availableCourses;
+        }
+
         public void RemoveCourseFromList(int teacherId, int courseId)
         {
-            _directors.RemoveCourseFromList(teacherId, courseId);
+            Teacher teacher = GetTeacherById(teacherId);
+            teacher.CoursesId.Remove(courseId);
+            Update(teacher);
         }
     }
 }

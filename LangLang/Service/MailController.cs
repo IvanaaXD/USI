@@ -1,11 +1,7 @@
-﻿using LangLang.Model.DAO;
-using LangLang.Model;
+﻿using LangLang.Repository;
+using LangLang.Domain.Model;
 using LangLang.Observer;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LangLang.Controller
 {
