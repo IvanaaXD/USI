@@ -19,6 +19,7 @@ namespace LangLang.Model.DAO
         private readonly List<Student> _students;
         private readonly Storage<Student> _storage;
         private TeacherDAO teacherDAO;
+        private PenaltyPointDAO penaltyPointDAO;
         private MailDAO mailDAO;
 
         public StudentDAO()
@@ -26,6 +27,7 @@ namespace LangLang.Model.DAO
             _storage = new Storage<Student>("students.csv");
             _students = _storage.Load();
             teacherDAO = new TeacherDAO();
+            penaltyPointDAO = new PenaltyPointDAO();    
             mailDAO = new MailDAO();
         }
 
@@ -57,7 +59,6 @@ namespace LangLang.Model.DAO
             oldStudent.Email = student.Email;
             oldStudent.Password = student.Password;
             oldStudent.EducationLevel = student.EducationLevel;
-            oldStudent.PenaltyPoints = student.PenaltyPoints;
             oldStudent.ActiveCourseId = student.ActiveCourseId;
             oldStudent.PassedExamsIds = student.PassedExamsIds;
             oldStudent.RegisteredCoursesIds = student.RegisteredCoursesIds;
@@ -376,13 +377,13 @@ namespace LangLang.Model.DAO
 
             return false;
         }
-
-
         public bool GivePenaltyPoint(int studentId)
         {
             Student student = GetStudentById(studentId);
-            ++student.PenaltyPoints;
-            if (student.PenaltyPoints == 3)
+            penaltyPointDAO.AddPenaltyPoint(new PenaltyPoint(studentId, student.ActiveCourseId, DateTime.Now, false));
+
+            List<PenaltyPoint> penaltyPoints = penaltyPointDAO.GetPenaltyPointsByStudentId(studentId);
+            if (penaltyPoints.Count == 3)
             {
                 DeactivateStudentAccount(student);
             }
@@ -398,20 +399,18 @@ namespace LangLang.Model.DAO
             {
                 foreach (Student student in _students)
                 {
-                    if (student.PenaltyPoints > 0)
+                    List<PenaltyPoint> deletedPoints = penaltyPointDAO.GetDeletedPenaltyPointsByStudentId(student.Id);
+                    if (deletedPoints.Count > 0)
                     {
-                        student.PenaltyPoints--;
-                        if (student.PenaltyPoints == 3)
-                        {
-                            DeactivateStudentAccount(student);
-                        }
+                        PenaltyPoint point = deletedPoints[0];
+                        point.IsDeleted = true;
+                        penaltyPointDAO.UpdatePenaltyPoint(point);
                     }
                 }
                 _storage.Save(_students);
                 NotifyObservers();
             }
         }
-
         public void DeactivateStudentAccount(Student student)
         {
             if (student.ActiveCourseId != -1)
@@ -499,11 +498,6 @@ namespace LangLang.Model.DAO
         {
             Student student = GetStudentById(studentId);
             return student.PassedExamsIds.Count;
-        }
-        public int GetPenaltyPointsNumber(int studentId)
-        {
-            Student student = GetStudentById(studentId);
-            return student.PenaltyPoints;
         }
 
     }

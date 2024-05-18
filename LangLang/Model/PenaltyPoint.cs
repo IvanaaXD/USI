@@ -45,10 +45,9 @@ namespace LangLang.Model
             set { isDeleted = value; }
         }
         public PenaltyPoint() { }
-        
-        protected PenaltyPoint(int id, int studentId, int courseId, DateTime dateSent, bool isDeleted)
+
+        public PenaltyPoint(int studentId, int courseId, DateTime dateSent, bool isDeleted)
         {
-            this.id = id;
             this.studentId = studentId;
             this.courseId = courseId;
             this.dateSent = dateSent;

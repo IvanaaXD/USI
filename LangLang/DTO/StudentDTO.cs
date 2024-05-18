@@ -239,7 +239,6 @@ namespace LangLang.DTO
             Email = student.Email;
             SelectedEducationLevel = student.EducationLevel;
             Password = student.Password;
-            PenaltyPoints = student.PenaltyPoints;
         }
 
         protected virtual void OnPropertyChanged(string name)
