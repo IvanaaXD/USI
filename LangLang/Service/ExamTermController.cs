@@ -13,13 +13,13 @@ namespace LangLang.Controller
     public class ExamTermController
     {
         private readonly ExamTermDAO _exams;
-        private readonly ExamTermGradeDAO _examTermGrades;
+        private readonly ExamTermGradeRepository _examTermGrades;
         private readonly TeacherController teacherController;
 
         public ExamTermController(TeacherController teacherController)
         {
             _exams = new ExamTermDAO(teacherController);
-            _examTermGrades = new ExamTermGradeDAO();
+            _examTermGrades = new ExamTermGradeRepository();
             this.teacherController = teacherController;
         }
         public ExamTerm? GetExamTermById(int examId)

@@ -18,7 +18,7 @@ namespace LangLang.Model.DAO
 
         private readonly StudentsController studentController;
         private readonly TeacherController teacherController;
-        private readonly DirectorController directorController;
+        private readonly DirectorService directorController;
 
         public MailDAO()
         {

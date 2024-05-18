@@ -35,10 +35,10 @@ namespace LangLang.View.Teacher
         }
 
         private TeacherController teacherController;
-        private readonly DirectorController directorController;
+        private readonly DirectorService directorController;
         private int teacherId;
 
-        public CreateCourseForm(TeacherController teacherController, DirectorController directorController, int teacherId)
+        public CreateCourseForm(TeacherController teacherController, DirectorService directorController, int teacherId)
         {
             InitializeComponent();
 

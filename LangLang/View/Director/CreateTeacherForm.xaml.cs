@@ -34,9 +34,9 @@ namespace LangLang.View.Director
             }
         }
 
-        private readonly DirectorController? directorController;
+        private readonly DirectorService? directorController;
 
-        public CreateTeacherFrom(DirectorController directorController)
+        public CreateTeacherFrom(DirectorService directorController)
         {
             InitializeComponent();
             Teacher = new TeacherDTO();

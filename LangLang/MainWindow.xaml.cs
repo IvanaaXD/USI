@@ -14,7 +14,7 @@ namespace LangLang
     public partial class MainWindow : Window
     {
         private StudentsController studentController { get; set; }
-        private DirectorController directorController { get; set; }
+        private DirectorService directorController { get; set; }
         private MainController mainController { get; set; }
 
         public MainWindow()

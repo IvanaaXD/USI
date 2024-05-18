@@ -5,12 +5,12 @@ using LangLang.Storage;
 
 namespace LangLang.Model.DAO
 {
-    public class ExamTermGradeDAO : Subject
+    public class ExamTermGradeRepository : Subject
     {
         private readonly List<ExamTermGrade> _grades;
         private readonly Storage<ExamTermGrade> _storage;
 
-        public ExamTermGradeDAO()
+        public ExamTermGradeRepository()
         {
             _storage = new Storage<ExamTermGrade>("examTermGrades.csv");
             _grades = _storage.Load();

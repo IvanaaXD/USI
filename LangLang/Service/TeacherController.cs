@@ -11,13 +11,13 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly TeacherDAO _teachers;
-        private readonly ExamTermGradeDAO _examTermGrades;
+        private readonly ExamTermGradeRepository _examTermGrades;
         private readonly CourseGradeDAO _courseGrades;
 
         public TeacherController()
         {
             _teachers = new TeacherDAO();
-            _examTermGrades = new ExamTermGradeDAO();
+            _examTermGrades = new ExamTermGradeRepository();
             _courseGrades = new CourseGradeDAO();
         }
         public Course? GetCourseById(int courseId)
