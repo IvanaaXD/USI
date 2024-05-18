@@ -20,7 +20,9 @@ namespace LangLang.Controller
             _directorController = new DirectorController(directorRepository);
 
             _courseController = new CourseController(_teacherController);
-            _examTermController = new ExamTermController(_teacherController);
+
+            IExamTermGradeRepository examTermGradeRepository = new ExamTermGradeRepository();
+            _examTermController = new ExamTermController(_teacherController, examTermGradeRepository);
         }
 
         public StudentsController GetStudentController()
