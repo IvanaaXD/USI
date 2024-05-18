@@ -6,11 +6,11 @@ namespace LangLang.Domain.IRepository
 {
     public interface IDirectorRepository : IObserver
     {
-        Director GetDirector();
+        Director? GetDirector();
         Teacher AddTeacher(Teacher teacher);
-        Teacher UpdateTeacher(Teacher teacher);
-        Teacher RemoveTeacher(int id);
-        Teacher GetTeacherById(int id);
+        Teacher? UpdateTeacher(Teacher? teacher);
+        Teacher? RemoveTeacher(int id);
+        Teacher? GetTeacherById(int id);
         List<Teacher> GetAllTeachers();
         void Subscribe(IObserver observer);
     }

@@ -22,7 +22,7 @@ namespace LangLang.View.Director
             }
         }
         readonly int directorId;
-        readonly DirectorService directorController;
+        readonly DirectorController directorController;
         readonly MainController mainController;
 
         public TeacherDTO? SelectedTeacher { get; set; }
@@ -42,8 +42,8 @@ namespace LangLang.View.Director
             DataContext = this;
             directorController.Subscribe(this);
 
-            Domain.Model.Director director = directorController.GetDirector();
-            firstAndLastName.Text = director.FirstName + " " + director.LastName;
+            Domain.Model.Director? director = directorController.GetDirector();
+            firstAndLastName.Text = director?.FirstName + " " + director?.LastName;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
             levelComboBox.ItemsSource = Enum.GetValues(typeof(LanguageLevel));

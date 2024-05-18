@@ -7,7 +7,7 @@ namespace LangLang.Controller
     {
         private StudentsController _studentController;
         private TeacherController _teacherController;
-        private DirectorService _directorService;
+        private DirectorController _directorController;
         private CourseController _courseController;
 
         public MainController()
@@ -16,7 +16,7 @@ namespace LangLang.Controller
             _teacherController = new TeacherController();
 
             IDirectorRepository directorRepository = new DirectorRepository();
-            _directorService = new DirectorService(directorRepository);
+            _directorController = new DirectorController(directorRepository);
 
             _courseController = new CourseController(_teacherController);
         }
@@ -31,9 +31,9 @@ namespace LangLang.Controller
             return _teacherController;
         }
 
-        public DirectorService GetDirectorController()
+        public DirectorController GetDirectorController()
         {
-            return _directorService;
+            return _directorController;
         }
         public CourseController GetCourseController()
         {

@@ -26,7 +26,7 @@ namespace LangLang.Repository
             teacherDAO = new TeacherDAO();
         }
 
-        public Director GetDirector()
+        public Director? GetDirector()
         {
             return _director.Find(d => d.Id == 0);
         }
@@ -46,9 +46,9 @@ namespace LangLang.Repository
             return teacher;
         }
 
-        public Teacher UpdateTeacher(Teacher teacher)
+        public Teacher? UpdateTeacher(Teacher? teacher)
         {
-            Teacher oldTeacher = GetTeacherById(teacher.Id);
+            Teacher? oldTeacher = GetTeacherById(teacher.Id);
             if (oldTeacher == null) return null;
 
             oldTeacher.FirstName = teacher.FirstName;
@@ -70,13 +70,15 @@ namespace LangLang.Repository
             return oldTeacher;
         }
 
-        public Teacher RemoveTeacher(int id)
+        public Teacher? RemoveTeacher(int id)
         {
-            Teacher teacher = GetTeacherById(id);
+            Teacher? teacher = GetTeacherById(id);
             if (teacher == null) return null;
-            foreach (int courseid in teacher.CoursesId)
+
+            if (teacher.CoursesId != null)
             {
-                teacherDAO.RemoveCourse(courseid);
+                foreach (int courseId in teacher.CoursesId)
+                    teacherDAO.RemoveCourse(courseId);
             }
 
             _teachers.Remove(teacher);
@@ -85,7 +87,8 @@ namespace LangLang.Repository
             return teacher;
         }
 
-        public Teacher GetTeacherById(int id)
+
+        public Teacher? GetTeacherById(int id)
         {
             return _teachers.Find(t => t.Id == id);
         }

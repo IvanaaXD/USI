@@ -22,7 +22,7 @@ namespace LangLang.View.Director
 
         private TeacherDTO? _teacher;
 
-        public TeacherDTO Teacher
+        public TeacherDTO? Teacher
         {
             get { return _teacher; }
             set
@@ -32,9 +32,9 @@ namespace LangLang.View.Director
             }
         }
 
-        private readonly DirectorService? directorController;
+        private readonly DirectorController? directorController;
 
-        public CreateTeacherFrom(DirectorService directorController)
+        public CreateTeacherFrom(DirectorController directorController)
         {
             InitializeComponent();
             Teacher = new TeacherDTO();
@@ -49,11 +49,15 @@ namespace LangLang.View.Director
 
         private void SetPlaceholders()
         {
-            Teacher.FirstName = "Name";
-            Teacher.LastName = "Surname";
-            Teacher.Email = "example@gmail.com";
-            Teacher.PhoneNumber = "0123456789";
-            Teacher.Password = "password";
+            if (Teacher != null)
+            {
+                Teacher.FirstName = "Name";
+                Teacher.LastName = "Surname";
+                Teacher.Email = "example@gmail.com";
+                Teacher.PhoneNumber = "0123456789";
+                Teacher.Password = "password";
+            }
+
             passwordBox.Password = "password";
 
             firstNameTextBox.GotFocus += FirstNameTextBox_GotFocus;
@@ -96,7 +100,8 @@ namespace LangLang.View.Director
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)
-                Teacher.Password = passwordBox.Password;
+                if (Teacher != null)
+                    Teacher.Password = passwordBox.Password;
         }
 
         private void Create_Click(object sender, RoutedEventArgs e)
@@ -105,7 +110,7 @@ namespace LangLang.View.Director
             PickDataFromDatePicker();
             PickDataFromComboBox();
 
-            if (Teacher.IsValid)
+            if (Teacher != null && Teacher.IsValid)
             {
                 directorController?.Add(Teacher.ToTeacher());
                 Close();
@@ -116,39 +121,45 @@ namespace LangLang.View.Director
 
         private void PickDataFromListBox()
         {
-            Teacher.Languages = new List<Language>();
-            Teacher.LevelOfLanguages = new List<LanguageLevel>();
-
-            foreach (var selectedItem in languagesListBox.SelectedItems)
+            if (Teacher != null)
             {
-                string[] parts = selectedItem.ToString().Split(' ');
-                if (parts.Length == 2)
-                {
-                    if (Enum.TryParse(parts[0], out Language lan))
-                        Teacher.Languages.Add(lan);
+                Teacher.Languages = new List<Language>();
+                Teacher.LevelOfLanguages = new List<LanguageLevel>();
 
-                    if (Enum.TryParse(parts[1], out LanguageLevel level))
-                        Teacher.LevelOfLanguages.Add(level);
+                foreach (var selectedItem in languagesListBox.SelectedItems)
+                {
+                    string[] parts = selectedItem.ToString().Split(' ');
+                    if (parts.Length == 2)
+                    {
+                        if (Enum.TryParse(parts[0], out Language lan))
+                            Teacher.Languages.Add(lan);
+
+                        if (Enum.TryParse(parts[1], out LanguageLevel level))
+                            Teacher.LevelOfLanguages.Add(level);
+                    }
                 }
             }
         }
 
         private void PickDataFromDatePicker()
         {
-            if (dateOfBirthDatePicker.SelectedDate.HasValue)
-                Teacher.DateOfBirth = dateOfBirthDatePicker.SelectedDate.Value;
-            else
-                MessageBox.Show("Please select a valid date of birth.");
+            if (Teacher != null)
+            {
+                if (dateOfBirthDatePicker.SelectedDate.HasValue)
+                    Teacher.DateOfBirth = dateOfBirthDatePicker.SelectedDate.Value;
+                else
+                    MessageBox.Show("Please select a valid date of birth.");
 
-            if (startedWorkDatePicker.SelectedDate.HasValue)
-                Teacher.StartedWork = startedWorkDatePicker.SelectedDate.Value;
-            else
-                MessageBox.Show("Please select a valid start date of work.");
+                if (startedWorkDatePicker.SelectedDate.HasValue)
+                    Teacher.StartedWork = startedWorkDatePicker.SelectedDate.Value;
+                else
+                    MessageBox.Show("Please select a valid start date of work.");
+            }
         }
 
         private void PickDataFromComboBox()
         {
-            if (genderComboBox.SelectedItem != null)
+            if (genderComboBox.SelectedItem != null && Teacher != null)
             {
                 if (genderComboBox.SelectedItem is Gender selectedGender)
                     Teacher.Gender = selectedGender;
