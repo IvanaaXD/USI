@@ -16,7 +16,7 @@ namespace LangLang.Repository
 
         private readonly StudentsController studentController;
         private readonly TeacherController teacherController;
-        private readonly DirectorController directorController;
+        private readonly DirectorService directorController;
 
         public MailDAO()
         {
@@ -138,12 +138,16 @@ namespace LangLang.Repository
         public bool IsQuitCourseMailSent(string studentEmail, int courseId)
         {
             foreach(Mail mail in _mails)
-            {
                 if (mail.Sender == studentEmail && mail.CourseId == courseId && mail.TypeOfMessage == TypeOfMessage.QuitCourseRequest)
                     return true;
-            }
             return false;
         }
-
+        public bool IsTopStudentsMailSent(int courseId)
+        {
+            foreach (Mail mail in _mails)
+                if (mail.CourseId == courseId && mail.TypeOfMessage == TypeOfMessage.TopStudentsMessage)
+                    return true;
+            return false;
+        }
     }
 }

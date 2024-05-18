@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Director"
+        xmlns:coursetable="clr-namespace:LangLang.View.Student"
         xmlns:converters="clr-namespace:LangLang.View.Converters"
         mc:Ignorable="d"
         WindowStartupLocation = "CenterScreen"
@@ -125,6 +126,24 @@
                 </Grid>
             </DockPanel>
         </TabItem>
+        <TabItem Header="Completed courses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
+                <coursetable:CoursesTable x:Name="StudentCoursesTable0" Grid.ColumnSpan="2"
+                            SearchButtonClicked="SearchButton_Click"/>
+
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content="View course" Click="ViewCourseButton_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
     </TabControl>
 </Window>
