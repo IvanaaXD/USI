@@ -13,10 +13,13 @@ namespace LangLang.Controller
     {
         private readonly IDirectorRepository _directors;
         private readonly TeacherDAO? _teachers;
+        private readonly StudentGradeDAO? _studentGrades;
 
         public DirectorController(IDirectorRepository directors)
         {
             _directors = directors ?? throw new ArgumentNullException(nameof(directors));
+            _teachers = new TeacherDAO();
+            _studentGrades = new StudentGradeDAO();
         }
 
         public Director? GetDirector()
@@ -108,6 +111,16 @@ namespace LangLang.Controller
             Teacher? teacher = GetTeacherById(teacherId);
             teacher?.CoursesId?.Remove(courseId);
             Update(teacher);
+        }
+        public int GetAverageTeacherGrade(int teacherId)
+        {
+            int result = 0;
+            List<StudentGrade> teachersGrades = _studentGrades.GetStudentGradeByTeacher(teacherId);
+            foreach (StudentGrade grade in teachersGrades)
+            {
+                result += grade.Value;
+            }
+            return result == 0 ? 0 : result / teachersGrades.Count;
         }
     }
 }
