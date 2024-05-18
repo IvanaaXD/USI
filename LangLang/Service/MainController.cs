@@ -4,14 +4,14 @@
     {
         private StudentsController _studentController;
         private TeacherController _teacherController;
-        private DirectorController _directorController;
+        private DirectorService _directorController;
         private CourseController _courseController;
 
         public MainController()
         {
             _studentController = new StudentsController();
             _teacherController = new TeacherController();
-            _directorController = new DirectorController();
+            _directorController = new DirectorService();
             _courseController = new CourseController(_teacherController);
         }
 
@@ -25,7 +25,7 @@
             return _teacherController;
         }
 
-        public DirectorController GetDirectorController()
+        public DirectorService GetDirectorController()
         {
             return _directorController;
         }

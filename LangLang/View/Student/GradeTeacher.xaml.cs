@@ -14,7 +14,7 @@ namespace LangLang.View.Student
         private int studentId, courseId, teacherId;
         private TeacherController teacherController;
         private StudentsController studentController;
-        private DirectorController directorController;
+        private DirectorService directorController;
 
         public GradeTeacher(int studentId, int courseId)
         {
@@ -22,7 +22,7 @@ namespace LangLang.View.Student
 
             teacherController = new TeacherController();
             studentController = new StudentsController();
-            directorController = new DirectorController();
+            directorController = new DirectorService();
 
             this.studentId = studentId;
             this.courseId = courseId;

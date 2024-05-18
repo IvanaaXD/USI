@@ -615,7 +615,7 @@ namespace LangLang.Model.DAO
 
         private int GetCoursePenaltyPoints(int courseId)
         {
-            DirectorController directorController = new DirectorController();
+            DirectorService directorController = new DirectorService();
             Teacher teacher = directorController.GetTeacherByCourse(courseId);
 
             if (teacher == null) return 0;

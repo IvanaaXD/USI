@@ -15,7 +15,7 @@ namespace LangLang.View.Student
 
         StudentsController studentController;
         TeacherController teacherController;
-        DirectorController directorController;
+        DirectorService directorController;
         MailController mailController;
 
         MailDTO mailDTO { get; set; }
@@ -30,7 +30,7 @@ namespace LangLang.View.Student
             this.courseId = courseId;
             studentController = new StudentsController();
             teacherController = new TeacherController();
-            directorController = new DirectorController();
+            directorController = new DirectorService();
             mailController = new MailController();
 
             CreateMailDTO();

@@ -15,11 +15,11 @@ namespace LangLang.View.Director
 
         public TeacherDTO Teacher { get; set; }
 
-        private readonly DirectorController directorController;
+        private readonly DirectorService directorController;
 
         private readonly string teacherEmail;
 
-        public UpdateTeacherForm(int teacherId, DirectorController directorController)
+        public UpdateTeacherForm(int teacherId, DirectorService directorController)
         {
             InitializeComponent();
             this.directorController = directorController;

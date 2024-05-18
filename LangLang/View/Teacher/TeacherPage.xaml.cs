@@ -34,7 +34,7 @@ namespace LangLang.View.Teacher
         public ExamTermDTO SelectedExamTerm { get; set; }
         public StudentsController studentController { get; set; }
         public TeacherController teacherController { get; set; }
-        public DirectorController directorController { get; set; }
+        public DirectorService directorController { get; set; }
         public MainController mainController { get; set; }
 
         private bool isSearchCourseClicked = false;

@@ -234,7 +234,7 @@ namespace LangLang.DTO
                         if (!_EmailRegex.IsMatch(Email))
                             return "Format not good. Try again.";
 
-                        DirectorController directorController = new DirectorController();
+                        DirectorService directorController = new DirectorService();
                         StudentsController studentsController = new StudentsController();
 
                         foreach (Teacher teacher in directorController.GetAllTeachers())
@@ -254,7 +254,7 @@ namespace LangLang.DTO
                         if (string.IsNullOrEmpty(Password))
                             return "Password is required";
 
-                        directorController = new DirectorController();
+                        directorController = new DirectorService();
                         studentsController = new StudentsController();
 
                         foreach (Teacher teacher in directorController.GetAllTeachers())

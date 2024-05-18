@@ -22,7 +22,7 @@ namespace LangLang.View.Director
             }
         }
         readonly int directorId;
-        readonly DirectorController directorController;
+        readonly DirectorService directorController;
 
         public TeacherDTO? SelectedTeacher { get; set; }
 
@@ -30,7 +30,7 @@ namespace LangLang.View.Director
 
         private bool isSearchButtonClicked = false;
 
-        public DirectorPage(int directorId, DirectorController directorController)
+        public DirectorPage(int directorId, DirectorService directorController)
         {
             InitializeComponent();
             this.directorId = directorId;

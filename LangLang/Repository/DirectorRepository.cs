@@ -7,7 +7,7 @@ using LangLang.Storage;
 
 namespace LangLang.Model.DAO
 {
-    public class DirectorDAO : Subject
+    public class DirectorRepository : Subject
     {
         private readonly List<Teacher> _teachers;
         private readonly List<Director> _director;
@@ -16,7 +16,7 @@ namespace LangLang.Model.DAO
 
         private TeacherDAO teacherDAO;
 
-        public DirectorDAO() {
+        public DirectorRepository() {
             _storageTeacher = new Storage<Teacher>("teachers.csv");
             _storageDirector = new Storage<Director>("director.csv");
             _teachers = _storageTeacher.Load();

@@ -7,13 +7,13 @@ using LangLang.Model.Enums;
 
 namespace LangLang.Controller
 {
-    public class DirectorController
+    public class DirectorService
     {
-        private readonly DirectorDAO _directors;
+        private readonly DirectorRepository _directors;
 
-        public DirectorController()
+        public DirectorService()
         {
-            _directors = new DirectorDAO();
+            _directors = new DirectorRepository();
         }
 
         public Director GetDirector()

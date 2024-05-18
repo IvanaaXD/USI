@@ -17,7 +17,7 @@ namespace LangLang.View.Teacher
         private readonly TeacherController teacherController;
         public TeacherDTO Teacher { get; set; }
 
-        public UpdateCourseForm(int courseId, int teacherId, TeacherController teacherController, DirectorController directorController)
+        public UpdateCourseForm(int courseId, int teacherId, TeacherController teacherController, DirectorService directorController)
         {
             Course = new CourseDTO(teacherController, teacherController.GetCourseById(courseId), directorController.GetTeacherById(teacherId));
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
