@@ -165,5 +165,9 @@ namespace LangLang.Controller
            _students.ProcessPenaltyPoints();
         }
        
+        public void DeactivateStudentAccount(Student student)
+        {
+            _students.DeactivateStudentAccount(student);
+        }
     }
 }

@@ -412,7 +412,7 @@ namespace LangLang.Model.DAO
             }
         }
 
-        private void DeactivateStudentAccount(Student student)
+        public void DeactivateStudentAccount(Student student)
         {
             if (student.ActiveCourseId != -1)
             {
