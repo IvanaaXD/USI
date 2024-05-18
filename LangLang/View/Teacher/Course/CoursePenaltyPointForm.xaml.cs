@@ -16,40 +16,36 @@ namespace LangLang.View.Teacher
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        private MailDTO _mail;
-        public MailDTO Mail
-        {
-            get { return _mail; }
-            set
-            {
-                _mail = value;
-                OnPropertyChanged(nameof(Mail));
-            }
-        }
-
         private Course course;
         private Domain.Model.Teacher teacher;
         private Domain.Model.Student student;
-        private TeacherController teacherController;
+
+        private MailController mailController;
         private StudentsController studentController;
+        string messageBody;
 
         private bool _isFirstOptionSelected;
         private bool _isSecondOptionSelected;
         private bool _isThirdOptionSelected;
 
-        public CoursePenaltyPointForm(Course course,Domain.Model.Teacher teacher, Domain.Model.Student student, TeacherController teacherController, StudentsController studentController)
+        public CoursePenaltyPointForm(Course course, Domain.Model.Teacher teacher, Domain.Model.Student student, MainController mainController)
         {
             InitializeComponent();
-            DataContext = this;
-            Mail = new MailDTO();
 
             this.course = course;
-            this.teacherController = teacherController;
-            this.studentController = studentController;
             this.teacher = teacher;
             this.student = student;
 
+            mailController = mainController.GetMailController();
+            studentController = mainController.GetStudentController();
+
+            DataContext = this;
+
+            SetFormInfo();
+        }
+
+        public void SetFormInfo()
+        {
             firstNameTextBlock.Text = student.FirstName;
             lastNameTextBlock.Text = student.LastName;
         }
@@ -62,7 +58,7 @@ namespace LangLang.View.Teacher
                 _isFirstOptionSelected = value;
                 OnPropertyChanged(nameof(IsFirstOptionSelected));
                 if (value)
-                    Mail.Message = "You have gotten a penalty point from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: Student didn't attend a course class.";
+                    messageBody = "You have gotten a penalty point from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: Student didn't attend a course class.";
             }
         }
         public bool IsSecondOptionSelected
@@ -73,7 +69,7 @@ namespace LangLang.View.Teacher
                 _isSecondOptionSelected = value;
                 OnPropertyChanged(nameof(IsSecondOptionSelected));
                 if (value)
-                    Mail.Message = "You have gotten a penalty point from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: Student is bothering other students during class.";
+                    messageBody = "You have gotten a penalty point from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: Student is bothering other students during class.";
             }
         }
         public bool IsThirdOptionSelected
@@ -84,7 +80,7 @@ namespace LangLang.View.Teacher
                 _isThirdOptionSelected = value;
                 OnPropertyChanged(nameof(IsThirdOptionSelected));
                 if (value)
-                    Mail.Message = "You have gotten a penalty point from course "+course.Language.ToString()+" "+course.Level.ToString()+". Reason: Student didn't do homework.";
+                    messageBody = "You have gotten a penalty point from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: Student didn't do homework.";
             }
         }
 
@@ -92,17 +88,8 @@ namespace LangLang.View.Teacher
         {
             if (IsFirstOptionSelected || IsSecondOptionSelected || IsThirdOptionSelected)
             {
-                Mail.Sender = teacher.Email;
-                Mail.Receiver = student.Email;
-                Mail.TypeOfMessage = TypeOfMessage.PenaltyPointMessage;
-                Mail.DateOfMessage = DateTime.Now;
-                Mail.CourseId = course.Id;
-                Mail.Answered = false;
-
-                teacherController.SendMail(Mail.ToMail());
-
+                mailController.ConstructMail(teacher, student, course, TypeOfMessage.PenaltyPointMessage, messageBody);
                 studentController.GivePenaltyPoint(student.Id);
-                studentController.Update(student);
 
                 Close();
             }

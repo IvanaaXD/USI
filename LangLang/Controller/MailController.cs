@@ -2,6 +2,8 @@
 using LangLang.Domain.Model;
 using LangLang.Observer;
 using System.Collections.Generic;
+using LangLang.Domain.Model.Enums;
+using System;
 
 namespace LangLang.Controller
 {
@@ -48,6 +50,19 @@ namespace LangLang.Controller
         public bool IsTopStudentsMailSent(int courseId)
         {
             return _mails.IsTopStudentsMailSent(courseId);
+        }
+        public void ConstructMail(Person sender, Person receiver, Course course, TypeOfMessage type, string body)
+        {
+            Send(new Mail
+            {
+                Sender = sender.Email,
+                Receiver = receiver.Email,
+                CourseId = course.Id,
+                TypeOfMessage = type,
+                DateOfMessage = DateTime.Now,
+                Message = body,
+                Answered = false
+            });
         }
     }
 }
