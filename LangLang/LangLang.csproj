@@ -13,4 +13,8 @@
     <Folder Include="Data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PdfSharp" Version="6.0.0" />
+  </ItemGroup>
+
 </Project>
