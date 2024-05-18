@@ -76,6 +76,10 @@ namespace LangLang.Model.DAO
         {
             return _points.Where(point => point.StudentId == studentId && point.IsDeleted == false).ToList();
         }
-       
+        public List<PenaltyPoint> GetDeletedPenaltyPointsByStudentId(int studentId)
+        {
+            return _points.Where(point => point.StudentId == studentId && point.IsDeleted == true).ToList();
+        }
+
     }
 }

@@ -13,7 +13,6 @@ namespace LangLang.Model
     public class Student : Person
     {
         private EducationLevel educationLevel;
-        private int penaltyPoints;
         private int activeCourseId;
         private List<int> passedExamsIds = new List<int>();
         private List<int> registeredCoursesIds = new List<int>();
@@ -24,11 +23,6 @@ namespace LangLang.Model
         {
             get { return educationLevel; }
             set { educationLevel = value; }
-        }
-        public int PenaltyPoints
-        {
-            get { return penaltyPoints; }
-            set { penaltyPoints = value; }
         }
         public int ActiveCourseId
         {
@@ -63,7 +57,6 @@ namespace LangLang.Model
                        : base(firstName, lastName, gender, dateOfBirth, phoneNumber, email, password)
         {
             this.educationLevel = educationLevel;
-            this.penaltyPoints = 0;
             this.activeCourseId = -1;
         }
         public Student(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
@@ -71,7 +64,6 @@ namespace LangLang.Model
                       : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password)
         {
             this.educationLevel = educationLevel;
-            this.penaltyPoints = 0;
             this.activeCourseId = -1;
         }
 
@@ -94,7 +86,6 @@ namespace LangLang.Model
                 Email,
                 Password,
                 EducationLevel.ToString(),
-                penaltyPoints.ToString(),
                 activeCourseId.ToString(),
                 passedExamsIdsStr,
                 registeredCoursesIdsStr,
@@ -107,7 +98,7 @@ namespace LangLang.Model
 
         public override void FromCSV(string[] values)
         {
-            if (values.Length != 15)
+            if (values.Length != 14)
             {
                 throw new ArgumentException("Invalid number of student values in CSV");
             }
@@ -121,26 +112,25 @@ namespace LangLang.Model
             email = values[6];
             password = values[7];
             educationLevel = (EducationLevel)Enum.Parse(typeof(EducationLevel), values[8]);
-            penaltyPoints = int.Parse(values[9]);
-            activeCourseId = int.Parse(values[10]);
+            activeCourseId = int.Parse(values[9]);
 
-            if (!string.IsNullOrEmpty(values[11]))
-                passedExamsIds = new List<int>(Array.ConvertAll(values[11].Split(','), int.Parse));
+            if (!string.IsNullOrEmpty(values[10]))
+                passedExamsIds = new List<int>(Array.ConvertAll(values[10].Split(','), int.Parse));
             else
                 passedExamsIds = new List<int>();
 
-            if (!string.IsNullOrEmpty(values[12]))
-                registeredCoursesIds = new List<int>(Array.ConvertAll(values[12].Split(','), int.Parse));
+            if (!string.IsNullOrEmpty(values[11]))
+                registeredCoursesIds = new List<int>(Array.ConvertAll(values[11].Split(','), int.Parse));
             else
                 registeredCoursesIds = new List<int>();
 
-            if (!string.IsNullOrEmpty(values[13]))
-                completedCoursesIds = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
+            if (!string.IsNullOrEmpty(values[12]))
+                completedCoursesIds = new List<int>(Array.ConvertAll(values[12].Split(','), int.Parse));
             else
                 completedCoursesIds = new List<int>();
 
-            if (!string.IsNullOrEmpty(values[14]))
-                registeredExamsIds = new List<int>(Array.ConvertAll(values[14].Split(','), int.Parse));
+            if (!string.IsNullOrEmpty(values[13]))
+                registeredExamsIds = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
             else
                 registeredExamsIds = new List<int>();
         }

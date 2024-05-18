@@ -156,10 +156,7 @@ namespace LangLang.Controller
         {
             return _students.GetPassedExamsNumber(studentId);
         }
-        public int GetPenaltyPointsNumber(int studentId)
-        {
-            return _students.GetPenaltyPointsNumber(studentId);
-        }
+ 
         public void ProcessPenaltyPoints()
         {
            _students.ProcessPenaltyPoints();

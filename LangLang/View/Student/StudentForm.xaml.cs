@@ -23,7 +23,7 @@ namespace LangLang.View.Student
             DisplayAcceptedCourseRequest();
             SetActiveCourse();
         }
-
+ 
         private void SetWelcomeHeading()
         {
             Model.Student student = studentController.GetStudentById(studentId);
@@ -31,9 +31,10 @@ namespace LangLang.View.Student
         }
         private void SetStudentInformations()
         {
+            PenaltyPointController penaltyPointController = new PenaltyPointController();
             completedCoursesTextBlock.Text = studentController.GetCompletedCourseNumber(studentId).ToString();
             passedExamsTextBlock.Text = studentController.GetPassedExamsNumber(studentId).ToString();
-            penaltyPoinsTextBlcok.Text = studentController.GetPenaltyPointsNumber(studentId).ToString();
+            penaltyPoinsTextBlcok.Text = penaltyPointController.GetPenaltyPointsByStudentId(studentId).Count.ToString();
         }
 
         private void SetActiveCourse()
