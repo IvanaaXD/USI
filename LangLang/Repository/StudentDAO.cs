@@ -132,8 +132,9 @@ namespace LangLang.Model.DAO
                   !courseIdsByRegisteredExams.Contains(course.Id) &&
                   !student.RegisteredCoursesIds.Contains(course.Id) &&
                   !student.CompletedCoursesIds.Contains(course.Id) &&
-                  (course.CurrentlyEnrolled < course.MaxEnrolledStudents) &&
-                  (course.StartDate - currentTime).TotalDays > 6)
+                  (course.StartDate - currentTime).TotalDays > 6 &&
+                  ((course.IsOnline == false && course.CurrentlyEnrolled < course.MaxEnrolledStudents) ||
+                   (course.IsOnline == true)))
                 return true;
 
             return false;
@@ -499,6 +500,53 @@ namespace LangLang.Model.DAO
             Student student = GetStudentById(studentId);
             return student.PassedExamsIds.Count;
         }
+        private Dictionary<int, List<Student>> GetStudentsPerPenaltyPoints()
+        {
+            PenaltyPointDAO penaltyPointDAO = new PenaltyPointDAO();
+            Dictionary<int, List<Student>> studentsPerPenalty = new Dictionary<int, List<Student>>();
+            for (int i = 0; i <= 3; i++)
+                studentsPerPenalty[i] = new List<Student>();
 
+            foreach (Student student in GetAllStudents())
+            {
+                int penaltyPoints = penaltyPointDAO.GetPenaltyPointsByStudentId(student.Id).Count;
+                studentsPerPenalty[penaltyPoints].Add(student);
+            }
+
+            return studentsPerPenalty;
+        }
+
+        private int GetStudentGradesSum(int studentId)
+        {
+            CourseGradeDAO courseGradeDAO = new CourseGradeDAO();
+            int gradesSum = 0;
+            foreach (CourseGrade courseGrade in courseGradeDAO.GetAllCourseGrades())
+                if (courseGrade.StudentId == studentId)
+                    //gradesSum += courseGrade.Value;
+                    gradesSum += 0;
+            return gradesSum;
+        }
+        private int CalculateStudentsGradesSum(List<Student> students)
+        {
+            int studentsGradesSum = 0;
+            foreach (Student student in students)
+                studentsGradesSum += GetStudentGradesSum(student.Id);
+            return studentsGradesSum;
+        }
+
+        public Dictionary<int, double> GetStudentsAveragePointsPerPenalty()
+        {
+            Dictionary<int, List<Student>> studentsPerPenalties = GetStudentsPerPenaltyPoints();
+            Dictionary<int, double> studentsAveragePointsPerPenalty = new Dictionary<int, double>();
+
+            for (int i = 0; i <= 3; i++)
+            {
+                int studentsPointsSum = CalculateStudentsGradesSum(studentsPerPenalties[i]);
+                int studentsCount = studentsPerPenalties[i].Count;
+                studentsAveragePointsPerPenalty[i] = studentsCount > 0 ? (studentsPointsSum / studentsCount) : 0;
+            }
+
+            return studentsAveragePointsPerPenalty;
+        }
     }
 }
