@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:LangLang.View.Converters"
         WindowStartupLocation = "CenterScreen"
         mc:Ignorable="d"
-        Title="Course View" Height="450" Width="800">
+        Title="Course View" Height="450" Width="900">
     <Window.Resources>
         <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
         <converters:LevelOfLanguageToStringConverter x:Key="LevelOfLanguageToStringConverter"/>
@@ -82,7 +82,7 @@
                                   SelectedItem="{Binding SelectedStudent, UpdateSourceTrigger=PropertyChanged}"
                                   SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Id" Width="*" Binding="{Binding id}" />
+                                    <DataGridTextColumn Header="Id" Width="30" Binding="{Binding id}" />
                                     <DataGridTextColumn Header="First name" Width="*" Binding="{Binding FirstName}" />
                                     <DataGridTextColumn Header="Last name" Width="*" Binding="{Binding LastName}" />
                                     <DataGridTextColumn Header="Gender" Width="*" Binding="{Binding Gender}" />
