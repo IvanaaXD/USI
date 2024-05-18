@@ -16,7 +16,7 @@ namespace LangLang.Repository
 
         private readonly StudentsController studentController;
         private readonly TeacherController teacherController;
-        private readonly DirectorService directorController;
+        private readonly DirectorController directorController;
 
         public MailDAO()
         {
