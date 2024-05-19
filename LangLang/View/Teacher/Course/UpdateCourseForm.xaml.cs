@@ -17,15 +17,17 @@ namespace LangLang.View.Teacher
         private readonly TeacherController teacherController;
         public TeacherDTO Teacher { get; set; }
 
-        public UpdateCourseForm(int courseId, int teacherId, TeacherController teacherController, DirectorController directorController)
+        public UpdateCourseForm(int courseId, int teacherId, MainController mainController)
         {
-            Course = new CourseDTO(teacherController, teacherController.GetCourseById(courseId), directorController.GetTeacherById(teacherId));
-            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            Course = new CourseDTO(teacherController, teacherController.GetCourseById(courseId), mainController.GetDirectorController().GetTeacherById(teacherId));
+            Teacher = new TeacherDTO(mainController.GetDirectorController().GetTeacherById(teacherId));
             DataContext = Course;
+
+            Course.StartTime = Course.StartDate.ToString("HH:mm");
 
             InitializeComponent();
 
-            this.teacherController = teacherController;
+            this.teacherController = mainController.GetTeacherController();
 
             SetPlaceholders();
         }
@@ -44,8 +46,6 @@ namespace LangLang.View.Teacher
             languageComboBox.SelectedItem = selectedLanguageAndLevel;
 
             durationTextBox.Text = Course.Duration.ToString();
-
-            Course.StartTime = Course.StartDate.ToString("HH:mm");
 
             startDatePicker.SelectedDate = Course.StartDate;
             startTimeTextBox.Text = Course.StartTime;

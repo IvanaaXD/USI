@@ -38,14 +38,14 @@ namespace LangLang.View.Teacher
         private readonly DirectorController directorController;
         private int teacherId;
 
-        public CreateCourseForm(TeacherController teacherController, DirectorController directorController, int teacherId)
+        public CreateCourseForm(int teacherId, MainController mainController)
         {
             InitializeComponent();
 
-            Course = new CourseDTO(teacherController, directorController.GetTeacherById(teacherId));
-            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
-            this.directorController = directorController;
-            this.teacherController = teacherController;
+            Course = new CourseDTO(teacherController, mainController.GetDirectorController().GetTeacherById(teacherId));
+            Teacher = new TeacherDTO(mainController.GetDirectorController().GetTeacherById(teacherId));
+            this.directorController = mainController.GetDirectorController();
+            this.teacherController = mainController.GetTeacherController();
             this.teacherId = teacherId;
             DataContext = Course;
 

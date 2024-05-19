@@ -112,7 +112,7 @@ namespace LangLang.View.Teacher
 
         private void CreateCourse_Click(object sender, RoutedEventArgs e)
         {
-            CreateCourseForm courseTable = new CreateCourseForm(teacherController, directorController, teacherId);
+            CreateCourseForm courseTable = new CreateCourseForm(teacherId, mainController);
             courseTable.Show();
         }
 
@@ -141,7 +141,7 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("Cannot update a course that starts in less than a week.");
                 else
                 {
-                    UpdateCourseForm updateForm = new UpdateCourseForm(SelectedCourse.Id, teacherId, teacherController, directorController);
+                    UpdateCourseForm updateForm = new UpdateCourseForm(SelectedCourse.Id, teacherId, mainController);
                     updateForm.Show();
                 }
             }

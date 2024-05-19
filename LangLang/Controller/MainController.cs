@@ -20,7 +20,8 @@ namespace LangLang.Controller
             IDirectorRepository directorRepository = new DirectorRepository();
             _directorController = new DirectorController(directorRepository);
 
-            _courseController = new CourseController(_teacherController);
+            ICourseRepository courseRepository = new CourseRepository();
+            _courseController = new CourseController(courseRepository, _teacherController);
 
             IExamTermGradeRepository examTermGradeRepository = new ExamTermGradeRepository();
             _examTermController = new ExamTermController(_teacherController, examTermGradeRepository);
