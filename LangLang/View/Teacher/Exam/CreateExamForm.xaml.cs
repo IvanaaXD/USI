@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace LangLang.View.Teacher
 {
@@ -39,15 +40,15 @@ namespace LangLang.View.Teacher
         private TeacherController teacherController;
         private readonly DirectorController directorController;
         private int teacherId;
-        public CreateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId)
+        public CreateExamForm(MainController mainController, int teacherId)
         {
+            this.directorController = mainController.GetDirectorController();
+            this.teacherController = mainController.GetTeacherController();
             InitializeComponent();
             Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             ExamTerm = new ExamTermDTO(teacherController, teacher);
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
 
-            this.directorController = directorController;
-            this.teacherController = teacherController;
             this.teacherId = teacherId;
             DataContext = this;
 
