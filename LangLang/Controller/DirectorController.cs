@@ -14,12 +14,9 @@ namespace LangLang.Controller
     {
         private readonly IDirectorRepository _directors;
         private readonly TeacherDAO? _teachers;
-        private readonly ExamTermDAO? _exams;
+        private readonly ExamTermDAO? _examTerms;
         private readonly StudentGradeDAO? _studentGrades;
         private readonly PenaltyPointDAO? _penaltyPoints;
-<<<
-        private readonly ExamTermDAO? _examTerms;
-===
 
         private readonly ExamTermGradeRepository? _examTermGrades;
 
@@ -27,7 +24,7 @@ namespace LangLang.Controller
         {
             _directors = directors ?? throw new ArgumentNullException(nameof(directors));
             _teachers = new TeacherDAO();
-            _exams = new ExamTermDAO();
+            _examTerms = new ExamTermDAO();
             _studentGrades = new StudentGradeDAO();
             _examTermGrades = new ExamTermGradeRepository();
         }
@@ -255,7 +252,6 @@ namespace LangLang.Controller
             return numberOfPenaltyPoints;
         }
 
-<<<
         public Dictionary<Language, double> GetNumberOfPoints()
         {
             Dictionary<Language, double> numberOfPoints = GetLanguagesDouble();
@@ -276,7 +272,7 @@ namespace LangLang.Controller
                     {
                         if (!levels.Contains(course.Level))
                             levels.Add(course.Level);
-                        
+
                         foreach (var grade in grades)
                         {
                             sum += grade.ListeningPoints + grade.ReadingPoints + grade.SpeakingPoints + grade.WritingPoints;
@@ -289,7 +285,8 @@ namespace LangLang.Controller
             }
 
             return numberOfPoints;
-===
+        }
+
         public double GetAverageReadingPointsLastYear()
         {
             return CalculateAveragePoints("reading");
@@ -312,7 +309,7 @@ namespace LangLang.Controller
             List<ExamTermGrade> examGrades = _examTermGrades.GetAllExamTermGrades();
             foreach (ExamTermGrade grade in examGrades)
             {
-                ExamTerm exam = _exams.GetExamTermById(grade.ExamId);
+                ExamTerm exam = _examTerms.GetExamTermById(grade.ExamId);
                 if (exam.ExamTime >= DateTime.Now.AddYears(-1))
                 {
                     if(typeOfPoints == "listening")
@@ -350,7 +347,6 @@ namespace LangLang.Controller
         public double CalculatePassPercentage(int passedCount, int attendedCount)
         {
             return (passedCount / attendedCount) * 100;
->>>
         }
     }
 }

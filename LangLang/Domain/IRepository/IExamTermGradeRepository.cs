@@ -14,7 +14,7 @@ namespace LangLang.Domain.IRepository
         ExamTermGrade? GetExamTermGradeByStudentTeacherExam(int studentId, int teacherId, int examId);
         ExamTermGrade? GetExamTermGradeByStudentExam(int studentId, int examId);
         List<ExamTermGrade> GetExamTermGradesByTeacherExam(int teacherId, int examId);
-        List<ExamTermGrade> GetExamTermGradesByExam(int examId);
+        List<ExamTermGrade> GetExamTermGradeByExam(int examTermId);
         List<ExamTermGrade> GetAllExamTermGrades();
         void Subscribe(IObserver observer);
 
