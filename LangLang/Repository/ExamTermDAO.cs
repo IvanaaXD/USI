@@ -20,6 +20,11 @@ namespace LangLang.Repository
             _examTerms = _examTermsStorage.Load();
             this.teacherController = teacherController;
         }
+        public ExamTermDAO()
+        {
+            _examTermsStorage = new Storage<ExamTerm>("exam.csv");
+            _examTerms = _examTermsStorage.Load();
+        }
         private int GenerateExamId()
         {
             if (_examTerms.Count == 0) return 0;
