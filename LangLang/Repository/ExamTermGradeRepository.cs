@@ -100,12 +100,22 @@ namespace LangLang.Repository
             return _grades.Where(grade => grade.TeacherId == teacherId && grade.ExamId == examId).ToList();
         }
 
+        public List<ExamTermGrade>? GetExamTermGradeByExam(int examId)
+        {
+            return _grades.Where(grade => grade.ExamId == examId).ToList();
+        }
+
         public List<ExamTermGrade> GetAllExamTermGrades()
         {
             return _grades;
         }
 
         public void Update()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ExamTermGrade> GetExamTermGradesByExam(int examId)
         {
             throw new NotImplementedException();
         }

@@ -42,7 +42,12 @@ namespace LangLang.Controller
         {
             return _examTermGrades.GetExamTermGradeByStudentExam(studentId, examTermId);
         }
-      
+
+        public List<ExamTermGrade> GetExamTermGradeByExam(int examTermId)
+        {
+            return _examTermGrades.GetExamTermGradeByExam(examTermId);
+        }
+
         public ExamTermGrade? GetExamTermGradeByStudentTeacherExam(int studentId, int teacherId, int examTermId)
         {
             return _examTermGrades.GetExamTermGradeByStudentTeacherExam(studentId, teacherId, examTermId);

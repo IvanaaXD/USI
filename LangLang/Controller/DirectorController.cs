@@ -17,6 +17,10 @@ namespace LangLang.Controller
         private readonly ExamTermDAO? _exams;
         private readonly StudentGradeDAO? _studentGrades;
         private readonly PenaltyPointDAO? _penaltyPoints;
+<<<
+        private readonly ExamTermDAO? _examTerms;
+===
+
         private readonly ExamTermGradeRepository? _examTermGrades;
 
         public DirectorController(IDirectorRepository directors)
@@ -239,20 +243,53 @@ namespace LangLang.Controller
                     if (course.Language == number.Key)
                     {
                         if (!levels.Contains(course.Level))
-                        {
                             levels.Add(course.Level);
-                            sum += 1;
-                        }
+                        sum += 1;
                     }
                 }
 
-                double averageNumber = levels.Count() / sum;
-                numberOfPenaltyPoints.Add(number.Key, averageNumber);
+                double averageNumber = sum / levels.Count();
+                numberOfPenaltyPoints[number.Key] = averageNumber;
             }
 
             return numberOfPenaltyPoints;
         }
 
+<<<
+        public Dictionary<Language, double> GetNumberOfPoints()
+        {
+            Dictionary<Language, double> numberOfPoints = GetLanguagesDouble();
+
+            var examTerms = _examTerms.GetAllExamTerms();
+
+            foreach (var number in numberOfPoints)
+            {
+                List<LanguageLevel> levels = new List<LanguageLevel>();
+                int sum = 0;
+
+                foreach (var examTerm in examTerms)
+                {
+                    var course = _teachers.GetCourseById(examTerm.CourseID);
+                    var grades = _examTermGrades.GetExamTermGradeByExam(examTerm.ExamID);
+
+                    if (course.Language == number.Key)
+                    {
+                        if (!levels.Contains(course.Level))
+                            levels.Add(course.Level);
+                        
+                        foreach (var grade in grades)
+                        {
+                            sum += grade.ListeningPoints + grade.ReadingPoints + grade.SpeakingPoints + grade.WritingPoints;
+                        }
+                    }
+                }
+
+                double averageNumber = sum / levels.Count();
+                numberOfPoints[number.Key] = averageNumber;
+            }
+
+            return numberOfPoints;
+===
         public double GetAverageReadingPointsLastYear()
         {
             return CalculateAveragePoints("reading");
@@ -313,6 +350,7 @@ namespace LangLang.Controller
         public double CalculatePassPercentage(int passedCount, int attendedCount)
         {
             return (passedCount / attendedCount) * 100;
+>>>
         }
     }
 }
