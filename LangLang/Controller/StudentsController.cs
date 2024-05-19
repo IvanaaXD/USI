@@ -99,6 +99,10 @@ namespace LangLang.Controller
         {
             return _students.RegisterForCourse(studentId, courseId);
         }
+        public bool RejectStudentApplication(Student student, Course course)
+        {
+            return _students.RejectStudentApplication(student, course);
+        }
         public bool CancelCourseRegistration(int studentId, int courseId)
         {
             return _students.CancelCourseRegistration(studentId, courseId);
@@ -166,6 +170,14 @@ namespace LangLang.Controller
         public void DeactivateStudentAccount(Student student)
         {
             _students.DeactivateStudentAccount(student);
+        }
+        public Dictionary<int, Dictionary<Student, double>> GetStudentsAveragePointsPerPenalty()
+        {
+            return _students.GetStudentsAveragePointsPerPenalty();
+        }
+        public void CompleteCourse(Student student, Course course)
+        {
+            _students.CompleteCourse(student, course);
         }
     }
 }

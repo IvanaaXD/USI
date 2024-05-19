@@ -17,56 +17,44 @@ namespace LangLang.View.Teacher
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private MailDTO _mail;
-        public MailDTO Mail
-        {
-            get { return _mail; }
-            set
-            {
-                _mail = value;
-                OnPropertyChanged(nameof(Mail));
-            }
-        }
-
         private Course course;
         private Domain.Model.Teacher teacher;
         private Domain.Model.Student student;
-        private TeacherController teacherController;
-        private StudentsController studentController;
 
-        public CourseRejectionForm(Course course, Domain.Model.Teacher teacher, Domain.Model.Student student, TeacherController teacherController, StudentsController studentController)
+        private StudentsController studentController;
+        private MailController mailController;
+
+        public string RejectReason { get; set; }
+
+        public CourseRejectionForm(Course course, Domain.Model.Teacher teacher, Domain.Model.Student student, MainController mainController)
         {
             InitializeComponent();
-            DataContext = this;
-            Mail = new MailDTO();
 
             this.course = course;
-            this.teacherController = teacherController;
-            this.studentController = studentController;
             this.teacher = teacher;
             this.student = student;
 
+            studentController = mainController.GetStudentController();
+            mailController = mainController.GetMailController();
+
+            DataContext = this;
+
+            SetFormInfo();
+        }
+        public void SetFormInfo()
+        {
             firstNameTextBlock.Text = student.FirstName;
             lastNameTextBlock.Text = student.LastName;
-            Mail.Message = " ";
+            RejectReason = " ";
         }
 
         public void SendRejection_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(mailBodyTextBlock.Text))
             {
-                Mail.Sender = teacher.Email;
-                Mail.Receiver = student.Email;
-                Mail.TypeOfMessage = TypeOfMessage.DenyEnterCourseRequestMessage;
-                Mail.DateOfMessage = DateTime.Now;
-                Mail.CourseId = course.Id;
-                Mail.Message = "You have been rejected from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: " + mailBodyTextBlock.Text;
-                Mail.Answered = false;
-
-                teacherController.SendMail(Mail.ToMail());
-
-                student.RegisteredCoursesIds.Remove(course.Id);
-                studentController.Update(student);
+                string messageBody = "You have been rejected from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: " + RejectReason;
+                studentController.RejectStudentApplication(student, course);
+                mailController.ConstructMail(teacher, student, course, TypeOfMessage.DenyEnterCourseRequestMessage, messageBody);
 
                 Close();
             }

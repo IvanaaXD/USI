@@ -6,6 +6,7 @@ using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using System.Linq;
 using LangLang.Domain.IRepository;
+using LangLang.Model;
 
 namespace LangLang.Controller
 {
@@ -113,7 +114,25 @@ namespace LangLang.Controller
             teacher?.CoursesId?.Remove(courseId);
             Update(teacher);
         }
-
+      
+        public void GenerateFirstReport()
+        {
+            TeacherDAO teacherDAO = new TeacherDAO();
+            StudentDAO studentDAO = new StudentDAO();
+            PdfGenerator pdf = new PdfGenerator();
+            pdf.AddTitle("Number of penalty points in the last year");
+            pdf.AddTable(teacherDAO.GetPenaltyPointsLastYearPerCourse());
+            pdf.AddPage();
+            pdf.AddTitle("Average points of students by penalties");
+            for(int i = 0; i < 3; i++)
+            {
+                pdf.AddSubtitle("Number of penalty points: " + i);
+                pdf.AddTable(studentDAO.GetStudentsAveragePointsPerPenalty()[i]);
+            }
+           
+            pdf.Save(@"C:\\Users\\Milan\\Desktop\\Projekat\\LangLang\\data\\nekipdf.pdf");
+        }
+      
         public int GetAverageTeacherGrade(int teacherId)
         {
             int result = 0;

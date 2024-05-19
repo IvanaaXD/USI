@@ -90,6 +90,10 @@ namespace LangLang.Repository
         {
             return _grades.Find(grade => grade.StudentId == studentId && grade.ExamId == examId);
         }
+        public List<ExamTermGrade>? GetExamTermGradeByStudent(int studentId)
+        {
+            return _grades.Where(grade => grade.StudentId == studentId).ToList();
+        }
 
         public List<ExamTermGrade> GetExamTermGradesByTeacherExam(int teacherId, int examId)
         {

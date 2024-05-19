@@ -327,6 +327,14 @@ namespace LangLang.Repository
             NotifyObservers();
             return true;
         }
+        public bool RejectStudentApplication(Student student, Course course)
+        {
+            student.RegisteredCoursesIds.Remove(course.Id);
+
+            _storage.Save(_students);
+            NotifyObservers();
+            return true;
+        }
 
         public bool RegisterForExam(int studentId, int examId)
         {
@@ -523,27 +531,40 @@ namespace LangLang.Repository
                     gradesSum += 0;
             return gradesSum;
         }
-        private int CalculateStudentsGradesSum(List<Student> students)
+        private double GetStudentAverageGrades(int studentId)
         {
-            int studentsGradesSum = 0;
+            ExamTermGradeRepository examTermGradeDAO = new ExamTermGradeRepository();
+            List<ExamTermGrade> studentExamsGrades = examTermGradeDAO.GetExamTermGradeByStudent(studentId);
+            int gradesSum = 0;
+
+            foreach (ExamTermGrade examTermGrade in studentExamsGrades)
+                gradesSum += examTermGrade.Value;
+            return studentExamsGrades.Count > 0  ? gradesSum / studentExamsGrades.Count : 0;
+        }
+        private Dictionary<Student, double> GetStudentsAverageScore(List<Student> students)
+        {
+            Dictionary<Student, double> studentsAverageGrade = new Dictionary<Student, double>();
+
             foreach (Student student in students)
-                studentsGradesSum += GetStudentGradesSum(student.Id);
-            return studentsGradesSum;
+                studentsAverageGrade.Add(student, GetStudentAverageGrades(student.Id));
+            return studentsAverageGrade;
         }
 
-        public Dictionary<int, double> GetStudentsAveragePointsPerPenalty()
+        public Dictionary<int, Dictionary<Student, double>> GetStudentsAveragePointsPerPenalty()
         {
             Dictionary<int, List<Student>> studentsPerPenalties = GetStudentsPerPenaltyPoints();
-            Dictionary<int, double> studentsAveragePointsPerPenalty = new Dictionary<int, double>();
+            Dictionary<int, Dictionary<Student,double>> studentsAveragePointsPerPenalty = new Dictionary<int, Dictionary<Student, double>>();
 
             for (int i = 0; i <= 3; i++)
-            {
-                int studentsPointsSum = CalculateStudentsGradesSum(studentsPerPenalties[i]);
-                int studentsCount = studentsPerPenalties[i].Count;
-                studentsAveragePointsPerPenalty[i] = studentsCount > 0 ? (studentsPointsSum / studentsCount) : 0;
-            }
+                studentsAveragePointsPerPenalty.Add(i,GetStudentsAverageScore(studentsPerPenalties[i]));
 
             return studentsAveragePointsPerPenalty;
+        }
+        public void CompleteCourse(Student student, Course course)
+        {
+            student.ActiveCourseId = -1;
+            student.CompletedCoursesIds.Add(course.Id);
+            UpdateStudent(student);
         }
     }
 }
