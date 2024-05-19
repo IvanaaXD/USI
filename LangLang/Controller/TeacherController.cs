@@ -13,12 +13,14 @@ namespace LangLang.Controller
         private readonly TeacherDAO _teachers;
         private readonly ExamTermGradeRepository _examTermGrades;
         private readonly CourseGradeDAO _courseGrades;
+        private readonly PenaltyPointDAO _penaltyPoints;
 
         public TeacherController()
         {
             _teachers = new TeacherDAO();
             _examTermGrades = new ExamTermGradeRepository();
             _courseGrades = new CourseGradeDAO();
+            _penaltyPoints = new PenaltyPointDAO();
         }
         public Course? GetCourseById(int courseId)
         {
@@ -256,6 +258,11 @@ namespace LangLang.Controller
         public List<Course>? GetCoursesForDisplay(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)
         {
             return _teachers.GetCoursesForDisplay(availableCourses, selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
+        }
+
+        public List<PenaltyPoint> GetAllPenaltyPoints()
+        {
+            return _penaltyPoints.GetAllPenaltyPoints();
         }
     }
 }
