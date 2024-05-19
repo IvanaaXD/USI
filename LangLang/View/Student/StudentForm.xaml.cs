@@ -12,11 +12,13 @@ namespace LangLang.View.Student
     {
         int studentId;
         StudentsController studentController;
-        public StudentForm(int studentId, StudentsController studentController)
+        MainController mainController;
+        public StudentForm(int studentId, MainController mainController)
         {
             InitializeComponent();
             this.studentId = studentId;
-            this.studentController = studentController;
+            this.studentController = mainController.GetStudentController();
+            this.mainController = mainController;
 
             SetWelcomeHeading();
             SetStudentInformations();
@@ -112,7 +114,7 @@ namespace LangLang.View.Student
         }
         private void ExamTerms_Click(object sender, RoutedEventArgs e)
         {
-            ExamTermsPage examTermsPage = new ExamTermsPage(studentId);
+            ExamTermsPage examTermsPage = new ExamTermsPage(studentId, mainController);
             examTermsPage.Show();
         }
 

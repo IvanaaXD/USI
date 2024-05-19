@@ -50,7 +50,7 @@ namespace LangLang
                     if (student.ActiveCourseId != -10)
                     {
                         studentController.ProcessPenaltyPoints();
-                        StudentForm welcomePage = new StudentForm(student.Id, studentController);
+                        StudentForm welcomePage = new StudentForm(student.Id, mainController);
                         welcomePage.Show();
                     }
                     else

@@ -34,13 +34,12 @@ namespace LangLang.View.Student
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
 
-
-        public AvailableExamTermsTable(int studentId)
+        public AvailableExamTermsTable(int studentId,MainController mainController)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            studentsController = new StudentsController();
-            teacherController = new TeacherController();
+            studentsController = mainController.GetStudentController();
+            teacherController = mainController.GetTeacherController();
             this.studentId = studentId;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
