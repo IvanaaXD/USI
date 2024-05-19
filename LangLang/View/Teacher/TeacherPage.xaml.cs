@@ -229,7 +229,7 @@ namespace LangLang.View.Teacher
 
         private void CreateExam_Click(object sender, RoutedEventArgs e)
         {
-            CreateExamForm examTable = new CreateExamForm(teacherController, directorController ,teacherId);
+            CreateExamForm examTable = new CreateExamForm(mainController,teacherId);
             examTable.Show();
         }
         private void UpdateExam_Click(object sender, RoutedEventArgs e)
@@ -240,7 +240,7 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                UpdateExamForm modifyDataForm = new UpdateExamForm(teacherController, directorController, teacherId, SelectedExamTerm.ExamID);
+                UpdateExamForm modifyDataForm = new UpdateExamForm(mainController, teacherId, SelectedExamTerm.ExamID);
                 modifyDataForm.Show();
                 modifyDataForm.Activate();
             }

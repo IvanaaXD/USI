@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace LangLang.View.Teacher
 {
@@ -25,19 +26,18 @@ namespace LangLang.View.Teacher
         private int examId;
         private Domain.Model.Teacher teacher;
 
-        public UpdateExamForm(TeacherController teacherController, DirectorController directorController, int teacherId, int examId)
+        public UpdateExamForm(MainController mainController, int teacherId, int examId)
         {
+            this.directorController = mainController.GetDirectorController();
+            this.teacherController = mainController.GetTeacherController();
             teacher = directorController.GetTeacherById(teacherId);
             ExamTerm examTerm = teacherController.GetExamTermById(examId);
             ExamTerm = new ExamTermDTO(examTerm, teacher);
             DataContext = ExamTerm;
 
             InitializeComponent();
-            this.teacherController = teacherController;
-            this.directorController = directorController;
             this.teacherId = teacherId;
             this.examId = examId;
-
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
 
             SetInitialLanguageAndLevel(examTerm.CourseID);
