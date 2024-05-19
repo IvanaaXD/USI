@@ -6,7 +6,6 @@ using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using System.Linq;
 using LangLang.Domain.IRepository;
-using LangLang.Model;
 
 namespace LangLang.Controller
 {
