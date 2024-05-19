@@ -49,6 +49,7 @@ namespace LangLang.View.Teacher
         private readonly TeacherController teacherController;
         private readonly StudentsController studentController;
         private readonly ExamTermController examTermController;
+        private readonly ExamTermGradeController examTermGradeController;
         private readonly MainController mainController;
 
         public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, MainController mainController)
@@ -58,6 +59,7 @@ namespace LangLang.View.Teacher
             this.teacherController = mainController.GetTeacherController();
             this.studentController = mainController.GetStudentController();
             this.examTermController = mainController.GetExamTermController();
+            this.examTermGradeController = mainController.GetExamTermGradeController();
             this.mainController = mainController;
             this.teacher = teacher;
 
@@ -253,7 +255,7 @@ namespace LangLang.View.Teacher
         {
             if (SelectedStudent == null)
                 MessageBox.Show("Please choose a student to grade!");
-            else if (examTermController.IsStudentGraded(SelectedStudent.id, examTerm.ExamID))
+            else if (examTermGradeController.IsStudentGraded(SelectedStudent.id, examTerm.ExamID))
                 MessageBox.Show("This student is already graded!");
             else
             {

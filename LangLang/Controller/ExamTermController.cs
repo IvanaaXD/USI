@@ -5,74 +5,46 @@ using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using LangLang.Domain.IRepository;
+using System.Linq;
 
 namespace LangLang.Controller
 {
     public class ExamTermController
     {
-        private readonly ExamTermDAO _exams;
-        private readonly IExamTermGradeRepository _examTermGrades;
+        private readonly IExamTermRepository _exams;
         private readonly TeacherController teacherController;
 
-        public ExamTermController(TeacherController teacherController, IExamTermGradeRepository examTermGrades)
+        public ExamTermController(IExamTermRepository _exams, TeacherController teacherController)
         {
-            _exams = new ExamTermDAO(teacherController);
-            _examTermGrades = examTermGrades ?? throw new ArgumentNullException(nameof(examTermGrades));
+            _exams = _exams ?? throw new ArgumentNullException(nameof(_exams));
             this.teacherController = teacherController;
         }
+
         public ExamTerm? GetExamTermById(int examId)
         {
             return _exams.GetExamTermById(examId);
         }
+
         public List<ExamTerm> GetAllExamTerms()
         {
             return _exams.GetAllExamTerms();
         }
-       
-        public List<ExamTermGrade> GetAllExamTermGrades()
-        {
-            return _examTermGrades.GetAllExamTermGrades();
-        }
-     
-        public List<ExamTermGrade> GetExamTermGradesByTeacherExam(int teacherId, int examTermId)
-        {
-            return _examTermGrades.GetExamTermGradesByTeacherExam(teacherId, examTermId);
-        }
-        public ExamTermGrade? GetExamTermGradeByStudentExam(int studentId, int examTermId)
-        {
-            return _examTermGrades.GetExamTermGradeByStudentExam(studentId, examTermId);
-        }
 
-        public List<ExamTermGrade> GetExamTermGradeByExam(int examTermId)
-        {
-            return _examTermGrades.GetExamTermGradeByExam(examTermId);
-        }
-
-        public ExamTermGrade? GetExamTermGradeByStudentTeacherExam(int studentId, int teacherId, int examTermId)
-        {
-            return _examTermGrades.GetExamTermGradeByStudentTeacherExam(studentId, teacherId, examTermId);
-        }
         public void AddExamTerm(ExamTerm examTerm)
         {
             _exams.AddExamTerm(examTerm);
         }
+
         public void UpdateExamTerm(ExamTerm examTerm)
         {
             _exams.UpdateExamTerm(examTerm);
         }
-        public ExamTermGrade GradeStudent(ExamTermGrade grade)
-        {
-            return _examTermGrades.AddGrade(grade);
-        }
+
         public ExamTerm ConfirmExamTerm(int examTermId)
         {
             return _exams.ConfirmExamTerm(examTermId);
         }
         
-        public bool IsStudentGraded(int studentId, int examId)
-        {
-            return _examTermGrades.IsStudentGraded(studentId, examId);
-        }
         public bool ValidateExamTimeslot(ExamTerm exam, Teacher teacher)
         {
             bool isOverlap = CheckExamOverlap(exam, teacher);
@@ -101,7 +73,16 @@ namespace LangLang.Controller
         {
             return _exams.FindExamTermsByCriteria(language, level, examDate);
         }
-      
+
+        public List<ExamTerm> FindExamTermsByDate(DateTime? startDate)
+        {
+            var filteredCourses = _exams.GetAllExamTerms().Where(exam =>
+                (exam.ExamTime.Date >= (startDate.Value.Date) && exam.ExamTime.Date <= DateTime.Today.Date)
+            ).ToList();
+
+            return filteredCourses;
+        }
+
     }
 }
 

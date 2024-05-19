@@ -66,7 +66,7 @@ namespace LangLang.View.Student
         }
         private void DisplayCompletedCourseForm(int courseId)
         {
-            GradeTeacher gradeTeacherForm = new GradeTeacher(studentId, courseId);
+            GradeTeacher gradeTeacherForm = new GradeTeacher(studentId, courseId, mainController);
             gradeTeacherForm.Show();
         }
 
@@ -81,7 +81,7 @@ namespace LangLang.View.Student
         }
         private void DropOutFromCourseBoutton_Click(object sender, RoutedEventArgs e)
         {
-            CancelCourseEnrollmentForm cancelCourseEnrollmentForm = new CancelCourseEnrollmentForm(studentId,studentController.GetStudentById(studentId).ActiveCourseId);
+            CancelCourseEnrollmentForm cancelCourseEnrollmentForm = new CancelCourseEnrollmentForm(studentId,studentController.GetStudentById(studentId).ActiveCourseId, mainController);
             cancelCourseEnrollmentForm.Owner = this;
             cancelCourseEnrollmentForm.WindowClosed += CancelCourseEnrollmentForm_WindowClosed;
             cancelCourseEnrollmentForm.ShowDialog();

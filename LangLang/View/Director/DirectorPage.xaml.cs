@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;
 using System.Windows;
+
 namespace LangLang.View.Director
 {
     public partial class DirectorPage : Window, IObserver
@@ -232,6 +233,50 @@ namespace LangLang.View.Director
                 /*Course course = mainController.GetCourseController().GetCourseById(SelectedCourse.Id);
                 CourseView courseView = new CourseView(course, directorController.GetTeacherById(SelectedTeacher.Id), mainController);
                 courseView.Show();*/
+            }
+        }
+        private void SendReport_Click(object sender, RoutedEventArgs e) 
+        {
+            if (ReportOneRadioButton.IsChecked == true)
+            {
+                return;
+            }
+            else if (ReportTwoRadioButton.IsChecked == true)
+            {
+                return;
+            }
+            else if (ReportThreeRadioButton.IsChecked == true)
+            {
+                return;
+            }
+            else if (ReportFourRadioButton.IsChecked == true)
+            {
+                var (numberOfCourses, numberOfExamTerms, penaltyPoints, values) = directorController.GetLanguageReport();
+
+                Console.WriteLine("Number of Courses: ");
+                foreach (var num in numberOfCourses)
+                {
+                    Console.WriteLine(num.Key + ": " + num.Value);
+                }
+
+                Console.WriteLine("Number of Exam Terms: ");
+                foreach (var num in numberOfExamTerms)
+                {
+                    Console.WriteLine(num.Key + ": " + num.Value);
+                }
+
+                Console.WriteLine("Penalty Points: ");
+                foreach (var num in penaltyPoints)
+                {
+                    Console.WriteLine(num.Key + ": " + num.Value);
+                }
+
+                Console.WriteLine("Values: ");
+                foreach (var num in values)
+                {
+                    Console.WriteLine(num.Key + ": " + num.Value);
+                }
+
             }
         }
     }

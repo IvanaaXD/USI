@@ -6,6 +6,7 @@ using LangLang.Storage;
 using System.Collections.Generic;
 using LangLang.Domain.Model;
 using LangLang.Domain.IRepository;
+using LangLang.Domain.Model.Enums;
 
 namespace LangLang.Repository
 {
@@ -13,12 +14,10 @@ namespace LangLang.Repository
     {
         private readonly List<ExamTerm> _examTerms;
         private readonly Storage<ExamTerm> _examTermsStorage;
-        private readonly TeacherController teacherController;
-        public ExamTermRepository(TeacherController teacherController)
+        public ExamTermRepository()
         {
             _examTermsStorage = new Storage<ExamTerm>("exam.csv");
             _examTerms = _examTermsStorage.Load();
-            this.teacherController = teacherController;
         }
         private int GenerateExamId()
         {
@@ -54,6 +53,37 @@ namespace LangLang.Repository
         {
             return _examTerms;
         }
+
+        public ExamTerm ConfirmExamTerm(int examTermId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string FindLanguageAndLevel(int courseID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DecrementExamTermCurrentlyAttending(int examTermId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckTeacherExamOverlapsCourses(ExamTerm examTerm, Teacher teacher)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckTeacherExamsOverlap(ExamTerm examTerm, Teacher teacher)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update()
         {
             throw new NotImplementedException();
