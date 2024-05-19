@@ -6,6 +6,7 @@ using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using System.Linq;
 using LangLang.Domain.IRepository;
+using System.Windows.Input;
 
 namespace LangLang.Controller
 {
@@ -13,14 +14,18 @@ namespace LangLang.Controller
     {
         private readonly IDirectorRepository _directors;
         private readonly TeacherDAO? _teachers;
+        private readonly ExamTermDAO? _exams;
         private readonly StudentGradeDAO? _studentGrades;
         private readonly PenaltyPointDAO? _penaltyPoints;
+        private readonly ExamTermGradeRepository? _examTermGrades;
 
         public DirectorController(IDirectorRepository directors)
         {
             _directors = directors ?? throw new ArgumentNullException(nameof(directors));
             _teachers = new TeacherDAO();
+            _exams = new ExamTermDAO();
             _studentGrades = new StudentGradeDAO();
+            _examTermGrades = new ExamTermGradeRepository();
         }
 
         public Director? GetDirector()
@@ -246,6 +251,68 @@ namespace LangLang.Controller
             }
 
             return numberOfPenaltyPoints;
+        }
+
+        public double GetAverageReadingPointsLastYear()
+        {
+            return CalculateAveragePoints("reading");
+        }
+        public double GetAverageSpeakingPointsLastYear()
+        {
+            return CalculateAveragePoints("speaking");
+        }
+        public double GetAverageWritingPointsLastYear()
+        {
+            return CalculateAveragePoints("writing");
+        }
+        public double GetAverageListeningPointsLastYear()
+        {
+            return CalculateAveragePoints("listening");
+        }
+        public double CalculateAveragePoints(string typeOfPoints)
+        {
+            int result = 0, count = 0;
+            List<ExamTermGrade> examGrades = _examTermGrades.GetAllExamTermGrades();
+            foreach (ExamTermGrade grade in examGrades)
+            {
+                ExamTerm exam = _exams.GetExamTermById(grade.ExamId);
+                if (exam.ExamTime >= DateTime.Now.AddYears(-1))
+                {
+                    if(typeOfPoints == "listening")
+                        result += grade.ListeningPoints;
+                    else if (typeOfPoints == "speaking")
+                        result += grade.SpeakingPoints;
+                    else if (typeOfPoints == "writing")
+                        result += grade.WritingPoints;
+                    else if (typeOfPoints == "reading")
+                        result += grade.ReadingPoints;
+
+                    count++;
+                }
+            }
+            return result == 0 ? 0 : result / count;
+        }
+        public int GetAttendedCount(int courseId)
+        {
+            Course course = _teachers.GetCourseById(courseId);
+            return course.CurrentlyEnrolled;
+        }
+        public int GetPassedCount(int courseId)
+        {
+            int count = 0;  
+            Course course = _teachers.GetCourseById(courseId);
+            List<ExamTermGrade> grades = _examTermGrades.GetAllExamTermGrades();
+            foreach(ExamTermGrade grade in  grades) { 
+                if(course.ExamTerms.Contains(grade.ExamId) && grade.Value >= 6)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        public double CalculatePassPercentage(int passedCount, int attendedCount)
+        {
+            return (passedCount / attendedCount) * 100;
         }
     }
 }
