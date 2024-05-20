@@ -43,12 +43,12 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
 
-            Course = new CourseDTO(teacherController, mainController.GetDirectorController().GetTeacherById(teacherId));
-            Teacher = new TeacherDTO(mainController.GetDirectorController().GetTeacherById(teacherId));
+            directorController = mainController.GetDirectorController();
+            teacherController = mainController.GetTeacherController();
+            courseController = mainController.GetCourseController();
 
-            this.directorController = mainController.GetDirectorController();
-            this.teacherController = mainController.GetTeacherController();
-            this.courseController = mainController.GetCourseController();
+            Course = new CourseDTO(courseController, mainController.GetDirectorController().GetTeacherById(teacherId));
+            Teacher = new TeacherDTO(mainController.GetDirectorController().GetTeacherById(teacherId));
 
             this.teacherId = teacherId;
             DataContext = Course;

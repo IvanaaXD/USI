@@ -20,16 +20,15 @@ namespace LangLang.View.Teacher
 
         public UpdateCourseForm(int courseId, int teacherId, MainController mainController)
         {
-            Course = new CourseDTO(teacherController, teacherController.GetCourseById(courseId), mainController.GetDirectorController().GetTeacherById(teacherId));
+            teacherController = mainController.GetTeacherController();
+            courseController = mainController.GetCourseController();
+            Course = new CourseDTO(courseController, teacherController.GetCourseById(courseId), mainController.GetDirectorController().GetTeacherById(teacherId));
             Teacher = new TeacherDTO(mainController.GetDirectorController().GetTeacherById(teacherId));
             DataContext = Course;
 
             Course.StartTime = Course.StartDate.ToString("HH:mm");
 
             InitializeComponent();
-
-            this.teacherController = mainController.GetTeacherController();
-            this.courseController = mainController.GetCourseController();
 
             SetPlaceholders();
         }

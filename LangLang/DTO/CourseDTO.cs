@@ -23,13 +23,12 @@ namespace LangLang.DTO
         private string maxEnrolledStudents;
         private List<int> examTerms;
 
-        private readonly TeacherController _teacherController;
         private readonly CourseController _courseController;
         private readonly Domain.Model.Teacher teacher;
 
-        public CourseDTO(TeacherController teacherController, Domain.Model.Teacher teacher)
+        public CourseDTO(CourseController courseController, Domain.Model.Teacher teacher)
         {
-            _teacherController = teacherController;
+            _courseController = courseController;
             this.teacher = teacher;
         }
 
@@ -288,9 +287,9 @@ namespace LangLang.DTO
             examTerms = course.ExamTerms;
         }
 
-        public CourseDTO(TeacherController tc, Domain.Model.Course course, Domain.Model.Teacher teacher)
+        public CourseDTO(CourseController courseController, Domain.Model.Course course, Domain.Model.Teacher teacher)
         {
-            _teacherController = tc;
+            _courseController = courseController;
             this.teacher = teacher;
             id = course.Id;
             language = course.Language;
