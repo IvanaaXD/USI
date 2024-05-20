@@ -13,13 +13,11 @@ namespace LangLang.Controller
         private readonly TeacherRepository _teachers;
         private readonly CourseRepository _courses;
         private readonly ExamTermRepository _examTerms;
-        private readonly CourseGradeDAO _courseGrades;
         private readonly PenaltyPointDAO _penaltyPoints;
 
         public TeacherController()
         {
             _teachers = new TeacherRepository();
-            _courseGrades = new CourseGradeDAO();
             _penaltyPoints = new PenaltyPointDAO();
         }
         public Course? GetCourseById(int courseId)
@@ -70,22 +68,6 @@ namespace LangLang.Controller
             return _teachers.GetReceivedCourseMails(teacher, courseId);
         }
 
-        public List<CourseGrade> GetAllCourseGrades()
-        {
-            return _courseGrades.GetAllCourseGrades();
-        }
-
-       
-        public List<CourseGrade> GetCourseGradesByTeacherCourse(int teacherId, int courseId)
-        {
-            return _courseGrades.GetCourseGradesByTeacherCourse(teacherId, courseId);
-        }
-
-        
-        public CourseGrade? GetCourseGradesByStudentTeacherCourse(int studentId, int teacherId, int courseId)
-        {
-            return _courseGrades.GetCourseGradeByStudentTeacher(studentId, teacherId, courseId);
-        }
 
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
@@ -105,16 +87,6 @@ namespace LangLang.Controller
         public void DeleteMail(int mailId)
         {
             _teachers.RemoveMail(mailId);
-        }
-
-        public CourseGrade GradeStudentCourse(CourseGrade grade)
-        {
-            return _courseGrades.AddGrade(grade);
-        }
-
-        public bool IsStudentGradedCourse(int studentId, int courseId)
-        {
-            return _courseGrades.IsStudentGraded(studentId, courseId);
         }
 
         public bool CheckExamOverlap(int ExamID, DateTime ExamDate)

@@ -73,6 +73,7 @@ namespace LangLang.View.Teacher
         private readonly TeacherController teacherController;
         private readonly StudentsController studentController;
         private readonly CourseController courseController;
+        private readonly CourseGradeController courseGradeController;
         private readonly MainController mainController;
 
         public CourseView(Course course, Domain.Model.Teacher teacher, MainController mainController)
@@ -82,6 +83,7 @@ namespace LangLang.View.Teacher
             this.teacherController = mainController.GetTeacherController();
             this.studentController = mainController.GetStudentController();
             this.courseController = mainController.GetCourseController();
+            courseGradeController = mainController.GetCourseGradeController();
             this.mainController = mainController;
             this.teacher = teacher;
             MailToSend = new MailDTO();
@@ -132,7 +134,7 @@ namespace LangLang.View.Teacher
                     }
                     if (courseController.HasCourseFinished(course, courseController.GetStudentCount(studentController, course)))
                     {
-                        CourseGrade grade = teacherController.GetCourseGradesByStudentTeacherCourse(student.Id, teacher.Id, course.Id);
+                        CourseGrade grade = courseGradeController.GetCourseGradeByStudentTeacher(student.Id, teacher.Id, course.Id);
                         if (grade == null)
                         {
                             dtoStudent.ActivityGrade = 0;
@@ -304,7 +306,7 @@ namespace LangLang.View.Teacher
             if (SelectedStudent == null)
                 MessageBox.Show("Please choose a student to grade!");
 
-            else if (teacherController.IsStudentGradedCourse(SelectedStudent.id, course.Id))
+            else if (courseGradeController.IsStudentGraded(SelectedStudent.id, course.Id))
                 MessageBox.Show("This student is already graded!");
 
             else

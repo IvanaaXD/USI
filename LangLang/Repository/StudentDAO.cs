@@ -529,7 +529,7 @@ namespace LangLang.Repository
 
         private int GetStudentGradesSum(int studentId)
         {
-            CourseGradeDAO courseGradeDAO = new CourseGradeDAO();
+            CourseGradeRepository courseGradeDAO = new CourseGradeRepository();
             int gradesSum = 0;
             foreach (CourseGrade courseGrade in courseGradeDAO.GetAllCourseGrades())
                 if (courseGrade.StudentId == studentId)

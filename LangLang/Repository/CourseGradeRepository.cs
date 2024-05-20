@@ -3,15 +3,17 @@ using System.Linq;
 using LangLang.Observer;
 using LangLang.Storage;
 using LangLang.Domain.Model;
+using LangLang.Domain.IRepository;
+using System;
 
 namespace LangLang.Repository
 {
-    public class CourseGradeDAO : Subject
+    public class CourseGradeRepository : Subject, ICourseGradeRepository
     {
         private readonly List<CourseGrade> _grades;
         private readonly Storage<CourseGrade> _storage;
 
-        public CourseGradeDAO()
+        public CourseGradeRepository()
         {
             _storage = new Storage<CourseGrade>("courseGrades.csv");
             _grades = _storage.Load();
@@ -86,10 +88,13 @@ namespace LangLang.Repository
         {
             return _grades.Where(grade => grade.TeacherId == teacherId && grade.CourseId == courseId).ToList();
         }
-
         public List<CourseGrade> GetAllCourseGrades()
         {
             return _grades;
+        }
+        public void Update()
+        {
+            throw new NotImplementedException();
         }
     }
 }
