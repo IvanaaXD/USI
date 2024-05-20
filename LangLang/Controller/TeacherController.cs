@@ -11,14 +11,12 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly TeacherDAO _teachers;
-        private readonly ExamTermGradeRepository _examTermGrades;
         private readonly CourseGradeDAO _courseGrades;
         private readonly PenaltyPointDAO _penaltyPoints;
 
         public TeacherController()
         {
             _teachers = new TeacherDAO();
-            _examTermGrades = new ExamTermGradeRepository();
             _courseGrades = new CourseGradeDAO();
             _penaltyPoints = new PenaltyPointDAO();
         }
@@ -60,31 +58,16 @@ namespace LangLang.Controller
             return _courseGrades.GetAllCourseGrades();
         }
 
-        public List<ExamTermGrade> GetAllExamTermGrades()
-        {
-            return _examTermGrades.GetAllExamTermGrades();
-        }
+       
         public List<CourseGrade> GetCourseGradesByTeacherCourse(int teacherId, int courseId)
         {
             return _courseGrades.GetCourseGradesByTeacherCourse(teacherId, courseId);
         }
 
-        public List<ExamTermGrade> GetExamTermGradesByTeacherExam(int teacherId, int examTermId)
-        {
-            return _examTermGrades.GetExamTermGradesByTeacherExam(teacherId, examTermId);
-        }
-        public ExamTermGrade? GetExamTermGradeByStudentExam(int studentId, int examTermId)
-        {
-            return _examTermGrades.GetExamTermGradeByStudentExam(studentId, examTermId);
-        }
+        
         public CourseGrade? GetCourseGradesByStudentTeacherCourse(int studentId, int teacherId, int courseId)
         {
             return _courseGrades.GetCourseGradeByStudentTeacher(studentId, teacherId, courseId);
-        }
-
-        public ExamTermGrade? GetExamTermGradeByStudentTeacherExam(int  studentId, int teacherId, int examTermId) 
-        {
-            return _examTermGrades.GetExamTermGradeByStudentTeacherExam(studentId, teacherId, examTermId);
         }
 
         public List<Course> GetAvailableCourses(Teacher teacher)
@@ -122,11 +105,6 @@ namespace LangLang.Controller
         public void UpdateExamTerm(ExamTerm examTerm)
         {
             _teachers.UpdateExamTerm(examTerm);
-        }
-
-        public ExamTermGrade GradeStudent(ExamTermGrade grade)
-        {
-            return _examTermGrades.AddGrade(grade);
         }
 
         public CourseGrade GradeStudentCourse(CourseGrade grade)
@@ -211,7 +189,6 @@ namespace LangLang.Controller
                 return false;
 
             return true;
-
         }
 
         public void DeleteCourse(int courseId)
