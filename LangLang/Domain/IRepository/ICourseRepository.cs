@@ -11,6 +11,7 @@ namespace LangLang.Domain.IRepository
         Course UpdateCourse(Course course);
         Course RemoveCourse(int id);
         List<Course> GetAllCourses();
+        List<Course> GetCoursesByTeacher(int teacherId);
         void Subscribe(IObserver observer);
     }
 }

@@ -29,20 +29,23 @@ namespace LangLang.View.Student
 
         public ViewModel TableViewModel { get; set; }
         public CourseDTO SelectedCourse { get; set; }
+        private MainController mainController { get; set; }
         private StudentsController studentsController { get; set; }
         private TeacherController teacherController { get; set; }
+        private CourseController courseController { get; set; }
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
         private int selectedTabIndex = 0;
 
         private CoursesTable studentCoursesTable;
 
-        public CoursesView(int studentId, int tabIndex)
+        public CoursesView(int studentId, int tabIndex, MainController mainController)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            studentsController = new StudentsController();
-            teacherController = new TeacherController();
+            studentsController = mainController.GetStudentController();
+            teacherController = mainController.GetTeacherController();
+            courseController = mainController.GetCourseController();
 
             this.studentId = studentId;
             studentCoursesTable = (CoursesTable) FindName("StudentCoursesTable" + selectedTabIndex);
@@ -140,7 +143,7 @@ namespace LangLang.View.Student
 
             List<Course> filteredCourses = new List<Course>();
             bool isOnline = studentCoursesTable.onlineCheckBox.IsChecked ?? false;
-            List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(language, languageLevel, startDate, duration, isOnline);
+            List<Course> allFilteredCourses = courseController.FindCoursesByCriteria(language, languageLevel, startDate, duration, isOnline);
 
             foreach (Course course in allFilteredCourses)
             {

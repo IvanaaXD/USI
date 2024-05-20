@@ -55,13 +55,13 @@ namespace LangLang.View.Teacher
         public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, MainController mainController)
         {
             InitializeComponent();
-            this.examTerm = examTerm;
             this.teacherController = mainController.GetTeacherController();
             this.studentController = mainController.GetStudentController();
             this.examTermController = mainController.GetExamTermController();
             this.examTermGradeController = mainController.GetExamTermGradeController();
             this.mainController = mainController;
             this.teacher = teacher;
+            this.examTerm = examTerm;
 
             StudentsTableViewModel = new ViewModel();
 
@@ -260,7 +260,7 @@ namespace LangLang.View.Teacher
             else
             {
                 Domain.Model.Student? student = studentController.GetStudentById(SelectedStudent.id);
-                GradeStudentForm gradeStudentForm = new GradeStudentForm(examTerm, teacher, student, teacherController, studentController);
+                GradeStudentForm gradeStudentForm = new GradeStudentForm(examTerm, teacher, student, mainController);
 
                 gradeStudentForm.Closed += RefreshPage;
 

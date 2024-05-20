@@ -13,23 +13,25 @@ namespace LangLang.Controller
     public class DirectorController
     {
         private readonly IDirectorRepository _directors;
-        private readonly TeacherDAO? _teachers;
+        private readonly TeacherRepository? _teachers;
         private readonly ExamTermDAO? _examTerms;
         private readonly StudentGradeDAO? _studentGrades;
         private readonly PenaltyPointDAO? _penaltyPoints;
         private readonly CourseController? _courseController;
+        private readonly TeacherController? _teacherController;
         private readonly ExamTermController? _examTermController;
         private readonly ExamTermGradeRepository? _examTermGrades;
 
         public DirectorController(IDirectorRepository directors)
         {
             _directors = directors ?? throw new ArgumentNullException(nameof(directors));
-            _teachers = new TeacherDAO();
+            _teachers = new TeacherRepository();
             _examTerms = new ExamTermDAO();
             _studentGrades = new StudentGradeDAO();
             _penaltyPoints = new PenaltyPointDAO();
             _examTermGrades = new ExamTermGradeRepository();
 
+            _teacherController = new TeacherController();
             _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
             _courseController = new CourseController(new CourseRepository(), new TeacherController());
 
@@ -62,12 +64,48 @@ namespace LangLang.Controller
 
         public void Delete(int teacherId)
         {
+            Teacher teacher = GetTeacherById(teacherId);
+
+            DeleteCoursesByTeacher(teacher);
+            DeleteExamTermsByTeacher(teacher);
             _directors.RemoveTeacher(teacherId);
         }
 
         public void Subscribe(IObserver observer)
         {
             _directors.Subscribe(observer);
+        }
+
+        public void DeleteCoursesByTeacher(Teacher teacher)
+        {
+            var courses = _courseController.GetAllCourses();
+            var teacherCourses = teacher.CoursesId;
+
+            foreach (var course in courses)
+            {
+                if (teacherCourses.Contains(course.Id) && course.StartDate > DateTime.Today.Date)
+                    teacherCourses.Remove(course.Id);
+            }
+
+            teacher.CoursesId = teacherCourses;
+            Update(teacher);
+        }
+
+        public void DeleteExamTermsByTeacher(Teacher teacher)
+        {
+            var examTerms = _examTermController.GetAllExamTerms();
+            var courses = _courseController.GetAllCourses();
+            var teacherExamTerms = teacher.CoursesId;
+
+            foreach (var examTerm in examTerms)
+            {
+                var course = _courseController.GetCourseById(examTerm.CourseID);
+                if (teacherExamTerms.Contains(examTerm.CourseID) &&  course.StartDate > DateTime.Today.Date)
+                    teacherExamTerms.Remove(course.Id);
+            }
+
+            teacher.CoursesId = teacherExamTerms;
+            Update(teacher);
         }
 
         public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)
@@ -128,11 +166,10 @@ namespace LangLang.Controller
       
         public void GenerateFirstReport()
         {
-            TeacherDAO teacherDAO = new TeacherDAO();
             StudentDAO studentDAO = new StudentDAO();
             PdfGenerator pdf = new PdfGenerator();
             pdf.AddTitle("Number of penalty points in the last year");
-            pdf.AddTable(teacherDAO.GetPenaltyPointsLastYearPerCourse());
+            pdf.AddTable(_courseController.GetPenaltyPointsLastYearPerCourse());
             pdf.AddPage();
             pdf.AddTitle("Average points of students by penalties");
             for(int i = 0; i < 3; i++)

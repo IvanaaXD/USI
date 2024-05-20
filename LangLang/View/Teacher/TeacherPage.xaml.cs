@@ -35,6 +35,7 @@ namespace LangLang.View.Teacher
         public TeacherController teacherController { get; set; }
         public DirectorController directorController { get; set; }
         public ExamTermController examTermController { get; set; }
+        public CourseController courseController { get; set; }
         public MainController mainController { get; set; }
 
         private bool isSearchCourseClicked = false;
@@ -48,6 +49,7 @@ namespace LangLang.View.Teacher
             this.teacherController = mainController.GetTeacherController();
             this.directorController = mainController.GetDirectorController();
             this.examTermController = mainController.GetExamTermController();
+            this.courseController = mainController.GetCourseController();
 
             this.Courses = Courses;
             this.ExamTerms = ExamTerms;
@@ -160,7 +162,7 @@ namespace LangLang.View.Teacher
                 else
                 {
                     directorController.RemoveCourseFromList(teacherId, SelectedCourse.Id);
-                    teacherController.DeleteCourse(SelectedCourse.Id);
+                    courseController.DeleteCourse(SelectedCourse.Id);
                 }
             }
         }
@@ -188,7 +190,7 @@ namespace LangLang.View.Teacher
             if (isSearchCourseClicked)
             {
                 bool isOnline = courseOnlineCheckBox.IsChecked ?? false;
-                List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
+                List<Course> allFilteredCourses = courseController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
                 foreach (Course course in allFilteredCourses)
                 {
                     foreach (Course teacherCourse in availableCourses)
@@ -269,7 +271,7 @@ namespace LangLang.View.Teacher
                 if (DateTime.Now.AddDays(14) > SelectedExamTerm.ExamDate)
                     MessageBox.Show("Cannot cancel an exam that starts in less than a 2 week.");
                 else
-                    teacherController.DeleteExamTerm(SelectedExamTerm.ExamID);
+                    teacherController.RemoveExamTerm(SelectedExamTerm.ToExamTerm().ExamID);
             }
         }
 
@@ -349,8 +351,8 @@ namespace LangLang.View.Teacher
 
             if (isSearchExamClicked)
             {
-                TeacherDAO teacherDAO = new TeacherDAO();
-                finalExamTerms = teacherDAO.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                TeacherRepository teacherDAO = new TeacherRepository();
+                finalExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
             }
             return finalExamTerms;
         }

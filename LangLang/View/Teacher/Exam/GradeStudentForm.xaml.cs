@@ -41,25 +41,26 @@ namespace LangLang.View.Teacher
         private ExamTerm examTerm;
         private Domain.Model.Teacher? teacher;
         private Domain.Model.Student student;
+        private MainController mainController;
         private TeacherController teacherController;
         private StudentsController studentController;
         private ExamTermGradeController examTermGradeController;
 
-        public GradeStudentForm(ExamTerm examTerm, Domain.Model.Teacher? teacher, Domain.Model.Student? student, TeacherController teacherController, StudentsController studentController)
+        public GradeStudentForm(ExamTerm examTerm, Domain.Model.Teacher? teacher, Domain.Model.Student? student, MainController mainController)
         {
             InitializeComponent();
             DataContext = this;
-            Grade = new ExamTermGradeDTO();
 
+            Grade = new ExamTermGradeDTO();
             Student = new StudentDTO(student);
 
+            this.teacherController = mainController.GetTeacherController();
+            this.studentController = mainController.GetStudentController();
+            this.examTermGradeController = mainController.GetExamTermGradeController();
+
             this.examTerm = examTerm;
-            this.teacherController = teacherController;
-            this.studentController = studentController;
             this.teacher = teacher;
             this.student = student;
-            this.examTermGradeController = new ExamTermGradeController(new ExamTermGradeRepository());
-
 
             firstNameTextBlock.Text = student.FirstName;
             lastNameTextBlock.Text = student.LastName;
