@@ -14,7 +14,7 @@ namespace LangLang.Controller
         private readonly IExamTermRepository _exams;
         private readonly TeacherController teacherController;
 
-        public ExamTermController(TeacherController teacherController, IExamTermRepository exams)
+        public ExamTermController(IExamTermRepository exams, TeacherController teacherController)
         {
             _exams = exams ?? throw new ArgumentNullException(nameof(exams));
             this.teacherController = teacherController;

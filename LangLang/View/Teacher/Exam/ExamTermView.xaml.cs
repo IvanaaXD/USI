@@ -203,7 +203,7 @@ namespace LangLang.View.Teacher
 
         public bool HasExamTermBeenGraded()
         {
-            var grades = teacherController.GetExamTermGradesByTeacherExam(teacher.Id, examTerm.ExamID);
+            var grades = examTermGradeController.GetExamTermGradesByTeacherExam(teacher.Id, examTerm.ExamID);
             var examTermStudents = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
 
             if (grades.Count==0)
@@ -223,7 +223,7 @@ namespace LangLang.View.Teacher
             {
                 if (selectedStudent.id == student.Id)
                 {
-                    var grade = teacherController.GetExamTermGradeByStudentTeacherExam(student.Id, teacher.Id, examTerm.ExamID);
+                    var grade = examTermGradeController.GetExamTermGradeByStudentTeacherExam(student.Id, teacher.Id, examTerm.ExamID);
 
                     if (grade != null)
                         selectedStudent.ExamTermGrade = grade.Value;
