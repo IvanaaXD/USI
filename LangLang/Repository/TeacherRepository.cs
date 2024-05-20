@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using LangLang.Domain.Model;
-using LangLang.Controller;
 using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
@@ -11,7 +9,7 @@ using LangLang.Domain.IRepository;
 
 namespace LangLang.Repository
 {
-    public class TeacherRepository : Subject
+    public class TeacherRepository : Subject, ITeacherRepository
     {
         private readonly List<Course> _courses;
         private readonly Storage<Course> _courseStorage;
@@ -183,9 +181,9 @@ namespace LangLang.Repository
             return availableExamTerms;
         }
 
-        public String FindLanguageAndLevel(int courseID)
+        public string FindLanguageAndLevel(int courseID)
         {
-            String res = "";
+            string res = "";
 
             Course course = GetAllCourses().FirstOrDefault(c => c.Id == courseID);
 
