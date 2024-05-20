@@ -1,5 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.Domain.Model;
+using LangLang.Repository;
 using System.Windows;
 
 namespace LangLang.View.Student
@@ -13,7 +14,7 @@ namespace LangLang.View.Student
         private readonly ExamTerm examTerm;
         private readonly Domain.Model.Student student;
         private readonly TeacherController teacherController;
-
+        private readonly ExamTermGradeController examTermGradeController = new ExamTermGradeController(new ExamTermGradeRepository());
         public ExamTermStudentView(ExamTerm examTerm, Domain.Model.Student student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
@@ -29,7 +30,7 @@ namespace LangLang.View.Student
         private void AddExamTermInfo()
         {
             Course course = teacherController.GetCourseById(examTerm.CourseID);
-            ExamTermGrade grade = teacherController.GetExamTermGradeByStudentExam(student.Id, examTerm.ExamID);
+            ExamTermGrade grade = examTermGradeController.GetExamTermGradeByStudentExam(student.Id, examTerm.ExamID);
 
             examTermLanguageTextBlock.Text = $"{course.Language}";
             examTermLevelTextBlock.Text = $"{course.Level}";

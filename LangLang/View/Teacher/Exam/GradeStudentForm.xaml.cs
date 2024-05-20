@@ -3,6 +3,7 @@ using LangLang.DTO;
 using LangLang.Domain.Model;
 using System.ComponentModel;
 using System.Windows;
+using LangLang.Repository;
 
 namespace LangLang.View.Teacher
 {
@@ -42,6 +43,7 @@ namespace LangLang.View.Teacher
         private Domain.Model.Student student;
         private TeacherController teacherController;
         private StudentsController studentController;
+        private ExamTermGradeController examTermGradeController;
 
         public GradeStudentForm(ExamTerm examTerm, Domain.Model.Teacher? teacher, Domain.Model.Student? student, TeacherController teacherController, StudentsController studentController)
         {
@@ -56,6 +58,8 @@ namespace LangLang.View.Teacher
             this.studentController = studentController;
             this.teacher = teacher;
             this.student = student;
+            this.examTermGradeController = new ExamTermGradeController(new ExamTermGradeRepository());
+
 
             firstNameTextBlock.Text = student.FirstName;
             lastNameTextBlock.Text = student.LastName;
@@ -101,7 +105,7 @@ namespace LangLang.View.Teacher
                 Grade.TeacherId = teacher.Id;
                 Grade.ExamId = examTerm.ExamID;
                 Grade.StudentId = student.Id;
-                teacherController.GradeStudent(Grade.ToGrade());
+                examTermGradeController.GradeStudent(Grade.ToGrade());
             }
             Close();
         }

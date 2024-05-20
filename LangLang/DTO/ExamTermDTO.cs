@@ -24,6 +24,7 @@ namespace LangLang.DTO
         private int points;
 
         private readonly TeacherController _teacherController = new TeacherController();
+        private readonly ExamTermGradeController _examTermGrade = new ExamTermGradeController(new ExamTermGradeRepository());
         private readonly Teacher teacher;
         ExamTermGrade grade;
 
@@ -257,8 +258,8 @@ namespace LangLang.DTO
 
             TeacherDAO teacherDAO = new TeacherDAO();
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
-            TeacherController teacherController = new TeacherController();
-            grade = teacherController.GetExamTermGradeByStudentExam(studentId, examTerm.ExamID);
+            //TeacherController teacherController = new TeacherController();
+            grade = _examTermGrade.GetExamTermGradeByStudentExam(studentId, examTerm.ExamID);
             if (grade == null)
             {
                 gradeValue = 0;
