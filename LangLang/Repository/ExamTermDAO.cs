@@ -14,12 +14,7 @@ namespace LangLang.Repository
         private readonly List<ExamTerm> _examTerms;
         private readonly Storage<ExamTerm> _examTermsStorage;
         private readonly TeacherController teacherController;
-        public ExamTermDAO(TeacherController teacherController)
-        {
-            _examTermsStorage = new Storage<ExamTerm>("exam.csv");
-            _examTerms = _examTermsStorage.Load();
-            this.teacherController = teacherController;
-        }
+
         public ExamTermDAO()
         {
             _examTermsStorage = new Storage<ExamTerm>("exam.csv");
@@ -78,9 +73,9 @@ namespace LangLang.Repository
             return filteredExams;
         }
 
-        public System.String FindLanguageAndLevel(int courseID)
+        public string FindLanguageAndLevel(int courseID)
         {
-            String res = "";
+            string res = "";
             Course course = teacherController.GetAllCourses().FirstOrDefault(c => c.Id == courseID);
 
             if (course != null)
@@ -153,6 +148,7 @@ namespace LangLang.Repository
                     return true;
             }
             return false;
-        } 
+        }
+
     }
 }

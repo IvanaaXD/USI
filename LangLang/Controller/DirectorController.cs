@@ -17,7 +17,8 @@ namespace LangLang.Controller
         private readonly ExamTermDAO? _examTerms;
         private readonly StudentGradeDAO? _studentGrades;
         private readonly PenaltyPointDAO? _penaltyPoints;
-
+        private readonly CourseController? _courseController;
+        private readonly ExamTermController? _examTermController;
         private readonly ExamTermGradeRepository? _examTermGrades;
 
         public DirectorController(IDirectorRepository directors)
@@ -26,7 +27,12 @@ namespace LangLang.Controller
             _teachers = new TeacherDAO();
             _examTerms = new ExamTermDAO();
             _studentGrades = new StudentGradeDAO();
+            _penaltyPoints = new PenaltyPointDAO();
             _examTermGrades = new ExamTermGradeRepository();
+
+            _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
+            _courseController = new CourseController(new CourseRepository(), new TeacherController());
+
         }
 
         public Director? GetDirector()
@@ -149,13 +155,14 @@ namespace LangLang.Controller
             return result == 0 ? 0 : result / teachersGrades.Count;
         }
 
-        public void GetLanguageReport()
+        public (Dictionary<Language, int> numberOfCourses, Dictionary<Language, int> numberOfExamTerms, Dictionary<Language, double> penaltyPoints, Dictionary<Language, double> values) GetLanguageReport()
         {
             Dictionary<Language, int> numberOfCourses = GetNumberOfCourses();
             Dictionary<Language, int> numberOfExamTerms = GetNumberOfExamTerms();
-            Dictionary<Language, int> penaltyPoints = new Dictionary<Language, int>();
-            Dictionary<Language, int> values = new Dictionary<Language, int>();
+            Dictionary<Language, double> penaltyPoints = GetNumberOfPenaltyPoints();
+            Dictionary<Language, double> values = GetNumberOfPoints();
 
+            return (numberOfCourses, numberOfExamTerms, penaltyPoints, values);
         }
 
         public Dictionary<Language, int> GetLanguagesInt()
@@ -200,7 +207,7 @@ namespace LangLang.Controller
         public Dictionary<Language, int> GetNumberOfCourses()
         {
             Dictionary<Language, int> numberOfCourses = GetLanguagesInt();
-            var courses = _teachers.FindCoursesByCriteria(Language.NULL, LanguageLevel.NULL, DateTime.Now.AddYears(-1), 0, null);
+            var courses = _courseController.FindCoursesByDate(DateTime.Today.AddYears(-1));
 
             foreach (var course in courses)
                 numberOfCourses[course.Language] += 1;
@@ -211,7 +218,7 @@ namespace LangLang.Controller
         public Dictionary<Language, int> GetNumberOfExamTerms()
         {
             Dictionary<Language, int> numberOfExamTerms = GetLanguagesInt();
-            var examTerms = _teachers.FindExamTermsByCriteria(Language.NULL, LanguageLevel.NULL, DateTime.Now.AddYears(-1));
+            var examTerms = _examTermController.FindExamTermsByDate(DateTime.Today.AddYears(-1));
 
             foreach (var examTerm in examTerms)
             {
@@ -227,6 +234,8 @@ namespace LangLang.Controller
             Dictionary<Language, double> numberOfPenaltyPoints = GetLanguagesDouble();
 
             var penaltyPoints = _penaltyPoints.GetAllPenaltyPoints();
+            if (penaltyPoints.Count == 0)
+                return numberOfPenaltyPoints;
 
             foreach (var number in numberOfPenaltyPoints)
             {
@@ -245,7 +254,10 @@ namespace LangLang.Controller
                     }
                 }
 
-                double averageNumber = sum / levels.Count();
+                double averageNumber = 0;
+                if (sum != 0)
+                    averageNumber = sum / levels.Count();
+
                 numberOfPenaltyPoints[number.Key] = averageNumber;
             }
 
@@ -280,7 +292,10 @@ namespace LangLang.Controller
                     }
                 }
 
-                double averageNumber = sum / levels.Count();
+                double averageNumber = 0;
+                if (sum != 0)
+                    averageNumber = sum / levels.Count();
+
                 numberOfPoints[number.Key] = averageNumber;
             }
 

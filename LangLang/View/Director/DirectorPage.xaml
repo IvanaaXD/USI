@@ -9,12 +9,12 @@
         mc:Ignorable="d"
         WindowStartupLocation = "CenterScreen"
         Title="WelcomePage" Height="450" Width="1000">
-    
+
     <Window.Resources>
         <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
         <converters:LevelOfLanguageToStringConverter x:Key="LevelOfLanguageToStringConverter"/>
     </Window.Resources>
-    
+
     <TabControl>
         <TabItem Header="Account">
             <Grid>
@@ -116,13 +116,13 @@
                         </TabControl>
 
                     </Grid>
-                    
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
                         <Button Content="Create" Click="CreateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
                         <Button Content="Update" Click="UpdateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
                         <Button Content="Delete" Click="DeleteTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
                     </StackPanel>
-                    
+
                 </Grid>
             </DockPanel>
         </TabItem>
@@ -145,5 +145,35 @@
                 </StackPanel>
             </Grid>
         </TabItem>
+
+        <TabItem Header="Reports">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="54*" />
+                    <RowDefinition Height="Auto" MinHeight="50.851" />
+                    <RowDefinition Height="Auto" MinHeight="14" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
+                    <RowDefinition Height="167*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Reports" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Height="27" Width="74" />
+
+                <RadioButton x:Name="ReportOneRadioButton" Grid.Row="3" Grid.Column="1" Content="Report 1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="64" />
+                <RadioButton x:Name="ReportTwoRadioButton" Grid.Row="4" Grid.Column="1" Content="Report 2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="64" />
+                <RadioButton x:Name="ReportThreeRadioButton" Grid.Row="5" Grid.Column="1" Content="Report 3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="64" />
+                <RadioButton x:Name="ReportFourRadioButton" Grid.Row="6" Grid.Column="1" Content="Report 4" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="64" />
+
+                <Button Grid.Row="7" Grid.Column="1" Content="Send Report" Click="SendReport_Click"  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,33,0,0" Width="138" Height="30" FontSize="15" Background="#4F518C" Foreground="White"/>
+            </Grid>
+        </TabItem>
+
     </TabControl>
 </Window>

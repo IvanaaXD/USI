@@ -1,10 +1,8 @@
 ﻿using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LangLang.Domain.IRepository
 {
@@ -13,7 +11,13 @@ namespace LangLang.Domain.IRepository
         ExamTerm? AddExamTerm(ExamTerm examTerm);
         ExamTerm? UpdateExamTerm(ExamTerm examTerm);
         ExamTerm? GetExamTermById(int id);
-        public List<ExamTerm> GetAllExamTerms();
+        List<ExamTerm> GetAllExamTerms();
+        ExamTerm ConfirmExamTerm(int examTermId);
+        string FindLanguageAndLevel(int courseID);
+        void DecrementExamTermCurrentlyAttending(int examTermId);
+        bool CheckTeacherExamOverlapsCourses(ExamTerm examTerm, Teacher teacher);
+        bool CheckTeacherExamsOverlap(ExamTerm examTerm, Teacher teacher);
+        List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate);
         void Subscribe(IObserver observer);
     }
 }

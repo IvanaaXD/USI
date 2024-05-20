@@ -20,7 +20,7 @@ namespace LangLang.Controller
         {
             _courses = courses ?? throw new ArgumentNullException(nameof(courses));
             _teachers = new TeacherDAO();
-            _examTerms = new ExamTermDAO(teacherController);
+            _examTerms = new ExamTermDAO();
         }
         public Course? GetCourseById(int courseId)
         {
@@ -267,13 +267,23 @@ namespace LangLang.Controller
             var filteredCourses = _courses.GetAllCourses().Where(course =>
                 (!language.HasValue || course.Language == language.Value) &&
                 (!level.HasValue || course.Level == level.Value) &&
-                (!startDate.HasValue || course.StartDate.Date == (startDate.Value.Date)) &&
+                (!startDate.HasValue || course.StartDate.Date >= (startDate.Value.Date)) &&
                 (duration == 0 || course.Duration == duration) &&
                 (!isOnline.HasValue || course.IsOnline == isOnline.Value)
             ).ToList();
 
             return filteredCourses;
         }
+
+        public List<Course> FindCoursesByDate(DateTime? startDate)
+        {
+            var filteredCourses = _courses.GetAllCourses().Where(course =>
+                (course.StartDate.Date >= (startDate.Value.Date) && course.StartDate.Date <= DateTime.Today.Date)
+            ).ToList();
+
+            return filteredCourses;
+        }
+
         public String FindLanguageAndLevel(int courseID)
         {
             String res = "";

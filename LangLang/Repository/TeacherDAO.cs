@@ -615,9 +615,9 @@ namespace LangLang.Repository
 
         private int GetCoursePenaltyPoints(int courseId)
         {
-            IDirectorRepository directorRepository = new DirectorRepository();
-            DirectorController directorService = new DirectorController(directorRepository);
-            Teacher teacher = directorService.GetTeacherByCourse(courseId);
+            CourseController courseController = new CourseController(new CourseRepository(), new TeacherController());
+            DirectorController directorController = new DirectorController(new DirectorRepository());
+            Teacher teacher = directorController.GetTeacherByCourse(courseId);
 
             if (teacher == null) return 0;
 
