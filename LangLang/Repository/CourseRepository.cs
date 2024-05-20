@@ -16,13 +16,13 @@ namespace LangLang.Repository
         private readonly List<Course> _courses;
         private readonly Storage<Course> _courseStorage;
 
-        private readonly TeacherDAO teacherDAO;
+        private readonly ExamTermRepository examTermRepository;
 
         public CourseRepository()
         {
             _courseStorage = new Storage<Course>("course.csv");
             _courses = _courseStorage.Load();
-            teacherDAO = new TeacherDAO();
+            examTermRepository = new ExamTermRepository();
         }
 
         private int GenerateCourseId()
@@ -68,7 +68,7 @@ namespace LangLang.Repository
             _courses.Remove(course);
             foreach (int examTermId in course.ExamTerms)
             {
-                teacherDAO.RemoveExamTerm(examTermId);
+                examTermRepository.RemoveExamTerm(examTermId);
             }
 
             _courseStorage.Save(_courses);
@@ -85,10 +85,15 @@ namespace LangLang.Repository
         {
             return _courses;
         }
+
         public void Update()
         {
             throw new NotImplementedException();
         }
 
+        public List<Course> GetCoursesByTeacher(int teacherId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

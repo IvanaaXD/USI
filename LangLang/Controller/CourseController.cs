@@ -13,15 +13,16 @@ namespace LangLang.Controller
     public class CourseController
     {
         private readonly ICourseRepository _courses;
-        private readonly TeacherDAO? _teachers;
+        private readonly TeacherRepository? _teachers;
         private readonly ExamTermDAO? _examTerms;
 
         public CourseController(ICourseRepository courses, TeacherController teacherController)
         {
             _courses = courses ?? throw new ArgumentNullException(nameof(courses));
-            _teachers = new TeacherDAO();
+            _teachers = new TeacherRepository();
             _examTerms = new ExamTermDAO();
         }
+
         public Course? GetCourseById(int courseId)
         {
             return _courses.GetCourseById(courseId);
@@ -422,6 +423,28 @@ namespace LangLang.Controller
                 if (IsCourseLastYear(course) && !courses.Contains(course))
                     courses.Add(course);
             return courses;
+        }
+
+        public List<Course> GetCoursesByTeacher(int teacherId)
+        {
+            return _courses.GetCoursesByTeacher(teacherId);
+        }
+
+        public List<Course>? GetCoursesForDisplay(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)
+        {
+            List<Course> finalCourses = new();
+
+            List<Course> allFilteredCourses = FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
+            foreach (Course course in allFilteredCourses)
+            {
+                foreach (Course teacherCourse in availableCourses)
+                {
+                    if (teacherCourse.Id == course.Id)
+                        finalCourses.Add(course);
+                }
+            }
+
+            return finalCourses;
         }
     }
 }

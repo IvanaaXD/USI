@@ -37,6 +37,7 @@ namespace LangLang.View.Student
         public ExamTermDTO SelectedCompletedExamTerm { get; set; }
         private StudentsController studentController { get; set; }
         private TeacherController teacherController { get; set; }
+        private ExamTermController examTermController { get; set; }
 
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
@@ -47,6 +48,7 @@ namespace LangLang.View.Student
             TableViewModel = new ViewModel();
             studentController = mainController.GetStudentController();
             teacherController = mainController.GetTeacherController();
+            examTermController = mainController.GetExamTermController();
             this.studentId = studentId;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
@@ -218,7 +220,7 @@ namespace LangLang.View.Student
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                List<ExamTerm> allFilteredExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
                 finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsAvailableExamTerms);
 
             }
@@ -243,7 +245,7 @@ namespace LangLang.View.Student
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);           
+                List<ExamTerm> allFilteredExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);           
                 finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsRegisteredExamTerms);
             }
             else
@@ -267,7 +269,7 @@ namespace LangLang.View.Student
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                List<ExamTerm> allFilteredExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
                 finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsCompletedExamTerms);
             }
             else

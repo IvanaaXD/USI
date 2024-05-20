@@ -90,25 +90,25 @@ namespace LangLang.View.Student
 
         private void AvailableCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId,0);
+            CoursesView coursesView = new CoursesView(studentId, 0, mainController);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
         private void RegisteredCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId, 1);
+            CoursesView coursesView = new CoursesView(studentId, 1, mainController);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
         private void CompletedCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId, 2);
+            CoursesView coursesView = new CoursesView(studentId, 2, mainController);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
         private void PassedCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId, 3);
+            CoursesView coursesView = new CoursesView(studentId, 3, mainController);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }

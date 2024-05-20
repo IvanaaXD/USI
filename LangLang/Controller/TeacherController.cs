@@ -10,13 +10,15 @@ namespace LangLang.Controller
 {
     public class TeacherController
     {
-        private readonly TeacherDAO _teachers;
+        private readonly TeacherRepository _teachers;
+        private readonly CourseRepository _courses;
+        private readonly ExamTermRepository _examTerms;
         private readonly CourseGradeDAO _courseGrades;
         private readonly PenaltyPointDAO _penaltyPoints;
 
         public TeacherController()
         {
-            _teachers = new TeacherDAO();
+            _teachers = new TeacherRepository();
             _courseGrades = new CourseGradeDAO();
             _penaltyPoints = new PenaltyPointDAO();
         }
@@ -44,6 +46,21 @@ namespace LangLang.Controller
         {
             return _teachers.GetAllMail();
         }
+
+        public ExamTerm? RemoveExamTerm(int id)
+        {
+            ExamTerm? examTerm = GetExamTermById(id);
+            if (examTerm == null) return null;
+
+            int courseId = examTerm.CourseID;
+            Course? course = _courses.GetCourseById(courseId);
+            course.ExamTerms.Remove(id);
+            _courses.UpdateCourse(course);
+
+            _examTerms.RemoveExamTerm(examTerm.ExamID);
+            return examTerm;
+        }
+
         public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
         {
             return _teachers.GetSentCourseMail(teacher, courseId);
@@ -74,14 +91,7 @@ namespace LangLang.Controller
         {
             return _teachers.GetAvailableCourses(teacher);
         }
-        public Course AddCourse(Course course)
-        {
-            return _teachers.AddCourse(course);
-        }
-        public void AddExamTerm(ExamTerm examTerm)
-        {
-            _teachers.AddExamTerm(examTerm);
-        }
+
         public Mail SendMail(Mail mail)
         {
             return _teachers.SendMail(mail);
@@ -97,25 +107,11 @@ namespace LangLang.Controller
             _teachers.RemoveMail(mailId);
         }
 
-        public void UpdateCourse(Course course)
-        {
-            _teachers.UpdateCourse(course);
-        }
-
-        public void UpdateExamTerm(ExamTerm examTerm)
-        {
-            _teachers.UpdateExamTerm(examTerm);
-        }
-
         public CourseGrade GradeStudentCourse(CourseGrade grade)
         {
             return _courseGrades.AddGrade(grade);
         }
 
-        public ExamTerm ConfirmExamTerm(int examTermId)
-        {
-            return _teachers.ConfirmExamTerm(examTermId);
-        }
         public bool IsStudentGradedCourse(int studentId, int courseId)
         {
             return _courseGrades.IsStudentGraded(studentId, courseId);
@@ -142,86 +138,10 @@ namespace LangLang.Controller
 
             return !overlappingExams.Any();
         }
-        public bool ValidateCourseTimeslot(Domain.Model.Course course, Domain.Model.Teacher teacher)
-        {
-            bool isOverlap = CheckCourseOverlap(course, teacher);
-            if (!isOverlap)
-                return isOverlap;
-            return true;
-        }
-        private bool CheckCourseOverlap(Domain.Model.Course course, Domain.Model.Teacher teacher)
-        {
-            List<Domain.Model.Course> allAvailableCourses = _teachers.GetAllCourses();
-            List<Domain.Model.ExamTerm> allAvailableExams = _teachers.GetAllExamTerms();
 
-            bool isSameTeacherCourseOverlap = _teachers.CheckTeacherCoursesOverlap(course, teacher);
-            if (isSameTeacherCourseOverlap)
-                return false;
-
-            bool isSameTeacherExamOverlap = _teachers.CheckTeacherCourseExamOverlap(course, teacher);
-            if (isSameTeacherExamOverlap)
-                return false;
-
-            if (!course.IsOnline)
-            {
-                bool isClassroomOverlap = _teachers.CheckClassroomOverlap(course, allAvailableCourses, allAvailableExams);
-                if (isClassroomOverlap)
-                    return false;
-            }
-            return true;
-
-        }
-        public bool ValidateExamTimeslot(ExamTerm exam, Teacher teacher)
-        {
-            bool isOverlap = CheckExamOverlap(exam, teacher);
-            if (!isOverlap)
-                return isOverlap;
-            return true;
-        }
-        private bool CheckExamOverlap(ExamTerm exam, Teacher teacher)
-        {
-            bool isSameTeacherCourseOverlap = _teachers.CheckTeacherExamOverlapsCourses(exam, teacher);
-            if (isSameTeacherCourseOverlap)
-                return false;
-
-            bool isSameTeacherExamOverlap = _teachers.CheckTeacherExamsOverlap(exam, teacher);
-            if (isSameTeacherExamOverlap)
-                return false;
-
-            return true;
-        }
-
-        public void DeleteCourse(int courseId)
-        {
-            _teachers.RemoveCourse(courseId);
-        }
-
-        public void DeleteExamTerm(int examId)
-        {
-            _teachers.RemoveExamTerm(examId);
-        }
         public void Subscribe(IObserver observer)
         {
             _teachers.Subscribe(observer);
-        }
-
-        public void IncrementCourseCurrentlyEnrolled(int courseId)
-        {
-            _teachers.IncrementCourseCurrentlyEnrolled(courseId);
-        }
-
-        public void DecrementCourseCurrentlyEnrolled(int courseId)
-        {
-            _teachers.DecrementCourseCurrentlyEnrolled(courseId);
-        }
-
-        public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
-        {
-            return _teachers.FindCoursesByCriteria(language, level, startDate, duration, isOnline);
-        }
-        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
-        {
-            return _teachers.FindExamTermsByCriteria(language, level, examDate);
         }
 
         public bool IsStudentAccepted(Student student, int courseId)
@@ -231,10 +151,6 @@ namespace LangLang.Controller
         public List<ExamTerm> GetAvailableExamTerms(Teacher teacher)
         {
             return _teachers.GetAvailableExamTerms(teacher);
-        }
-        public List<Course>? GetCoursesForDisplay(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)
-        {
-            return _teachers.GetCoursesForDisplay(availableCourses, selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
         }
 
         public List<PenaltyPoint> GetAllPenaltyPoints()

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using LangLang.Domain.IRepository;
 using System.IO;
+using System.Linq;
 
 namespace LangLang.Controller
 {
@@ -34,6 +35,11 @@ namespace LangLang.Controller
         public void UpdateExamTerm(ExamTerm examTerm)
         {
             _exams.UpdateExamTerm(examTerm);
+        }
+
+        public void Delete(ExamTerm examTerm)
+        {
+            _exams.RemoveExamTerm(examTerm.ExamID);
         }
        
         public bool ValidateExamTimeslot(ExamTerm exam, Teacher teacher)
@@ -138,6 +144,22 @@ namespace LangLang.Controller
                     return true;
             }
             return false;
+        }
+
+        public void DecrementExamTermCurrentlyAttending(int examTermId)
+        {
+            ExamTerm examTerm = GetExamTermById(examTermId);
+            --examTerm.CurrentlyAttending;
+            UpdateExamTerm(examTerm);
+        }
+
+        public List<ExamTerm> FindExamTermsByDate(DateTime? startDate)
+        {
+            var filteredCourses = _exams.GetAllExamTerms()
+                .Where(course => course.ExamTime.Date >= startDate.Value.Date && course.ExamTime.Date <= DateTime.Today.Date)
+                .ToList();
+
+            return filteredCourses;
         }
 
     }

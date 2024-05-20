@@ -37,14 +37,20 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private TeacherController teacherController;
+        private readonly TeacherController teacherController;
+        private readonly CourseController courseController;
+        private readonly ExamTermController examTermController;
         private readonly DirectorController directorController;
         private int teacherId;
         public CreateExamForm(MainController mainController, int teacherId)
         {
+            InitializeComponent();
+
             this.directorController = mainController.GetDirectorController();
             this.teacherController = mainController.GetTeacherController();
-            InitializeComponent();
+            this.courseController = mainController.GetCourseController();
+            this.examTermController = mainController.GetExamTermController();
+
             Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             ExamTerm = new ExamTermDTO(teacherController, teacher);
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
@@ -167,10 +173,10 @@ namespace LangLang.View.Teacher
                 if (course.Id == ExamTerm.CourseID)
                 {
                     course.ExamTerms.Add(examId + 1);
-                    teacherController.UpdateCourse(course);
+                    courseController.UpdateCourse(course);
                 }
             }
-            teacherController.AddExamTerm(ExamTerm.ToExamTerm());
+            examTermController.AddExamTerm(ExamTerm.ToExamTerm());
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {

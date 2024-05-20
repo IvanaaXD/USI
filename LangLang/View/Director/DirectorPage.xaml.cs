@@ -252,31 +252,6 @@ namespace LangLang.View.Director
             else if (ReportFourRadioButton.IsChecked == true)
             {
                 var (numberOfCourses, numberOfExamTerms, penaltyPoints, values) = directorController.GetLanguageReport();
-
-                Console.WriteLine("Number of Courses: ");
-                foreach (var num in numberOfCourses)
-                {
-                    Console.WriteLine(num.Key + ": " + num.Value);
-                }
-
-                Console.WriteLine("Number of Exam Terms: ");
-                foreach (var num in numberOfExamTerms)
-                {
-                    Console.WriteLine(num.Key + ": " + num.Value);
-                }
-
-                Console.WriteLine("Penalty Points: ");
-                foreach (var num in penaltyPoints)
-                {
-                    Console.WriteLine(num.Key + ": " + num.Value);
-                }
-
-                Console.WriteLine("Values: ");
-                foreach (var num in values)
-                {
-                    Console.WriteLine(num.Key + ": " + num.Value);
-                }
-
             }
         }
     }

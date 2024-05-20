@@ -20,7 +20,8 @@ namespace LangLang.View.Teacher
         public ExamTermDTO ExamTerm { get; set; }
         public TeacherDTO Teacher { get; set; }
 
-        private TeacherController teacherController;
+        private readonly TeacherController teacherController;
+        private readonly ExamTermController examTermController;
         private readonly DirectorController directorController;
         private int teacherId;
         private int examId;
@@ -30,6 +31,8 @@ namespace LangLang.View.Teacher
         {
             this.directorController = mainController.GetDirectorController();
             this.teacherController = mainController.GetTeacherController();
+            this.examTermController = mainController.GetExamTermController();
+
             teacher = directorController.GetTeacherById(teacherId);
             ExamTerm examTerm = teacherController.GetExamTermById(examId);
             ExamTerm = new ExamTermDTO(examTerm, teacher);
@@ -49,7 +52,7 @@ namespace LangLang.View.Teacher
         }
         private void SetInitialLanguageAndLevel(int courseId)
         {
-            TeacherDAO teacherDAO = new TeacherDAO();
+            TeacherRepository teacherDAO = new TeacherRepository();
             string languageAndLevel = teacherDAO.FindLanguageAndLevel(courseId);
 
             string[] parts = languageAndLevel.Split(',');
@@ -145,7 +148,7 @@ namespace LangLang.View.Teacher
             PickLanguageAndLevel();
             if (ExamTerm.IsValid)
             {
-                teacherController.UpdateExamTerm(ExamTerm.ToExamTerm());
+                examTermController.UpdateExamTerm(ExamTerm.ToExamTerm());
                 Close();
             }
             else

@@ -4,6 +4,7 @@ using System.Linq;
 using LangLang.Domain.Model;
 using LangLang.Storage;
 using LangLang.Observer;
+using LangLang.Controller;
 
 namespace LangLang.Repository
 {
@@ -11,7 +12,9 @@ namespace LangLang.Repository
     {
         private readonly List<Student> _students;
         private readonly Storage<Student> _storage;
-        private TeacherDAO teacherDAO;
+        private TeacherRepository teacherDAO;
+        private CourseController courseController;
+        private ExamTermController examTermController;
         private PenaltyPointDAO penaltyPointDAO;
         private MailDAO mailDAO;
 
@@ -19,9 +22,12 @@ namespace LangLang.Repository
         {
             _storage = new Storage<Student>("students.csv");
             _students = _storage.Load();
-            teacherDAO = new TeacherDAO();
+            teacherDAO = new TeacherRepository();
             penaltyPointDAO = new PenaltyPointDAO();    
             mailDAO = new MailDAO();
+            courseController = new CourseController(new CourseRepository(), new TeacherController());
+            examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
+
         }
 
         private int GenerateId()
@@ -77,11 +83,11 @@ namespace LangLang.Repository
         private void DeleteStudentCoursesAndExams(Student student)
         {
             if (student.ActiveCourseId != -1)
-                teacherDAO.DecrementCourseCurrentlyEnrolled(student.ActiveCourseId);
+                courseController.DecrementCourseCurrentlyEnrolled(student.ActiveCourseId);
 
             foreach (int examTermId in student.RegisteredExamsIds)
             {
-                teacherDAO.DecrementExamTermCurrentlyAttending(examTermId);
+                examTermController.DecrementExamTermCurrentlyAttending(examTermId);
             }
             NotifyObservers();
         }
@@ -222,7 +228,7 @@ namespace LangLang.Repository
         private List<ExamTerm> GetExamTermsByCourse(int courseId)
         {
             Course course = teacherDAO.GetCourseById(courseId);
-            return teacherDAO.FindExamTermsByCriteria(course.Language, course.Level, null);
+            return examTermController.FindExamTermsByCriteria(course.Language, course.Level, null);
         }
 
         public List<Course> GetRegisteredCourses(int studentId)
@@ -352,7 +358,7 @@ namespace LangLang.Repository
             student.RegisteredExamsIds.Add(examId);
 
             examTerm.CurrentlyAttending += 1;
-            teacherDAO.UpdateExamTerm(examTerm);
+            examTermController.UpdateExamTerm(examTerm);
 
             _storage.Save(_students);
             NotifyObservers();
@@ -370,7 +376,7 @@ namespace LangLang.Repository
                 student.RegisteredExamsIds.Remove(examTermId);
 
                 examTerm.CurrentlyAttending -= 1;
-                teacherDAO.UpdateExamTerm(examTerm);
+                examTermController.UpdateExamTerm(examTerm);
 
                 _storage.Save(_students);
                 NotifyObservers();
@@ -426,7 +432,7 @@ namespace LangLang.Repository
                 if (DateTime.Now < courseEndDate)
                 {
                     course.CurrentlyEnrolled--;
-                    teacherDAO.UpdateCourse(course);
+                    courseController.UpdateCourse(course);
                 }
             }
             student.ActiveCourseId = -10;

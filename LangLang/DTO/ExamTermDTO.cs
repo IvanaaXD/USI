@@ -23,7 +23,8 @@ namespace LangLang.DTO
         private int gradeValue;
         private int points;
 
-        private readonly TeacherController _teacherController = new TeacherController();
+        private readonly TeacherController _teacherController;
+        private readonly ExamTermController _examTermController;
         private readonly ExamTermGradeController _examTermGrade = new ExamTermGradeController(new ExamTermGradeRepository());
         private readonly Teacher teacher;
         ExamTermGrade grade;
@@ -31,6 +32,7 @@ namespace LangLang.DTO
         public ExamTermDTO(TeacherController teacherController, Teacher teacher)
         {
             _teacherController = teacherController;
+            _examTermController = new ExamTermController(new ExamTermRepository(), teacherController);
             this.teacher = teacher;
         }
         public List<string> LanguageAndLevelValues
@@ -39,7 +41,7 @@ namespace LangLang.DTO
             {
                 List<string> languageLevelNames = new List<string>();
 
-                TeacherDAO teacherDAO = new TeacherDAO();
+                TeacherRepository teacherDAO = new TeacherRepository();
                 List<Course> courses = teacherDAO.GetAllCourses();
 
                 foreach (Course course in courses)
@@ -201,7 +203,7 @@ namespace LangLang.DTO
                 Confirmed = Confirmed,
                 Informed = Informed
             };
-            if (!_teacherController.ValidateExamTimeslot(exam, this.teacher))
+            if (!_examTermController.ValidateExamTimeslot(exam, this.teacher))
                 return "Cannot create exam because of exam time overlaps!";
             return null;
         }
@@ -230,7 +232,7 @@ namespace LangLang.DTO
             currentlyAttending = examTerm.CurrentlyAttending;
             confirmed = examTerm.Confirmed;
             informed = examTerm.Informed;
-            TeacherDAO teacherDAO = new TeacherDAO();
+            TeacherRepository teacherDAO = new TeacherRepository();
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
             this.teacher = teacher;
         }
@@ -243,7 +245,7 @@ namespace LangLang.DTO
             currentlyAttending = examTerm.CurrentlyAttending;
             confirmed = examTerm.Confirmed;
             informed = examTerm.Informed;
-            TeacherDAO teacherDAO = new TeacherDAO();
+            TeacherRepository teacherDAO = new TeacherRepository();
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
         }
         public ExamTermDTO(ExamTerm examTerm, int studentId)
@@ -256,7 +258,7 @@ namespace LangLang.DTO
             confirmed = examTerm.Confirmed;
             informed = examTerm.Informed;
 
-            TeacherDAO teacherDAO = new TeacherDAO();
+            TeacherRepository teacherDAO = new TeacherRepository();
             languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
             //TeacherController teacherController = new TeacherController();
             grade = _examTermGrade.GetExamTermGradeByStudentExam(studentId, examTerm.ExamID);

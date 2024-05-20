@@ -45,6 +45,18 @@ namespace LangLang.Repository
             NotifyObservers();
             return oldExamTerm;
         }
+
+        public ExamTerm? RemoveExamTerm(int id)
+        {
+            ExamTerm? examTerm = GetExamTermById(id);
+            if (examTerm == null) return null;
+
+            _examTerms.Remove(examTerm);
+            _examTermsStorage.Save(_examTerms);
+            NotifyObservers();
+            return examTerm;
+        }
+
         public ExamTerm GetExamTermById(int id)
         {
             return _examTerms.Find(et => et.ExamID == id);
@@ -52,36 +64,6 @@ namespace LangLang.Repository
         public List<ExamTerm> GetAllExamTerms()
         {
             return _examTerms;
-        }
-
-        public ExamTerm ConfirmExamTerm(int examTermId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string FindLanguageAndLevel(int courseID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DecrementExamTermCurrentlyAttending(int examTermId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool CheckTeacherExamOverlapsCourses(ExamTerm examTerm, Teacher teacher)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool CheckTeacherExamsOverlap(ExamTerm examTerm, Teacher teacher)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<ExamTerm> FindExamTermsByCriteria(Language? language, LanguageLevel? level, DateTime? examDate)
-        {
-            throw new NotImplementedException();
         }
 
         public void Update()

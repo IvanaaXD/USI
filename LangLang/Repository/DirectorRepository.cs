@@ -15,7 +15,7 @@ namespace LangLang.Repository
         private readonly Storage<Teacher> _storageTeacher;
         private readonly Storage<Director> _storageDirector;
 
-        private TeacherDAO teacherDAO;
+        private CourseRepository courseRepository;
 
         public DirectorRepository()
         {
@@ -23,7 +23,7 @@ namespace LangLang.Repository
             _storageDirector = new Storage<Director>("director.csv");
             _teachers = _storageTeacher.Load();
             _director = _storageDirector.Load();
-            teacherDAO = new TeacherDAO();
+            courseRepository = new CourseRepository();
         }
 
         public Director? GetDirector()
@@ -78,7 +78,7 @@ namespace LangLang.Repository
             if (teacher.CoursesId != null)
             {
                 foreach (int courseId in teacher.CoursesId)
-                    teacherDAO.RemoveCourse(courseId);
+                    courseRepository.RemoveCourse(courseId);
             }
 
             _teachers.Remove(teacher);

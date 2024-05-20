@@ -242,7 +242,7 @@ namespace LangLang.View.Teacher
 
                 else
                 {
-                    teacherController.IncrementCourseCurrentlyEnrolled(course.Id);
+                    courseController.IncrementCourseCurrentlyEnrolled(course.Id);
 
                     MailToSend.Sender = teacher.Email;
                     MailToSend.Receiver = student.Email;
@@ -330,7 +330,7 @@ namespace LangLang.View.Teacher
         {
             student.ActiveCourseId = -1;
             studentController.Update(student);
-            teacherController.DecrementCourseCurrentlyEnrolled(course.Id);
+            courseController.DecrementCourseCurrentlyEnrolled(course.Id);
         }
 
         private void ApproveDroppingOut_Click(object sender, RoutedEventArgs e)

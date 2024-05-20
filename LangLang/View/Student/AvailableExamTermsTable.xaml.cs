@@ -30,6 +30,7 @@ namespace LangLang.View.Student
         public ExamTermDTO SelectedExamTerm { get; set; }
         private StudentsController studentsController { get; set; }
         private TeacherController teacherController { get; set; }
+        private ExamTermController examTermController { get; set; }
 
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
@@ -40,6 +41,7 @@ namespace LangLang.View.Student
             TableViewModel = new ViewModel();
             studentsController = mainController.GetStudentController();
             teacherController = mainController.GetTeacherController();
+            examTermController = mainController.GetExamTermController();
             this.studentId = studentId;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
@@ -111,7 +113,7 @@ namespace LangLang.View.Student
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                List<ExamTerm> allFilteredExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
 
                 foreach (ExamTerm examTerm in allFilteredExamTerms)
                 {

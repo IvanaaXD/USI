@@ -34,7 +34,8 @@ namespace LangLang.View.Teacher
             }
         }
 
-        private TeacherController teacherController;
+        private readonly TeacherController teacherController;
+        private readonly CourseController courseController;
         private readonly DirectorController directorController;
         private int teacherId;
 
@@ -44,8 +45,11 @@ namespace LangLang.View.Teacher
 
             Course = new CourseDTO(teacherController, mainController.GetDirectorController().GetTeacherById(teacherId));
             Teacher = new TeacherDTO(mainController.GetDirectorController().GetTeacherById(teacherId));
+
             this.directorController = mainController.GetDirectorController();
             this.teacherController = mainController.GetTeacherController();
+            this.courseController = mainController.GetCourseController();
+
             this.teacherId = teacherId;
             DataContext = Course;
 
@@ -146,7 +150,7 @@ namespace LangLang.View.Teacher
                 Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
                 teacher.CoursesId.Add(courseId + 1);
                 directorController.Update(teacher);
-                teacherController.AddCourse(Course.ToCourse());
+                courseController.AddCourse(Course.ToCourse());
 
                 Close();
             }

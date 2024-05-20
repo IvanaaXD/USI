@@ -15,6 +15,7 @@ namespace LangLang.View.Teacher
         public CourseDTO Course { get; set; }
 
         private readonly TeacherController teacherController;
+        private readonly CourseController courseController;
         public TeacherDTO Teacher { get; set; }
 
         public UpdateCourseForm(int courseId, int teacherId, MainController mainController)
@@ -28,6 +29,7 @@ namespace LangLang.View.Teacher
             InitializeComponent();
 
             this.teacherController = mainController.GetTeacherController();
+            this.courseController = mainController.GetCourseController();
 
             SetPlaceholders();
         }
@@ -111,7 +113,7 @@ namespace LangLang.View.Teacher
             PickDataFromListBox();
             if (Course.IsValid)
             {
-                teacherController.UpdateCourse(Course.ToCourse());
+                courseController.UpdateCourse(Course.ToCourse());
                 Close();
             }
             else
