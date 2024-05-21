@@ -13,13 +13,19 @@ namespace LangLang.Controller
     public class CourseController
     {
         private readonly ICourseRepository _courses;
-        private readonly TeacherRepository? _teachers;
+        private readonly ITeacherRepository? _teachers;
         private readonly ExamTermDAO? _examTerms;
 
         public CourseController(ICourseRepository courses, TeacherController teacherController)
         {
             _courses = courses ?? throw new ArgumentNullException(nameof(courses));
             _teachers = new TeacherRepository();
+            _examTerms = new ExamTermDAO();
+        }
+        public CourseController()
+        {
+            _courses = Injector.CreateInstance<ICourseRepository>();
+            _teachers = Injector.CreateInstance<ITeacherRepository>();
             _examTerms = new ExamTermDAO();
         }
 

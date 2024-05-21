@@ -20,6 +20,11 @@ namespace LangLang.Controller
             _exams = exams ?? throw new ArgumentNullException(nameof(exams));
             this.teacherController = teacherController;
         }
+        public ExamTermController()
+        {
+            _exams = Injector.CreateInstance<IExamTermRepository>();
+            this.teacherController = Injector.CreateInstance<TeacherController>();
+        }
         public ExamTerm? GetExamTermById(int examId)
         {
             return _exams.GetExamTermById(examId);

@@ -15,7 +15,7 @@ namespace LangLang.Controller
         private readonly IDirectorRepository _directors;
         private readonly TeacherRepository? _teachers;
         private readonly ExamTermDAO? _examTerms;
-        private readonly StudentGradeDAO? _studentGrades;
+        private readonly StudentGradeRepository? _studentGrades;
         private readonly PenaltyPointDAO? _penaltyPoints;
         private readonly CourseController? _courseController;
         private readonly TeacherController? _teacherController;
@@ -27,7 +27,21 @@ namespace LangLang.Controller
             _directors = directors ?? throw new ArgumentNullException(nameof(directors));
             _teachers = new TeacherRepository();
             _examTerms = new ExamTermDAO();
-            _studentGrades = new StudentGradeDAO();
+            _studentGrades = new StudentGradeRepository();
+            _penaltyPoints = new PenaltyPointDAO();
+            _examTermGrades = new ExamTermGradeRepository();
+
+            _teacherController = new TeacherController();
+            _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
+            _courseController = new CourseController(new CourseRepository(), new TeacherController());
+
+        }
+        public DirectorController()
+        {
+            _directors = Injector.CreateInstance<IDirectorRepository>();
+            _teachers = new TeacherRepository();
+            _examTerms = new ExamTermDAO();
+            _studentGrades = new StudentGradeRepository();
             _penaltyPoints = new PenaltyPointDAO();
             _examTermGrades = new ExamTermGradeRepository();
 
@@ -166,7 +180,7 @@ namespace LangLang.Controller
       
         public void GenerateFirstReport()
         {
-            StudentDAO studentDAO = new StudentDAO();
+            StudentsController studentController = Injector.CreateInstance<StudentsController>();
             PdfGenerator pdf = new PdfGenerator();
             pdf.AddTitle("Number of penalty points in the last year");
             pdf.AddTable(_courseController.GetPenaltyPointsLastYearPerCourse());
@@ -175,7 +189,7 @@ namespace LangLang.Controller
             for(int i = 0; i < 3; i++)
             {
                 pdf.AddSubtitle("Number of penalty points: " + i);
-                pdf.AddTable(studentDAO.GetStudentsAveragePointsPerPenalty()[i]);
+                pdf.AddTable(studentController.GetStudentsAveragePointsPerPenalty()[i]);
             }
            
             pdf.Save(@"C:\\Users\\Milan\\Desktop\\Projekat\\LangLang\\data\\nekipdf.pdf");
