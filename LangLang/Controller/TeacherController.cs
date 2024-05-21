@@ -110,6 +110,22 @@ namespace LangLang.Controller
 
             return !overlappingExams.Any();
         }
+        public Course GetCourseByExamId(int id)
+        {
+            Course course = null;
+            List<ExamTerm> examTerms = GetAllExamTerms();
+            foreach (ExamTerm examTerm in examTerms)
+            {
+                if (examTerm.ExamID == id)
+                {
+
+                    course = GetCourseById(examTerm.CourseID);
+                    break;
+                }
+            }
+            return course;
+        }
+
 
         public void Subscribe(IObserver observer)
         {
