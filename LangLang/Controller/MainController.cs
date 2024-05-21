@@ -9,6 +9,7 @@ namespace LangLang.Controller
         private TeacherController _teacherController;
         private DirectorController _directorController;
         private CourseController _courseController;
+        private CourseGradeController _courseGradeController;
         private ExamTermController _examTermController;
         private ExamTermGradeController _examTermGradeController;
         private MailController _mailController;
@@ -23,6 +24,7 @@ namespace LangLang.Controller
             _courseController = new CourseController(new CourseRepository(), _teacherController);
             _examTermController = new ExamTermController(new ExamTermRepository(), _teacherController);
 
+            _courseGradeController = new CourseGradeController(new CourseGradeRepository());
             _examTermGradeController = new ExamTermGradeController(new ExamTermGradeRepository());
             _mailController = new MailController();
         }
@@ -49,6 +51,10 @@ namespace LangLang.Controller
         public ExamTermController GetExamTermController()
         {
             return _examTermController;
+        }
+        public CourseGradeController GetCourseGradeController()
+        {
+            return _courseGradeController;
         }
 
         public ExamTermGradeController GetExamTermGradeController()

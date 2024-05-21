@@ -31,6 +31,7 @@ namespace LangLang.View.Teacher
         private Domain.Model.Student student;
         private TeacherController teacherController;
         private StudentsController studentController;
+        private CourseGradeController courseGradeController;
         private MailController mailController;
 
         public GradeStudentCourseForm(Domain.Model.Course course, Domain.Model.Teacher teacher, Domain.Model.Student student, MainController mainController)
@@ -43,6 +44,7 @@ namespace LangLang.View.Teacher
             teacherController = mainController.GetTeacherController();
             studentController = mainController.GetStudentController();
             mailController = mainController.GetMailController();
+            courseGradeController = mainController.GetCourseGradeController();
 
             this.teacher = teacher;
             this.student = student;
@@ -70,7 +72,7 @@ namespace LangLang.View.Teacher
                 " for your activity on course, and " + StudentCourseGrade.StudentKnowledgeValue.ToString() + " for knowledge shown during course.";
 
                 mailController.ConstructMail(teacher, student, course, Domain.Model.Enums.TypeOfMessage.TeacherGradeStudentMessage, messageBody);
-                teacherController.GradeStudentCourse(StudentCourseGrade.ToCourseGrade());
+                courseGradeController.AddGrade(StudentCourseGrade.ToCourseGrade());
                 studentController.CompleteCourse(student, course);
 
                 Close();
