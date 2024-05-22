@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace LangLang.View.Director
 {
@@ -230,16 +231,19 @@ namespace LangLang.View.Director
             }
             else
             {
-                /*Course course = mainController.GetCourseController().GetCourseById(SelectedCourse.Id);
-                CourseView courseView = new CourseView(course, directorController.GetTeacherById(SelectedTeacher.Id), mainController);
-                courseView.Show();*/
+                CourseView courseView = new CourseView(SelectedCourse.Id, directorController.GetDirector());
+                courseView.Show();
+                UpdateCourses();
             }
         }
         private void SendReport_Click(object sender, RoutedEventArgs e) 
         {
+            PdfGenerator pdfGenerator = new PdfGenerator();
             if (ReportOneRadioButton.IsChecked == true)
             {
-                return;
+                pdfGenerator.AddTitle("Naslov 1");
+                pdfGenerator.AddTable(mainController.GetCourseController().GetPenaltyPointsLastYearPerCourse());
+                pdfGenerator.Save("C:\\Users\\Milan\\Documents\\Github\\cp-usi-2024-1-b\\LangLang\\data");
             }
             else if (ReportTwoRadioButton.IsChecked == true)
             {

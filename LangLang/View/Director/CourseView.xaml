@@ -1,0 +1,136 @@
+﻿<Window x:Class="LangLang.View.Director.CourseView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LangLang.View.Director"
+        xmlns:converters="clr-namespace:LangLang.View.Converters"
+        WindowStartupLocation = "CenterScreen"
+        mc:Ignorable="d"
+        Title="CourseView" Height="600" Width="1000">
+    <Window.Resources>
+        <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
+        <converters:LevelOfLanguageToStringConverter x:Key="LevelOfLanguageToStringConverter"/>
+    </Window.Resources>
+    <TabControl>
+        <TabItem Header="Course Info">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="60"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"></ColumnDefinition>
+                    <ColumnDefinition Width="600"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="#4F518C" Grid.RowSpan="6" Grid.Column="0" Margin="0,0,0,0">
+                    <Image Source="https://cdn-icons-png.flaticon.com/512/354/354652.png" Width="150"></Image>
+                </Border>
+
+                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Top" HorizontalAlignment="Center"
+     FontSize="30" Margin="0,17,0,0">Welcome</TextBlock>
+                <Button x:Name="closeButton" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="Close_Click"
+ Width="123" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Close</Button>
+
+                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="229"></ColumnDefinition>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="0*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Language:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="27" Margin="0,0,21,0"/>
+                    <TextBlock Grid.Row="1" Text="Language Level:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+                    <TextBlock Grid.Row="2" Text="Start Date And Time:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+                    <TextBlock Grid.Row="3" Text="Duration (In Weeks):" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+                    <TextBlock Grid.Row="4" Text="Currently Enrolled:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+                    <TextBlock Grid.Row="5" Text="Course Status:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+
+                    <TextBlock x:Name="courseLanguageTextBlock" FontSize="16" Grid.Column="1"/>
+                    <TextBlock x:Name="courseLevelTextBlock" FontSize="16" Grid.Column="1" Margin="0,0,0,26" Grid.RowSpan="2" Grid.Row="1" Text=""/>
+                    <TextBlock x:Name="courseStartDateTextBlock" FontSize="16" Grid.Column="1" Margin="0,0,0,26" Grid.RowSpan="2" Grid.Row="2"/>
+                    <TextBlock x:Name="courseDurationTextBlock" FontSize="16" Grid.Column="1" Grid.Row="3"/>
+                    <TextBlock x:Name="courseCurrentyEnrolledTextBlock" FontSize="16" Grid.Column="1" Grid.Row="3" Margin="0,26,0,26" Grid.RowSpan="3"/>
+                    <TextBlock x:Name="courseStatus" FontSize="16" Grid.Column="1" Grid.Row="4" Margin="0,26,0,0" Grid.RowSpan="2"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Students" Name="StudentsTable" Height="20" VerticalAlignment="Top">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,10,10,10">
+                    <TextBlock Text="Priority:"  Margin="5,0,10,0" FontSize="17" VerticalAlignment="Center"></TextBlock>
+                    <RadioButton x:Name="knowledgeButton" Content="Knowledge" GroupName="Priority" IsChecked="True" Margin="5,0,10,0" FontSize="14" VerticalAlignment="Center"></RadioButton>
+                    <RadioButton x:Name="activityButton" Content="Activity" GroupName="Priority" Margin="5,0,10,0" FontSize="14" VerticalAlignment="Center"></RadioButton>
+                    <TextBlock Text="Max penlties:" Margin="30,0,10,0" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                    <TextBox x:Name="penaltiesTextBox" Width="80" Height="20" VerticalAlignment="Center"/>
+                    <TextBlock Text="Max students:" Margin="10,0,10,0" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                    <TextBox x:Name="studentsCountTextBox" Width="80" Height="20" VerticalAlignment="Center"/>
+                    <Button Content="Filter" Click="FilterButton_Click" HorizontalAlignment="Right" Width="100" Height="20" Margin="40,0,10,0" FontSize="13" Foreground="White" Background="#6d6fbf"/>
+                    <Button Content="Reset" Click="ResetButton_Click" HorizontalAlignment="Right" Width="100" Height="20" Margin="0,0,10,0" FontSize="13"/>
+                </StackPanel>
+                
+                <DockPanel Grid.Row="1" Height="auto">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid VerticalAlignment="Top" Margin="0,5,0,0" Grid.ColumnSpan="2">
+                            <TabControl VerticalAlignment="Center" Grid.ColumnSpan="2">
+                                <DataGrid Height="330"
+                              AutoGenerateColumns="False"
+                              x:Name="StudentDataGrid"
+                              ItemsSource="{Binding StudentsTableViewModel.Students, UpdateSourceTrigger=PropertyChanged}"
+                              IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Id" Width="30" Binding="{Binding Path=StudentsTableViewModel.Students.id}" />
+                                        <DataGridTextColumn Header="First name" Width="*" Binding="{Binding FirstName}" />
+                                        <DataGridTextColumn Header="Last name" Width="*" Binding="{Binding LastName}" />
+                                        <DataGridTextColumn Header="Gender" Width="*" Binding="{Binding Gender}" />
+                                        <DataGridTextColumn Header="Date of birth" Width="*" Binding="{Binding DateOfBirth, StringFormat={}{0:yyyy-MM-dd}}" />
+                                        <DataGridTextColumn Header="Phone number" Width="*" Binding="{Binding PhoneNumber}" />
+                                        <DataGridTextColumn Header="Email" Width="*" Binding="{Binding Email}" />
+                                        <DataGridTextColumn Header="Penalty Points" Width="*" Binding="{Binding PenaltyPoints}" />
+                                        <DataGridTextColumn Header="Activity Grade" Width="*" Binding="{Binding ActivityGrade}" />
+                                        <DataGridTextColumn Header="Knowledge Grade" Width="*" Binding="{Binding KnowledgeGrade}" />
+                                    </DataGrid.Columns>
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AddedToCourse}" Value="True">
+                                                    <Setter Property="Background" Value="LightGray" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                </DataGrid>
+
+                            </TabControl>
+
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,15" Grid.Column="1" Height="30">
+                            <Button Name ="SendMailButton" Content="Send a thank you mail" Click="SendMail_Click" Margin="0,0,0,0" FontSize="15" Foreground="White" Background="#4F518C" Width="171"/>
+                        </StackPanel>
+
+                    </Grid>
+                </DockPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>
