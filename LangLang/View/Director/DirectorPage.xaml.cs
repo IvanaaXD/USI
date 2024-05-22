@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System;
 using System.Windows;
 using System.Windows.Markup;
+using iText.Kernel.Pdf;
 
 namespace LangLang.View.Director
 {
@@ -238,12 +239,12 @@ namespace LangLang.View.Director
         }
         private void SendReport_Click(object sender, RoutedEventArgs e) 
         {
-            PdfGenerator pdfGenerator = new PdfGenerator();
+            EmailSender emailSender = new EmailSender("smtp.gmail.com", 587, "diirrektorr@gmail.com", "dvwa dbkw bzyl cauy");
             if (ReportOneRadioButton.IsChecked == true)
             {
-                pdfGenerator.AddTitle("Naslov 1");
-                pdfGenerator.AddTable(mainController.GetCourseController().GetPenaltyPointsLastYearPerCourse());
-                pdfGenerator.Save("C:\\Users\\Milan\\Documents\\Github\\cp-usi-2024-1-b\\LangLang\\data");
+                directorController.GenerateFirstReport();
+                emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 1", "Report 1 body",
+                                      "..\\..\\..\\Data\\report1.pdf");
             }
             else if (ReportTwoRadioButton.IsChecked == true)
             {
@@ -256,7 +257,9 @@ namespace LangLang.View.Director
             else if (ReportFourRadioButton.IsChecked == true)
             {
                 var (numberOfCourses, numberOfExamTerms, penaltyPoints, values) = directorController.GetLanguageReport();
-            }
+            } 
+            else 
+                MessageBox.Show("Please select the report you want to send.");
         }
     }
 }

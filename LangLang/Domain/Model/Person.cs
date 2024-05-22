@@ -92,6 +92,10 @@ namespace LangLang.Domain.Model
             this.password = password;
         }
 
+        public override string ToString()
+        {
+            return $"{firstName} {lastName}";
+        }
         public abstract string[] ToCSV();
         public abstract void FromCSV(string[] values);
     }

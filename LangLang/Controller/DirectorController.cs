@@ -7,6 +7,10 @@ using LangLang.Domain.Model.Enums;
 using System.Linq;
 using LangLang.Domain.IRepository;
 using System.Windows.Input;
+using System.DirectoryServices.ActiveDirectory;
+using Org.BouncyCastle.Asn1.Mozilla;
+using System.Reflection.Metadata;
+using iText.Kernel.Pdf;
 
 namespace LangLang.Controller
 {
@@ -181,18 +185,19 @@ namespace LangLang.Controller
         public void GenerateFirstReport()
         {
             StudentsController studentController = Injector.CreateInstance<StudentsController>();
-            PdfGenerator pdf = new PdfGenerator();
-            pdf.AddTitle("Number of penalty points in the last year");
-            pdf.AddTable(_courseController.GetPenaltyPointsLastYearPerCourse());
-            pdf.AddPage();
-            pdf.AddTitle("Average points of students by penalties");
-            for(int i = 0; i < 3; i++)
+            PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report1.pdf");
+            pdfGenerator.AddTitle("Number of penalty points in the last year");
+            pdfGenerator.AddNewLine();
+            pdfGenerator.AddTable(_courseController.GetPenaltyPointsLastYearPerCourse(),"Course","Penalties");
+            pdfGenerator.AddNewPage();
+            pdfGenerator.AddTitle("Average points of students by penalties");
+            pdfGenerator.AddNewLine();
+            for (int i = 0; i <= 3; i++)
             {
-                pdf.AddSubtitle("Number of penalty points: " + i);
-                pdf.AddTable(studentController.GetStudentsAveragePointsPerPenalty()[i]);
+                pdfGenerator.AddSubtitle("Number of penalty points: " + i);
+                pdfGenerator.AddTable(studentController.GetStudentsAveragePointsPerPenalty()[i],"Student","Average points");
             }
-           
-            pdf.Save(@"C:\\Users\\Milan\\Desktop\\Projekat\\LangLang\\data\\nekipdf.pdf");
+            pdfGenerator.SaveAndClose();
         }
       
         public int GetAverageTeacherGrade(int teacherId)
