@@ -29,8 +29,10 @@ namespace LangLang
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            string email = Email.Text; 
-            string password = Password.Password;
+            string email = "ivanar1357@gmail.com";
+            string password = "ivana123";
+            /*string email = "janko@gmail.com";
+            string password = "janko123";*/
 
             if (HasStudentLoggedIn(email, password) || HasTeacherLoggedIn(email, password) || HasDirectorLoggedIn(email, password))
             {

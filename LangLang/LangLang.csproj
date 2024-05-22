@@ -17,4 +17,10 @@
     <PackageReference Include="PdfSharp" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Roboto-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
