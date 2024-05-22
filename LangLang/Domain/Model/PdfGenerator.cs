@@ -1,110 +1,74 @@
 ﻿using System.Collections.Generic;
-using PdfSharp.Pdf;
-using PdfSharp.Drawing;
-using PdfSharp.Fonts;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Kernel.Pdf;
+using iText.Kernel.Font;
+using iText.IO.Font.Constants;
+using iText.Layout.Properties;
 
-namespace LangLang.Domain.Model
+public class PdfGenerator
 {
-    public class PdfGenerator
+    private PdfDocument pdfDocument;
+    private iText.Layout.Document document;
+
+    public PdfGenerator(string filePath)
     {
-        private PdfDocument document;
-        private PdfPage page;
-        private XGraphics gfx;
-        private XFont fontTitle;
-        private XFont fontSubtitle;
-        private XFont fontNormal;
-        private int marginTop = 40;
-        private int marginLeft = 50;
-        private int lineHeight = 20;
+        pdfDocument = new PdfDocument(new PdfWriter(filePath));
+        document = new iText.Layout.Document(pdfDocument);
+    }
 
-        public PdfGenerator(int titleFontSize,int subtitleFontSize, int textFontSize, int marginTop, int marginLeft, int lineHeight)
-        {
-            document = new PdfDocument();
-            page = document.AddPage();
-            gfx = XGraphics.FromPdfPage(page);
-            fontTitle = new XFont(GlobalFontSettings.DefaultFontName, titleFontSize);
-            fontSubtitle = new XFont(GlobalFontSettings.DefaultFontName, subtitleFontSize);
-            fontNormal = new XFont(GlobalFontSettings.DefaultFontName, textFontSize);
+    public void AddTitle(string title)
+    {
+        var titleFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+        Paragraph titleParagraph = new Paragraph(title)
+            .SetFont(titleFont)
+            .SetFontSize(18)
+            .SetTextAlignment(TextAlignment.CENTER);
+        document.Add(titleParagraph);
+    }
 
-            this.marginTop = marginTop;
-            this.marginLeft = marginLeft;
-            this.lineHeight = lineHeight;
-        }
-        public PdfGenerator(int marginTop, int marginLeft, int lineHeight)
-        {
-            document = new PdfDocument();
-            page = document.AddPage();
-            gfx = XGraphics.FromPdfPage(page);
-            fontTitle = new XFont(GlobalFontSettings.DefaultFontName, 20);
-            fontSubtitle = new XFont(GlobalFontSettings.DefaultFontName, 16);
-            fontNormal = new XFont(GlobalFontSettings.DefaultFontName, 12);
+    public void AddSubtitle(string subtitle)
+    {
+        var subtitleFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+        Paragraph subtitleParagraph = new Paragraph(subtitle)
+            .SetFont(subtitleFont)
+            .SetFontSize(14);
+        document.Add(subtitleParagraph);
+    }
 
-            this.marginTop = marginTop;
-            this.marginLeft = marginLeft;
-            this.lineHeight = lineHeight;
-        }
-        public PdfGenerator()
+    public void AddTable<TKey, TValue>(Dictionary<TKey, TValue> tableData, string keyColumnName, string valueColumnName)
+    {
+        Table table = new Table(2);
+
+        table.AddHeaderCell(keyColumnName).SetWidth(200f);
+        table.AddHeaderCell(valueColumnName).SetWidth(200f);
+
+        foreach (var entry in tableData)
         {
-            document = new PdfDocument();
-            page = document.AddPage();
-            gfx = XGraphics.FromPdfPage(page);
-            fontTitle = new XFont(GlobalFontSettings.DefaultFontName, 20);
-            fontSubtitle = new XFont(GlobalFontSettings.DefaultFontName, 16);
-            fontNormal = new XFont(GlobalFontSettings.DefaultFontName, 12);
-        }
-        public void AddTitle(string title)
-        {
-            XRect titleRect = new XRect(0, marginTop, page.Width.Point, lineHeight);
-            gfx.DrawString(title, fontTitle, XBrushes.Black, titleRect, XStringFormats.TopCenter);
-        }
-        public void AddSubtitle(string subtitle)
-        {
-            XRect subtitleRect = new XRect(marginLeft, marginTop + lineHeight + 10, page.Width.Point - marginLeft * 2, lineHeight);
-            gfx.DrawString(subtitle, fontSubtitle, XBrushes.Black, subtitleRect, XStringFormats.TopRight);
+            table.AddCell(entry.Key.ToString()).SetWidth(200f);
+            table.AddCell(entry.Value.ToString()).SetWidth(200f);
         }
 
-        public void AddTable<TKey, TValue>(Dictionary<TKey, TValue> data)
-        {
-            double tableWidth = page.Width.Point - (2 * marginLeft);
-            int x = marginLeft;
-            int y = marginTop + lineHeight + 20;
+        table.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+        document.Add(table);
+    }
 
-            DrawTableHeader(x, y, tableWidth);
-            y += lineHeight;
-            DrawTable(data, x, y, tableWidth);
-        }
+    public void AddNewPage()
+    {
+        document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+    }
+    public void AddNewLine()
+    {
+        document.Add(new Paragraph("\n\n"));
+    }
 
-        private void DrawTableHeader(int x, int y, double tableWidth)
-        {
-            gfx.DrawString("Course", fontNormal, XBrushes.Black, x + (tableWidth / 4), y);
-            gfx.DrawString("Penalty", fontNormal, XBrushes.Black, x + (3 * tableWidth / 4), y);
-        }
-
-        private void DrawTable<TKey, TValue>(Dictionary<TKey, TValue> data, int x, int y, double tableWidth)
-        {
-            foreach (var item in data)
-            {
-                string keyString = item.Key.ToString();
-                string valueString = item.Value.ToString();
-
-                gfx.DrawString(keyString, fontNormal, XBrushes.Black, x + (tableWidth / 4), y);
-                gfx.DrawString(valueString, fontNormal, XBrushes.Black, x + (3 * tableWidth / 4), y);
-                y += lineHeight;
-            }
-        }
-
-        public void AddPage()
-        {
-            page = document.AddPage();
-            gfx = XGraphics.FromPdfPage(page);
-        }
-        public PdfDocument GetPdfDocument()
-        {
-            return document;
-        }
-        public void Save(string filePath)
-        {
-            document.Save(filePath);
-        }
+    public void SaveAndClose()
+    {
+        document.Close();
+        pdfDocument.Close();
+    }
+    public PdfDocument GetDocument()
+    {
+        return pdfDocument;
     }
 }

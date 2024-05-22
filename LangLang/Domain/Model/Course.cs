@@ -137,6 +137,9 @@ namespace LangLang.Domain.Model
                 ExamTerms = values[9].Split(',').Select(int.Parse).ToList();
             }
         }
-
+        public override string ToString()
+        {
+            return $"{language} {languageLevel}";
+        }
     }
 }
