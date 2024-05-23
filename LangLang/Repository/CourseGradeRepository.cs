@@ -88,6 +88,10 @@ namespace LangLang.Repository
         {
             return _grades.Where(grade => grade.TeacherId == teacherId && grade.CourseId == courseId).ToList();
         }
+        public List<CourseGrade> GetCourseGradesByCourse(int courseId)
+        {
+            return _grades.Where(grade => grade.CourseId == courseId).ToList();
+        }
         public List<CourseGrade> GetAllCourseGrades()
         {
             return _grades;

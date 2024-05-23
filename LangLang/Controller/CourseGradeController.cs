@@ -53,6 +53,10 @@ namespace LangLang.Controller
         {
             return _courseGrades.GetCourseGradesByTeacherCourse(teacherId, courseId);
         }
+        public List<CourseGrade> GetCourseGradesByCourse(int courseId)
+        {
+            return _courseGrades.GetCourseGradesByCourse(courseId);
+        }
         public List<CourseGrade> GetAllCourseGrades()
         {
             return _courseGrades.GetAllCourseGrades();

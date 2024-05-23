@@ -18,6 +18,7 @@ namespace LangLang.Domain.IRepository
         CourseGrade? GetCourseGradeByStudentTeacher(int studentId, int teacherId, int courseId);
         CourseGrade? GetCourseGradeByStudent(int studentId, int courseId);
         List<CourseGrade> GetCourseGradesByTeacherCourse(int teacherId, int courseId);
+        List<CourseGrade> GetCourseGradesByCourse(int courseId);
         List<CourseGrade> GetAllCourseGrades();
         void Subscribe(IObserver observer);
 
