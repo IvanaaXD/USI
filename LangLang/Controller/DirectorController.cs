@@ -22,6 +22,7 @@ namespace LangLang.Controller
         private readonly StudentGradeRepository? _studentGrades;
         private readonly PenaltyPointDAO? _penaltyPoints;
         private readonly CourseController? _courseController;
+        private readonly CourseGradeRepository? _courseGrade;
         private readonly TeacherController? _teacherController;
         private readonly ExamTermController? _examTermController;
         private readonly ExamTermGradeRepository? _examTermGrades;
@@ -34,6 +35,7 @@ namespace LangLang.Controller
             _studentGrades = new StudentGradeRepository();
             _penaltyPoints = new PenaltyPointDAO();
             _examTermGrades = new ExamTermGradeRepository();
+            _courseGrade = new CourseGradeRepository();
 
             _teacherController = new TeacherController();
             _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
@@ -199,7 +201,16 @@ namespace LangLang.Controller
             }
             pdfGenerator.SaveAndClose();
         }
-      
+        public void GenerateSecondReport()
+        {
+            PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report2.pdf");
+            pdfGenerator.AddTitle("Average teacher and course grades in the past year");
+            pdfGenerator.AddNewLine();
+
+            pdfGenerator.AddTupleTable(GetTeacherCourseReport(), "Course", "Teacher Grade", "Knowledge Grade", "Activity Grade");
+            pdfGenerator.SaveAndClose();
+        }
+
         public int GetAverageTeacherGrade(int teacherId)
         {
             int result = 0;
@@ -219,6 +230,19 @@ namespace LangLang.Controller
             Dictionary<Language, double> values = GetNumberOfPoints();
 
             return (numberOfCourses, numberOfExamTerms, penaltyPoints, values);
+        }
+        public Dictionary<Course, (double, double, double)> GetTeacherCourseReport()
+        {
+            Dictionary<Course, (double, double, double)> finalCourses = new();
+            Dictionary<Course, double> averageTeacherGrade = GetAverageTeacherGradeByCourse();
+            Dictionary<Course, double> averageKnowledgeGrade = CalculateAverageGrade("knowledge");
+            Dictionary<Course, double> averageActivityGrade = CalculateAverageGrade("activity");
+            List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
+            foreach (Course course in lastYearCourses)
+            {
+                finalCourses[course] = (averageTeacherGrade[course], averageKnowledgeGrade[course], averageActivityGrade[course]);
+            }
+            return finalCourses;
         }
 
         public Dictionary<Language, int> GetLanguagesInt()
@@ -396,6 +420,51 @@ namespace LangLang.Controller
                 }
             }
             return result == 0 ? 0 : result / count;
+        }
+        public Dictionary<Course, double> GetAverageTeacherGradeByCourse()
+        {
+            Dictionary<Course, double> finalResult = new();
+            foreach (Course course in _courseController.GetCoursesLastYear())
+            {
+                int result = 0;
+
+                Teacher teacher = GetTeacherByCourse(course.Id);
+
+                List<StudentGrade> teachersGrades = _studentGrades.GetStudentGradesByTeacherCourse(teacher.Id, course.Id);
+
+                foreach (StudentGrade studentGrade in teachersGrades)
+                {
+                    result += studentGrade.Value;
+                }
+                if (teachersGrades.Count == 0)
+                    finalResult[course] = 0;
+                else
+                    finalResult[course] = result / teachersGrades.Count;
+            }
+            return finalResult;
+        }
+        public Dictionary<Course, double> CalculateAverageGrade(string typeOfGrade)
+        {
+            Dictionary<Course, double> finalResult = new();
+            foreach (Course course in _courseController.GetCoursesLastYear())
+            {
+                int result = 0;
+
+                List<CourseGrade> studentGrades = _courseGrade.GetCourseGradesByCourse(course.Id);
+
+                foreach (CourseGrade grade in studentGrades)
+                {
+                    if (typeOfGrade == "knowledge")
+                        result += grade.StudentKnowledgeValue;
+                    else
+                        result += grade.StudentActivityValue;
+                }
+                if (result == 0)
+                    finalResult[course] = 0;
+                else
+                    finalResult[course] = result / studentGrades.Count;
+            }
+            return finalResult;
         }
         public int GetAttendedCount(int courseId)
         {
