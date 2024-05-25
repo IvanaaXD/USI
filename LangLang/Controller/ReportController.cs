@@ -77,15 +77,35 @@ namespace LangLang.Controller
             pdfGenerator.SaveAndClose();
         }
 
-        public (Dictionary<Language, int> numberOfCourses, Dictionary<Language, int> numberOfExamTerms, Dictionary<Language, double> penaltyPoints, Dictionary<Language, double> values) GenerateFourthReport()
+        public void GenerateFourthReport()
         {
-            Dictionary<Language, int> numberOfCourses = GetNumberOfCourses();
-            Dictionary<Language, int> numberOfExamTerms = GetNumberOfExamTerms();
-            Dictionary<Language, double> penaltyPoints = GetNumberOfPenaltyPoints();
-            Dictionary<Language, double> values = GetNumberOfPoints();
+            PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report4.pdf");
 
-            return (numberOfCourses, numberOfExamTerms, penaltyPoints, values);
+            pdfGenerator.AddTitle("Statistics on created courses in the last year");
+            pdfGenerator.AddNewLine();
+            pdfGenerator.AddTable(GetNumberOfCourses(), "Languages", "Number of courses");
+
+            pdfGenerator.AddNewPage();
+
+            pdfGenerator.AddTitle("Statistics on created exams in the last year");
+            pdfGenerator.AddNewLine();
+            pdfGenerator.AddTable(GetNumberOfExamTerms(), "Languages", "Number of exams");
+
+            pdfGenerator.AddNewPage();
+
+            pdfGenerator.AddTitle("Statistics on penalty points");
+            pdfGenerator.AddNewLine();
+            pdfGenerator.AddTable(GetNumberOfPenaltyPoints(), "Languages", "Average number of penalty points");
+
+            pdfGenerator.AddNewPage();
+
+            pdfGenerator.AddTitle("Statistics on exam points");
+            pdfGenerator.AddNewLine();
+            pdfGenerator.AddTable(GetNumberOfPoints(), "Languages", "Average number of points on exams");
+
+            pdfGenerator.SaveAndClose();
         }
+
         public Dictionary<Course, (double, double, double)> GetTeacherCourseReport()
         {
             Dictionary<Course, (double, double, double)> finalCourses = new();
@@ -126,7 +146,8 @@ namespace LangLang.Controller
 
             foreach (Language language in langs)
             {
-                languages.Add(language, 0);
+                if (language != Language.NULL)
+                    languages.Add(language, 0);
             }
 
             return languages;
@@ -139,7 +160,8 @@ namespace LangLang.Controller
 
             foreach (Language language in langs)
             {
-                languages.Add(language, 0);
+                if (language != Language.NULL)
+                    languages.Add(language, 0);
             }
 
             return languages;

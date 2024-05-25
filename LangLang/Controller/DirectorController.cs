@@ -6,11 +6,6 @@ using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using System.Linq;
 using LangLang.Domain.IRepository;
-using System.Windows.Input;
-using System.DirectoryServices.ActiveDirectory;
-using Org.BouncyCastle.Asn1.Mozilla;
-using System.Reflection.Metadata;
-using iText.Kernel.Pdf;
 
 namespace LangLang.Controller
 {
