@@ -1,4 +1,5 @@
 ﻿using LangLang.Controller;
+using LangLang.Domain.Model;
 using LangLang.DTO;
 using System;
 using System.ComponentModel;
@@ -41,10 +42,10 @@ namespace LangLang.View.Teacher
             StudentCourseGrade = new CourseGradeDTO();
 
             this.course = course;
-            teacherController = mainController.GetTeacherController();
-            studentController = mainController.GetStudentController();
-            mailController = mainController.GetMailController();
-            courseGradeController = mainController.GetCourseGradeController();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            studentController = Injector.CreateInstance<StudentsController>();
+            mailController = Injector.CreateInstance<MailController>();
+            courseGradeController = Injector.CreateInstance<CourseGradeController>();
 
             this.teacher = teacher;
             this.student = student;

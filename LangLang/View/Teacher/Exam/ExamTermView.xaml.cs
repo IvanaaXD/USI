@@ -55,10 +55,10 @@ namespace LangLang.View.Teacher
         public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, MainController mainController)
         {
             InitializeComponent();
-            this.teacherController = mainController.GetTeacherController();
-            this.studentController = mainController.GetStudentController();
-            this.examTermController = mainController.GetExamTermController();
-            this.examTermGradeController = mainController.GetExamTermGradeController();
+            this.teacherController = Injector.CreateInstance<TeacherController>();
+            this.studentController = Injector.CreateInstance<StudentsController>();
+            this.examTermController = Injector.CreateInstance<ExamTermController>();
+            this.examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
             this.mainController = mainController;
             this.teacher = teacher;
             this.examTerm = examTerm;

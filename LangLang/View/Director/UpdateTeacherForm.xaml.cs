@@ -4,6 +4,7 @@ using LangLang.Domain.Model.Enums;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Director
 {
@@ -21,7 +22,7 @@ namespace LangLang.View.Director
         public UpdateTeacherForm(int teacherId, DirectorController directorController)
         {
             InitializeComponent();
-            this.directorController = directorController;
+            this.directorController = Injector.CreateInstance<DirectorController>();    
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             DataContext = Teacher;
             teacherEmail = Teacher.Email;

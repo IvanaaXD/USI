@@ -14,12 +14,12 @@ namespace LangLang.View.Student
         private readonly ExamTerm examTerm;
         private readonly Domain.Model.Student student;
         private readonly TeacherController teacherController;
-        private readonly ExamTermGradeController examTermGradeController = new ExamTermGradeController(new ExamTermGradeRepository());
+        private readonly ExamTermGradeController examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
         public ExamTermStudentView(ExamTerm examTerm, Domain.Model.Student student, TeacherController teacherController, StudentsController studentController)
         {
             InitializeComponent();
             this.examTerm = examTerm;
-            this.teacherController = teacherController;
+            this.teacherController = Injector.CreateInstance<TeacherController>();
             this.student = student;
 
             DataContext = this;

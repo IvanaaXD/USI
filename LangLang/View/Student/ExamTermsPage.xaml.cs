@@ -46,9 +46,9 @@ namespace LangLang.View.Student
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            studentController = mainController.GetStudentController();
-            teacherController = mainController.GetTeacherController();
-            examTermController = mainController.GetExamTermController();
+            studentController = Injector.CreateInstance<StudentsController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            examTermController = Injector.CreateInstance<ExamTermController>();
             this.studentId = studentId;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));

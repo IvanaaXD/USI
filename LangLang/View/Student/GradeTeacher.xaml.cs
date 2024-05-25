@@ -22,10 +22,9 @@ namespace LangLang.View.Student
         {
             InitializeComponent();
 
-            teacherController = new TeacherController();
-            studentController = new StudentsController();
-            IDirectorRepository directorRepository = new DirectorRepository();
-            directorService = new DirectorController(directorRepository);
+            teacherController = Injector.CreateInstance<TeacherController>();
+            studentController = Injector.CreateInstance<StudentsController>();
+            directorService = Injector.CreateInstance<DirectorController>();
 
             this.studentId = studentId;
             this.courseId = courseId;

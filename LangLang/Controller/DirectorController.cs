@@ -12,30 +12,25 @@ namespace LangLang.Controller
     public class DirectorController
     {
         private readonly IDirectorRepository _directors;
-        private readonly TeacherRepository? _teachers;
-        private readonly StudentGradeRepository? _studentGrades;
+        private readonly ITeacherRepository? _teachers;
+        private readonly IStudentGradeRepository? _studentGrades;
         private readonly CourseController? _courseController;
         private readonly ExamTermController? _examTermController;
-
-        public DirectorController(IDirectorRepository directors)
-        {
-            _directors = directors ?? throw new ArgumentNullException(nameof(directors));
-            _teachers = new TeacherRepository();
-            _studentGrades = new StudentGradeRepository();
-
-            _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
-            _courseController = new CourseController(new CourseRepository(), new TeacherController());
-
-        }
+        private readonly TeacherController? _teacherController;
+        private readonly ICourseRepository? _courses;
+        private readonly IExamTermRepository? _examTerms;
+        private readonly MailController? _mailController;
         public DirectorController()
         {
             _directors = Injector.CreateInstance<IDirectorRepository>();
-            _teachers = new TeacherRepository();
-            _studentGrades = new StudentGradeRepository();
-
-            _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
-            _courseController = new CourseController(new CourseRepository(), new TeacherController());
-
+            _teachers = Injector.CreateInstance<ITeacherRepository>();
+            _teacherController = Injector.CreateInstance<TeacherController>();
+            _courses = Injector.CreateInstance<ICourseRepository>();
+            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
+            _mailController = Injector.CreateInstance<MailController>();
+            _examTermController = Injector.CreateInstance<ExamTermController>();
+            _courseController = Injector.CreateInstance<CourseController>();
         }
 
         public Director? GetDirector()
@@ -133,7 +128,7 @@ namespace LangLang.Controller
         public List<Course> GetAvailableCourses(int teacherId)
         {
             Teacher? teacher = GetTeacherById(teacherId);
-            List<Course>? allCourses = _teachers?.GetAllCourses();
+            List<Course>? allCourses = _courses.GetAllCourses();
             List<int>? allTeacherCourses = teacher?.CoursesId;
             DateTime currentTime = DateTime.Now;
 
@@ -155,27 +150,27 @@ namespace LangLang.Controller
 
         public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
         {
-            return _teachers.GetSentCourseMail(teacher, courseId);
+            return _mailController.GetSentCourseMail(teacher, courseId);
         }
         public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
         {
-            return _teachers.GetReceivedCourseMails(teacher, courseId);
+            return _mailController.GetReceivedCourseMails(teacher, courseId);
         }
 
 
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
-            return _teachers.GetAvailableCourses(teacher);
+            return _teacherController.GetAvailableCourses(teacher);
         }
 
-        public Mail SendMail(Mail mail)
+        public void SendMail(Mail mail)
         {
-            return _teachers.SendMail(mail);
+            _mailController.Send(mail);
         }
 
-        public Mail AnswerMail(int mailId)
+        public void AnswerMail(int mailId)
         {
-            return _teachers.AnswerMail(mailId);
+            _mailController.SetMailToAnswered(_mailController.GetMailById(mailId));
         }
 
         public int GetAverageTeacherGrade(int teacherId)

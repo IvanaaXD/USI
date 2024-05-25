@@ -24,8 +24,10 @@ namespace LangLang.Domain.Model
             { typeof(MailController), new Lazy<object>(() => new MailController()) },
             { typeof(ICourseGradeRepository), new Lazy<object>(() => new CourseGradeRepository()) },
             { typeof(CourseGradeController), new Lazy<object>(() => new CourseGradeController()) },
+            { typeof(IExamTermGradeRepository), new Lazy<object>(() => new ExamTermGradeRepository()) },
+            { typeof(ExamTermGradeController), new Lazy<object>(() => new ExamTermGradeController()) },
             { typeof(IStudentGradeRepository), new Lazy<object>(() => new StudentGradeRepository()) },
-            { typeof(PenaltyPointDAO), new Lazy<object>(() => new PenaltyPointDAO()) }
+            { typeof(PenaltyPointRepository), new Lazy<object>(() => new PenaltyPointRepository()) }
         };
 
         public static T CreateInstance<T>()

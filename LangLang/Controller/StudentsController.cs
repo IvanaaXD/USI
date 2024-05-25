@@ -324,7 +324,7 @@ namespace LangLang.Controller
         }
         public bool GivePenaltyPoint(int studentId)
         {
-            PenaltyPointDAO penaltyPointDAO = Injector.CreateInstance<PenaltyPointDAO>();
+            PenaltyPointRepository penaltyPointDAO = Injector.CreateInstance<PenaltyPointRepository>();
             Student student = GetStudentById(studentId);
 
             penaltyPointDAO.AddPenaltyPoint(new PenaltyPoint(studentId, student.ActiveCourseId, DateTime.Now, false));
@@ -420,7 +420,7 @@ namespace LangLang.Controller
             DateTime currentDate = DateTime.Now;
             if (currentDate.Day == 1)
             {
-                PenaltyPointDAO penaltyPointDAO = Injector.CreateInstance<PenaltyPointDAO>();
+                PenaltyPointRepository penaltyPointDAO = Injector.CreateInstance<PenaltyPointRepository>();
                 foreach (Student student in _students.GetAllStudents())
                 {
                     List<PenaltyPoint> deletedPoints = penaltyPointDAO.GetDeletedPenaltyPointsByStudentId(student.Id);
@@ -436,7 +436,7 @@ namespace LangLang.Controller
 
         public int GetPenaltyPointCount(int studentId)
         {
-            PenaltyPointDAO penaltyPointDAO = Injector.CreateInstance<PenaltyPointDAO>();
+            PenaltyPointRepository penaltyPointDAO = Injector.CreateInstance<PenaltyPointRepository>();
             return penaltyPointDAO.GetPenaltyPointsByStudentId(studentId).Count;
         }
 
@@ -457,7 +457,7 @@ namespace LangLang.Controller
         }
         private Dictionary<int, List<Student>> GetStudentsPerPenaltyPoints()
         {
-            PenaltyPointDAO penaltyPointDAO = new PenaltyPointDAO();
+            PenaltyPointRepository penaltyPointDAO = new PenaltyPointRepository();
             Dictionary<int, List<Student>> studentsPerPenalty = new Dictionary<int, List<Student>>();
             for (int i = 0; i <= 3; i++)
                 studentsPerPenalty[i] = new List<Student>();
