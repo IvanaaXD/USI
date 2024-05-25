@@ -452,5 +452,27 @@ namespace LangLang.Controller
 
             return finalCourses;
         }
+
+        public Teacher DeleteCoursesByTeacher(Teacher teacher)
+        {
+            var courses = GetAllCourses();
+            var teacherCourses = teacher.CoursesId;
+
+            foreach (var course in courses)
+            {
+                if (teacherCourses.Contains(course.Id) && course.StartDate > DateTime.Today.Date)
+                    teacherCourses.Remove(course.Id);
+            }
+
+            teacher.CoursesId = teacherCourses;
+            return teacher;
+        }
+
+        public bool IsCourseActive(Course course)
+        {
+            if (DateTime.Today.Date > course.StartDate && course.StartDate.AddDays(course.Duration*7) < DateTime.Today.Date) 
+                return true;
+            return false;
+        }
     }
 }

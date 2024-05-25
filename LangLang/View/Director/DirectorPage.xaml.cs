@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;
 using System.Windows;
-using System.Windows.Markup;
-using iText.Kernel.Pdf;
 
 namespace LangLang.View.Director
 {
@@ -136,8 +134,20 @@ namespace LangLang.View.Director
         {
             if (SelectedTeacher == null)
                 MessageBox.Show("Please choose a teacher to delete!");
-            else
+            else 
+            {
+                var activeCoursesWithoutTeacher = directorController.SetTeacher(SelectedTeacher.ToTeacher());
+
+                if (activeCoursesWithoutTeacher.Count > 0)
+                {
+                    foreach (var course in activeCoursesWithoutTeacher)
+                    { 
+                        ChooseTeacherView chooseTeacherView = new ChooseTeacherView();
+                    }
+                }
+
                 directorController.Delete(SelectedTeacher.Id);
+            }
         }
 
         private void SearchTeachers_Click(object sender, RoutedEventArgs e)
