@@ -142,7 +142,7 @@ namespace LangLang.View.Director
                 {
                     foreach (var course in activeCoursesWithoutTeacher)
                     { 
-                        ChooseTeacherView chooseTeacherView = new ChooseTeacherView();
+                        ChooseTeacherView choseTeacherView = new ChooseTeacherView();
                     }
                 }
 
