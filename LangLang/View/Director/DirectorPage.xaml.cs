@@ -27,9 +27,10 @@ namespace LangLang.View.Director
                 Courses = new ObservableCollection<CourseDTO>();
             }
         }
-        readonly int directorId;
-        readonly DirectorController directorController;
-        readonly MainController mainController;
+        private readonly int directorId;
+        private readonly DirectorController directorController;
+        private readonly ReportController reportController;
+        private readonly MainController mainController;
 
         public TeacherDTO? SelectedTeacher { get; set; }
         public CourseDTO SelectedCourse { get; set; }
@@ -44,6 +45,7 @@ namespace LangLang.View.Director
             this.directorId = directorId;
             this.mainController = mainController;
             this.directorController = mainController.GetDirectorController();
+            this.reportController = mainController.GetReportController();
 
             TableViewModel = new ViewModel();
             DataContext = this;
@@ -242,25 +244,25 @@ namespace LangLang.View.Director
             EmailSender emailSender = new EmailSender("smtp.gmail.com", 587, "diirrektorr@gmail.com", "dvwa dbkw bzyl cauy");
             if (ReportOneRadioButton.IsChecked == true)
             {
-                directorController.GenerateFirstReport();
+                reportController.GenerateFirstReport();
                 emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 1", "Report 1 body",
                                       "..\\..\\..\\Data\\report1.pdf");
             }
             else if (ReportTwoRadioButton.IsChecked == true)
             {
-                directorController.GenerateSecondReport();
+                reportController.GenerateSecondReport();
                 emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 2", "Report 2 body",
                                       "..\\..\\..\\Data\\report2.pdf");
             }
             else if (ReportThreeRadioButton.IsChecked == true)
             {
-                directorController.GenerateThirdReport();
+                reportController.GenerateThirdReport();
                 emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 3", "Report 3 body",
                                       "..\\..\\..\\Data\\report3.pdf");
             }
             else if (ReportFourRadioButton.IsChecked == true)
             {
-                var (numberOfCourses, numberOfExamTerms, penaltyPoints, values) = directorController.GetLanguageReport();
+                var (numberOfCourses, numberOfExamTerms, penaltyPoints, values) = reportController.GenerateFourthReport();
             } 
             else 
                 MessageBox.Show("Please select the report you want to send.");

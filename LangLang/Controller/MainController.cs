@@ -13,11 +13,13 @@ namespace LangLang.Controller
         private ExamTermController _examTermController;
         private ExamTermGradeController _examTermGradeController;
         private MailController _mailController;
+        private ReportController _reportController;
 
         public MainController()
         {
             _studentController = new StudentsController();
             _teacherController = new TeacherController();
+            _reportController = new ReportController();
 
             _directorController = new DirectorController(new DirectorRepository());
 
@@ -65,6 +67,11 @@ namespace LangLang.Controller
         public MailController GetMailController()
         {
             return _mailController;
+        }
+
+        public ReportController GetReportController()
+        {
+            return _reportController;
         }
     }
 }
