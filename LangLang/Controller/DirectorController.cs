@@ -13,26 +13,16 @@ namespace LangLang.Controller
     {
         private readonly IDirectorRepository _directors;
         private readonly TeacherRepository? _teachers;
-        private readonly ExamTermDAO? _examTerms;
         private readonly StudentGradeRepository? _studentGrades;
-        private readonly PenaltyPointDAO? _penaltyPoints;
         private readonly CourseController? _courseController;
-        private readonly CourseGradeRepository? _courseGrade;
-        private readonly TeacherController? _teacherController;
         private readonly ExamTermController? _examTermController;
-        private readonly ExamTermGradeRepository? _examTermGrades;
 
         public DirectorController(IDirectorRepository directors)
         {
             _directors = directors ?? throw new ArgumentNullException(nameof(directors));
             _teachers = new TeacherRepository();
-            _examTerms = new ExamTermDAO();
             _studentGrades = new StudentGradeRepository();
-            _penaltyPoints = new PenaltyPointDAO();
-            _examTermGrades = new ExamTermGradeRepository();
-            _courseGrade = new CourseGradeRepository();
 
-            _teacherController = new TeacherController();
             _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
             _courseController = new CourseController(new CourseRepository(), new TeacherController());
 
@@ -41,12 +31,8 @@ namespace LangLang.Controller
         {
             _directors = Injector.CreateInstance<IDirectorRepository>();
             _teachers = new TeacherRepository();
-            _examTerms = new ExamTermDAO();
             _studentGrades = new StudentGradeRepository();
-            _penaltyPoints = new PenaltyPointDAO();
-            _examTermGrades = new ExamTermGradeRepository();
 
-            _teacherController = new TeacherController();
             _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
             _courseController = new CourseController(new CourseRepository(), new TeacherController());
 
@@ -80,47 +66,35 @@ namespace LangLang.Controller
         public void Delete(int teacherId)
         {
             Teacher teacher = GetTeacherById(teacherId);
+            var courses = _courseController.GetAllCourses();
 
-            DeleteCoursesByTeacher(teacher);
-            DeleteExamTermsByTeacher(teacher);
+            Update(_courseController.DeleteCoursesByTeacher(teacher));
+            Update(_examTermController.DeleteExamTermsByTeacher(teacher, courses));
+
             _directors.RemoveTeacher(teacherId);
+        }
+
+        public List<Course> SetTeacher(Teacher teacher)
+        {
+            var activeCourses = new List<Course>();
+            var courses = _courseController.GetAllCourses();
+
+            foreach (var course in courses)
+            {
+                if (teacher.CoursesId.Contains(course.Id) && _courseController.IsCourseActive(course))
+                {
+                    teacher.CoursesId.Remove(course.Id);
+                    Update(teacher);
+                    activeCourses.Add(course);
+                }
+            }
+
+            return activeCourses;
         }
 
         public void Subscribe(IObserver observer)
         {
             _directors.Subscribe(observer);
-        }
-
-        public void DeleteCoursesByTeacher(Teacher teacher)
-        {
-            var courses = _courseController.GetAllCourses();
-            var teacherCourses = teacher.CoursesId;
-
-            foreach (var course in courses)
-            {
-                if (teacherCourses.Contains(course.Id) && course.StartDate > DateTime.Today.Date)
-                    teacherCourses.Remove(course.Id);
-            }
-
-            teacher.CoursesId = teacherCourses;
-            Update(teacher);
-        }
-
-        public void DeleteExamTermsByTeacher(Teacher teacher)
-        {
-            var examTerms = _examTermController.GetAllExamTerms();
-            var courses = _courseController.GetAllCourses();
-            var teacherExamTerms = teacher.CoursesId;
-
-            foreach (var examTerm in examTerms)
-            {
-                var course = _courseController.GetCourseById(examTerm.CourseID);
-                if (teacherExamTerms.Contains(examTerm.CourseID) &&  course.StartDate > DateTime.Today.Date)
-                    teacherExamTerms.Remove(course.Id);
-            }
-
-            teacher.CoursesId = teacherExamTerms;
-            Update(teacher);
         }
 
         public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)

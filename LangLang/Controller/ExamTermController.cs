@@ -167,6 +167,21 @@ namespace LangLang.Controller
             return filteredCourses;
         }
 
+        public Teacher DeleteExamTermsByTeacher(Teacher teacher, List<Course> courses)
+        {
+            var examTerms = GetAllExamTerms();
+            var teacherExamTerms = teacher.CoursesId;
+
+            foreach (var examTerm in examTerms)
+            {
+                var course = courses.Find(x => x.Id == examTerm.CourseID);
+                if (teacherExamTerms.Contains(examTerm.CourseID) && course.StartDate > DateTime.Today.Date)
+                    teacherExamTerms.Remove(course.Id);
+            }
+
+            teacher.CoursesId = teacherExamTerms;
+            return teacher;
+        }
     }
 }
 
