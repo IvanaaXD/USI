@@ -262,7 +262,9 @@ namespace LangLang.View.Director
             }
             else if (ReportFourRadioButton.IsChecked == true)
             {
-                var (numberOfCourses, numberOfExamTerms, penaltyPoints, values) = reportController.GenerateFourthReport();
+                reportController.GenerateFourthReport();
+                emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 4", "Report 4 body",
+                      "..\\..\\..\\Data\\report4.pdf");
             } 
             else 
                 MessageBox.Show("Please select the report you want to send.");
