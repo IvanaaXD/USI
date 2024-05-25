@@ -254,7 +254,9 @@ namespace LangLang.View.Director
             }
             else if (ReportThreeRadioButton.IsChecked == true)
             {
-                return;
+                directorController.GenerateThirdReport();
+                emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 3", "Report 3 body",
+                                      "..\\..\\..\\Data\\report3.pdf");
             }
             else if (ReportFourRadioButton.IsChecked == true)
             {

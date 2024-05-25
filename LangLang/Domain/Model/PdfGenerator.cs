@@ -72,7 +72,26 @@ public class PdfGenerator
         table.SetHorizontalAlignment(HorizontalAlignment.CENTER);
         document.Add(table);
     }
+    public void AddDifTypeTupleTable<TKey>(Dictionary<TKey, (int, int, double)> tableData, string keyColumnName, string valueOneColumnName, string valueTwoColumnName, string valueThreeColumnName)
+    {
+        Table table = new Table(4);
 
+        table.AddHeaderCell(keyColumnName).SetWidth(300f);
+        table.AddHeaderCell(valueOneColumnName).SetWidth(300f);
+        table.AddHeaderCell(valueTwoColumnName).SetWidth(300f);
+        table.AddHeaderCell(valueThreeColumnName).SetWidth(300f);
+
+        foreach (var entry in tableData)
+        {
+            table.AddCell(entry.Key.ToString()).SetWidth(300f);
+            table.AddCell(entry.Value.Item1.ToString()).SetWidth(300f);
+            table.AddCell(entry.Value.Item2.ToString()).SetWidth(300f);
+            table.AddCell(entry.Value.Item3.ToString()).SetWidth(300f);
+        }
+
+        table.SetHorizontalAlignment(HorizontalAlignment.CENTER);
+        document.Add(table);
+    }
     public void AddNewPage()
     {
         document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));

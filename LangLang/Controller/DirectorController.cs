@@ -210,7 +210,22 @@ namespace LangLang.Controller
             pdfGenerator.AddTupleTable(GetTeacherCourseReport(), "Course", "Teacher Grade", "Knowledge Grade", "Activity Grade");
             pdfGenerator.SaveAndClose();
         }
+        public void GenerateThirdReport()
+        {
+            PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report3.pdf");
+            pdfGenerator.AddTitle("Statistics on the points of passed exams in the last year");
+            pdfGenerator.AddNewLine();
 
+            pdfGenerator.AddTable(GetPartsOfExamReport(), "Each part of exam", "Average points");
+
+            pdfGenerator.AddNewLine();
+            pdfGenerator.AddTitle("Course statistics in the last year");
+            pdfGenerator.AddNewLine();
+
+            pdfGenerator.AddDifTypeTupleTable(GetStudentsCourseReport(), "Course", "Participants", "Passed", "Success Rate");
+
+            pdfGenerator.SaveAndClose();
+        }
         public int GetAverageTeacherGrade(int teacherId)
         {
             int result = 0;
@@ -244,7 +259,26 @@ namespace LangLang.Controller
             }
             return finalCourses;
         }
-
+        public Dictionary<string, double> GetPartsOfExamReport()
+        {
+            Dictionary<string, double> examAverageResult = new();
+            examAverageResult["reading"] = GetAverageReadingPointsLastYear();
+            examAverageResult["listening"] = GetAverageListeningPointsLastYear();
+            examAverageResult["speaking"] = GetAverageSpeakingPointsLastYear();
+            return examAverageResult;
+        }
+        public Dictionary<Course, (int, int, double)> GetStudentsCourseReport()
+        {
+            Dictionary<Course, (int, int, double)> finalCourses = new();
+            List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
+            foreach (Course course in lastYearCourses)
+            {
+                int attendedCount = GetAttendedCount(course.Id);
+                int passedCount = GetPassedCount(course.Id);
+                finalCourses[course] = (attendedCount, passedCount, CalculatePassPercentage(passedCount, attendedCount));
+            }
+            return finalCourses;
+        }
         public Dictionary<Language, int> GetLanguagesInt()
         {
             Dictionary<Language, int> languages = new Dictionary<Language, int>();
@@ -405,7 +439,11 @@ namespace LangLang.Controller
             foreach (ExamTermGrade grade in examGrades)
             {
                 ExamTerm exam = _examTerms.GetExamTermById(grade.ExamId);
-                if (exam.ExamTime >= DateTime.Now.AddYears(-1))
+                if (exam == null) 
+                {
+                    continue;
+                }
+                else if (exam.ExamTime >= DateTime.Now.AddYears(-1))
                 {
                     if(typeOfPoints == "listening")
                         result += grade.ListeningPoints;
@@ -486,7 +524,11 @@ namespace LangLang.Controller
         }
         public double CalculatePassPercentage(int passedCount, int attendedCount)
         {
-            return (passedCount / attendedCount) * 100;
+            if (attendedCount == 0)
+            {
+                return 0;
+            }
+            return (double)passedCount / attendedCount * 100;
         }
     }
 }
