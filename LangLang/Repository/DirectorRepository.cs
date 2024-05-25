@@ -36,7 +36,25 @@ namespace LangLang.Repository
             if (_teachers.Count == 0) return 0;
             return _teachers.Last().Id + 1;
         }
+        public Director? UpdateDirector(Director? director)
+        {
+            Director? oldDirector = GetDirector();
+            if (oldDirector == null) return null;
 
+            oldDirector.FirstName = director.FirstName;
+            oldDirector.LastName = director.LastName;
+            oldDirector.Gender = director.Gender;
+            oldDirector.DateOfBirth = director.DateOfBirth;
+            oldDirector.PhoneNumber = director.PhoneNumber;
+            oldDirector.Email = director.Email;
+            oldDirector.Password = director.Password;
+            oldDirector.Title = director.Title;
+            oldDirector.CoursesId = director.CoursesId;
+
+            _storageDirector.Save(_director);
+            NotifyObservers();
+            return oldDirector;
+        }
         public Teacher AddTeacher(Teacher teacher)
         {
             teacher.Id = GenerateId();
