@@ -4,7 +4,6 @@ using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LangLang.Domain.Model.Enums;
 
 namespace LangLang.Controller
 {
