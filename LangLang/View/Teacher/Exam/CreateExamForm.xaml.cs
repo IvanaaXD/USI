@@ -46,10 +46,10 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
 
-            this.directorController = mainController.GetDirectorController();
-            this.teacherController = mainController.GetTeacherController();
-            this.courseController = mainController.GetCourseController();
-            this.examTermController = mainController.GetExamTermController();
+            this.directorController = Injector.CreateInstance<DirectorController>();
+            this.teacherController = Injector.CreateInstance<TeacherController>();
+            this.courseController = Injector.CreateInstance<CourseController>();
+            this.examTermController = Injector.CreateInstance<ExamTermController>();
 
             Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             ExamTerm = new ExamTermDTO(teacherController, teacher);

@@ -11,27 +11,27 @@ namespace LangLang.Controller
     public class ReportController
     {
         private readonly IDirectorRepository _directors;
-        private readonly TeacherRepository? _teachers;
-        private readonly ExamTermDAO? _examTerms;
-        private readonly StudentGradeRepository? _studentGrades;
-        private readonly PenaltyPointDAO? _penaltyPoints;
+        private readonly ITeacherRepository? _teachers;
+        private readonly IExamTermRepository? _examTerms;
+        private readonly IStudentGradeRepository? _studentGrades;
+        private readonly PenaltyPointRepository? _penaltyPoints;
         private readonly CourseController? _courseController;
-        private readonly CourseGradeRepository? _courseGrade;
+        private readonly ICourseGradeRepository? _courseGrade;
         private readonly DirectorController? _directorController;
         private readonly ExamTermController? _examTermController;
-        private readonly ExamTermGradeRepository? _examTermGrades;
+        private readonly IExamTermGradeRepository? _examTermGrades;
 
         public ReportController()
         {
             _directors = Injector.CreateInstance<IDirectorRepository>();
-            _teachers = new TeacherRepository();
-            _examTerms = new ExamTermDAO();
-            _studentGrades = new StudentGradeRepository();
-            _penaltyPoints = new PenaltyPointDAO();
-            _examTermGrades = new ExamTermGradeRepository();
+            _teachers = Injector.CreateInstance<ITeacherRepository>();
+            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
+            _penaltyPoints = Injector.CreateInstance<PenaltyPointRepository>();
+            _examTermGrades = Injector.CreateInstance<IExamTermGradeRepository>();
 
-            _examTermController = new ExamTermController(new ExamTermRepository(), new TeacherController());
-            _courseController = new CourseController(new CourseRepository(), new TeacherController());
+            _examTermController = Injector.CreateInstance<ExamTermController>();
+            _courseController = Injector.CreateInstance<CourseController>();
         }
 
         public void GenerateFirstReport()
@@ -198,7 +198,7 @@ namespace LangLang.Controller
 
             foreach (var examTerm in examTerms)
             {
-                var course = _teachers.GetCourseById(examTerm.CourseID);
+                var course = _courseController.GetCourseById(examTerm.CourseID);
                 numberOfExamTerms[course.Language] += 1;
             }
 
@@ -220,7 +220,7 @@ namespace LangLang.Controller
 
                 foreach (var penaltyPoint in penaltyPoints)
                 {
-                    var course = _teachers.GetCourseById(penaltyPoint.CourseId);
+                    var course = _courseController.GetCourseById(penaltyPoint.CourseId);
 
                     if (course.Language == number.Key)
                     {
@@ -253,7 +253,7 @@ namespace LangLang.Controller
 
                 foreach (var examTerm in examTerms)
                 {
-                    var course = _teachers.GetCourseById(examTerm.CourseID);
+                    var course = _courseController.GetCourseById(examTerm.CourseID);
                     var grades = _examTermGrades.GetExamTermGradeByExam(examTerm.ExamID);
 
                     if (course.Language == number.Key)
@@ -368,13 +368,13 @@ namespace LangLang.Controller
         }
         public int GetAttendedCount(int courseId)
         {
-            Course course = _teachers.GetCourseById(courseId);
+            Course course = _courseController.GetCourseById(courseId);
             return course.CurrentlyEnrolled;
         }
         public int GetPassedCount(int courseId)
         {
             int count = 0;
-            Course course = _teachers.GetCourseById(courseId);
+            Course course = _courseController.GetCourseById(courseId);
             List<ExamTermGrade> grades = _examTermGrades.GetAllExamTermGrades();
             foreach (ExamTermGrade grade in grades)
             {

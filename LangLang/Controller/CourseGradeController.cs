@@ -13,10 +13,6 @@ namespace LangLang.Controller
     {
         private readonly ICourseGradeRepository _courseGrades;
 
-        public CourseGradeController(ICourseGradeRepository courseGrades)
-        {
-            _courseGrades = courseGrades ?? throw new ArgumentNullException(nameof(_courseGrades));
-        }
         public CourseGradeController()
         {
             _courseGrades = Injector.CreateInstance<ICourseGradeRepository>();

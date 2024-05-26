@@ -21,12 +21,12 @@ namespace LangLang.Controller
             _teacherController = new TeacherController();
             _reportController = new ReportController();
 
-            _directorController = new DirectorController(new DirectorRepository());
+            _directorController = new DirectorController();
 
-            _courseController = new CourseController(new CourseRepository(), _teacherController);
-            _examTermController = new ExamTermController(new ExamTermRepository(), _teacherController);
+            _courseController = new CourseController();
+            _examTermController = new ExamTermController();
 
-            _courseGradeController = new CourseGradeController(new CourseGradeRepository());
+            _courseGradeController = new CourseGradeController();
             _examTermGradeController = new ExamTermGradeController(new ExamTermGradeRepository());
             _mailController = new MailController();
         }

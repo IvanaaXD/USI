@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using LangLang.Domain.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Student
 {
@@ -21,7 +22,7 @@ namespace LangLang.View.Student
             InitializeComponent();
             student = new StudentDTO();
             student.Password = passwordBox.Password;
-            this.studentsController = studentsController;
+            this.studentsController = Injector.CreateInstance<StudentsController>();
             DataContext = this;
 
             SetPlaceholders();

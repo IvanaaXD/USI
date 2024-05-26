@@ -7,6 +7,7 @@ using LangLang.DTO;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Teacher
 {
@@ -43,12 +44,12 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
 
-            directorController = mainController.GetDirectorController();
-            teacherController = mainController.GetTeacherController();
-            courseController = mainController.GetCourseController();
+            directorController = Injector.CreateInstance<DirectorController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            courseController = Injector.CreateInstance<CourseController>();
 
-            Course = new CourseDTO(courseController, mainController.GetDirectorController().GetTeacherById(teacherId));
-            Teacher = new TeacherDTO(mainController.GetDirectorController().GetTeacherById(teacherId));
+            Course = new CourseDTO(courseController, directorController.GetTeacherById(teacherId));
+            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
 
             this.teacherId = teacherId;
             DataContext = Course;
@@ -146,11 +147,7 @@ namespace LangLang.View.Teacher
 
             if (Course.IsValid)
             {
-                int courseId = teacherController.GetAllCourses().Last().Id;
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                teacher.CoursesId.Add(courseId + 1);
-                directorController.Update(teacher);
-                courseController.AddCourse(Course.ToCourse());
+                courseController.AddCourse(Course.ToCourse(), teacherId);
 
                 Close();
             }

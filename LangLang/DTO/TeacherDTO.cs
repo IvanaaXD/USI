@@ -235,9 +235,8 @@ namespace LangLang.DTO
                         if (!_EmailRegex.IsMatch(Email))
                             return "Format not good. Try again.";
 
-                        IDirectorRepository directorRepository = new DirectorRepository();
-                        DirectorController _directorController = new DirectorController(directorRepository);
-                        StudentsController studentsController = new StudentsController();
+                        DirectorController _directorController = Injector.CreateInstance<DirectorController>();
+                        StudentsController studentsController = Injector.CreateInstance<StudentsController>();
 
                         foreach (Teacher teacher in _directorController.GetAllTeachers())
                         {
@@ -256,9 +255,8 @@ namespace LangLang.DTO
                         if (string.IsNullOrEmpty(Password))
                             return "Password is required";
 
-                        directorRepository = new DirectorRepository();
-                        _directorController = new DirectorController(directorRepository);
-                        studentsController = new StudentsController();
+                        _directorController = Injector.CreateInstance<DirectorController>();
+                        studentsController = Injector.CreateInstance<StudentsController>();
 
                         foreach (Teacher teacher in _directorController.GetAllTeachers())
                         {

@@ -75,15 +75,18 @@ namespace LangLang.View.Teacher
         private readonly CourseController courseController;
         private readonly CourseGradeController courseGradeController;
         private readonly MainController mainController;
+        private readonly MailController mailController;
 
         public CourseView(Course course, Domain.Model.Teacher teacher, MainController mainController)
         {
             InitializeComponent();
             this.course = course;
-            this.teacherController = mainController.GetTeacherController();
-            this.studentController = mainController.GetStudentController();
-            this.courseController = mainController.GetCourseController();
-            courseGradeController = mainController.GetCourseGradeController();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            studentController = Injector.CreateInstance<StudentsController>();
+            courseController = Injector.CreateInstance<CourseController>();
+            courseGradeController = Injector.CreateInstance<CourseGradeController>();
+            mailController = Injector.CreateInstance<MailController>();
+
             this.mainController = mainController;
             this.teacher = teacher;
             MailToSend = new MailDTO();
@@ -129,7 +132,7 @@ namespace LangLang.View.Teacher
                     dtoStudent.KnowledgeGrade = 0;
                     if (!courseController.HasCourseStarted(course))
                     {
-                        if (teacherController.IsStudentAccepted(student, course.Id))
+                        if (mailController.IsStudentAccepted(student, course.Id))
                             dtoStudent.AddedToCourse = true;
                     }
                     if (courseController.HasCourseFinished(course, courseController.GetStudentCount(studentController, course)))
@@ -160,8 +163,8 @@ namespace LangLang.View.Teacher
             SentMailsTableViewModel.SentMails.Clear();
             ReceivedMailsTableViewModel.ReceivedMails.Clear();
 
-            var receivedMails = teacherController.GetReceivedCourseMails(teacher, course.Id);
-            var sentMails = teacherController.GetSentCourseMail(teacher, course.Id);
+            var receivedMails = mailController.GetReceivedCourseMails(teacher, course.Id);
+            var sentMails = mailController.GetSentCourseMail(teacher, course.Id);
 
             if (receivedMails != null)
                 foreach (Mail mail in receivedMails)
@@ -254,7 +257,7 @@ namespace LangLang.View.Teacher
                     MailToSend.Message = "You have been accepted to course " + course.Language.ToString() + " " + course.Level.ToString();
                     MailToSend.Answered = false;
 
-                    teacherController.SendMail(MailToSend.ToMail());
+                    mailController.Send(MailToSend.ToMail());
                     selected.AddedToCourse = true;
 
                     AddCourseInfo();
@@ -340,7 +343,7 @@ namespace LangLang.View.Teacher
             if (SelectedReceivedMail != null)
             {
                 MailDTO mail = SelectedReceivedMail;
-                teacherController.AnswerMail(mail.Id);
+                mailController.SetMailToAnswered(mail.ToMail());
                 Domain.Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
 
                 KickStudentOut(studentSender);
@@ -360,7 +363,7 @@ namespace LangLang.View.Teacher
             if (SelectedReceivedMail != null)
             {
                 MailDTO mail = SelectedReceivedMail;
-                teacherController.AnswerMail(mail.Id);
+                mailController.SetMailToAnswered(mail.ToMail());
                 Domain.Model.Student studentSender = studentController.GetStudentByEmail(mail.Sender);
                 studentController.GivePenaltyPoint(studentSender.Id);
                 studentSender = studentController.GetStudentByEmail(mail.Sender);

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Teacher
 {
@@ -20,10 +21,11 @@ namespace LangLang.View.Teacher
 
         public UpdateCourseForm(int courseId, int teacherId, MainController mainController)
         {
-            teacherController = mainController.GetTeacherController();
-            courseController = mainController.GetCourseController();
-            Course = new CourseDTO(courseController, teacherController.GetCourseById(courseId), mainController.GetDirectorController().GetTeacherById(teacherId));
-            Teacher = new TeacherDTO(mainController.GetDirectorController().GetTeacherById(teacherId));
+            teacherController = Injector.CreateInstance<TeacherController>();
+            courseController = Injector.CreateInstance<CourseController>();
+            DirectorController directorController = Injector.CreateInstance<DirectorController>();
+            Course = new CourseDTO(courseController, teacherController.GetCourseById(courseId), directorController.GetTeacherById(teacherId));
+            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             DataContext = Course;
 
             Course.StartTime = Course.StartDate.ToString("HH:mm");

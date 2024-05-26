@@ -27,54 +27,9 @@ namespace LangLang.Repository
             _mailsStorage = new Storage<Mail>("mails.csv");
             _mails = _mailsStorage.Load();
         }
-
-        private int GenerateMailId()
-        {
-            if (_mails.Count == 0) return 0;
-            return _mails.Last().Id + 1;
-        }
-
-        public Mail SendMail(Mail mail)
-        {
-            mail.Id = GenerateMailId();
-            _mails.Add(mail);
-            _mailsStorage.Save(_mails);
-            NotifyObservers();
-            return mail;
-        }
-        public Mail AnswerMail(int mailId)
-        {
-            Mail? mail = GetMailById(mailId);
-            mail.Answered = true;
-            _mailsStorage.Save(_mails);
-            NotifyObservers();
-            return mail;
-        }
-
-        public Mail? RemoveMail(int id)
-        {
-            Mail? mail = GetMailById(id);
-            if (mail == null) return null;
-
-            _mails.Remove(mail);
-            _mailsStorage.Save(_mails);
-            NotifyObservers();
-            return mail;
-        }
-
-        public Course? GetCourseById(int id)
+        private Course? GetCourseById(int id)
         {
             return _courses.Find(v => v.Id == id);
-        }
-
-        public ExamTerm GetExamTermById(int id)
-
-        {
-            return _examTerms.Find(et => et.ExamID == id);
-        }
-        public Mail? GetMailById(int id)
-        {
-            return _mails.Find(v => v.Id == id);
         }
         public List<Course> GetAllCourses()
         {
@@ -101,86 +56,6 @@ namespace LangLang.Repository
             }
             return course;
         }
-
-
-        public List<Mail> GetAllMail()
-        {
-            return _mails;
-        }
-
-
-        public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
-        {
-            List<Mail> filteredMails = new List<Mail>();
-
-            foreach (Mail mail in _mails)
-            {
-                if (mail.Sender == teacher.Email && mail.CourseId == courseId)
-                {
-                    filteredMails.Add(mail);
-                }
-            }
-            return filteredMails;
-        }
-
-        public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
-        {
-            List<Mail> filteredMails = new List<Mail>();
-
-            foreach (Mail mail in _mails)
-            {
-                if (mail.Receiver == teacher.Email && mail.CourseId == courseId)
-                {
-                    filteredMails.Add(mail);
-                }
-            }
-            return filteredMails;
-        }
-
-        public List<Course> GetAvailableCourses(Teacher teacher)
-        {
-            List<Course> allCourses = GetAllCourses();
-            List<int> allTeacherCourses = teacher.CoursesId;
-
-            List<Course> availableCourses = new List<Course>();
-
-            foreach (Course course in allCourses)
-            {
-                if (allTeacherCourses.Contains(course.Id))
-                {
-                    availableCourses.Add(course);
-                }
-            }
-            return availableCourses;
-        }
-
-        public List<ExamTerm> GetAvailableExamTerms(Teacher teacher)
-        {
-            List<ExamTerm> allExamTerms = GetAllExamTerms();
-            List<Course> allTeacherCourses = GetAvailableCourses(teacher);
-
-            List<ExamTerm> availableExamTerms = new();
-            List<int> examTermIds = new();
-
-            foreach (Course course in allTeacherCourses)
-            {
-                foreach (int examId in course.ExamTerms)
-                {
-                    examTermIds.Add(examId);
-                }
-            }
-
-            foreach (ExamTerm examTerm in allExamTerms)
-            {
-                if (examTermIds.Contains(examTerm.ExamID))
-                {
-                    availableExamTerms.Add(examTerm);
-                }
-            }
-
-            return availableExamTerms;
-        }
-
         public string FindLanguageAndLevel(int courseID)
         {
             string res = "";
@@ -199,17 +74,5 @@ namespace LangLang.Repository
             return res;
         }
 
-        public bool IsStudentAccepted(Student student, int courseId)
-        {
-            List<Mail> sentMail = GetAllMail();
-            foreach (Mail mail in sentMail)
-            {
-                if (mail.Receiver == student.Email && mail.CourseId == courseId && mail.TypeOfMessage == TypeOfMessage.AcceptEnterCourseRequestMessage)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }
