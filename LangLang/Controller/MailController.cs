@@ -58,7 +58,7 @@ namespace LangLang.Controller
                 Answered = false
             });
         }
-        /*public List<Mail> GetSentMails(Student student)
+        public List<Mail> GetSentMails(Student student)
         {
             List<Mail> filteredMails = new List<Mail>();
 
@@ -84,7 +84,7 @@ namespace LangLang.Controller
                 }
             }
             return filteredMails;
-        }*/
+        }
         public List<Mail> GetUnreadReceivedMails(Student student)
         {
             List<Mail> filteredMails = new List<Mail>();

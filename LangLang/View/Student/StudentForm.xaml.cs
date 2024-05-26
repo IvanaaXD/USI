@@ -153,5 +153,10 @@ namespace LangLang.View.Student
         {
             SetActiveCourse();
         }
+        private void Mail_Click(object sender, RoutedEventArgs e)
+        {
+            StudentMail studentMail = new StudentMail(studentController.GetStudentById(studentId));
+            studentMail.Show();
+        }
     }
 }

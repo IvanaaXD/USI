@@ -1,4 +1,4 @@
-﻿using LangLang.Domain.Model;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
@@ -15,10 +15,10 @@ namespace LangLang.Domain.IRepository
         StudentGrade UpdateGrade(StudentGrade StudentGrade);
         StudentGrade RemoveGrade(int id);
         List<StudentGrade> GetAllStudentGrades();
-        public StudentGrade? GetStudentGradeByStudentTeacher(int studentId, int teacherId, int courseId);
-        public StudentGrade? GetStudentGradeByStudent(int studentId, int courseId);
-        public List<StudentGrade> GetStudentGradesByTeacherCourse(int teacherId, int courseId);
-        public List<StudentGrade> GetStudentGradeByTeacher(int teacherId);
+        List<StudentGrade> GetStudentGradeByTeacher(int teacherId);
+        List<StudentGrade> GetStudentGradesByTeacherCourse(int teacherId, int courseId);
+        StudentGrade? GetStudentGradeByStudentTeacher(int studentId, int teacherId, int courseId);
+        StudentGrade? GetStudentGradeByStudent(int studentId, int courseId);
         void Subscribe(IObserver observer);
     }
 }

@@ -74,14 +74,6 @@ namespace LangLang.Repository
         {
             return _StudentGrades.Find(v => v.Id == id);
         }
-        public StudentGrade? GetStudentGradeByStudentTeacher(int studentId, int teacherId, int courseId)
-        {
-            return _StudentGrades.Find(StudentGrade => StudentGrade.StudentId == studentId && StudentGrade.TeacherId == teacherId && StudentGrade.CourseId == courseId);
-        }
-        public StudentGrade? GetStudentGradeByStudent(int studentId, int courseId)
-        {
-            return _StudentGrades.Find(StudentGrade => StudentGrade.StudentId == studentId && StudentGrade.CourseId == courseId);
-        }
         public List<StudentGrade> GetStudentGradesByTeacherCourse(int teacherId, int courseId)
         {
             return _StudentGrades.Where(StudentGrade => StudentGrade.TeacherId == teacherId && StudentGrade.CourseId == courseId).ToList();

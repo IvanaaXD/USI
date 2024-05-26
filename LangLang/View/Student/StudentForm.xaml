@@ -36,7 +36,7 @@
                     </MenuItem>
                     <MenuItem Header="Exam terms" Click="ExamTerms_Click"></MenuItem>
                 </MenuItem>
-                <MenuItem Header="Mail"></MenuItem>
+                <MenuItem Header="Mail" Click="Mail_Click"></MenuItem>
             </Menu>
         </DockPanel>
 
