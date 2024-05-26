@@ -13,6 +13,7 @@
     <Window.Resources>
         <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
         <converters:LevelOfLanguageToStringConverter x:Key="LevelOfLanguageToStringConverter"/>
+        <converters:DayOfWeekToStringConverter x:Key="DayOfWeekToStringConverter"/>
     </Window.Resources>
 
     <TabControl>
@@ -142,6 +143,72 @@
 
                 <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
                     <Button Content="View course" Click="ViewCourseButton_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Available courses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Gornji Grid sa tekstualnim poljima, ComboBoxovima, itd. -->
+                <Grid VerticalAlignment="Top" Height="auto" DockPanel.Dock="Top" Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"></RowDefinition>
+                        <RowDefinition Height="50"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                        <TextBlock Text="Language:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        <TextBlock Text="Start date:" Width="150" Margin="5,0,5,0"></TextBlock>
+                        <TextBlock Text="Duration:" Width="150" Margin="5,0,5,0"></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+                        <ComboBox x:Name="courseLanguageComboBox" Width="150" Margin="5"/>
+                        <ComboBox x:Name="courseLevelComboBox" Width="150" Margin="5"/>
+                        <DatePicker x:Name="courseStartDateDatePicker" Width="150" Margin="5"/>
+                        <TextBox x:Name="courseDurationTextBox" Width="150" Margin="5"/>
+                        <CheckBox x:Name="courseOnlineCheckBox" Content="Online" Margin="5,10,5,5"
+IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <Button Grid.Row="1" Content="Search" Click="SearchDirectorCourse_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,5,10,20"/>
+                    <Button Content="Reset values" Click="ResetDirectorCourse_Click" FontSize="14" Background="#6d6fbf" Foreground="White" Margin="720,5,129,20" Grid.Row="1"/>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <DataGrid Height="350"
+              AutoGenerateColumns="False"
+              x:Name="CoursesDataGrid"
+              ItemsSource="{Binding TableViewModel.CoursesDirector, UpdateSourceTrigger=PropertyChanged}"
+              SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
+              SelectionMode="Single" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Language" Width="*" Binding="{Binding Language}"/>
+                            <DataGridTextColumn Header="Level" Width="*" Binding="{Binding Level}"/>
+                            <DataGridTextColumn Header="Duration In Weeks" Width="*" Binding="{Binding Duration}"/>
+                            <DataGridTemplateColumn Header="Work Days" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Start Date" Width="*" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                            <DataGridTextColumn Header="Online" Width="*" Binding="{Binding IsOnline}"/>
+                            <DataGridTextColumn Header="Currently Enrolled" Width="*" Binding="{Binding CurrentlyEnrolled}"/>
+                            <DataGridTextColumn Header="Max Students" Width="*" Binding="{Binding MaxEnrolledStudents}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content="Create course" Click="CreateCourse_Click" Width="150" Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="Assign Teacher" Click="AssignTeacherCourse_Click" Width="150" Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
                 </StackPanel>
             </Grid>
         </TabItem>
