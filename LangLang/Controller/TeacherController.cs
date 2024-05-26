@@ -107,6 +107,8 @@ namespace LangLang.Controller
         public void Subscribe(IObserver observer)
         {
             _teachers.Subscribe(observer);
+            _courses.Subscribe(observer);
+            _examTerms.Subscribe(observer);
         }
         public List<ExamTerm> GetAvailableExamTerms(Teacher teacher)
         {
