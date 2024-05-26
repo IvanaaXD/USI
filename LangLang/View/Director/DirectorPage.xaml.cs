@@ -88,10 +88,6 @@ namespace LangLang.View.Director
                         if (coursesId.Contains(course.Id))
                             TableViewModel.CoursesDirector.Add(new CourseDTO(course));
                 }
-                else
-                {
-                    MessageBox.Show("No courses found for director.");
-                }
                 if (teachers != null)
                 {
                     foreach (Domain.Model.Teacher teacher in teachers)

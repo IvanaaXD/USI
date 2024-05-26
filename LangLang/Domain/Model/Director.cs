@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using LangLang.Domain.Model.Enums;
+using LangLang.Storage.Serialization;
 
 namespace LangLang.Domain.Model
 {
-    public class Director : Employee
+    public class Director : Employee, ISerializable
     {
         private List<int> coursesId;
 
         public Director() : base() { }
 
         public Director(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email,
-                string password, int title)
-                : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password, title) {}
+        string password, int title, List<int> coursesId)
+        : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password, title)
+        {
+            this.coursesId = coursesId;
+        }
 
         public List<int> CoursesId
         {
@@ -21,15 +25,20 @@ namespace LangLang.Domain.Model
             set { coursesId = value; }
         }
 
-        public string[] ToCsv()
+        public string[] ToCSV()
         {
-            string coursesIdStr = string.Join(",", coursesId);
+            string coursesIdStr = "";
+            if (coursesId != null)
+                coursesIdStr = string.Join(",", coursesId);
+
+            string dateOfBirthString = dateOfBirth.Date.ToString("yyyy-MM-dd");
+
             return new string[] {
                 Id.ToString(),
                 FirstName,
                 LastName,
                 Gender.ToString(),
-                DateOfBirth.ToString("yyyy-MM-dd"),
+                dateOfBirthString,
                 PhoneNumber,
                 Email,
                 Password,
@@ -38,7 +47,7 @@ namespace LangLang.Domain.Model
                 };
         }
 
-        public void FromCsv(string[] values)
+        public void FromCSV(string[] values)
         {
             id = int.Parse(values[0]);
             firstName = values[1];
@@ -49,14 +58,10 @@ namespace LangLang.Domain.Model
             email = values[6];
             password = values[7];
             title = int.Parse(values[8]);
-            if (values[9] == "")
-            {
-                coursesId = new List<int>();
-            }
+            if (!string.IsNullOrEmpty(values[9]))
+                coursesId = new List<int>(Array.ConvertAll(values[9].Split(','), int.Parse));
             else
-            {
-                coursesId = values[9].Split(',').Select(int.Parse).ToList();
-            }
+                coursesId = new List<int>();
         }
     }
 }
