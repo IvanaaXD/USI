@@ -209,10 +209,39 @@ namespace LangLang.Controller
             }
             return availableTeachers;
         }
+        public List<Teacher> GetAvailableTeachers(ExamTerm examTerm)
+        {
+            Course course = _courseController.GetCourseById(examTerm.CourseID);
+            List<Teacher> compatibleTeachers = GetCompatibleTeachers(course.Language, course.Level);
+            List<Teacher> availableTeachers = new();
+            foreach (Teacher teacher in compatibleTeachers)
+            {
+                if (_examTermController.ValidateExamTimeslot(examTerm, teacher))
+                    availableTeachers.Add(teacher);
+            }
+            return availableTeachers;
+        }
 
         public int FindMostAppropriateTeacher(Course course)
         {
             List<Teacher> availableTeachers = GetAvailableTeachers(course);
+            Dictionary<int, double> teacherGrade = new();
+            foreach (Teacher teacher in availableTeachers)
+            {
+                teacherGrade.Add(teacher.Id, GetAverageTeacherGrade(teacher.Id));
+            }
+
+            int teacherWithMaxGradeId = teacherGrade.OrderByDescending(kv => kv.Value).First().Key;
+            int firstUngradedTeacherId;
+            if (teacherGrade.ContainsValue(0))
+            {
+                firstUngradedTeacherId = teacherGrade.FirstOrDefault(pair => pair.Value == 0).Key;
+            }
+            return teacherWithMaxGradeId;
+        }
+        public int FindMostAppropriateTeacher(ExamTerm examTerm)
+        {
+            List<Teacher> availableTeachers = GetAvailableTeachers(examTerm);
             Dictionary<int, double> teacherGrade = new();
             foreach (Teacher teacher in availableTeachers)
             {

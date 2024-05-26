@@ -21,11 +21,15 @@ namespace LangLang.View.Director
             public ObservableCollection<TeacherDTO> Teachers { get; set; }
             public ObservableCollection<CourseDTO> Courses { get; set; }
             public ObservableCollection<CourseDTO> CoursesDirector { get; set; }
+            public ObservableCollection<ExamTermDTO> ExamTermsDirector { get; set; }
+
             public ViewModel()
             {
                 Teachers = new ObservableCollection<TeacherDTO>();
                 Courses = new ObservableCollection<CourseDTO>();
                 CoursesDirector = new ObservableCollection<CourseDTO>();
+                ExamTermsDirector = new ObservableCollection<ExamTermDTO>();
+
             }
         }
         private readonly int directorId;
@@ -33,11 +37,13 @@ namespace LangLang.View.Director
         readonly TeacherController teacherController;
         private readonly ReportController reportController;
         private readonly MainController mainController;
+        private readonly ExamTermController examTermController;
 
         Domain.Model.Director director;
 
         public TeacherDTO? SelectedTeacher { get; set; }
         public CourseDTO SelectedCourse { get; set; }
+        public ExamTermDTO SelectedExamTerm { get; set; }
 
         public ViewModel TableViewModel { get; set; }
 
@@ -49,8 +55,9 @@ namespace LangLang.View.Director
             this.directorId = directorId;
             this.mainController = mainController;
             this.directorController = Injector.CreateInstance<DirectorController>();
-            this.teacherController = mainController.GetTeacherController();
+            this.teacherController = Injector.CreateInstance<TeacherController>();
             this.reportController = Injector.CreateInstance<ReportController>();
+            examTermController = Injector.CreateInstance<ExamTermController>();
 
             TableViewModel = new ViewModel();
             DataContext = this;
@@ -84,9 +91,13 @@ namespace LangLang.View.Director
                 var courses = teacherController.GetAllCourses();
                 if (coursesId != null)
                 {
-                    foreach (Domain.Model.Course course in courses)
+                    foreach (Course course in courses)
                         if (coursesId.Contains(course.Id))
+                        {
                             TableViewModel.CoursesDirector.Add(new CourseDTO(course));
+                            foreach (int examTermId in course.ExamTerms)
+                                TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(examTermController.GetExamTermById(examTermId)));
+                        }
                 }
                 if (teachers != null)
                 {
@@ -269,6 +280,11 @@ namespace LangLang.View.Director
             CreateCourseForm courseForm = new CreateCourseForm(-1, mainController);
             courseForm.Show();
         }
+        private void CreateExam_Click(object sender, RoutedEventArgs e)
+        {
+            CreateExamForm examForm = new CreateExamForm(mainController, -1);
+            examForm.Show();
+        }
 
         private void AssignTeacherCourse_Click(object sender, RoutedEventArgs e)
         {
@@ -319,6 +335,14 @@ namespace LangLang.View.Director
 
         }
         public void ResetDirectorCourse_Click(object sender, EventArgs e)
+        {
+
+        }
+        public void SearchDirectorExams_Click(object sender, EventArgs e)
+        {
+
+        }
+        public void ResetExam_Click(object sender, EventArgs e)
         {
 
         }
