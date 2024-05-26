@@ -25,13 +25,13 @@ namespace LangLang.View.Teacher
         private CourseDTO _course;
         public TeacherDTO Teacher { get; set; }
 
-        public CourseDTO Course
+        public CourseDTO CreatedCourse
         {
             get { return _course; }
             set
             {
                 _course = value;
-                OnPropertyChanged(nameof(Course));
+                OnPropertyChanged(nameof(CreatedCourse));
             }
         }
 
@@ -48,11 +48,17 @@ namespace LangLang.View.Teacher
             teacherController = Injector.CreateInstance<TeacherController>();
             courseController = Injector.CreateInstance<CourseController>();
 
-            Course = new CourseDTO(courseController, directorController.GetTeacherById(teacherId));
-            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
-
+            if (teacherId != -1)
+            {
+                CreatedCourse = new CourseDTO(courseController, directorController.GetTeacherById(teacherId));
+                Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            }
+            else
+            {
+                CreatedCourse = new CourseDTO(courseController);
+            }
             this.teacherId = teacherId;
-            DataContext = Course;
+            DataContext = CreatedCourse;
 
             SetPlaceholders();
         }
@@ -60,16 +66,33 @@ namespace LangLang.View.Teacher
         private void SetPlaceholders()
         {
             List<string> levelLanguageStr = new List<string>();
+            if (teacherId == -1)
+            {
+                List<Domain.Model.Teacher> allTeachers = directorController.GetAllTeachers();
+                foreach (Domain.Model.Teacher teacher in allTeachers)
+                {
+                    for (int i = 0; i < teacher.LevelOfLanguages.Count; i++)
+                    {
+                        string levelLanguage = $"{teacher.Languages[i]} {teacher.LevelOfLanguages[i]}";
+                        if (!levelLanguageStr.Contains(levelLanguage))
+                            levelLanguageStr.Add(levelLanguage);
 
-            for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
-                levelLanguageStr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Teacher.LevelOfLanguages.Count; i++)
+                    levelLanguageStr.Add($"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}");
+
+            }
 
             languageComboBox.ItemsSource = levelLanguageStr;
 
-            Course.StartDate = DateTime.Today;
-            Course.StartTime = "00:00";
-            Course.Duration = "1";
-            Course.MaxEnrolledStudents = "50";
+            CreatedCourse.StartDate = DateTime.Today;
+            CreatedCourse.StartTime = "00:00";
+            CreatedCourse.Duration = "1";
+            CreatedCourse.MaxEnrolledStudents = "50";
 
             durationTextBox.GotFocus += DurationTextBox_GotFocus;
             startTimeTextBox.GotFocus += StartTimeTextBox_GotFocus;
@@ -99,8 +122,8 @@ namespace LangLang.View.Teacher
                     Enum.TryParse(parts[0], out Language language) &&
                     Enum.TryParse(parts[1], out LanguageLevel level))
                 {
-                    Course.Language = language;
-                    Course.Level = level;
+                    CreatedCourse.Language = language;
+                    CreatedCourse.Level = level;
                 }
                 else
                     MessageBox.Show("Invalid input format.");
@@ -109,7 +132,7 @@ namespace LangLang.View.Teacher
 
         private void PickDataFromCheckBox()
         {
-            Course.IsOnline = isOnlineCheckBox.IsChecked ?? false;
+            CreatedCourse.IsOnline = isOnlineCheckBox.IsChecked ?? false;
         }
 
 
@@ -121,7 +144,7 @@ namespace LangLang.View.Teacher
                 DateTime startTime;
 
                 if (DateTime.TryParseExact(startTimeTextBox.Text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startTime))
-                    Course.StartDate = startDate.Add(startTime.TimeOfDay);
+                    CreatedCourse.StartDate = startDate.Add(startTime.TimeOfDay);
 
                 else
                     MessageBox.Show("Please enter a valid start time (HH:mm).");
@@ -132,11 +155,11 @@ namespace LangLang.View.Teacher
 
         private void PickDataFromListBox()
         {
-            Course.WorkDays = new List<DayOfWeek>();
+            CreatedCourse.WorkDays = new List<DayOfWeek>();
             foreach (var selectedItem in dayListBox.SelectedItems)
 
                 if (Enum.TryParse(selectedItem.ToString(), out DayOfWeek day))
-                    Course.WorkDays.Add(day);
+                    CreatedCourse.WorkDays.Add(day);
         }
         private void Create_Click(object sender, RoutedEventArgs e)
         {
@@ -145,20 +168,42 @@ namespace LangLang.View.Teacher
             PickLanguageAndLevel();
             PickDataFromListBox();
 
-            if (Course.IsValid)
+            if (CreatedCourse.IsValid && teacherId != -1)
             {
-                courseController.AddCourse(Course.ToCourse(), teacherId);
+                courseController.AddCourse(CreatedCourse.ToCourse(), teacherId);
 
                 Close();
             }
-            else
-                MessageBox.Show("Course cannot be created. Not all fields are valid.");
-        }
+            else if (teacherId == -1)
+            {
+                // assign teacher , provera validnosti
+                Domain.Model.Course course = CreatedCourse.ToCourse();
+                int teacherId = directorController.FindMostAppropriateTeacher(course);
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                CreatedCourse.SetTeacher(teacher);
+                if (CreatedCourse.IsValid)
+                {
+                    int courseId = teacherController.GetAllCourses().Last().Id;
+                    Domain.Model.Director director = directorController.GetDirector();
+                    if (director.CoursesId == null)
+                    {
+                        director.CoursesId = new List<int>();
+                    }
+                    director.CoursesId.Add(courseId + 1);
+                    directorController.Update(director);
+                    courseController.AddCourse(CreatedCourse.ToCourse(), teacherId);
 
+                    Close();
+                }
+                else
+                    MessageBox.Show("Course cannot be created. Not all fields are valid.");
+            }
+
+           
+        }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
-
     }
 }

@@ -24,14 +24,21 @@ namespace LangLang.DTO
         private List<int> examTerms;
 
         private readonly CourseController _courseController;
-        private readonly Domain.Model.Teacher teacher;
+        private Domain.Model.Teacher teacher;
 
         public CourseDTO(CourseController courseController, Domain.Model.Teacher teacher)
         {
             _courseController = courseController;
             this.teacher = teacher;
         }
-
+        public CourseDTO(CourseController courseController)
+        {
+            _courseController = courseController;
+        }
+        public void SetTeacher(Domain.Model.Teacher teacher)
+        {
+            this.teacher = teacher;
+        }
         public List<string> LanguageAndLevelValues
         {
             get
@@ -214,6 +221,8 @@ namespace LangLang.DTO
                 MaxEnrolledStudents = int.Parse(maxEnrolledStudents),
                 ExamTerms = examTerms
             };
+            if (this.teacher == null)
+                return "Cannot create course because of course time overlaps!";
             if (!_courseController.ValidateCourseTimeslot(course, this.teacher))
                 return "Cannot create course because of course time overlaps!";
             return null;

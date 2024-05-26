@@ -120,10 +120,14 @@ namespace LangLang.Controller
 
             foreach (Course course in allTeacherCourses)
             {
-                foreach (int examId in course.ExamTerms)
+                if (course != null)
                 {
-                    examTermIds.Add(examId);
+                    foreach (int examId in course.ExamTerms)
+                    {
+                        examTermIds.Add(examId);
+                    }
                 }
+                
             }
 
             foreach (ExamTerm examTerm in allExamTerms)
