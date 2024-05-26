@@ -8,10 +8,13 @@ namespace LangLang.Domain.Model
     public class Director : Employee
     {
         private List<int> coursesId;
+
         public Director() : base() { }
+
         public Director(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email,
                 string password, int title)
                 : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password, title) {}
+
         public List<int> CoursesId
         {
             get { return coursesId; }
@@ -26,7 +29,7 @@ namespace LangLang.Domain.Model
                 FirstName,
                 LastName,
                 Gender.ToString(),
-                DateOfBirth.ToString(),
+                DateOfBirth.ToString("yyyy-MM-dd"),
                 PhoneNumber,
                 Email,
                 Password,
