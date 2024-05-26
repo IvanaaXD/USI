@@ -178,10 +178,8 @@ namespace LangLang.View.Teacher
             TimeSpan examEndTime = examStartTime.Add(new TimeSpan(4, 0, 0));
 
             if (DateTime.Today.Date.ToString("yyyy-MM-dd").Equals(examTerm.ExamTime.Date.ToString("yyyy-MM-dd"))) 
-            {
                 if (currentTime >= examStartTime && currentTime <= examEndTime)
                     return true;
-            }
             return false;
         }
 
@@ -194,10 +192,8 @@ namespace LangLang.View.Teacher
             if (DateTime.Today.Date > examTerm.ExamTime.Date)
                 return true;
             else if (DateTime.Today.Date == examTerm.ExamTime.Date)
-            {
                 if (currentTime > examEndTime)
                     return true;
-            }
             return false;
         }
 
