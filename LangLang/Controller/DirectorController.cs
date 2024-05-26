@@ -90,6 +90,7 @@ namespace LangLang.Controller
         public void Subscribe(IObserver observer)
         {
             _directors.Subscribe(observer);
+            _teachers.Subscribe(observer);
         }
 
         public List<Teacher> FindTeachersByCriteria(Language language, LanguageLevel levelOfLanguage, DateTime startedWork)

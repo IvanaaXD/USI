@@ -45,17 +45,18 @@ namespace LangLang.View.Teacher
             InitializeComponent();
             this.teacherId = teacherId;
             this.mainController = mainController;
-            this.studentController = Injector.CreateInstance<StudentsController>();
-            this.teacherController = Injector.CreateInstance<TeacherController>();
-            this.directorController = Injector.CreateInstance<DirectorController>();
-            this.examTermController = Injector.CreateInstance<ExamTermController>();
-            this.courseController = Injector.CreateInstance<CourseController>();
+            studentController = Injector.CreateInstance<StudentsController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            directorController = Injector.CreateInstance<DirectorController>();
+            examTermController = Injector.CreateInstance<ExamTermController>();
+            courseController = Injector.CreateInstance<CourseController>();
 
-            this.Courses = Courses;
-            this.ExamTerms = ExamTerms;
+            Courses = Courses;
+            ExamTerms = ExamTerms;
 
             TableViewModel = new ViewModel();
             teacherController.Subscribe(this);
+            directorController.Subscribe(this);
 
             Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
             firstAndLastName.Text = teacher.FirstName + " " + teacher.LastName;
