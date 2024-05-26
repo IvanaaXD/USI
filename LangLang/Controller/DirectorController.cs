@@ -183,5 +183,46 @@ namespace LangLang.Controller
             }
             return result == 0 ? 0 : result / teachersGrades.Count;
         }
+        public List<Teacher> GetCompatibleTeachers(Language language, LanguageLevel level)
+        {
+            List<Teacher> compatibleTeachers = new List<Teacher>();
+            List<Teacher> allTeachers = GetAllTeachers();
+            foreach (Teacher teacher in allTeachers)
+            {
+                if (teacher.Languages.Contains(language) && teacher.LevelOfLanguages.Contains(level))
+                    compatibleTeachers.Add(teacher);
+            }
+            return compatibleTeachers;
+        }
+        public List<Teacher> GetAvailableTeachers(Course course)
+        {
+            List<Teacher> compatibleTeachers = GetCompatibleTeachers(course.Language, course.Level);
+            List<Teacher> availableTeachers = new List<Teacher>();
+            foreach (Teacher teacher in compatibleTeachers)
+            {
+                if (_courseController.ValidateCourseTimeslot(course, teacher))
+                    availableTeachers.Add(teacher);
+            }
+            return availableTeachers;
+        }
+
+        public int FindMostAppropriateTeacher(Course course)
+        {
+            List<Teacher> availableTeachers = GetAvailableTeachers(course);
+            Dictionary<int, double> teacherGrade = new();
+            foreach (Teacher teacher in availableTeachers)
+            {
+                teacherGrade.Add(teacher.Id, GetAverageTeacherGrade(teacher.Id));
+            }
+
+            int teacherWithMaxGradeId = teacherGrade.OrderByDescending(kv => kv.Value).First().Key;
+            int firstUngradedTeacherId;
+            if (teacherGrade.ContainsValue(0))
+            {
+                firstUngradedTeacherId = teacherGrade.FirstOrDefault(pair => pair.Value == 0).Key;
+            }
+            return teacherWithMaxGradeId;
+        }
+
     }
 }

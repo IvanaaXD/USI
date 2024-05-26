@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;
 using System.Windows;
+using LangLang.View.Teacher;
+using System.IO;
 
 namespace LangLang.View.Director
 {
@@ -18,17 +20,21 @@ namespace LangLang.View.Director
         {
             public ObservableCollection<TeacherDTO> Teachers { get; set; }
             public ObservableCollection<CourseDTO> Courses { get; set; }
-
+            public ObservableCollection<CourseDTO> CoursesDirector { get; set; }
             public ViewModel()
             {
                 Teachers = new ObservableCollection<TeacherDTO>();
                 Courses = new ObservableCollection<CourseDTO>();
+                CoursesDirector = new ObservableCollection<CourseDTO>();
             }
         }
         private readonly int directorId;
         private readonly DirectorController directorController;
+        readonly TeacherController teacherController;
         private readonly ReportController reportController;
         private readonly MainController mainController;
+
+        Domain.Model.Director director;
 
         public TeacherDTO? SelectedTeacher { get; set; }
         public CourseDTO SelectedCourse { get; set; }
@@ -43,12 +49,13 @@ namespace LangLang.View.Director
             this.directorId = directorId;
             this.mainController = mainController;
             this.directorController = Injector.CreateInstance<DirectorController>();
+            this.teacherController = mainController.GetTeacherController();
             this.reportController = Injector.CreateInstance<ReportController>();
 
             TableViewModel = new ViewModel();
             DataContext = this;
             directorController.Subscribe(this);
-
+            this.director = directorController.GetDirector();
             Domain.Model.Director director = directorController.GetDirector();
             firstAndLastName.Text = director.FirstName + " " + director.LastName;
 
@@ -71,8 +78,20 @@ namespace LangLang.View.Director
             try
             {
                 TableViewModel.Teachers.Clear();
+                TableViewModel.CoursesDirector.Clear();
                 var teachers = directorController.GetAllTeachers();
-
+                var coursesId = director.CoursesId;
+                var courses = teacherController.GetAllCourses();
+                if (coursesId != null)
+                {
+                    foreach (Domain.Model.Course course in courses)
+                        if (coursesId.Contains(course.Id))
+                            TableViewModel.CoursesDirector.Add(new CourseDTO(course));
+                }
+                else
+                {
+                    MessageBox.Show("No courses found for director.");
+                }
                 if (teachers != null)
                 {
                     foreach (Domain.Model.Teacher teacher in teachers)
@@ -247,6 +266,24 @@ namespace LangLang.View.Director
                 CourseView courseView = new CourseView(SelectedCourse.Id, directorController.GetDirector());
                 courseView.Show();
                 UpdateCourses();
+            }
+        }
+        private void CreateCourse_Click(object sender, RoutedEventArgs e)
+        {
+            CreateCourseForm courseForm = new CreateCourseForm(-1, mainController);
+            courseForm.Show();
+        }
+
+        private void AssignTeacherCourse_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedCourse == null)
+            {
+                MessageBox.Show("Please choose a course to assign teacher!");
+            }
+            else
+            {
+                // check if course has teacher
+                // assign teacher
             }
         }
         private void SendReport_Click(object sender, RoutedEventArgs e) 
