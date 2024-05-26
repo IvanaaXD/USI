@@ -29,9 +29,11 @@ namespace LangLang.Controller
             _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
             _penaltyPoints = Injector.CreateInstance<PenaltyPointRepository>();
             _examTermGrades = Injector.CreateInstance<IExamTermGradeRepository>();
+            _courseGrade = Injector.CreateInstance<ICourseGradeRepository>();
 
             _examTermController = Injector.CreateInstance<ExamTermController>();
             _courseController = Injector.CreateInstance<CourseController>();
+            _directorController = Injector.CreateInstance<DirectorController>();
         }
 
         public void GenerateFirstReport()

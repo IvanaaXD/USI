@@ -27,7 +27,9 @@ namespace LangLang.Domain.Model
             { typeof(IExamTermGradeRepository), new Lazy<object>(() => new ExamTermGradeRepository()) },
             { typeof(ExamTermGradeController), new Lazy<object>(() => new ExamTermGradeController()) },
             { typeof(IStudentGradeRepository), new Lazy<object>(() => new StudentGradeRepository()) },
-            { typeof(PenaltyPointRepository), new Lazy<object>(() => new PenaltyPointRepository()) }
+            { typeof(PenaltyPointRepository), new Lazy<object>(() => new PenaltyPointRepository()) },
+            { typeof(ReportController), new Lazy<object>(() => new ReportController()) },
+
         };
 
         public static T CreateInstance<T>()
