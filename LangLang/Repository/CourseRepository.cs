@@ -86,6 +86,31 @@ namespace LangLang.Repository
             return _courses;
         }
 
+        public List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, SortDirection sortDirection)
+        {
+            IEnumerable<Course> courses = _courses;
+
+            switch (sortCriteria)
+            {
+                case "StartDate":
+                    courses = _courses.OrderBy(x => x.StartDate);
+                    break;
+                case "Language":
+                    courses = _courses.OrderBy(x => x.Language);
+                    break;
+                case "Level":
+                    courses = _courses.OrderBy(x => x.Level);
+                    break;
+                    
+            }
+
+            if (sortDirection == SortDirection.DESC)
+                courses = courses.Reverse();
+
+            courses = courses.Skip((page - 1) * pageSize).Take(pageSize);
+
+            return courses.ToList();
+        }
         public void Update()
         {
             throw new NotImplementedException();
