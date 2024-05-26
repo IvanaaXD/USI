@@ -315,6 +315,16 @@ namespace LangLang.View.Director
             } 
             else 
                 MessageBox.Show("Please select the report you want to send.");
+
+            
+        }
+        public void SearchDirectorCourse_Click(object sender, EventArgs e)
+        {
+
+        }
+        public void ResetDirectorCourse_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
