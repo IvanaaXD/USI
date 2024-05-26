@@ -65,7 +65,32 @@ namespace LangLang.Repository
         {
             return _examTerms;
         }
+        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, SortDirection sortDirection)
+        {
+            IEnumerable<ExamTerm> exams = _examTerms;
 
+            switch (sortCriteria)
+            {
+                case "ExamTime":
+                    exams = _examTerms.OrderBy(x => x.ExamTime);
+                    break;
+                /*
+                case "Language":
+                    exams = _examTerms.OrderBy(x => x.Name);
+                    break;
+                case "Level":
+                    exams = _examTerms.OrderBy(x => x.NumberOfWheels);
+                    break;
+                */
+            }
+
+            if (sortDirection == SortDirection.DESC)
+                exams = exams.Reverse();
+
+            exams = exams.Skip((page - 1) * pageSize).Take(pageSize);
+
+            return exams.ToList();
+        }
         public void Update()
         {
             throw new NotImplementedException();
