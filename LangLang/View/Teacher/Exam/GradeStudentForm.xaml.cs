@@ -54,9 +54,9 @@ namespace LangLang.View.Teacher
             Grade = new ExamTermGradeDTO();
             Student = new StudentDTO(student);
 
-            this.teacherController = mainController.GetTeacherController();
-            this.studentController = mainController.GetStudentController();
-            this.examTermGradeController = mainController.GetExamTermGradeController();
+            this.teacherController = Injector.CreateInstance<TeacherController>();
+            this.studentController = Injector.CreateInstance<StudentsController>();
+            this.examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
 
             this.examTerm = examTerm;
             this.teacher = teacher;

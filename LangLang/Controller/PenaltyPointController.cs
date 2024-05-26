@@ -6,11 +6,11 @@ namespace LangLang.Controller
 {
     public class PenaltyPointController
     {
-        private readonly PenaltyPointDAO _points;
+        private readonly PenaltyPointRepository _points;
 
         public PenaltyPointController()
         {
-            _points = new PenaltyPointDAO();
+            _points = new PenaltyPointRepository();
         }
         public void Add(PenaltyPoint penaltyPoint)
         {

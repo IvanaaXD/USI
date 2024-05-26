@@ -30,11 +30,10 @@ namespace LangLang.View.Student
             InitializeComponent();
             this.studentId = studentId;
             this.courseId = courseId;
-            studentController = new StudentsController();
-            teacherController = new TeacherController();
-            IDirectorRepository directorRepository = new DirectorRepository();
-            directorService = new DirectorController(directorRepository);
-            mailController = new MailController();
+            studentController = Injector.CreateInstance<StudentsController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            directorService = Injector.CreateInstance<DirectorController>();
+            mailController = Injector.CreateInstance<MailController>();
 
             CreateMailDTO();
 

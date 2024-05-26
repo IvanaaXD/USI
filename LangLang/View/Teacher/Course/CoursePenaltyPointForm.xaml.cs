@@ -36,8 +36,8 @@ namespace LangLang.View.Teacher
             this.teacher = teacher;
             this.student = student;
 
-            mailController = mainController.GetMailController();
-            studentController = mainController.GetStudentController();
+            mailController = Injector.CreateInstance<MailController>();
+            studentController = Injector.CreateInstance<StudentsController>();
 
             DataContext = this;
 

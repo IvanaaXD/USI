@@ -43,9 +43,9 @@ namespace LangLang.View.Student
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            studentsController = mainController.GetStudentController();
-            teacherController = mainController.GetTeacherController();
-            courseController = mainController.GetCourseController();
+            studentsController = Injector.CreateInstance<StudentsController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            courseController = Injector.CreateInstance<CourseController>();
 
             this.studentId = studentId;
             studentCoursesTable = (CoursesTable) FindName("StudentCoursesTable" + selectedTabIndex);

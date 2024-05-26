@@ -17,7 +17,7 @@ namespace LangLang.View.Student
         {
             InitializeComponent();
             this.studentId = studentId;
-            this.studentController = mainController.GetStudentController();
+            this.studentController = Injector.CreateInstance<StudentsController>();
             this.mainController = mainController;
 
             SetWelcomeHeading();

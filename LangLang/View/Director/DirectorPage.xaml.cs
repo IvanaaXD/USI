@@ -42,8 +42,8 @@ namespace LangLang.View.Director
             InitializeComponent();
             this.directorId = directorId;
             this.mainController = mainController;
-            this.directorController = mainController.GetDirectorController();
-            this.reportController = mainController.GetReportController();
+            this.directorController = Injector.CreateInstance<DirectorController>();
+            this.reportController = Injector.CreateInstance<ReportController>();
 
             TableViewModel = new ViewModel();
             DataContext = this;

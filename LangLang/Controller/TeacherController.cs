@@ -4,44 +4,39 @@ using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LangLang.Domain.IRepository;
 
 namespace LangLang.Controller
 {
     public class TeacherController
     {
-        private readonly TeacherRepository _teachers;
-        private readonly CourseRepository _courses;
-        private readonly ExamTermRepository _examTerms;
-        private readonly PenaltyPointDAO _penaltyPoints;
+        private readonly ITeacherRepository _teachers;
+        private readonly ICourseRepository _courses;
+        private readonly IExamTermRepository _examTerms;
+        private readonly PenaltyPointRepository _penaltyPoints;
 
         public TeacherController()
         {
-            _teachers = new TeacherRepository();
-            _penaltyPoints = new PenaltyPointDAO();
+            _teachers = Injector.CreateInstance<ITeacherRepository>();
+            _courses = Injector.CreateInstance<ICourseRepository>();
+            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _penaltyPoints = Injector.CreateInstance<PenaltyPointRepository>();
         }
         public Course? GetCourseById(int courseId)
         {
-            return _teachers.GetCourseById(courseId);
+            return _courses.GetCourseById(courseId);
         }
         public ExamTerm? GetExamTermById(int examId)
         {
-            return _teachers.GetExamTermById(examId);
-        }
-        public Mail? GetMailById(int mailId)
-        {
-            return _teachers.GetMailById(mailId);
+            return _examTerms.GetExamTermById(examId);
         }
         public List<Course> GetAllCourses()
         {
-            return _teachers.GetAllCourses();
+            return _courses.GetAllCourses();
         }
         public List<ExamTerm> GetAllExamTerms()
         {
-            return _teachers.GetAllExamTerms();
-        }
-        public List<Mail> GetAllMail()
-        {
-            return _teachers.GetAllMail();
+            return _examTerms.GetAllExamTerms();
         }
 
         public ExamTerm? RemoveExamTerm(int id)
@@ -58,34 +53,17 @@ namespace LangLang.Controller
             return examTerm;
         }
 
-        public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
-        {
-            return _teachers.GetSentCourseMail(teacher, courseId);
-        }
-        public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
-        {
-            return _teachers.GetReceivedCourseMails(teacher, courseId);
-        }
-
-
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
-            return _teachers.GetAvailableCourses(teacher);
-        }
+            List<int> allTeacherCourses = teacher.CoursesId;
 
-        public Mail SendMail(Mail mail)
-        {
-            return _teachers.SendMail(mail);
-        }
+            List<Course> availableCourses = new List<Course>();
 
-        public Mail AnswerMail(int mailId)
-        {
-            return _teachers.AnswerMail(mailId);
-        }
-
-        public void DeleteMail(int mailId)
-        {
-            _teachers.RemoveMail(mailId);
+            foreach (int courseId in allTeacherCourses)
+            {
+                availableCourses.Add(_courses.GetCourseById(courseId));
+            }
+            return availableCourses;
         }
 
         public bool CheckExamOverlap(int ExamID, DateTime ExamDate)
@@ -95,7 +73,7 @@ namespace LangLang.Controller
             DateTime examStartDateTime = ExamDate;
             DateTime examEndDateTime = examStartDateTime.AddMinutes(examDurationInMinutes);
 
-            IEnumerable<dynamic> overlappingExams = _teachers.GetAllExamTerms()
+            IEnumerable<dynamic> overlappingExams = _examTerms.GetAllExamTerms()
                 .Where(item =>
                 {
                     bool isDifferentId = item.ExamID != ExamID;
@@ -130,14 +108,31 @@ namespace LangLang.Controller
         {
             _teachers.Subscribe(observer);
         }
-
-        public bool IsStudentAccepted(Student student, int courseId)
-        {
-            return _teachers.IsStudentAccepted(student, courseId);
-        }
         public List<ExamTerm> GetAvailableExamTerms(Teacher teacher)
         {
-            return _teachers.GetAvailableExamTerms(teacher);
+            List<ExamTerm> allExamTerms = _examTerms.GetAllExamTerms();
+            List<Course> allTeacherCourses = GetAvailableCourses(teacher);
+
+            List<ExamTerm> availableExamTerms = new();
+            List<int> examTermIds = new();
+
+            foreach (Course course in allTeacherCourses)
+            {
+                foreach (int examId in course.ExamTerms)
+                {
+                    examTermIds.Add(examId);
+                }
+            }
+
+            foreach (ExamTerm examTerm in allExamTerms)
+            {
+                if (examTermIds.Contains(examTerm.ExamID))
+                {
+                    availableExamTerms.Add(examTerm);
+                }
+            }
+
+            return availableExamTerms;
         }
 
         public List<PenaltyPoint> GetAllPenaltyPoints()

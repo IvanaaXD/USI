@@ -45,11 +45,11 @@ namespace LangLang.View.Teacher
             InitializeComponent();
             this.teacherId = teacherId;
             this.mainController = mainController;
-            this.studentController = mainController.GetStudentController();
-            this.teacherController = mainController.GetTeacherController();
-            this.directorController = mainController.GetDirectorController();
-            this.examTermController = mainController.GetExamTermController();
-            this.courseController = mainController.GetCourseController();
+            this.studentController = Injector.CreateInstance<StudentsController>();
+            this.teacherController = Injector.CreateInstance<TeacherController>();
+            this.directorController = Injector.CreateInstance<DirectorController>();
+            this.examTermController = Injector.CreateInstance<ExamTermController>();
+            this.courseController = Injector.CreateInstance<CourseController>();
 
             this.Courses = Courses;
             this.ExamTerms = ExamTerms;

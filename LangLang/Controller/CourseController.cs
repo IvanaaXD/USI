@@ -14,19 +14,18 @@ namespace LangLang.Controller
     {
         private readonly ICourseRepository _courses;
         private readonly ITeacherRepository? _teachers;
-        private readonly ExamTermDAO? _examTerms;
-
-        public CourseController(ICourseRepository courses, TeacherController teacherController)
-        {
-            _courses = courses ?? throw new ArgumentNullException(nameof(courses));
-            _teachers = new TeacherRepository();
-            _examTerms = new ExamTermDAO();
-        }
+        private readonly TeacherController _teacherController;
+        private readonly IExamTermRepository? _examTerms;
+        private readonly IDirectorRepository? _director;
+        private readonly IMailRepository? _mails;
         public CourseController()
         {
             _courses = Injector.CreateInstance<ICourseRepository>();
             _teachers = Injector.CreateInstance<ITeacherRepository>();
-            _examTerms = new ExamTermDAO();
+            _teacherController = Injector.CreateInstance<TeacherController>();
+            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _director = Injector.CreateInstance<IDirectorRepository>();
+            _mails = Injector.CreateInstance<IMailRepository>();
         }
 
         public Course? GetCourseById(int courseId)
@@ -54,9 +53,13 @@ namespace LangLang.Controller
             }
             return availableCourses;
         }
-        public Course AddCourse(Course course)
+        public Course AddCourse(Course course, int teacherId)
         {
-            return _courses.AddCourse(course);
+            Course createdCourse = _courses.AddCourse(course);
+            Teacher teacher = _director.GetTeacherById(teacherId);
+            teacher.CoursesId.Add(course.Id);
+            _director.UpdateTeacher(teacher);
+            return createdCourse;
         }
         public void UpdateCourse(Course course)
         {
@@ -131,7 +134,7 @@ namespace LangLang.Controller
             DateTime courseStartTime = course.StartDate; // start of first ever course session 
             DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes); // end of last ever course session
 
-            List<ExamTerm> teacherExams = _teachers.GetAvailableExamTerms(teacher);
+            List<ExamTerm> teacherExams = _teacherController.GetAvailableExamTerms(teacher);
             foreach (ExamTerm examTerm in teacherExams)
             {
                 if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
@@ -309,7 +312,7 @@ namespace LangLang.Controller
         }
         public bool IsStudentAccepted(Student student, int courseId)
         {
-            List<Mail> sentMail = _teachers.GetAllMail();
+            List<Mail> sentMail = _mails.GetAllMails();
             foreach (Mail mail in sentMail)
             {
                 if (mail.Receiver == student.Email && mail.CourseId == courseId && mail.TypeOfMessage == TypeOfMessage.AcceptEnterCourseRequestMessage)

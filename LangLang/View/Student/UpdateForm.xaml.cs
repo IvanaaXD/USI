@@ -4,6 +4,7 @@ using LangLang.Domain.Model.Enums;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Student
 {
@@ -21,7 +22,7 @@ namespace LangLang.View.Student
         public UpdateForm(int studentId, StudentsController studentsController)
         {
             InitializeComponent();
-            this.studentsController = studentsController;
+            this.studentsController = Injector.CreateInstance<StudentsController>();
             Student = new StudentDTO(studentsController.GetStudentById(studentId));
             DataContext = Student;
             studentEmail = Student.Email;

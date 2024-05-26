@@ -19,6 +19,10 @@ namespace LangLang.Controller
         {
             _examTermGrades = _examTermGrades ?? throw new ArgumentNullException(nameof(_examTermGrades));
         }
+        public ExamTermGradeController()
+        {
+            _examTermGrades = Injector.CreateInstance<IExamTermGradeRepository>();
+        }
 
         public List<ExamTermGrade> GetAllExamTermGrades()
         {

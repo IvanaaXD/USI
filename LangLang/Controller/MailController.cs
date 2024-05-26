@@ -126,5 +126,43 @@ namespace LangLang.Controller
                     return true;
             return false;
         }
+        public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
+        {
+            List<Mail> filteredMails = new List<Mail>();
+
+            foreach (Mail mail in _mails.GetAllMails())
+            {
+                if (mail.Sender == teacher.Email && mail.CourseId == courseId)
+                {
+                    filteredMails.Add(mail);
+                }
+            }
+            return filteredMails;
+        }
+        public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
+        {
+            List<Mail> filteredMails = new List<Mail>();
+
+            foreach (Mail mail in _mails.GetAllMails())
+            {
+                if (mail.Receiver == teacher.Email && mail.CourseId == courseId)
+                {
+                    filteredMails.Add(mail);
+                }
+            }
+            return filteredMails;
+        }
+        public bool IsStudentAccepted(Student student, int courseId)
+        {
+            List<Mail> sentMail = GetAllMail();
+            foreach (Mail mail in sentMail)
+            {
+                if (mail.Receiver == student.Email && mail.CourseId == courseId && mail.TypeOfMessage == TypeOfMessage.AcceptEnterCourseRequestMessage)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
