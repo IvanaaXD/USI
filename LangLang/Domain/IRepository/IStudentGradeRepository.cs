@@ -15,6 +15,8 @@ namespace LangLang.Domain.IRepository
         StudentGrade UpdateGrade(StudentGrade StudentGrade);
         StudentGrade RemoveGrade(int id);
         List<StudentGrade> GetAllStudentGrades();
+        List<StudentGrade> GetStudentGradeByTeacher(int teacherId);
+        List<StudentGrade> GetStudentGradesByTeacherCourse(int teacherId, int courseId);
         void Subscribe(IObserver observer);
     }
 }
