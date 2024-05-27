@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace LangLang.DTO
 {
@@ -23,16 +24,22 @@ namespace LangLang.DTO
         private int gradeValue;
         private int points;
 
-        private readonly TeacherController _teacherController;
         private readonly ExamTermController _examTermController;
-        private readonly ExamTermGradeController _examTermGrade = new ExamTermGradeController(new ExamTermGradeRepository());
-        private readonly Teacher teacher;
+        private readonly ExamTermGradeController _examTermGrade = Injector.CreateInstance<ExamTermGradeController>();
+        private Teacher teacher;
         ExamTermGrade grade;
 
         public ExamTermDTO(TeacherController teacherController, Teacher teacher)
         {
-            _teacherController = teacherController;
-            _examTermController = new ExamTermController(new ExamTermRepository(), teacherController);
+            _examTermController = Injector.CreateInstance<ExamTermController>();
+            this.teacher = teacher;
+        }
+        public ExamTermDTO()
+        {
+            _examTermController = Injector.CreateInstance<ExamTermController>();
+        }
+        public void SetTeacher(Teacher teacher)
+        {
             this.teacher = teacher;
         }
         public List<string> LanguageAndLevelValues
@@ -178,7 +185,7 @@ namespace LangLang.DTO
             {
                 foreach (var property in _validatedProperties)
                 {
-                   
+
                     if (this[property] != null)
                         return false;
                 }
@@ -203,8 +210,10 @@ namespace LangLang.DTO
                 Confirmed = Confirmed,
                 Informed = Informed
             };
+            if (this.teacher == null)
+                return "Cannot create course because of exam time overlaps!";
             if (!_examTermController.ValidateExamTimeslot(exam, this.teacher))
-                return "Cannot create exam because of exam time overlaps!";
+                return "Cannot create course because of exam time overlaps!";
             return null;
         }
         public ExamTerm ToExamTerm()

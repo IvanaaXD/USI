@@ -27,13 +27,13 @@ namespace LangLang.View.Teacher
         private ExamTermDTO _examTerm;
         public TeacherDTO Teacher { get; set; }
 
-        public ExamTermDTO ExamTerm
+        public ExamTermDTO CreatedExamTerm
         {
             get { return _examTerm; }
             set
             {
                 _examTerm = value;
-                OnPropertyChanged(nameof(ExamTerm));
+                OnPropertyChanged(nameof(CreatedExamTerm));
             }
         }
 
@@ -46,38 +46,58 @@ namespace LangLang.View.Teacher
         {
             InitializeComponent();
 
-            this.directorController = Injector.CreateInstance<DirectorController>();
-            this.teacherController = Injector.CreateInstance<TeacherController>();
-            this.courseController = Injector.CreateInstance<CourseController>();
-            this.examTermController = Injector.CreateInstance<ExamTermController>();
+            directorController = Injector.CreateInstance<DirectorController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            courseController = Injector.CreateInstance<CourseController>();
+            examTermController = Injector.CreateInstance<ExamTermController>();
 
-            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-            ExamTerm = new ExamTermDTO(teacherController, teacher);
-            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            if (teacherId != -1)
+            {
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                CreatedExamTerm = new ExamTermDTO(teacherController, teacher);
+                Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            }
+            else
+            {
+                CreatedExamTerm = new ExamTermDTO();
+            }
+
 
             this.teacherId = teacherId;
             DataContext = this;
 
             FillLanguageAndLevelCombobox();
 
-            ExamTerm.ExamDate = DateTime.Now;
-            ExamTerm.ExamTime = "10:00";
-            ExamTerm.MaxStudents = 80;
+            CreatedExamTerm.ExamDate = DateTime.Now;
+            CreatedExamTerm.ExamTime = "10:00";
+            CreatedExamTerm.MaxStudents = 80;
         }
         private void FillLanguageAndLevelCombobox()
         {
-            List<Course> courses = teacherController.GetAllCourses();
+            List<Course> courses = courseController.GetAllCourses();
             List<string> levelLanguageStr = new List<string>();
-
-            foreach (Course course in courses)
+            if (teacherId == -1)
             {
-                if (Teacher.CoursesId.Contains(course.Id))
+                foreach (Course course in courses)
                 {
                     string languageLevel = $"{course.Language} {course.Level}";
                     if (!levelLanguageStr.Contains(languageLevel))
                         levelLanguageStr.Add(languageLevel);
                 }
             }
+            else
+            {
+                foreach (Course course in courses)
+                {
+                    if (Teacher.CoursesId.Contains(course.Id))
+                    {
+                        string languageLevel = $"{course.Language} {course.Level}";
+                        if (!levelLanguageStr.Contains(languageLevel))
+                            levelLanguageStr.Add(languageLevel);
+                    }
+                }
+            }
+
             languageComboBox.ItemsSource = levelLanguageStr;
         }
         private void PickLanguageAndLevel()
@@ -113,14 +133,22 @@ namespace LangLang.View.Teacher
         }
         public void SetCourseForExamTerm(Language lang, LanguageLevel lvl)
         {
-            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-            List<Course> courses = teacherController.GetAvailableCourses(teacher);
+            List<Course> courses;
+            if (teacherId == -1)
+            {
+                courses = courseController.GetAllCourses();
+            }
+            else
+            {
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                courses = teacherController.GetAvailableCourses(teacher);
+            }
 
             foreach (Course course in courses)
             {
                 if (course.Language == lang && course.Level == lvl)
                 {
-                    ExamTerm.CourseID = course.Id;
+                    CreatedExamTerm.CourseID = course.Id;
                     break;
                 }
             }
@@ -133,7 +161,7 @@ namespace LangLang.View.Teacher
                 DateTime startTime;
                 if (DateTime.TryParseExact(txtExamTime.Text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out startTime))
                 {
-                    ExamTerm.ExamDate = startDate.Add(startTime.TimeOfDay);
+                    CreatedExamTerm.ExamDate = startDate.Add(startTime.TimeOfDay);
                 }
                 else
                 {
@@ -152,31 +180,55 @@ namespace LangLang.View.Teacher
             PickDataFromDatePicker();
             PickLanguageAndLevel();
 
-            if (ExamTerm.IsValid)
-            {
-                CreateExamTerm();
-                Close();
-            }
-            else
-            {
-                MessageBox.Show("Exam Term cannot be created. Not all fields are valid.");
-            }
+            CreateExamTerm();
+
         }
         private void CreateExamTerm()
         {
-            int examId = teacherController.GetAllExamTerms().Last().ExamID;
-            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-            List<Course> courses = teacherController.GetAvailableCourses(teacher);
-
-            foreach (Course course in courses)
+            if (CreatedExamTerm.IsValid && teacherId != -1)
             {
-                if (course.Id == ExamTerm.CourseID)
+                int examId = teacherController.GetAllExamTerms().Last().ExamID;
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                List<Course> courses = teacherController.GetAvailableCourses(teacher);
+
+                foreach (Course course in courses)
                 {
-                    course.ExamTerms.Add(examId + 1);
-                    courseController.UpdateCourse(course);
+                    if (course.Id == CreatedExamTerm.CourseID)
+                    {
+                        course.ExamTerms.Add(examId + 1);
+                        courseController.UpdateCourse(course);
+                    }
+                }
+                examTermController.AddExamTerm(CreatedExamTerm.ToExamTerm());
+                Close();
+                return;
+            }
+            else if (teacherId == -1)
+            {
+                int examId = teacherController.GetAllExamTerms().Last().ExamID;
+                ExamTerm examTerm = CreatedExamTerm.ToExamTerm();
+                int teacherId = directorController.FindMostAppropriateTeacher(examTerm);
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                CreatedExamTerm.SetTeacher(teacher);
+                if (CreatedExamTerm.IsValid)
+                {
+                    List<Course> courses = courseController.GetAllCourses();
+
+                    foreach (Course course in courses)
+                    {
+                        if (course.Id == CreatedExamTerm.CourseID)
+                        {
+                            course.ExamTerms.Add(examId + 1);
+                            courseController.UpdateCourse(course);
+                        }
+                    }
+                    examTermController.AddExamTerm(CreatedExamTerm.ToExamTerm());
+                    Close();
+                    return;
                 }
             }
-            examTermController.AddExamTerm(ExamTerm.ToExamTerm());
+            MessageBox.Show("Course cannot be created. Not all fields are valid.");
+
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
