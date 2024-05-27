@@ -8,28 +8,12 @@ namespace LangLang.Domain.Model
 {
     public class Director : Employee, ISerializable
     {
-        private List<int> coursesId;
-        private List<int> examsId;
-
         public Director() : base() { }
 
         public Director(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email,
-        string password, int title, List<int> coursesId, List<int> examsId)
+        string password, int title)
         : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password, title)
         {
-            this.coursesId = coursesId;
-            this.examsId = examsId;
-        }
-
-        public List<int> CoursesId
-        {
-            get { return coursesId; }
-            set { coursesId = value; }
-        }
-        public List<int> ExamsId
-        {
-            get { return examsId; }
-            set { examsId = value; }
         }
 
         public string[] ToCSV()

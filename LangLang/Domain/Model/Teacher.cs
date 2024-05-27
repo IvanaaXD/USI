@@ -12,7 +12,6 @@ namespace LangLang.Domain.Model
         protected List<LanguageLevel>? levelOfLanguages;
         protected DateTime startedWork;
         protected int averageRating;
-        protected List<int>? coursesId;
 
         public List<Language>? Languages
         {
@@ -38,18 +37,12 @@ namespace LangLang.Domain.Model
             set { averageRating = value; }
         }
 
-        public List<int>? CoursesId
-        {
-            get { return coursesId; }
-            set { coursesId = value; }
-        }
-
         public Teacher() : base() { }
 
         public Teacher(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email, string password,
                        int title, List<Language>? languages, List<LanguageLevel>? levelOfLanguages, DateTime startedWork, int averageRating)
                        : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password, title)
-        { 
+        {
             this.languages = languages;
             this.levelOfLanguages = levelOfLanguages;
             this.startedWork = startedWork;
@@ -66,22 +59,26 @@ namespace LangLang.Domain.Model
             string coursesIdCsv = "";
             if (coursesId != null)
                 coursesIdCsv = string.Join(",", coursesId);
+            string examsIdStr = "";
+            if (examsId != null)
+                examsIdStr = string.Join(",", examsId);
 
             return new string[] {
                 Id.ToString(),
-                FirstName, 
-                LastName, 
+                FirstName,
+                LastName,
                 Gender.ToString(),
-                dateOfBirthString, 
-                PhoneNumber, 
-                Email, 
-                Password, 
-                Title.ToString(), 
-                languagesCsv, 
-                levelOfLanguagesCsv, 
-                startedWorkString, 
+                dateOfBirthString,
+                PhoneNumber,
+                Email,
+                Password,
+                Title.ToString(),
+                languagesCsv,
+                levelOfLanguagesCsv,
+                startedWorkString,
                 averageRating.ToString(),
-                coursesIdCsv
+                coursesIdCsv,
+                examsIdStr
             };
         }
 
@@ -116,6 +113,10 @@ namespace LangLang.Domain.Model
                 coursesId = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
             else
                 coursesId = new List<int>();
+            if (!string.IsNullOrEmpty(values[14]))
+                examsId = new List<int>(Array.ConvertAll(values[10].Split(','), int.Parse));
+            else
+                examsId = new List<int>();
         }
     }
 }
