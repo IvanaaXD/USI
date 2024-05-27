@@ -22,6 +22,7 @@ namespace LangLang.DTO
         private int currentlyEnrolled;
         private string maxEnrolledStudents;
         private List<int> examTerms;
+        private bool hasTeacher;
 
         private readonly CourseController _courseController;
         private Domain.Model.Teacher teacher;
@@ -38,6 +39,7 @@ namespace LangLang.DTO
         public void SetTeacher(Domain.Model.Teacher teacher)
         {
             this.teacher = teacher;
+            hasTeacher = true;
         }
         public List<string> LanguageAndLevelValues
         {
@@ -127,7 +129,11 @@ namespace LangLang.DTO
             get { return maxEnrolledStudents; }
             set { SetProperty(ref maxEnrolledStudents, value); }
         }
-
+        public bool HasTeacher
+        {
+            get { return hasTeacher; }
+            set { SetProperty(ref hasTeacher, value); }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -222,7 +228,7 @@ namespace LangLang.DTO
                 ExamTerms = examTerms
             };
             if (this.teacher == null)
-                return "Cannot create course because of course time overlaps!";
+                return "Cannot create course!";
             if (!_courseController.ValidateCourseTimeslot(course, this.teacher))
                 return "Cannot create course because of course time overlaps!";
             return null;

@@ -154,7 +154,6 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Gornji Grid sa tekstualnim poljima, ComboBoxovima, itd. -->
                 <Grid VerticalAlignment="Top" Height="auto" DockPanel.Dock="Top" Grid.Row="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"></RowDefinition>
@@ -203,6 +202,15 @@ IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
                             <DataGridTextColumn Header="Currently Enrolled" Width="*" Binding="{Binding CurrentlyEnrolled}"/>
                             <DataGridTextColumn Header="Max Students" Width="*" Binding="{Binding MaxEnrolledStudents}"/>
                         </DataGrid.Columns>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasTeacher}" Value="false">
+                                        <Setter Property="Background" Value="LightCoral" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
                     </DataGrid>
                 </Grid>
 
