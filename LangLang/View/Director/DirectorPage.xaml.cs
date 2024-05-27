@@ -1,4 +1,4 @@
-﻿using LangLang.Controller;
+using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Domain.Model.Enums;
 using LangLang.Domain.Model;
@@ -113,21 +113,25 @@ namespace LangLang.View.Director
 
         private void SetCourses()
         {
-            TableViewModel.CoursesDirector.Clear();
-
-            var courses = _teacherController.GetAllCourses();
-            var coursesId = director.CoursesId;
-
-            if (coursesId != null)
-            {
-                foreach (Course course in courses)
-                    if (coursesId.Contains(course.Id))
-                    {
-                        TableViewModel.CoursesDirector.Add(new CourseDTO(course));
-                        foreach (int examTermId in course.ExamTerms)
-                            TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
-                    }
-            }
+                TableViewModel.CoursesDirector.Clear();
+                var coursesId = director.CoursesId;
+                var courses = _teacherController.GetAllCourses();
+                if (coursesId != null)
+                {
+                    foreach (Course course in courses)
+                        if (coursesId.Contains(course.Id))
+                        {
+                            CourseDTO courseViewModel = new CourseDTO(course);
+                            Domain.Model.Teacher? courseTeacher = _directorController.GetTeacherByCourse(course.Id);
+                            if (courseTeacher != null)
+                                courseViewModel.HasTeacher = true;
+                            else
+                                courseViewModel.HasTeacher = false;
+                            TableViewModel.CoursesDirector.Add(courseViewModel);
+                            foreach (int examTermId in course.ExamTerms)
+                                TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
+                        }
+                }
         }
 
         private void SetExamterms()
