@@ -42,7 +42,7 @@ namespace LangLang.View.Teacher
         private readonly ExamTermController examTermController;
         private readonly DirectorController directorController;
         private int teacherId;
-        public CreateExamForm(MainController mainController, int teacherId)
+        public CreateExamForm(int teacherId)
         {
             InitializeComponent();
 

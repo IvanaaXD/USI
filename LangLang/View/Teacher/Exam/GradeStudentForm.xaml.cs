@@ -41,12 +41,11 @@ namespace LangLang.View.Teacher
         private ExamTerm examTerm;
         private Domain.Model.Teacher? teacher;
         private Domain.Model.Student student;
-        private MainController mainController;
         private TeacherController teacherController;
         private StudentsController studentController;
         private ExamTermGradeController examTermGradeController;
 
-        public GradeStudentForm(ExamTerm examTerm, Domain.Model.Teacher? teacher, Domain.Model.Student? student, MainController mainController)
+        public GradeStudentForm(ExamTerm examTerm, Domain.Model.Teacher? teacher, Domain.Model.Student? student)
         {
             InitializeComponent();
             DataContext = this;

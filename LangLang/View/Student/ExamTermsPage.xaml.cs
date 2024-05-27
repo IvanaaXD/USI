@@ -42,7 +42,7 @@ namespace LangLang.View.Student
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
 
-        public ExamTermsPage(int studentId, MainController mainController)
+        public ExamTermsPage(int studentId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();

@@ -15,14 +15,12 @@ namespace LangLang
     {
         private StudentsController studentController { get; set; }
         private DirectorController directorController { get; set; }
-        private MainController mainController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            mainController = new MainController();
-            directorController = mainController.GetDirectorController();
-            studentController = mainController.GetStudentController();
+            directorController = Injector.CreateInstance<DirectorController>();
+            studentController = Injector.CreateInstance<StudentsController>();
 
             SetPlaceholders();
         }
@@ -52,7 +50,7 @@ namespace LangLang
                     if (student.ActiveCourseId != -10)
                     {
                         studentController.ProcessPenaltyPoints();
-                        StudentForm welcomePage = new StudentForm(student.Id, mainController);
+                        StudentForm welcomePage = new StudentForm(student.Id);
                         welcomePage.Show();
                     }
                     else
@@ -72,7 +70,7 @@ namespace LangLang
             {
                 if (teacher.Email == email && teacher.Password == password)
                 {
-                    TeacherPage teacherPage = new TeacherPage(teacher.Id, mainController);
+                    TeacherPage teacherPage = new TeacherPage(teacher.Id);
                     teacherPage.Show();
                     return true;
                 }
@@ -86,7 +84,7 @@ namespace LangLang
 
             if (director.Email == email && director.Password == password)
             {
-                DirectorPage directorPage = new DirectorPage(director.Id, mainController);
+                DirectorPage directorPage = new DirectorPage(director.Id);
                 directorPage.Show();
                 return true;
             }

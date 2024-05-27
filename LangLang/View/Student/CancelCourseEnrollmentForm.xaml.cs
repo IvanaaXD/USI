@@ -25,7 +25,7 @@ namespace LangLang.View.Student
         // Event handler to turn off drop out button functionality in student form when this window closes.
         public event EventHandler WindowClosed;
 
-        public CancelCourseEnrollmentForm(int studentId, int courseId, MainController mainController)
+        public CancelCourseEnrollmentForm(int studentId, int courseId)
         {
             InitializeComponent();
             this.studentId = studentId;

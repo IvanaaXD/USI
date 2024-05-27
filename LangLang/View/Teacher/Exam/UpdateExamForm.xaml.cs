@@ -27,7 +27,7 @@ namespace LangLang.View.Teacher
         private int examId;
         private Domain.Model.Teacher teacher;
 
-        public UpdateExamForm(MainController mainController, int teacherId, int examId)
+        public UpdateExamForm(int teacherId, int examId)
         {
             this.directorController = Injector.CreateInstance<DirectorController>();
             this.teacherController = Injector.CreateInstance<TeacherController>();
