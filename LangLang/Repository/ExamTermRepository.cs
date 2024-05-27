@@ -71,7 +71,7 @@ namespace LangLang.Repository
 
             switch (sortCriteria)
             {
-                case "ExamDateTime":
+                case "Datetime":
                     exams = _examTerms.OrderBy(x => x.ExamTime);
                     break;
                 case "Language":
