@@ -1,4 +1,5 @@
 ﻿using System;
+using LangLang.Domain.Model.Enums;
 using LangLang.Storage.Serialization;
 
 namespace LangLang.Domain.Model
@@ -6,6 +7,8 @@ namespace LangLang.Domain.Model
     public class ExamTerm : ISerializable
     {
         private int examID;
+        private Language language;
+        private LanguageLevel languageLevel;
         private int courseID;
         private DateTime examTime;
         private int maxStudents;
@@ -18,13 +21,22 @@ namespace LangLang.Domain.Model
             get { return examID; }
             set { examID = value; }
         }
-
         public int CourseID
         {
             get { return courseID; }
             set { courseID = value; }
         }
+        public Language Language
+        {
+            get { return language; }
+            set { language = value; }
+        }
 
+        public LanguageLevel Level
+        {
+            get { return languageLevel; }
+            set { languageLevel = value; }
+        }
         public DateTime ExamTime
         {
             get { return examTime; }
@@ -57,7 +69,18 @@ namespace LangLang.Domain.Model
         public ExamTerm()
         {
         }
-
+        public ExamTerm(int examID, Language language, LanguageLevel languageLevel,int courseID, DateTime examTime, int maxStudents, int currentlyAttending)
+        {
+            this.examID = examID;
+            this.language = language;
+            this.languageLevel = languageLevel;
+            this.courseID = courseID;
+            this.examTime = examTime;
+            this.maxStudents = maxStudents;
+            this.currentlyAttending = currentlyAttending;
+            this.confirmed = false;
+            this.informed = false;
+        }
         public ExamTerm(int examID, int courseID, DateTime examTime, int maxStudents, int currentlyAttending)
         {
             this.examID = examID;
@@ -80,6 +103,8 @@ namespace LangLang.Domain.Model
             {
                 examID.ToString(),
                 courseID.ToString(),
+                Language.ToString(),
+                Level.ToString(),
                 examTime.ToString("yyyy-MM-dd HH:mm"),
                 maxStudents.ToString(),
                 currentlyAttending.ToString(),
@@ -93,11 +118,13 @@ namespace LangLang.Domain.Model
         {
             ExamID = int.Parse(values[0]);
             CourseID = int.Parse(values[1]);
-            ExamTime = DateTime.ParseExact(values[2], "yyyy-MM-dd HH:mm", null);
-            MaxStudents = int.Parse(values[3]);
-            CurrentlyAttending = int.Parse(values[4]);
-            Confirmed = bool.Parse(values[5]);
-            Informed = bool.Parse(values[6]);
+            Language = (Language)Enum.Parse(typeof(Language), values[2]);
+            Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), values[3]);
+            ExamTime = DateTime.ParseExact(values[4], "yyyy-MM-dd HH:mm", null);
+            MaxStudents = int.Parse(values[5]);
+            CurrentlyAttending = int.Parse(values[6]);
+            Confirmed = bool.Parse(values[7]);
+            Informed = bool.Parse(values[8]);
         }
     }
 }

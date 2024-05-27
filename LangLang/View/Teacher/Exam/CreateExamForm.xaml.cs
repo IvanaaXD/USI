@@ -149,6 +149,8 @@ namespace LangLang.View.Teacher
                 if (course.Language == lang && course.Level == lvl)
                 {
                     CreatedExamTerm.CourseID = course.Id;
+                    CreatedExamTerm.Language = lang;
+                    CreatedExamTerm.Level = lvl;    
                     break;
                 }
             }

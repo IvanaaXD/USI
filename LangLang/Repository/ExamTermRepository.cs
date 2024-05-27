@@ -74,14 +74,12 @@ namespace LangLang.Repository
                 case "ExamTime":
                     exams = _examTerms.OrderBy(x => x.ExamTime);
                     break;
-                /*
                 case "Language":
-                    exams = _examTerms.OrderBy(x => x.Name);
+                    exams = _examTerms.OrderBy(x => x.Language);
                     break;
                 case "Level":
-                    exams = _examTerms.OrderBy(x => x.NumberOfWheels);
+                    exams = _examTerms.OrderBy(x => x.Level);
                     break;
-                */
             }
 
             if (sortDirection == SortDirection.DESC)

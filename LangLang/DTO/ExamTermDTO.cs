@@ -1,5 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
 using LangLang.Repository;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,8 @@ namespace LangLang.DTO
         private bool confirmed;
         private bool informed;
         private string languageAndLevel;
+        private Language language;
+        private LanguageLevel languageLevel;
         private int gradeValue;
         private int points;
 
@@ -111,7 +114,17 @@ namespace LangLang.DTO
             get { return languageAndLevel; }
             set { SetProperty(ref languageAndLevel, value); }
         }
+        public Language Language
+        {
+            get { return language; }
+            set { language = value; }
+        }
 
+        public LanguageLevel Level
+        {
+            get { return languageLevel; }
+            set { languageLevel = value; }
+        }
         public int Points
         {
             get { return points; }
@@ -224,6 +237,22 @@ namespace LangLang.DTO
             {
                 ExamID = ExamID,
                 CourseID = CourseID,
+                ExamTime = combinedDateTime,
+                MaxStudents = MaxStudents,
+                CurrentlyAttending = CurrentlyAttending,
+                Confirmed = Confirmed,
+                Informed = Informed
+            };
+        }
+        public ExamTerm ToExamTermWithLanguage()
+        {
+            DateTime combinedDateTime = examDate.Date + TimeSpan.Parse(examTime);
+            return new ExamTerm
+            {
+                ExamID = ExamID,
+                CourseID = CourseID,
+                Language = Language,
+                Level = Level,
                 ExamTime = combinedDateTime,
                 MaxStudents = MaxStudents,
                 CurrentlyAttending = CurrentlyAttending,
