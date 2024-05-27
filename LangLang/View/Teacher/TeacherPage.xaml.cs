@@ -277,9 +277,7 @@ namespace LangLang.View.Teacher
         private void ViewCourse_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
-            {
                 MessageBox.Show("Please choose a course to view!");
-            }
             else
             {
                 Course course = teacherController.GetCourseById(SelectedCourse.Id);
@@ -296,7 +294,7 @@ namespace LangLang.View.Teacher
             {
                 ExamTerm? examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
                 Domain.Model.Teacher? teacher = directorController.GetTeacherById(this.teacherId);
-                ExamTermView examTermView = new ExamTermView(examTerm, teacher);
+                ExamTermView examTermView = new ExamTermView(examTerm, teacher, this);
                 examTermView.Owner = this;
                 this.Visibility = Visibility.Collapsed;
                 examTermView.Show();
