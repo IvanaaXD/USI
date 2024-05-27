@@ -36,15 +36,13 @@ namespace LangLang.View.Teacher
         public DirectorController directorController { get; set; }
         public ExamTermController examTermController { get; set; }
         public CourseController courseController { get; set; }
-        public MainController mainController { get; set; }
 
         private bool isSearchCourseClicked = false;
         private bool isSearchExamClicked = false;
-        public TeacherPage(int teacherId, MainController mainController)
+        public TeacherPage(int teacherId)
         {
             InitializeComponent();
             this.teacherId = teacherId;
-            this.mainController = mainController;
             studentController = Injector.CreateInstance<StudentsController>();
             teacherController = Injector.CreateInstance<TeacherController>();
             directorController = Injector.CreateInstance<DirectorController>();
@@ -115,7 +113,7 @@ namespace LangLang.View.Teacher
 
         private void CreateCourse_Click(object sender, RoutedEventArgs e)
         {
-            CreateCourseForm courseTable = new CreateCourseForm(teacherId, mainController);
+            CreateCourseForm courseTable = new CreateCourseForm(teacherId);
             courseTable.Show();
         }
 
@@ -144,7 +142,7 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("Cannot update a course that starts in less than a week.");
                 else
                 {
-                    UpdateCourseForm updateForm = new UpdateCourseForm(SelectedCourse.Id, teacherId, mainController);
+                    UpdateCourseForm updateForm = new UpdateCourseForm(SelectedCourse.Id, teacherId);
                     updateForm.Show();
                 }
             }
@@ -232,7 +230,7 @@ namespace LangLang.View.Teacher
 
         private void CreateExam_Click(object sender, RoutedEventArgs e)
         {
-            CreateExamForm examTable = new CreateExamForm(mainController,teacherId);
+            CreateExamForm examTable = new CreateExamForm(teacherId);
             examTable.Show();
         }
         private void UpdateExam_Click(object sender, RoutedEventArgs e)
@@ -243,7 +241,7 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                UpdateExamForm modifyDataForm = new UpdateExamForm(mainController, teacherId, SelectedExamTerm.ExamID);
+                UpdateExamForm modifyDataForm = new UpdateExamForm(teacherId, SelectedExamTerm.ExamID);
                 modifyDataForm.Show();
                 modifyDataForm.Activate();
             }
@@ -285,7 +283,7 @@ namespace LangLang.View.Teacher
             else
             {
                 Course course = teacherController.GetCourseById(SelectedCourse.Id);
-                CourseView courseView = new CourseView(course, directorController.GetTeacherById(this.teacherId), mainController);
+                CourseView courseView = new CourseView(course, directorController.GetTeacherById(this.teacherId));
                 courseView.Show();
             }
         }
@@ -298,7 +296,7 @@ namespace LangLang.View.Teacher
             {
                 ExamTerm? examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
                 Domain.Model.Teacher? teacher = directorController.GetTeacherById(this.teacherId);
-                ExamTermView examTermView = new ExamTermView(examTerm, teacher, mainController);
+                ExamTermView examTermView = new ExamTermView(examTerm, teacher);
                 examTermView.Owner = this;
                 this.Visibility = Visibility.Collapsed;
                 examTermView.Show();

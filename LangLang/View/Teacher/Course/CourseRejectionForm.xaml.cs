@@ -26,7 +26,7 @@ namespace LangLang.View.Teacher
 
         public string RejectReason { get; set; }
 
-        public CourseRejectionForm(Course course, Domain.Model.Teacher teacher, Domain.Model.Student student, MainController mainController)
+        public CourseRejectionForm(Course course, Domain.Model.Teacher teacher, Domain.Model.Student student)
         {
             InitializeComponent();
 

@@ -33,11 +33,11 @@ namespace LangLang.View.Director
             }
         }
         private readonly int directorId;
-        private readonly DirectorController directorController;
-        readonly TeacherController teacherController;
-        private readonly ReportController reportController;
-        private readonly MainController mainController;
-        private readonly ExamTermController examTermController;
+        private readonly DirectorController _directorController;
+        private readonly TeacherController _teacherController;
+        private readonly ReportController _reportController;
+        private readonly ExamTermController _examTermController;
+        private readonly CourseController _courseController;
 
         Domain.Model.Director director;
 
@@ -49,21 +49,21 @@ namespace LangLang.View.Director
 
         private bool isSearchButtonClicked = false;
 
-        public DirectorPage(int directorId, MainController mainController)
+        public DirectorPage(int directorId)
         {
             InitializeComponent();
             this.directorId = directorId;
-            this.mainController = mainController;
-            this.directorController = Injector.CreateInstance<DirectorController>();
-            this.teacherController = Injector.CreateInstance<TeacherController>();
-            this.reportController = Injector.CreateInstance<ReportController>();
-            examTermController = Injector.CreateInstance<ExamTermController>();
+            _directorController = Injector.CreateInstance<DirectorController>();
+            _teacherController = Injector.CreateInstance<TeacherController>();
+            _reportController = Injector.CreateInstance<ReportController>();
+            _examTermController = Injector.CreateInstance<ExamTermController>();
+            _courseController = Injector.CreateInstance<CourseController>();
 
             TableViewModel = new ViewModel();
             DataContext = this;
-            directorController.Subscribe(this);
-            this.director = directorController.GetDirector();
-            Domain.Model.Director director = directorController.GetDirector();
+            _directorController.Subscribe(this);
+            this.director = _directorController.GetDirector();
+            Domain.Model.Director director = _directorController.GetDirector();
             firstAndLastName.Text = director.FirstName + " " + director.LastName;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
@@ -86,9 +86,9 @@ namespace LangLang.View.Director
             {
                 TableViewModel.Teachers.Clear();
                 TableViewModel.CoursesDirector.Clear();
-                var teachers = directorController.GetAllTeachers();
+                var teachers = _directorController.GetAllTeachers();
                 var coursesId = director.CoursesId;
-                var courses = teacherController.GetAllCourses();
+                var courses = _teacherController.GetAllCourses();
                 if (coursesId != null)
                 {
                     foreach (Course course in courses)
@@ -96,7 +96,7 @@ namespace LangLang.View.Director
                         {
                             TableViewModel.CoursesDirector.Add(new CourseDTO(course));
                             foreach (int examTermId in course.ExamTerms)
-                                TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(examTermController.GetExamTermById(examTermId)));
+                                TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
                         }
                 }
                 if (teachers != null)
@@ -140,7 +140,7 @@ namespace LangLang.View.Director
 
         private void CreateTeacher_Click(object sender, RoutedEventArgs e)
         {
-            CreateTeacherFrom createTeacherFrom = new CreateTeacherFrom(directorController);
+            CreateTeacherFrom createTeacherFrom = new CreateTeacherFrom(_directorController);
             createTeacherFrom.Show();
         }
 
@@ -150,7 +150,7 @@ namespace LangLang.View.Director
                 MessageBox.Show("Please choose a teacher to update!");
             else
             {
-                UpdateTeacherForm updateTeacherForm = new UpdateTeacherForm(SelectedTeacher.Id, directorController);
+                UpdateTeacherForm updateTeacherForm = new UpdateTeacherForm(SelectedTeacher.Id, _directorController);
                 updateTeacherForm.Show();
                 updateTeacherForm.Activate();
             }
@@ -162,7 +162,7 @@ namespace LangLang.View.Director
                 MessageBox.Show("Please choose a teacher to delete!");
             else 
             {
-                var activeCoursesWithoutTeacher = directorController.SetTeacher(SelectedTeacher.ToTeacher());
+                var activeCoursesWithoutTeacher = _directorController.SetTeacher(SelectedTeacher.ToTeacher());
 
                 if (activeCoursesWithoutTeacher.Count > 0)
                 {
@@ -172,7 +172,7 @@ namespace LangLang.View.Director
                     }
                 }
 
-                directorController.Delete(SelectedTeacher.Id);
+                _directorController.Delete(SelectedTeacher.Id);
             }
         }
 
@@ -220,7 +220,7 @@ namespace LangLang.View.Director
 
             if (isSearchButtonClicked)
             {
-                List<Domain.Model.Teacher> allFilteredTeachers = directorController.FindTeachersByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                List<Domain.Model.Teacher> allFilteredTeachers = _directorController.FindTeachersByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
 
                 foreach (Domain.Model.Teacher teacher in allFilteredTeachers)
                 {
@@ -230,7 +230,7 @@ namespace LangLang.View.Director
             }
             else
             {
-                foreach (Domain.Model.Teacher teacher in directorController.GetAllTeachers())
+                foreach (Domain.Model.Teacher teacher in _directorController.GetAllTeachers())
                 {
                     finalTeachers.Add(teacher);
                 }
@@ -248,7 +248,7 @@ namespace LangLang.View.Director
             try
             {
                 TableViewModel.Courses.Clear();
-                var courses = mainController.GetCourseController().GetCoursesForTopStudentMails();
+                var courses = _courseController.GetCoursesForTopStudentMails();
 
                 if (courses != null)
                     foreach (Course course in courses)
@@ -270,19 +270,19 @@ namespace LangLang.View.Director
             }
             else
             {
-                CourseView courseView = new CourseView(SelectedCourse.Id, directorController.GetDirector());
+                CourseView courseView = new CourseView(SelectedCourse.Id, _directorController.GetDirector());
                 courseView.Show();
                 UpdateCourses();
             }
         }
         private void CreateCourse_Click(object sender, RoutedEventArgs e)
         {
-            CreateCourseForm courseForm = new CreateCourseForm(-1, mainController);
+            CreateCourseForm courseForm = new CreateCourseForm(-1);
             courseForm.Show();
         }
         private void CreateExam_Click(object sender, RoutedEventArgs e)
         {
-            CreateExamForm examForm = new CreateExamForm(mainController, -1);
+            CreateExamForm examForm = new CreateExamForm(-1);
             examForm.Show();
         }
 
@@ -303,25 +303,25 @@ namespace LangLang.View.Director
             EmailSender emailSender = new EmailSender("smtp.gmail.com", 587, "diirrektorr@gmail.com", "dvwa dbkw bzyl cauy");
             if (ReportOneRadioButton.IsChecked == true)
             {
-                reportController.GenerateFirstReport();
+                _reportController.GenerateFirstReport();
                 emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 1", "Report 1 body",
                                       "..\\..\\..\\Data\\report1.pdf");
             }
             else if (ReportTwoRadioButton.IsChecked == true)
             {
-                reportController.GenerateSecondReport();
+                _reportController.GenerateSecondReport();
                 emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 2", "Report 2 body",
                                       "..\\..\\..\\Data\\report2.pdf");
             }
             else if (ReportThreeRadioButton.IsChecked == true)
             {
-                reportController.GenerateThirdReport();
+                _reportController.GenerateThirdReport();
                 emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 3", "Report 3 body",
                                       "..\\..\\..\\Data\\report3.pdf");
             }
             else if (ReportFourRadioButton.IsChecked == true)
             {
-                reportController.GenerateFourthReport();
+                _reportController.GenerateFourthReport();
                 emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 4", "Report 4 body",
                       "..\\..\\..\\Data\\report4.pdf");
             } 

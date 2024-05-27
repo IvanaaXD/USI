@@ -28,7 +28,7 @@ namespace LangLang.View.Teacher
         private bool _isSecondOptionSelected;
         private bool _isThirdOptionSelected;
 
-        public CoursePenaltyPointForm(Course course, Domain.Model.Teacher teacher, Domain.Model.Student student, MainController mainController)
+        public CoursePenaltyPointForm(Course course, Domain.Model.Teacher teacher, Domain.Model.Student student)
         {
             InitializeComponent();
 

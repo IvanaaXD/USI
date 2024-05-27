@@ -50,16 +50,14 @@ namespace LangLang.View.Teacher
         private readonly StudentsController studentController;
         private readonly ExamTermController examTermController;
         private readonly ExamTermGradeController examTermGradeController;
-        private readonly MainController mainController;
 
-        public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, MainController mainController)
+        public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher)
         {
             InitializeComponent();
             this.teacherController = Injector.CreateInstance<TeacherController>();
             this.studentController = Injector.CreateInstance<StudentsController>();
             this.examTermController = Injector.CreateInstance<ExamTermController>();
             this.examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
-            this.mainController = mainController;
             this.teacher = teacher;
             this.examTerm = examTerm;
 
@@ -256,7 +254,7 @@ namespace LangLang.View.Teacher
             else
             {
                 Domain.Model.Student? student = studentController.GetStudentById(SelectedStudent.id);
-                GradeStudentForm gradeStudentForm = new GradeStudentForm(examTerm, teacher, student, mainController);
+                GradeStudentForm gradeStudentForm = new GradeStudentForm(examTerm, teacher, student);
 
                 gradeStudentForm.Closed += RefreshPage;
 

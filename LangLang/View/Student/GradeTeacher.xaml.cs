@@ -18,7 +18,7 @@ namespace LangLang.View.Student
         private StudentsController studentController;
         private DirectorController directorService;
 
-        public GradeTeacher(int studentId, int courseId, MainController mainController)
+        public GradeTeacher(int studentId, int courseId)
         {
             InitializeComponent();
 

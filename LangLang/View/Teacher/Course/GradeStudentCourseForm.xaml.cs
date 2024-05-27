@@ -35,7 +35,7 @@ namespace LangLang.View.Teacher
         private CourseGradeController courseGradeController;
         private MailController mailController;
 
-        public GradeStudentCourseForm(Domain.Model.Course course, Domain.Model.Teacher teacher, Domain.Model.Student student, MainController mainController)
+        public GradeStudentCourseForm(Domain.Model.Course course, Domain.Model.Teacher teacher, Domain.Model.Student student)
         {
             InitializeComponent();
             DataContext = this;

@@ -12,13 +12,12 @@ namespace LangLang.View.Student
     {
         int studentId;
         StudentsController studentController;
-        MainController mainController;
-        public StudentForm(int studentId, MainController mainController)
+
+        public StudentForm(int studentId)
         {
             InitializeComponent();
             this.studentId = studentId;
             this.studentController = Injector.CreateInstance<StudentsController>();
-            this.mainController = mainController;
 
             SetWelcomeHeading();
             SetStudentInformations();
@@ -66,7 +65,7 @@ namespace LangLang.View.Student
         }
         private void DisplayCompletedCourseForm(int courseId)
         {
-            GradeTeacher gradeTeacherForm = new GradeTeacher(studentId, courseId, mainController);
+            GradeTeacher gradeTeacherForm = new GradeTeacher(studentId, courseId);
             gradeTeacherForm.Show();
         }
 
@@ -81,7 +80,7 @@ namespace LangLang.View.Student
         }
         private void DropOutFromCourseBoutton_Click(object sender, RoutedEventArgs e)
         {
-            CancelCourseEnrollmentForm cancelCourseEnrollmentForm = new CancelCourseEnrollmentForm(studentId,studentController.GetStudentById(studentId).ActiveCourseId, mainController);
+            CancelCourseEnrollmentForm cancelCourseEnrollmentForm = new CancelCourseEnrollmentForm(studentId,studentController.GetStudentById(studentId).ActiveCourseId);
             cancelCourseEnrollmentForm.Owner = this;
             cancelCourseEnrollmentForm.WindowClosed += CancelCourseEnrollmentForm_WindowClosed;
             cancelCourseEnrollmentForm.ShowDialog();
@@ -90,31 +89,31 @@ namespace LangLang.View.Student
 
         private void AvailableCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId, 0, mainController);
+            CoursesView coursesView = new CoursesView(studentId, 0);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
         private void RegisteredCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId, 1, mainController);
+            CoursesView coursesView = new CoursesView(studentId, 1);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
         private void CompletedCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId, 2, mainController);
+            CoursesView coursesView = new CoursesView(studentId, 2);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
         private void PassedCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId, 3, mainController);
+            CoursesView coursesView = new CoursesView(studentId, 3);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
         private void ExamTerms_Click(object sender, RoutedEventArgs e)
         {
-            ExamTermsPage examTermsPage = new ExamTermsPage(studentId, mainController);
+            ExamTermsPage examTermsPage = new ExamTermsPage(studentId);
             examTermsPage.Show();
         }
 

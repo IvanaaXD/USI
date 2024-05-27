@@ -35,7 +35,7 @@ namespace LangLang.View.Student
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
 
-        public AvailableExamTermsTable(int studentId,MainController mainController)
+        public AvailableExamTermsTable(int studentId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();

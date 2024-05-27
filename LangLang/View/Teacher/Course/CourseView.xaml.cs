@@ -74,10 +74,9 @@ namespace LangLang.View.Teacher
         private readonly StudentsController studentController;
         private readonly CourseController courseController;
         private readonly CourseGradeController courseGradeController;
-        private readonly MainController mainController;
         private readonly MailController mailController;
 
-        public CourseView(Course course, Domain.Model.Teacher teacher, MainController mainController)
+        public CourseView(Course course, Domain.Model.Teacher teacher)
         {
             InitializeComponent();
             this.course = course;
@@ -87,7 +86,6 @@ namespace LangLang.View.Teacher
             courseGradeController = Injector.CreateInstance<CourseGradeController>();
             mailController = Injector.CreateInstance<MailController>();
 
-            this.mainController = mainController;
             this.teacher = teacher;
             MailToSend = new MailDTO();
 
@@ -278,7 +276,7 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("Student has been added to the course already.");
                 else
                 {
-                    CourseRejectionForm rejectionForm = new CourseRejectionForm(course, teacher, student, mainController);
+                    CourseRejectionForm rejectionForm = new CourseRejectionForm(course, teacher, student);
 
                     rejectionForm.Closed += RefreshPage;
 
@@ -296,7 +294,7 @@ namespace LangLang.View.Teacher
             else
             {
                 Domain.Model.Student student = studentController.GetStudentById(SelectedStudent.id);
-                CoursePenaltyPointForm penaltyPointForm = new CoursePenaltyPointForm(course, teacher, student, mainController);
+                CoursePenaltyPointForm penaltyPointForm = new CoursePenaltyPointForm(course, teacher, student);
                 penaltyPointForm.Closed += RefreshPage;
 
                 penaltyPointForm.Show();
@@ -315,7 +313,7 @@ namespace LangLang.View.Teacher
             else
             {
                 Domain.Model.Student student = studentController.GetStudentById(SelectedStudent.id);
-                GradeStudentCourseForm gradeStudentForm = new GradeStudentCourseForm(course, teacher, student, mainController);
+                GradeStudentCourseForm gradeStudentForm = new GradeStudentCourseForm(course, teacher, student);
 
                 gradeStudentForm.Closed += RefreshPage;
 

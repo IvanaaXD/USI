@@ -19,7 +19,7 @@ namespace LangLang.View.Teacher
         private readonly CourseController courseController;
         public TeacherDTO Teacher { get; set; }
 
-        public UpdateCourseForm(int courseId, int teacherId, MainController mainController)
+        public UpdateCourseForm(int courseId, int teacherId)
         {
             teacherController = Injector.CreateInstance<TeacherController>();
             courseController = Injector.CreateInstance<CourseController>();

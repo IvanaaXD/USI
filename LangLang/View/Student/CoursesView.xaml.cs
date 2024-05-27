@@ -29,7 +29,6 @@ namespace LangLang.View.Student
 
         public ViewModel TableViewModel { get; set; }
         public CourseDTO SelectedCourse { get; set; }
-        private MainController mainController { get; set; }
         private StudentsController studentsController { get; set; }
         private TeacherController teacherController { get; set; }
         private CourseController courseController { get; set; }
@@ -39,7 +38,7 @@ namespace LangLang.View.Student
 
         private CoursesTable studentCoursesTable;
 
-        public CoursesView(int studentId, int tabIndex, MainController mainController)
+        public CoursesView(int studentId, int tabIndex)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();

@@ -40,7 +40,7 @@ namespace LangLang.View.Teacher
         private readonly DirectorController directorController;
         private int teacherId;
 
-        public CreateCourseForm(int teacherId, MainController mainController)
+        public CreateCourseForm(int teacherId)
         {
             InitializeComponent();
 
