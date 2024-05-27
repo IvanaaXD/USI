@@ -9,14 +9,16 @@ namespace LangLang.Domain.Model
     public class Director : Employee, ISerializable
     {
         private List<int> coursesId;
+        private List<int> examsId;
 
         public Director() : base() { }
 
         public Director(int id, string firstName, string lastName, Gender gender, DateTime dateOfBirth, string phoneNumber, string email,
-        string password, int title, List<int> coursesId)
+        string password, int title, List<int> coursesId, List<int> examsId)
         : base(id, firstName, lastName, gender, dateOfBirth, phoneNumber, email, password, title)
         {
             this.coursesId = coursesId;
+            this.examsId = examsId;
         }
 
         public List<int> CoursesId
@@ -24,12 +26,20 @@ namespace LangLang.Domain.Model
             get { return coursesId; }
             set { coursesId = value; }
         }
+        public List<int> ExamsId
+        {
+            get { return examsId; }
+            set { examsId = value; }
+        }
 
         public string[] ToCSV()
         {
             string coursesIdStr = "";
             if (coursesId != null)
                 coursesIdStr = string.Join(",", coursesId);
+            string examsIdStr = "";
+            if (examsId != null)
+                examsIdStr = string.Join(",", examsId);
 
             string dateOfBirthString = dateOfBirth.Date.ToString("yyyy-MM-dd");
 
@@ -43,7 +53,8 @@ namespace LangLang.Domain.Model
                 Email,
                 Password,
                 Title.ToString(),
-                coursesIdStr
+                coursesIdStr,
+                examsIdStr
                 };
         }
 
@@ -62,6 +73,10 @@ namespace LangLang.Domain.Model
                 coursesId = new List<int>(Array.ConvertAll(values[9].Split(','), int.Parse));
             else
                 coursesId = new List<int>();
+            if (!string.IsNullOrEmpty(values[10]))
+                examsId = new List<int>(Array.ConvertAll(values[10].Split(','), int.Parse));
+            else
+                examsId = new List<int>();
         }
     }
 }
