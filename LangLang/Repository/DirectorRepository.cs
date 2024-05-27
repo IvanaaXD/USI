@@ -50,6 +50,7 @@ namespace LangLang.Repository
             oldDirector.Password = director.Password;
             oldDirector.Title = director.Title;
             oldDirector.CoursesId = director.CoursesId;
+            oldDirector.ExamsId = director.ExamsId;
 
             _storageDirector.Save(_director);
             NotifyObservers();
