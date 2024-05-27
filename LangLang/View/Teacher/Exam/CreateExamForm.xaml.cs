@@ -187,50 +187,59 @@ namespace LangLang.View.Teacher
         }
         private void CreateExamTerm()
         {
-            if (CreatedExamTerm.IsValid && teacherId != -1)
+            int createdExamTeacherId = -1;
+            int examId = teacherController.GetAllExamTerms().Last().ExamID;
+            ExamTerm examTerm = CreatedExamTerm.ToExamTerm();
+            if (teacherId == -1)
             {
-                int examId = teacherController.GetAllExamTerms().Last().ExamID;
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                List<Course> courses = teacherController.GetAvailableCourses(teacher);
-
-                foreach (Course course in courses)
+                createdExamTeacherId = directorController.FindMostAppropriateTeacher(examTerm);
+                if (createdExamTeacherId == -1)
                 {
-                    if (course.Id == CreatedExamTerm.CourseID)
-                    {
-                        course.ExamTerms.Add(examId + 1);
-                        courseController.UpdateCourse(course);
-                    }
-                }
-                examTermController.AddExamTerm(CreatedExamTerm.ToExamTerm());
-                Close();
-                return;
-            }
-            else if (teacherId == -1)
-            {
-                int examId = teacherController.GetAllExamTerms().Last().ExamID;
-                ExamTerm examTerm = CreatedExamTerm.ToExamTerm();
-                int teacherId = directorController.FindMostAppropriateTeacher(examTerm);
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                CreatedExamTerm.SetTeacher(teacher);
-                if (CreatedExamTerm.IsValid)
-                {
-                    List<Course> courses = courseController.GetAllCourses();
-
-                    foreach (Course course in courses)
-                    {
-                        if (course.Id == CreatedExamTerm.CourseID)
-                        {
-                            course.ExamTerms.Add(examId + 1);
-                            courseController.UpdateCourse(course);
-                        }
-                    }
-                    examTermController.AddExamTerm(CreatedExamTerm.ToExamTerm());
-                    Close();
+                    MessageBox.Show("There is no available teacher for that course");
                     return;
                 }
             }
-            MessageBox.Show("Course cannot be created. Not all fields are valid.");
+            Domain.Model.Teacher teacher;
+            if (teacherId != -1)
+                teacher = directorController.GetTeacherById(teacherId);
+            else
+                teacher = directorController.GetTeacherById(createdExamTeacherId);
+            CreatedExamTerm.SetTeacher(teacher);
 
+            if (CreatedExamTerm.IsValid)
+            {
+                bool foundMatchingCourse = false;
+                foreach (int courseId in teacher.CoursesId)
+                {
+                    Course course = courseController.GetCourseById(courseId);
+                    if (examTerm.Language == course.Language && examTerm.Level == course.Level)
+                    {
+                        course.ExamTerms.Add(examId + 1);
+                        courseController.UpdateCourse(course);
+                        examTerm.CourseID = course.Id;
+                        foundMatchingCourse = true;
+                        break;
+                    }
+                }
+                if (!foundMatchingCourse)
+                    examTerm.CourseID = -1;
+
+                examTermController.AddExamTerm(CreatedExamTerm.ToExamTerm());
+                if (teacherId == -1)
+                {
+                    MessageBox.Show($"{teacher.FirstName} {teacher.LastName}", "Teacher who was chosen");
+
+                    Domain.Model.Director director = directorController.GetDirector();
+                    director.ExamsId.Add(examId + 1);
+                    directorController.Update(director);
+                    Close();
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Exam cannot be created. Not all fields are valid.");
+            }
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {

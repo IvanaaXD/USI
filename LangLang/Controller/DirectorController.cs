@@ -211,8 +211,7 @@ namespace LangLang.Controller
         }
         public List<Teacher> GetAvailableTeachers(ExamTerm examTerm)
         {
-            Course course = _courseController.GetCourseById(examTerm.CourseID);
-            List<Teacher> compatibleTeachers = GetCompatibleTeachers(course.Language, course.Level);
+            List<Teacher> compatibleTeachers = GetCompatibleTeachers(examTerm.Language, examTerm.Level);
             List<Teacher> availableTeachers = new();
             foreach (Teacher teacher in compatibleTeachers)
             {

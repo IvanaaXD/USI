@@ -137,14 +137,14 @@ namespace LangLang.View.Director
         private void SetExamterms()
         {
             TableViewModel.CoursesDirector.Clear();
+            var examsId = director.ExamsId;
+            var exams = _examTermController.GetAllExamTerms();
 
-            var examTerms = _teacherController.GetAllExamTerms();
-
-            foreach (ExamTerm examTerm in examTerms)
-            { 
-                var teacher = _directorController.GetTeacherByCourse(examTerm.CourseID);
-                if (HasExamTermBeenGraded(examTerm, teacher))
-                    TableViewModel.GradedExamTerms.Add(new ExamTermDTO(examTerm));
+            if (examsId != null)
+            {
+                foreach (ExamTerm exam in exams)
+                    if (examsId.Contains(exam.ExamID))
+                        TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(exam));
             }
         }
 

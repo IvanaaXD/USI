@@ -223,8 +223,6 @@ namespace LangLang.DTO
                 Confirmed = Confirmed,
                 Informed = Informed
             };
-            if (this.teacher == null)
-                return "Cannot create course because of exam time overlaps!";
             if (!_examTermController.ValidateExamTimeslot(exam, this.teacher))
                 return "Cannot create course because of exam time overlaps!";
             return null;

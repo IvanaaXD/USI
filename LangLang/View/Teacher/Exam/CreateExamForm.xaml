@@ -30,19 +30,19 @@
 
         <TextBlock Grid.Row="1" Text="Language and Level: " HorizontalAlignment="Center" Margin="0,0,0,5"/>
         <ComboBox x:Name="languageComboBox" Grid.Row="2" HorizontalAlignment="Center" Margin="0,10,0,15" Width="150" Height="20"
-        ItemsSource="{Binding Path=ExamTerm.LanguageAndLevelValues}"/>
+        ItemsSource="{Binding Path=CreatedExamTerm.LanguageAndLevelValues}"/>
 
         <Label Content="Max Students" HorizontalAlignment="Center" Margin="0,0,0,5" Grid.Column="1" Grid.Row="1"/>
         <TextBox x:Name="txtMaxStudents" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" Margin="0,10,0,15" Height="20" Width="150"
-                 Text="{Binding ExamTerm.MaxStudents, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                 Text="{Binding CreatedExamTerm.MaxStudents, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
         <Label Content="Exam Date" Grid.Row="3" HorizontalAlignment="Center" Margin="0,2,0,3"/>
         <DatePicker x:Name="dpExamDate" Grid.Row="4" HorizontalAlignment="Center" Margin="0,10,0,12" Height="23" Width="150"
-        Text="{Binding ExamTerm.ExamDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+        Text="{Binding CreatedExamTerm.ExamDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
         <Label Content="Exam Time" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center"/>
         <TextBox x:Name="txtExamTime" Grid.Row="4" Grid.Column="1" Margin="0,13,0,12" Height="20" Width="150"
-                 Text="{Binding ExamTerm.ExamTime, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                 Text="{Binding CreatedExamTerm.ExamTime, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
 
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="25">
