@@ -7,8 +7,6 @@ using LangLang.Domain.Model;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using LangLang.Controller;
-using LangLang.Repository;
-using LangLang.Domain.IRepository;
 
 namespace LangLang.DTO
 {
@@ -29,6 +27,8 @@ namespace LangLang.DTO
         private List<Language> languages;
         private List<LanguageLevel> levelOfLanguages;
         private List<int> coursesId;
+
+        private string fullName;
 
         public List<string> LevelAndLanguages
         {
@@ -153,6 +153,12 @@ namespace LangLang.DTO
         {
             get { return coursesId; }
             set { SetProperty(ref coursesId, value); }
+        }
+
+        public string FullName
+        {
+            get { return firstName + " " + lastName; }
+            set { SetProperty(ref fullName, value); }
         }
 
         public event PropertyChangedEventHandler ?PropertyChanged;
@@ -308,7 +314,7 @@ namespace LangLang.DTO
                 LevelOfLanguages = levelOfLanguages,
                 StartedWork = startedWork,
                 AverageRating = averageRating,
-                CoursesId = coursesId
+                CoursesId = coursesId,
             };
         }
 
@@ -334,6 +340,7 @@ namespace LangLang.DTO
             languages = teacher.Languages;
             levelOfLanguages = teacher.LevelOfLanguages;
             coursesId = teacher.CoursesId;
+            fullName = teacher.FirstName + " " + teacher.LastName;
         }
     }
 }

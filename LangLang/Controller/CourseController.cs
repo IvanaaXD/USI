@@ -473,7 +473,7 @@ namespace LangLang.Controller
 
         public bool IsCourseActive(Course course)
         {
-            if (DateTime.Today.Date > course.StartDate && course.StartDate.AddDays(course.Duration*7) < DateTime.Today.Date) 
+            if (DateTime.Today.Date > course.StartDate.Date && course.StartDate.Date.AddDays(course.Duration*7) > DateTime.Today.Date) 
                 return true;
             return false;
         }

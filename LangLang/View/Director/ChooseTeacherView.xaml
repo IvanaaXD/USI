@@ -25,24 +25,31 @@
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,5">
             <TextBlock Text="Possible teachers:" HorizontalAlignment="Left" Margin="0,0,0,5"/>
-            <ListBox x:Name="languagesListBox" 
+            <ListBox x:Name="teachersListBox" 
                  Width="150" 
                  Height="120" 
-                 SelectionMode="Multiple" 
-                 ItemsSource="{Binding Path=Teacher.LevelAndLanguages}" 
-                 SelectionChanged="TeachersListBox_SelectionChanged"/>
+                 ItemsSource="{Binding AvailableTeachers}" 
+                 DisplayMemberPath="FullName" 
+                 SelectedItem="{Binding SelectedTeacher, Mode=TwoWay}"
+                 SelectionChanged="TeachersListBox_SelectionChanged" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="15">
+            <Button Content="Cancel" 
+                Click="Choose_Click" 
+                Width="100" 
+                Height="30"
+                Margin="0,0,10,0" 
+                Foreground="White" 
+                Background="#ba3e38"/>
             <Button Content="Choose" 
                 Click="Choose_Click" 
                 Width="100" 
                 Height="30"
                 Margin="0,0,10,0" 
                 Foreground="White" 
-                Background="#4F519A"/>
+                Background="#399142"/>
         </StackPanel>
     </Grid>
-
 
 </Window>
