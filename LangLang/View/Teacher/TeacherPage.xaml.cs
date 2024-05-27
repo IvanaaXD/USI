@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace LangLang.View.Teacher
 {
@@ -27,7 +28,6 @@ namespace LangLang.View.Teacher
             }
         }
         readonly int teacherId;
-
         public ViewModel TableViewModel { get; set; }
         public CourseDTO SelectedCourse { get; set; }
         public ExamTermDTO SelectedExamTerm { get; set; }
@@ -39,6 +39,8 @@ namespace LangLang.View.Teacher
 
         private bool isSearchCourseClicked = false;
         private bool isSearchExamClicked = false;
+        private int currentPage = 1;
+        private string sortCriteria;
         public TeacherPage(int teacherId)
         {
             InitializeComponent();
@@ -84,7 +86,8 @@ namespace LangLang.View.Teacher
             DataContext = this;
 
             Update();
-            UpdateExam();
+            UpdatePagination(); 
+            //UpdateExam();
         }
 
         public void Update()
@@ -103,7 +106,8 @@ namespace LangLang.View.Teacher
                 {
                     MessageBox.Show("No courses found.");
                 }
-                UpdateExam();
+                //UpdateExam();
+                UpdatePagination();
             }
             catch (Exception ex)
             {
@@ -354,6 +358,78 @@ namespace LangLang.View.Teacher
             return finalExamTerms;
         }
 
+        private void NextPage_Click(object sender, RoutedEventArgs e)
+        {
+            
+            currentPage++;
+            PreviousButton.IsEnabled = true;
+            UpdatePagination();
+            
+        }
 
+        private void PreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                NextButton.IsEnabled = true;
+                UpdatePagination();
+            }
+            else if(currentPage == 1)
+            {
+                PreviousButton.IsEnabled = false;
+            }
+        }
+        private void UpdatePagination()
+        {
+            if (currentPage == 1)
+            {
+                PreviousButton.IsEnabled = false;
+            }
+            PageNumberTextBlock.Text = $"Page {currentPage}";
+           
+            try
+            {
+                TableViewModel.ExamTerms.Clear();
+                var examTerms = GetFilteredExamTerms();
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentPage, 4, sortCriteria);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentPage+1, 4, sortCriteria);
+                if (newExams.Count==0)
+                    NextButton.IsEnabled = false;
+                if (examTerms != null)
+                {
+                    foreach (ExamTerm examTerm in exams)
+                        TableViewModel.ExamTerms.Add(new ExamTermDTO(examTerm));
+                }
+                else
+                {
+                    MessageBox.Show("No exam terms found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+        private void SortCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sortCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string selectedContent = selectedItem.Content.ToString();
+                
+                switch (selectedContent)
+                {
+                    case "Language":
+                        sortCriteria = "Language";
+                        break;
+                    case "Level":
+                        sortCriteria = "Level";
+                        break;
+                    case "ExamDateTime":
+                        sortCriteria = "ExamDateTime";
+                        break;
+                }
+            }
+        }
     }
 }

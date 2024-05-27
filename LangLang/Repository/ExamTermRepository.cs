@@ -65,13 +65,13 @@ namespace LangLang.Repository
         {
             return _examTerms;
         }
-        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, SortDirection sortDirection)
+        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria)
         {
             IEnumerable<ExamTerm> exams = _examTerms;
 
             switch (sortCriteria)
             {
-                case "ExamTime":
+                case "ExamDateTime":
                     exams = _examTerms.OrderBy(x => x.ExamTime);
                     break;
                 case "Language":
@@ -81,12 +81,7 @@ namespace LangLang.Repository
                     exams = _examTerms.OrderBy(x => x.Level);
                     break;
             }
-
-            if (sortDirection == SortDirection.DESC)
-                exams = exams.Reverse();
-
             exams = exams.Skip((page - 1) * pageSize).Take(pageSize);
-
             return exams.ToList();
         }
         public void Update()

@@ -33,6 +33,10 @@ namespace LangLang.Controller
         {
             return _exams.GetAllExamTerms();
         }
+        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria)
+        {
+            return _exams.GetAllExamTerms(page, pageSize, sortCriteria);
+        }
         public void AddExamTerm(ExamTerm examTerm)
         {
             _exams.AddExamTerm(examTerm);
