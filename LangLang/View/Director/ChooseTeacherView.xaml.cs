@@ -1,7 +1,5 @@
 ﻿using LangLang.Controller;
-using LangLang.Domain.Model.Enums;
 using LangLang.DTO;
-using LangLang.Observer;
 using System.ComponentModel;
 using System.Windows;
 using LangLang.Domain.Model;

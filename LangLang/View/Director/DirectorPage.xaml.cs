@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System;
 using System.Windows;
 using LangLang.View.Teacher;
-using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace LangLang.View.Director
 {
@@ -22,6 +22,7 @@ namespace LangLang.View.Director
             public ObservableCollection<CourseDTO> Courses { get; set; }
             public ObservableCollection<CourseDTO> CoursesDirector { get; set; }
             public ObservableCollection<ExamTermDTO> ExamTermsDirector { get; set; }
+            public ObservableCollection<ExamTermDTO> GradedExamTerms { get; set; }
 
             public ViewModel()
             {
@@ -29,7 +30,7 @@ namespace LangLang.View.Director
                 Courses = new ObservableCollection<CourseDTO>();
                 CoursesDirector = new ObservableCollection<CourseDTO>();
                 ExamTermsDirector = new ObservableCollection<ExamTermDTO>();
-
+                GradedExamTerms = new ObservableCollection<ExamTermDTO>();
             }
         }
         private readonly int directorId;
@@ -38,6 +39,8 @@ namespace LangLang.View.Director
         private readonly ReportController _reportController;
         private readonly ExamTermController _examTermController;
         private readonly CourseController _courseController;
+        private readonly ExamTermGradeController _examTermGradeController;
+        private readonly StudentsController _studentController;
 
         Domain.Model.Director director;
 
@@ -58,6 +61,8 @@ namespace LangLang.View.Director
             _reportController = Injector.CreateInstance<ReportController>();
             _examTermController = Injector.CreateInstance<ExamTermController>();
             _courseController = Injector.CreateInstance<CourseController>();
+            _studentController = Injector.CreateInstance<StudentsController>();
+            _examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
 
             TableViewModel = new ViewModel();
             DataContext = this;
@@ -84,35 +89,73 @@ namespace LangLang.View.Director
         {
             try
             {
-                TableViewModel.Teachers.Clear();
-                TableViewModel.CoursesDirector.Clear();
-                var teachers = _directorController.GetAllTeachers();
-                var coursesId = director.CoursesId;
-                var courses = _teacherController.GetAllCourses();
-                if (coursesId != null)
-                {
-                    foreach (Course course in courses)
-                        if (coursesId.Contains(course.Id))
-                        {
-                            TableViewModel.CoursesDirector.Add(new CourseDTO(course));
-                            foreach (int examTermId in course.ExamTerms)
-                                TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
-                        }
-                }
-                if (teachers != null)
-                {
-                    foreach (Domain.Model.Teacher teacher in teachers)
-                        TableViewModel.Teachers.Add(new TeacherDTO(teacher));
-                }
-                else
-                {
-                    MessageBox.Show("No teachers found.");
-                }
+                SetTeachers();
+                SetCourses();
+                SetExamterms();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
+        }
+
+        private void SetTeachers()
+        {
+            TableViewModel.Teachers.Clear();
+            var teachers = _directorController.GetAllTeachers();
+
+            if (teachers != null)
+            {
+                foreach (Domain.Model.Teacher teacher in teachers)
+                    TableViewModel.Teachers.Add(new TeacherDTO(teacher));
+            }
+        }
+
+        private void SetCourses()
+        {
+            TableViewModel.CoursesDirector.Clear();
+
+            var courses = _teacherController.GetAllCourses();
+            var coursesId = director.CoursesId;
+
+            if (coursesId != null)
+            {
+                foreach (Course course in courses)
+                    if (coursesId.Contains(course.Id))
+                    {
+                        TableViewModel.CoursesDirector.Add(new CourseDTO(course));
+                        foreach (int examTermId in course.ExamTerms)
+                            TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
+                    }
+            }
+        }
+
+        private void SetExamterms()
+        {
+            TableViewModel.CoursesDirector.Clear();
+
+            var examTerms = _teacherController.GetAllExamTerms();
+
+            foreach (ExamTerm examTerm in examTerms)
+            { 
+                var teacher = _directorController.GetTeacherByCourse(examTerm.CourseID);
+                if (HasExamTermBeenGraded(examTerm, teacher))
+                    TableViewModel.GradedExamTerms.Add(new ExamTermDTO(examTerm));
+            }
+        }
+
+        public bool HasExamTermBeenGraded(ExamTerm examTerm, Domain.Model.Teacher teacher)
+        {
+            var grades = _examTermGradeController.GetExamTermGradesByTeacherExam(teacher.Id, examTerm.ExamID);
+            var examTermStudents = _studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
+
+            if (grades.Count == 0)
+                return false;
+
+            if (examTermStudents.Count != grades.Count)
+                return false;
+
+            return true;
         }
 
         public void UpdateSearch()
@@ -340,12 +383,26 @@ namespace LangLang.View.Director
                 _reportController.GenerateFourthReport();
                 emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 4", "Report 4 body",
                       "..\\..\\..\\Data\\report4.pdf");
-            } 
-            else 
+            }
+            else
                 MessageBox.Show("Please select the report you want to send.");
-
-            
         }
+
+        public void ViewExam_Click(object sender, EventArgs e)
+        {
+            if (SelectedExamTerm == null)
+                MessageBox.Show("Please choose an exam term to view!");
+            else
+            {
+                ExamTerm? examTerm = _teacherController.GetExamTermById(SelectedExamTerm.ExamID);
+                Domain.Model.Teacher? teacher = _directorController.GetTeacherByCourse(examTerm.CourseID);
+                ExamTermView examTermView = new ExamTermView(examTerm, teacher, this);
+                examTermView.Owner = this;
+                this.Visibility = Visibility.Collapsed;
+                examTermView.Show();
+            }
+        }
+
         public void SearchDirectorCourse_Click(object sender, EventArgs e)
         {
 

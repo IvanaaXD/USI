@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Diagnostics;
 
 namespace LangLang.View.Teacher
 {
@@ -50,8 +51,9 @@ namespace LangLang.View.Teacher
         private readonly StudentsController studentController;
         private readonly ExamTermController examTermController;
         private readonly ExamTermGradeController examTermGradeController;
+        private readonly Window window;
 
-        public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher)
+        public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, Window window)
         {
             InitializeComponent();
             this.teacherController = Injector.CreateInstance<TeacherController>();
@@ -60,6 +62,7 @@ namespace LangLang.View.Teacher
             this.examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
             this.teacher = teacher;
             this.examTerm = examTerm;
+            this.window = window;
 
             StudentsTableViewModel = new ViewModel();
 
@@ -167,6 +170,9 @@ namespace LangLang.View.Teacher
 
             if (HasExamTermBeenGraded())
                 Mark.Visibility = Visibility.Collapsed;
+
+            if (!IsDirectorPage())
+                Email.Visibility = Visibility.Collapsed;
         }
 
         private bool HasExamTermStarted()
@@ -245,6 +251,12 @@ namespace LangLang.View.Teacher
                 Update();
             }
         }
+
+        private bool IsDirectorPage()
+        {
+            return window is LangLang.View.Director.DirectorPage;
+        }
+
         private void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedStudent == null)
