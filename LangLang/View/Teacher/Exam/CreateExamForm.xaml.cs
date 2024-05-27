@@ -1,7 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
 using LangLang.Domain.Model;
-using LangLang.Controller;
 using LangLang.Domain.Model.Enums;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using System.DirectoryServices.ActiveDirectory;
 
 namespace LangLang.View.Teacher
 {
@@ -151,9 +149,12 @@ namespace LangLang.View.Teacher
                     CreatedExamTerm.CourseID = course.Id;
                     CreatedExamTerm.Language = lang;
                     CreatedExamTerm.Level = lvl;    
-                    break;
+                    return;
                 }
             }
+            CreatedExamTerm.CourseID = -1;
+            CreatedExamTerm.Language = lang;
+            CreatedExamTerm.Level = lvl;
         }
         private void PickDataFromDatePicker()
         {
@@ -189,7 +190,7 @@ namespace LangLang.View.Teacher
         {
             int createdExamTeacherId = -1;
             int examId = teacherController.GetAllExamTerms().Last().ExamID;
-            ExamTerm examTerm = CreatedExamTerm.ToExamTerm();
+            ExamTerm examTerm = CreatedExamTerm.ToExamTermWithLanguage();
             if (teacherId == -1)
             {
                 createdExamTeacherId = directorController.FindMostAppropriateTeacher(examTerm);
@@ -224,7 +225,11 @@ namespace LangLang.View.Teacher
                 if (!foundMatchingCourse)
                     examTerm.CourseID = -1;
 
-                examTermController.AddExamTerm(CreatedExamTerm.ToExamTerm());
+                teacher.ExamsId.Add(examId + 1);
+                examTermController.AddExamTerm(CreatedExamTerm.ToExamTermWithLanguage());
+
+                directorController.Update(teacher);
+
                 if (teacherId == -1)
                 {
                     MessageBox.Show($"{teacher.FirstName} {teacher.LastName}", "Teacher who was chosen");

@@ -294,34 +294,6 @@ namespace LangLang.Controller
             return filteredCourses;
         }
 
-        public String FindLanguageAndLevel(int courseID)
-        {
-            String res = "";
-
-            Course course = GetAllCourses().FirstOrDefault(c => c.Id == courseID);
-
-            if (course != null)
-            {
-                res = $"{course.Language}, {course.Level}";
-            }
-            else
-            {
-                res = "Language and level not found";
-            }
-            return res;
-        }
-        public bool IsStudentAccepted(Student student, int courseId)
-        {
-            List<Mail> sentMail = _mails.GetAllMails();
-            foreach (Mail mail in sentMail)
-            {
-                if (mail.Receiver == student.Email && mail.CourseId == courseId && mail.TypeOfMessage == TypeOfMessage.AcceptEnterCourseRequestMessage)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
         public bool HasStudentAcceptingPeriodEnded(Course course)
         {
             return (course.StartDate <= DateTime.Now.AddDays(7));
@@ -439,9 +411,13 @@ namespace LangLang.Controller
             return _courses.GetCoursesByTeacher(teacherId);
         }
 
-        public List<Course>? GetCoursesForDisplay(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)
+        public List<Course>? GetCoursesForDisplay(bool isSearchClicked, List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)
         {
             List<Course> finalCourses = new();
+            if (!isSearchClicked)
+            {
+                return availableCourses;
+            }
 
             List<Course> allFilteredCourses = FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
             foreach (Course course in allFilteredCourses)
