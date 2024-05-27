@@ -13,7 +13,7 @@ namespace LangLang.Domain.IRepository
         ExamTerm? GetExamTermById(int id);
         List<ExamTerm> GetAllExamTerms();
         ExamTerm? RemoveExamTerm(int id);
-        List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria);
+        List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> exams);
         void Subscribe(IObserver observer);
     }
 }

@@ -65,20 +65,20 @@ namespace LangLang.Repository
         {
             return _examTerms;
         }
-        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria)
+        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> examsToPaginate)
         {
-            IEnumerable<ExamTerm> exams = _examTerms;
+            IEnumerable<ExamTerm> exams = examsToPaginate;
 
             switch (sortCriteria)
             {
                 case "Datetime":
-                    exams = _examTerms.OrderBy(x => x.ExamTime);
+                    exams = examsToPaginate.OrderBy(x => x.ExamTime);
                     break;
                 case "Language":
-                    exams = _examTerms.OrderBy(x => x.Language);
+                    exams = examsToPaginate.OrderBy(x => x.Language);
                     break;
                 case "Level":
-                    exams = _examTerms.OrderBy(x => x.Level);
+                    exams = examsToPaginate.OrderBy(x => x.Level);
                     break;
             }
             exams = exams.Skip((page - 1) * pageSize).Take(pageSize);

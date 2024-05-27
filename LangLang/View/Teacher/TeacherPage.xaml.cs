@@ -253,14 +253,16 @@ namespace LangLang.View.Teacher
         private void ResetExam_Click(object sender, RoutedEventArgs e)
         {
             isSearchExamClicked = false;
-            UpdateExam();
+            //UpdateExam();
+            UpdatePagination();
             examLanguageComboBox.SelectedItem = null;
             examLevelComboBox.SelectedItem = null;
             examDatePicker.SelectedDate = null;
         }
         private void SearchExam_Click(object sender, RoutedEventArgs e)
         {
-            UpdateExam();
+            //UpdateExam();
+            UpdatePagination();
             isSearchExamClicked = true;
         }
         private void DeleteExam_Click(object sender, RoutedEventArgs e)
@@ -392,8 +394,8 @@ namespace LangLang.View.Teacher
             {
                 TableViewModel.ExamTerms.Clear();
                 var examTerms = GetFilteredExamTerms();
-                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentPage, 4, sortCriteria);
-                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentPage+1, 4, sortCriteria);
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentPage, 4, sortCriteria,examTerms);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentPage+1, 4, sortCriteria, examTerms);
                 if (newExams.Count==0)
                     NextButton.IsEnabled = false;
                 if (examTerms != null)
