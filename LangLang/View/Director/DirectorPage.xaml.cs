@@ -162,17 +162,21 @@ namespace LangLang.View.Director
                 MessageBox.Show("Please choose a teacher to delete!");
             else 
             {
-                var activeCoursesWithoutTeacher = _directorController.SetTeacher(SelectedTeacher.ToTeacher());
+                int id = SelectedTeacher.Id;
+                var activeCoursesWithoutTeacher = _directorController.GetActiveCourses(SelectedTeacher.ToTeacher());
 
                 if (activeCoursesWithoutTeacher.Count > 0)
                 {
                     foreach (var course in activeCoursesWithoutTeacher)
                     { 
-                        ChooseTeacherView choseTeacherView = new ChooseTeacherView();
+                        ChooseTeacherView choseTeacherView = new ChooseTeacherView(course, id);
+                        choseTeacherView.Show();
+                        choseTeacherView.Activate();
                     }
                 }
 
-                _directorController.Delete(SelectedTeacher.Id);
+                _directorController.Delete(id);
+                Update();
             }
         }
 

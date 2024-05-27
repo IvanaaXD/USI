@@ -72,7 +72,7 @@ namespace LangLang.Controller
             _directors.RemoveTeacher(teacherId);
         }
 
-        public List<Course> SetTeacher(Teacher teacher)
+        public List<Course> GetActiveCourses(Teacher teacher)
         {
             var activeCourses = new List<Course>();
             var courses = _courseController.GetAllCourses();
