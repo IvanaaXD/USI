@@ -386,7 +386,7 @@ namespace LangLang.View.Teacher
             {
                 PreviousButton.IsEnabled = false;
             }
-            PageNumberTextBlock.Text = $"Page {currentPage}";
+            PageNumberTextBlock.Text = $"{currentPage}";
            
             try
             {
@@ -425,10 +425,11 @@ namespace LangLang.View.Teacher
                     case "Level":
                         sortCriteria = "Level";
                         break;
-                    case "ExamDateTime":
-                        sortCriteria = "ExamDateTime";
+                    case "Datetime":
+                        sortCriteria = "Datetime";
                         break;
                 }
+                UpdatePagination();
             }
         }
     }

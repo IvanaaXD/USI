@@ -263,6 +263,8 @@ namespace LangLang.DTO
         {
             examID = examTerm.ExamID;
             courseID = examTerm.CourseID;
+            language = examTerm.Language;
+            languageLevel = examTerm.Level;
             examDate = examTerm.ExamTime;
             maxStudents = examTerm.MaxStudents;
             currentlyAttending = examTerm.CurrentlyAttending;
@@ -276,6 +278,8 @@ namespace LangLang.DTO
         {
             examID = examTerm.ExamID;
             courseID = examTerm.CourseID;
+            language = examTerm.Language;
+            languageLevel = examTerm.Level;
             examDate = examTerm.ExamTime;
             maxStudents = examTerm.MaxStudents;
             currentlyAttending = examTerm.CurrentlyAttending;
@@ -288,6 +292,8 @@ namespace LangLang.DTO
         {
             examID = examTerm.ExamID;
             courseID = examTerm.CourseID;
+            language = examTerm.Language;
+            languageLevel = examTerm.Level;
             examDate = examTerm.ExamTime;
             maxStudents = examTerm.MaxStudents;
             currentlyAttending = examTerm.CurrentlyAttending;
