@@ -186,31 +186,6 @@ namespace LangLang.View.Teacher
             courseOnlineCheckBox.IsChecked = false;
         }
 
-        private List<Course>? GetFinalDisplayCourses(List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration)
-        {
-            List<Course> finalCourses = new();
-
-            if (isSearchCourseClicked)
-            {
-                bool isOnline = courseOnlineCheckBox.IsChecked ?? false;
-                List<Course> allFilteredCourses = courseController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
-                foreach (Course course in allFilteredCourses)
-                {
-                    foreach (Course teacherCourse in availableCourses)
-                    {
-                        if (teacherCourse.Id == course.Id)
-                            finalCourses.Add(course);
-                    }
-                }
-            }
-            else
-            {
-                foreach (Course course in availableCourses)
-                    finalCourses.Add(course);
-            }
-            return finalCourses;
-        }
-
         private List<Course>? GetFilteredCourses()
         {
             Language? selectedLanguage = (Language?)courseLanguageComboBox.SelectedItem;
@@ -224,12 +199,13 @@ namespace LangLang.View.Teacher
                     selectedDuration = duration;
                 }
             }
+            bool isOnline = courseOnlineCheckBox.IsChecked ?? false;
 
             Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
 
-            List<Course> availableCourses = teacherController.GetAvailableCourses(teacher);
+            List<Course> availableCourses = courseController.GetAvailableCourses(teacher);
 
-            return GetFinalDisplayCourses(availableCourses, selectedLanguage, selectedLevel, selectedStartDate, selectedDuration);
+            return courseController.GetCoursesForDisplay(isSearchCourseClicked, availableCourses, selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
         }
 
         private void CreateExam_Click(object sender, RoutedEventArgs e)

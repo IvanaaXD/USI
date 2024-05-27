@@ -1,7 +1,6 @@
 ﻿using LangLang.Observer;
 using System;
 using System.Collections.Generic;
-using LangLang.Repository;
 using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using System.Linq;
@@ -129,54 +128,6 @@ namespace LangLang.Controller
             Update(teacher);
         }
 
-        public List<Course> GetAvailableCourses(int teacherId)
-        {
-            Teacher? teacher = GetTeacherById(teacherId);
-            List<Course>? allCourses = _courses.GetAllCourses();
-            List<int>? allTeacherCourses = teacher?.CoursesId;
-            DateTime currentTime = DateTime.Now;
-
-            List<Course> availableCourses = new List<Course>();
-
-            if (allCourses != null && allTeacherCourses != null)
-            {
-                foreach (Course course in allCourses)
-                {
-                    if (allTeacherCourses.Contains(course.Id))
-                    {
-                        availableCourses.Add(course);
-                    }
-                }
-            }
-
-            return availableCourses;
-        }
-
-        public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
-        {
-            return _mailController.GetSentCourseMail(teacher, courseId);
-        }
-        public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
-        {
-            return _mailController.GetReceivedCourseMails(teacher, courseId);
-        }
-
-
-        public List<Course> GetAvailableCourses(Teacher teacher)
-        {
-            return _teacherController.GetAvailableCourses(teacher);
-        }
-
-        public void SendMail(Mail mail)
-        {
-            _mailController.Send(mail);
-        }
-
-        public void AnswerMail(int mailId)
-        {
-            _mailController.SetMailToAnswered(_mailController.GetMailById(mailId));
-        }
-
         public int GetAverageTeacherGrade(int teacherId)
         {
             int result = 0;
@@ -193,8 +144,14 @@ namespace LangLang.Controller
             List<Teacher> allTeachers = GetAllTeachers();
             foreach (Teacher teacher in allTeachers)
             {
-                if (teacher.Languages.Contains(language) && teacher.LevelOfLanguages.Contains(level))
-                    compatibleTeachers.Add(teacher);
+                for (int i = 0; i < teacher.Languages.Count; i++)
+                {
+                    if (teacher.Languages[i] == language && teacher.LevelOfLanguages[i] == level)
+                    {
+                        compatibleTeachers.Add(teacher);
+                        break;
+                    }
+                }
             }
             return compatibleTeachers;
         }
@@ -224,6 +181,9 @@ namespace LangLang.Controller
         public int FindMostAppropriateTeacher(Course course)
         {
             List<Teacher> availableTeachers = GetAvailableTeachers(course);
+            if (availableTeachers.Count == 0)
+                return -1;
+
             Dictionary<int, double> teacherGrade = new();
             foreach (Teacher teacher in availableTeachers)
             {
@@ -241,6 +201,9 @@ namespace LangLang.Controller
         public int FindMostAppropriateTeacher(ExamTerm examTerm)
         {
             List<Teacher> availableTeachers = GetAvailableTeachers(examTerm);
+            if (availableTeachers.Count == 0)
+                return -1;
+
             Dictionary<int, double> teacherGrade = new();
             foreach (Teacher teacher in availableTeachers)
             {

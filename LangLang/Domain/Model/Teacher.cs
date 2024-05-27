@@ -114,7 +114,7 @@ namespace LangLang.Domain.Model
             else
                 coursesId = new List<int>();
             if (!string.IsNullOrEmpty(values[14]))
-                examsId = new List<int>(Array.ConvertAll(values[10].Split(','), int.Parse));
+                examsId = new List<int>(Array.ConvertAll(values[14].Split(','), int.Parse));
             else
                 examsId = new List<int>();
         }
