@@ -94,7 +94,13 @@ namespace LangLang.View.Director
                     foreach (Course course in courses)
                         if (coursesId.Contains(course.Id))
                         {
-                            TableViewModel.CoursesDirector.Add(new CourseDTO(course));
+                            CourseDTO courseViewModel = new CourseDTO(course);
+                            Domain.Model.Teacher? courseTeacher = _directorController.GetTeacherByCourse(course.Id);
+                            if (courseTeacher != null)
+                                courseViewModel.HasTeacher = true;
+                            else
+                                courseViewModel.HasTeacher = false;
+                            TableViewModel.CoursesDirector.Add(courseViewModel);
                             foreach (int examTermId in course.ExamTerms)
                                 TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
                         }
