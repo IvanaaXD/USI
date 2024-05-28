@@ -40,7 +40,9 @@ namespace LangLang.View.Teacher
         private bool isSearchCourseClicked = false;
         private bool isSearchExamClicked = false;
         private int currentPage = 1;
+        private int currentCoursePage = 1;
         private string sortCriteria;
+        private string courseSortCriteria;
         public TeacherPage(int teacherId)
         {
             InitializeComponent();
@@ -74,9 +76,9 @@ namespace LangLang.View.Teacher
 
             foreach (Course course in courses)
             {
-                if(!languages.Contains(course.Language)) 
+                if (!languages.Contains(course.Language))
                     languages.Add(course.Language);
-                if (!levels.Contains(course.Level))  
+                if (!levels.Contains(course.Level))
                     levels.Add(course.Level);
 
             }
@@ -86,7 +88,8 @@ namespace LangLang.View.Teacher
             DataContext = this;
 
             Update();
-            UpdatePagination(); 
+            UpdatePagination();
+            UpdateCoursePagination();
             //UpdateExam();
         }
 
@@ -94,24 +97,29 @@ namespace LangLang.View.Teacher
         {
             try
             {
-                TableViewModel.Courses.Clear();
-                var courses = GetFilteredCourses();
-
-                if (courses != null)
-                {
-                    foreach (Course course in courses)
-                        TableViewModel.Courses.Add(new CourseDTO(course));
-                }
-                else
-                {
-                    MessageBox.Show("No courses found.");
-                }
+                //UpdateCourses();
                 //UpdateExam();
                 UpdatePagination();
+                UpdateCoursePagination();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+        private void UpdateCourses()
+        {
+            TableViewModel.Courses.Clear();
+            var courses = GetFilteredCourses();
+
+            if (courses != null)
+            {
+                foreach (Course course in courses)
+                    TableViewModel.Courses.Add(new CourseDTO(course));
+            }
+            else
+            {
+                MessageBox.Show("No courses found.");
             }
         }
 
@@ -123,15 +131,15 @@ namespace LangLang.View.Teacher
 
         private void SearchCourse_Click(object sender, EventArgs e)
         {
-            Update();
             isSearchCourseClicked = true;
+            UpdateCoursePagination();
         }
 
         private void ResetCourse_Click(object sender, EventArgs e)
         {
             isSearchCourseClicked = false;
-            Update();
             ResetCourse_Click();
+            UpdateCoursePagination();
         }
 
         private void UpdateCourse_Click(object sender, RoutedEventArgs e)
@@ -338,11 +346,11 @@ namespace LangLang.View.Teacher
 
         private void NextPage_Click(object sender, RoutedEventArgs e)
         {
-            
+
             currentPage++;
             PreviousButton.IsEnabled = true;
             UpdatePagination();
-            
+
         }
 
         private void PreviousPage_Click(object sender, RoutedEventArgs e)
@@ -353,7 +361,7 @@ namespace LangLang.View.Teacher
                 NextButton.IsEnabled = true;
                 UpdatePagination();
             }
-            else if(currentPage == 1)
+            else if (currentPage == 1)
             {
                 PreviousButton.IsEnabled = false;
             }
@@ -365,14 +373,14 @@ namespace LangLang.View.Teacher
                 PreviousButton.IsEnabled = false;
             }
             PageNumberTextBlock.Text = $"{currentPage}";
-           
+
             try
             {
                 TableViewModel.ExamTerms.Clear();
                 var examTerms = GetFilteredExamTerms();
-                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentPage, 4, sortCriteria,examTerms);
-                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentPage+1, 4, sortCriteria, examTerms);
-                if (newExams.Count==0)
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentPage, 4, sortCriteria, examTerms);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentPage + 1, 4, sortCriteria, examTerms);
+                if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
                 if (examTerms != null)
                 {
@@ -394,7 +402,7 @@ namespace LangLang.View.Teacher
             if (sortCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)
             {
                 string selectedContent = selectedItem.Content.ToString();
-                
+
                 switch (selectedContent)
                 {
                     case "Language":
@@ -408,6 +416,83 @@ namespace LangLang.View.Teacher
                         break;
                 }
                 UpdatePagination();
+            }
+        }
+        //--------------------------- COURSE PAGINATION --------------------------------
+        private void CourseNextPage_Click(object sender, RoutedEventArgs e)
+        {
+
+            currentCoursePage++;
+            CoursePreviousButton.IsEnabled = true;
+            UpdateCoursePagination();
+
+        }
+
+        private void CoursePreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentCoursePage > 1)
+            {
+                currentCoursePage--;
+                CourseNextButton.IsEnabled = true;
+                UpdateCoursePagination();
+            }
+            else if (currentCoursePage == 1)
+            {
+                CoursePreviousButton.IsEnabled = false;
+            }
+        }
+        private void UpdateCoursePagination()
+        {
+            if (currentCoursePage == 1)
+            {
+                CoursePreviousButton.IsEnabled = false;
+            }
+            CoursePageNumberTextBlock.Text = $"{currentCoursePage}";
+
+            try
+            {
+                TableViewModel.Courses.Clear();
+                var filteredCourses = GetFilteredCourses();
+                List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortCriteria, filteredCourses);
+                List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortCriteria, filteredCourses);
+                if (newCourses.Count == 0)
+                    CourseNextButton.IsEnabled = false;
+                else
+                    CourseNextButton.IsEnabled = true;
+                if (filteredCourses != null)
+                {
+                    foreach (Course course in courses)
+                        TableViewModel.Courses.Add(new CourseDTO(course));
+                }
+                else
+                {
+                    MessageBox.Show("No exam terms found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+        private void CourseSortCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (courseSortCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string selectedContent = selectedItem.Content.ToString();
+
+                switch (selectedContent)
+                {
+                    case "Language":
+                        courseSortCriteria = "Language";
+                        break;
+                    case "Level":
+                        courseSortCriteria = "Level";
+                        break;
+                    case "StartDate":
+                        courseSortCriteria = "StartDate";
+                        break;
+                }
+                UpdateCoursePagination();
             }
         }
     }

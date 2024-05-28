@@ -117,12 +117,29 @@
 
                         </TabControl>
                     </Grid>
+                    <StackPanel  Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,80">
+                        <ComboBox x:Name="courseSortCriteriaComboBox" SelectionChanged="CourseSortCriteriaComboBox_SelectionChanged"  Width="150" Margin="0,0,10,0">
+                            <ComboBoxItem Content="Level"/>
+                            <ComboBoxItem Content="Language"/>
+                            <ComboBoxItem Content="StartDate"/>
+                        </ComboBox>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
-                        <Button Content="Create" Click="CreateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
-                        <Button Content="Update" Click="UpdateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
-                        <Button Content="Delete" Click="DeleteCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
-                        <Button Content="View" Click="ViewCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#9e9e9e" Width="80"/>
+                    </StackPanel>
+
+
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,7">
+                            <Button Content="&lt;" x:Name ="CoursePreviousButton" Click="CoursePreviousPage_Click" Margin="10,0,0,0" Foreground="White" Background="#555555" Width="80"/>
+                            <TextBlock x:Name="CoursePageNumberTextBlock" Text="Page 1" Margin="10,0,10,0" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <Button Content="&gt;" x:Name ="CourseNextButton" Click="CourseNextPage_Click" Margin="10,0,0,0" Foreground="White" Background="#555555" Width="80"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+
+                            <Button Content="Create" Click="CreateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
+                            <Button Content="Update" Click="UpdateCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
+                            <Button Content="Delete" Click="DeleteCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                            <Button Content="View" Click="ViewCourse_Click" Margin="10,0,0,0" Foreground="White" Background="#9e9e9e" Width="80"/>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </DockPanel>
