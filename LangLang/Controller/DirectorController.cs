@@ -126,6 +126,19 @@ namespace LangLang.Controller
             return null;
         }
 
+        public Teacher? GetTeacherByExamTerm(int examTermId)
+        {
+            foreach (Teacher teacher in GetAllTeachers())
+            {
+                if (teacher.ExamsId != null)
+                {
+                    foreach (int teacherExamTermId in teacher.ExamsId)
+                        if (teacherExamTermId == examTermId) return teacher;
+                }
+            }
+            return null;
+        }
+
         public void RemoveCourseFromList(int teacherId, int courseId)
         {
             Teacher? teacher = GetTeacherById(teacherId);

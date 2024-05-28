@@ -199,10 +199,7 @@ namespace LangLang.Controller
             var examTerms = _examTermController.FindExamTermsByDate(DateTime.Today.AddYears(-1));
 
             foreach (var examTerm in examTerms)
-            {
-                var course = _courseController.GetCourseById(examTerm.CourseID);
-                numberOfExamTerms[course.Language] += 1;
-            }
+                numberOfExamTerms[examTerm.Language] += 1;
 
             return numberOfExamTerms;
         }
@@ -255,13 +252,12 @@ namespace LangLang.Controller
 
                 foreach (var examTerm in examTerms)
                 {
-                    var course = _courseController.GetCourseById(examTerm.CourseID);
                     var grades = _examTermGrades.GetExamTermGradeByExam(examTerm.ExamID);
 
-                    if (course.Language == number.Key)
+                    if (examTerm.Language == number.Key)
                     {
-                        if (!levels.Contains(course.Level))
-                            levels.Add(course.Level);
+                        if (!levels.Contains(examTerm.Level))
+                            levels.Add(examTerm.Level);
 
                         foreach (var grade in grades)
                         {
