@@ -36,6 +36,10 @@ namespace LangLang.Controller
         {
             return _courses.GetAllCourses();
         }
+        public List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> courses)
+        {
+            return _courses.GetAllCourses(page, pageSize, sortCriteria, courses);
+        }
 
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
