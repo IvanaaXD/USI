@@ -60,7 +60,9 @@ namespace LangLang.View.Director
             {
                 string emailBody = $"Dear {student.FirstName},\n\nCongratulations on being one of the top students in {course.Language} {course.Level}!" +
                                    $" Your hard work and dedication have truly paid off. Thank you for your outstanding performance.\n\nBest regards,\n{director.FirstName}";
-                mailController.ConstructMail(director, student, course, TypeOfMessage.TopStudentsMessage,emailBody);
+                var examTerm = new ExamTerm();
+                examTerm.ExamID = -1;
+                mailController.ConstructMail(director, student, course, examTerm, TypeOfMessage.TopStudentsMessage,emailBody);
             }
             SendMailButton.Visibility = Visibility.Collapsed;
             MessageBox.Show("You have successfully sent your emails.");

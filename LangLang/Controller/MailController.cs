@@ -53,13 +53,14 @@ namespace LangLang.Controller
             Update(mail);
         }
 
-        public void ConstructMail(Person sender, Person receiver, Course course, TypeOfMessage type, string body)
+        public void ConstructMail(Person sender, Person receiver, Course course, ExamTerm examTerm, TypeOfMessage type, string body)
         {
             Send(new Mail
             {
                 Sender = sender.Email,
                 Receiver = receiver.Email,
                 CourseId = course.Id,
+                ExamTermId = examTerm.ExamID,
                 TypeOfMessage = type,
                 DateOfMessage = DateTime.Now,
                 Message = body,
@@ -107,7 +108,7 @@ namespace LangLang.Controller
             }
             return filteredMails;
         }
-        public Mail PrepareQuitCourseMail(string senderEmail, string receiverEmail, int courseId)
+        public Mail PrepareQuitCourseMail(string senderEmail, string receiverEmail, int courseId, int examTermId)
         {
             Mail mail = new Mail();
             mail.Sender = senderEmail;
@@ -115,6 +116,7 @@ namespace LangLang.Controller
             mail.TypeOfMessage = TypeOfMessage.QuitCourseRequest;
             mail.DateOfMessage = DateTime.Now;
             mail.CourseId = courseId;
+            mail.ExamTermId = examTermId;
             mail.Answered = false;
             mail.Message = "";
 

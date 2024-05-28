@@ -54,7 +54,10 @@ namespace LangLang.View.Teacher
             {
                 string messageBody = "You have been rejected from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: " + RejectReason;
                 studentController.RejectStudentApplication(student, course);
-                mailController.ConstructMail(teacher, student, course, TypeOfMessage.DenyEnterCourseRequestMessage, messageBody);
+
+                var examTerm = new ExamTerm();
+                examTerm.ExamID = -1;
+                mailController.ConstructMail(teacher, student, course, examTerm, TypeOfMessage.DenyEnterCourseRequestMessage, messageBody);
 
                 Close();
             }

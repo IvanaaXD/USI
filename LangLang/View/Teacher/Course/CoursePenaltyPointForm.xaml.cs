@@ -88,7 +88,10 @@ namespace LangLang.View.Teacher
         {
             if (IsFirstOptionSelected || IsSecondOptionSelected || IsThirdOptionSelected)
             {
-                mailController.ConstructMail(teacher, student, course, TypeOfMessage.PenaltyPointMessage, messageBody);
+                var examTerm = new ExamTerm();
+                examTerm.ExamID = -1;
+
+                mailController.ConstructMail(teacher, student, course, examTerm, TypeOfMessage.PenaltyPointMessage, messageBody);
                 studentController.GivePenaltyPoint(student.Id);
 
                 Close();

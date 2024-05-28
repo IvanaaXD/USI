@@ -1,8 +1,8 @@
-0|janko@gmail.com|marina@gmail.com|3|AcceptEnterCourseRequestMessage|2024-05-10|You have been accepted to course Japanese A1|True
-1|marina@gmail.com|janko@gmail.com|3|QuitCourseRequest|2024-05-10|razlog|True
-2|janko@gmail.com|marina@gmail.com|3|TeacherGradeStudentMessage|2024-05-10|Your final grade from course Japanese A1 is 10|True
-3|janko@gmail.com|marina@gmail.com|9|AcceptEnterCourseRequestMessage|2024-05-10|You have been accepted to course English B1|True
-4|marina@gmail.com|janko@gmail.com|9|QuitCourseRequest|2024-05-10|razlog|True
-5|janko@gmail.com|marina@gmail.com|9|TeacherGradeStudentMessage|2024-05-10|Your final grade from course English B1 is 10|True
-6|ivana@gmail.com|stefan@gmail.com|7|StudentGradeMessage|2024-05-28|You have passed exam French A1 with grade ReadingPoints: 57, SpeakingPoints: 50, WritingPoints: 58, ListeningPoints: 36, Value: 10|False
-7|ivana@gmail.com|kristina@gmail.com|7|StudentGradeMessage|2024-05-28|You have passed exam French A1 with grade ReadingPoints: 60, SpeakingPoints: 47, WritingPoints: 56, ListeningPoints: 36, Value: 9|False
+0|janko@gmail.com|marina@gmail.com|3|-1|AcceptEnterCourseRequestMessage|2024-05-10|You have been accepted to course Japanese A1|True
+1|marina@gmail.com|janko@gmail.com|3|-1|QuitCourseRequest|2024-05-10|razlog|True
+2|janko@gmail.com|marina@gmail.com|3|-1|TeacherGradeStudentMessage|2024-05-10|Your final grade from course Japanese A1 is 10|True
+3|janko@gmail.com|marina@gmail.com|9|-1|AcceptEnterCourseRequestMessage|2024-05-10|You have been accepted to course English B1|True
+4|marina@gmail.com|janko@gmail.com|9|-1|QuitCourseRequest|2024-05-10|razlog|True
+5|janko@gmail.com|marina@gmail.com|9|-1|TeacherGradeStudentMessage|2024-05-10|Your final grade from course English B1 is 10|True
+6|ivana@gmail.com|stefan@gmail.com|-1|7|StudentGradeMessage|2024-05-28|You have passed exam French A1 with grade ReadingPoints: 57, SpeakingPoints: 50, WritingPoints: 58, ListeningPoints: 36, Value: 10|False
+7|ivana@gmail.com|kristina@gmail.com|-1|7|StudentGradeMessage|2024-05-28|You have passed exam French A1 with grade ReadingPoints: 60, SpeakingPoints: 47, WritingPoints: 56, ListeningPoints: 36, Value: 9|False
