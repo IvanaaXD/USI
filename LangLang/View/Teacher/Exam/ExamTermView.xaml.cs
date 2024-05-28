@@ -7,21 +7,24 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace LangLang.View.Teacher
 {
     public partial class ExamTermView : Window, IObserver
     {
+        public ObservableCollection<MailDTO> SentMails { get; set; }
         public ObservableCollection<StudentDTO>? Students { get; set; }
         public class ViewModel
         {
+            public ObservableCollection<MailDTO> SentMails { get; set; }
             public ObservableCollection<StudentDTO>? Students { get; set; }
             public ViewModel()
             {
                 Students = new ObservableCollection<StudentDTO>();
             }
         }
+        public MailDTO SelectedSentMail { get; set; }
         public ViewModel StudentsTableViewModel { get; set; }
         public StudentDTO? SelectedStudent { get; set; }
 
@@ -38,6 +41,16 @@ namespace LangLang.View.Teacher
                 }
             }
         }
+        private MailDTO _mail;
+        public MailDTO MailToSend
+        {
+            get { return _mail; }
+            set
+            {
+                _mail = value;
+                OnPropertyChanged(nameof(Course));
+            }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
@@ -47,19 +60,25 @@ namespace LangLang.View.Teacher
 
         private readonly ExamTerm examTerm;
         private readonly Domain.Model.Teacher teacher;
-        private readonly TeacherController teacherController;
-        private readonly StudentsController studentController;
-        private readonly ExamTermController examTermController;
-        private readonly ExamTermGradeController examTermGradeController;
+        private readonly TeacherController _teacherController;
+        private readonly StudentsController _studentController;
+        private readonly DirectorController _directorController;
+        private readonly ExamTermController _examTermController;
+        private readonly ExamTermGradeController _examTermGradeController;
+        private readonly MailController _mailController;
+
         private readonly Window window;
 
         public ExamTermView(ExamTerm examTerm, Domain.Model.Teacher teacher, Window window)
         {
             InitializeComponent();
-            this.teacherController = Injector.CreateInstance<TeacherController>();
-            this.studentController = Injector.CreateInstance<StudentsController>();
-            this.examTermController = Injector.CreateInstance<ExamTermController>();
-            this.examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
+            _teacherController = Injector.CreateInstance<TeacherController>();
+            _studentController = Injector.CreateInstance<StudentsController>();
+            _examTermController = Injector.CreateInstance<ExamTermController>();
+            _directorController = Injector.CreateInstance<DirectorController>();
+            _examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
+            _mailController = Injector.CreateInstance<MailController>();
+
             this.teacher = teacher;
             this.examTerm = examTerm;
             this.window = window;
@@ -67,7 +86,7 @@ namespace LangLang.View.Teacher
             StudentsTableViewModel = new ViewModel();
 
             DataContext = this;
-            teacherController.Subscribe(this);
+            _teacherController.Subscribe(this);
 
             Update();
 
@@ -87,7 +106,7 @@ namespace LangLang.View.Teacher
             try
             {
                 StudentsTableViewModel.Students?.Clear();
-                var students = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
+                var students = _studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
 
                 if (students != null)
                 {
@@ -125,7 +144,7 @@ namespace LangLang.View.Teacher
 
         private void AddExamTermInfo()
         {
-            Course? course = teacherController.GetCourseById(examTerm.CourseID);
+            Course? course = _teacherController.GetCourseById(examTerm.CourseID);
 
             examTermLanguageTextBlock.Text = $"{course?.Language}";
             examTermLevelTextBlock.Text = $"{course?.Level}";
@@ -151,6 +170,8 @@ namespace LangLang.View.Teacher
             }
             else if (examTerm.Confirmed)
                 examTermStatusCheck = "ExamTerm has been confirmed";
+            else if (examTerm.Informed)
+                examTermStatusCheck = "ExamTerm grades have been sent to students";
             else
                 examTermStatusCheck = "ExamTerm hasn't started";
 
@@ -171,7 +192,7 @@ namespace LangLang.View.Teacher
             if (HasExamTermBeenGraded())
                 Mark.Visibility = Visibility.Collapsed;
 
-            if (!IsDirectorPage())
+            if (!IsDirectorPage() && examTerm.Informed == false)
                 Email.Visibility = Visibility.Collapsed;
         }
 
@@ -203,8 +224,8 @@ namespace LangLang.View.Teacher
 
         public bool HasExamTermBeenGraded()
         {
-            var grades = examTermGradeController.GetExamTermGradesByTeacherExam(teacher.Id, examTerm.ExamID);
-            var examTermStudents = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
+            var grades = _examTermGradeController.GetExamTermGradesByTeacherExam(teacher.Id, examTerm.ExamID);
+            var examTermStudents = _studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
 
             if (grades.Count==0)
                 return false;
@@ -215,15 +236,20 @@ namespace LangLang.View.Teacher
             return true;
         }
 
+        private List<Domain.Model.Student> GetAllStudentsForExamTerm(int examTermID)
+        {
+            return _studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
+        }
+
         public StudentDTO CheckStudentsGrades(StudentDTO selectedStudent)
         {
-            var examTermStudents = studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
+            var examTermStudents = GetAllStudentsForExamTerm(examTerm.ExamID);
            
             foreach(Domain.Model.Student student in examTermStudents)
             {
                 if (selectedStudent.id == student.Id)
                 {
-                    var grade = examTermGradeController.GetExamTermGradeByStudentTeacherExam(student.Id, teacher.Id, examTerm.ExamID);
+                    var grade = _examTermGradeController.GetExamTermGradeByStudentTeacherExam(student.Id, teacher.Id, examTerm.ExamID);
 
                     if (grade != null)
                         selectedStudent.ExamTermGrade = grade.Value;
@@ -234,9 +260,22 @@ namespace LangLang.View.Teacher
             return selectedStudent;
         }
 
+        private string GetMailMessage(Domain.Model.Student student)
+        {
+            string message;
+            var examTermGrade = _examTermGradeController.GetExamTermGradeByStudentExam(student.Id, examTerm.ExamID);
+
+            if (examTermGrade.Value > 5)
+                message = "You have passed exam " + examTerm.Language.ToString() + " " + examTerm.Level.ToString() + " with grade " + examTermGrade.ToString();
+            else
+                message = "You have failed exam " + examTerm.Language.ToString() + " " + examTerm.Level.ToString();
+
+            return message;
+        }
+
         private void ConfirmExamTerm_Click(object sender, RoutedEventArgs e)
         {
-            examTermController.ConfirmExamTerm(examTerm.ExamID);
+            _examTermController.ConfirmExamTerm(examTerm.ExamID);
             MessageBox.Show("ExamTerm confirmed.");
             Update();
         }
@@ -247,7 +286,7 @@ namespace LangLang.View.Teacher
                 MessageBox.Show("Please choose a student to delete!");
             else
             {
-                studentController.DeactivateStudentAccount(SelectedStudent.ToStudent());
+                _studentController.DeactivateStudentAccount(SelectedStudent.ToStudent());
                 Update();
             }
         }
@@ -261,11 +300,11 @@ namespace LangLang.View.Teacher
         {
             if (SelectedStudent == null)
                 MessageBox.Show("Please choose a student to grade!");
-            else if (examTermGradeController.IsStudentGraded(SelectedStudent.id, examTerm.ExamID))
+            else if (_examTermGradeController.IsStudentGraded(SelectedStudent.id, examTerm.ExamID))
                 MessageBox.Show("This student is already graded!");
             else
             {
-                Domain.Model.Student? student = studentController.GetStudentById(SelectedStudent.id);
+                Domain.Model.Student? student = _studentController.GetStudentById(SelectedStudent.id);
                 GradeStudentForm gradeStudentForm = new GradeStudentForm(examTerm, teacher, student);
 
                 gradeStudentForm.Closed += RefreshPage;
@@ -273,6 +312,30 @@ namespace LangLang.View.Teacher
                 gradeStudentForm.Show();
                 gradeStudentForm.Activate();
             }
+        }
+
+        private void MailStudent_Click(object sender, RoutedEventArgs e)
+        {
+            examTerm.Informed = true;
+            _examTermController.UpdateExamTerm(examTerm);
+
+            var examTermStudents = GetAllStudentsForExamTerm(examTerm.ExamID);
+            var director = _directorController.GetDirector();
+
+            foreach (Domain.Model.Student student in examTermStudents)
+            {
+                MailToSend.Sender = director.Email;
+                MailToSend.Receiver = student.Email;
+                MailToSend.TypeOfMessage = Domain.Model.Enums.TypeOfMessage.StudentGradeMessage;
+                MailToSend.DateOfMessage = DateTime.Now;
+                MailToSend.CourseId = examTerm.CourseID;
+                MailToSend.Message = GetMailMessage(student);
+                MailToSend.Answered = false;
+
+                _mailController.Send(MailToSend.ToMail());
+            }
+
+            Update();
         }
 
         private void RefreshPage(object? sender, EventArgs e)

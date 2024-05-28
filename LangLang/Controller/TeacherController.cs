@@ -103,7 +103,6 @@ namespace LangLang.Controller
             return course;
         }
 
-
         public void Subscribe(IObserver observer)
         {
             _teachers.Subscribe(observer);
