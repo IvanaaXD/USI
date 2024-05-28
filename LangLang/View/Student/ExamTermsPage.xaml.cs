@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace LangLang.View.Student
 {
@@ -41,6 +42,8 @@ namespace LangLang.View.Student
 
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
+        private int currentExamPage = 1;
+        private string sortCriteria;
 
         public ExamTermsPage(int studentId)
         {
@@ -112,7 +115,7 @@ namespace LangLang.View.Student
             }
         }
 
-        public void UpdateCompletedExamsTable()
+       /* public void UpdateCompletedExamsTable()
         {
             try
             {
@@ -137,7 +140,7 @@ namespace LangLang.View.Student
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
-        }
+        }*/
 
         private void Cancel_Click(object sender, EventArgs e)
         {
@@ -295,6 +298,82 @@ namespace LangLang.View.Student
                 }
             }
             return finalExamTerms;
+        }
+
+        private void NextPage_Click(object sender, RoutedEventArgs e)
+        {
+
+            currentExamPage++;
+            PreviousButton.IsEnabled = true;
+            UpdateCompletedExamsTable();
+
+        }
+
+        private void PreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentExamPage > 1)
+            {
+                currentExamPage--;
+                NextButton.IsEnabled = true;
+                UpdateCompletedExamsTable();
+            }
+            else if (currentExamPage == 1)
+            {
+                PreviousButton.IsEnabled = false;
+            }
+        }
+        private void UpdateCompletedExamsTable()
+        {
+            if (currentExamPage == 1)
+            {
+                PreviousButton.IsEnabled = false;
+            }
+            PageNumberTextBlock.Text = $"{currentExamPage}";
+
+            try
+            {
+                TableViewModel.CompletedExamTerms.Clear();
+                var examTerms = GetFilteredCompletedExamTerms();
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 1, sortCriteria, examTerms);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 1, sortCriteria, examTerms);
+                if (newExams.Count == 0)
+                    NextButton.IsEnabled = false;
+                else NextButton.IsEnabled = true;
+                if (examTerms != null)
+                {
+                    foreach (ExamTerm examTerm in exams)
+                        TableViewModel.CompletedExamTerms.Add(new ExamTermDTO(examTerm));
+                }
+                else
+                {
+                    MessageBox.Show("No exam terms found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+        private void SortCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SortCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string selectedContent = selectedItem.Content.ToString();
+
+                switch (selectedContent)
+                {
+                    case "Language":
+                        sortCriteria = "Language";
+                        break;
+                    case "Level":
+                        sortCriteria = "Level";
+                        break;
+                    case "Datetime":
+                        sortCriteria = "Datetime";
+                        break;
+                }
+                UpdateCompletedExamsTable();
+            }
         }
     }
 }

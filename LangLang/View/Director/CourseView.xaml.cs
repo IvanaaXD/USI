@@ -58,8 +58,8 @@ namespace LangLang.View.Director
         {
             foreach(Domain.Model.Student student in GetFilteredStudents())
             {
-                string emailBody = $"Dear {student.FirstName},\n\nCongratulations on being one of the top students in {course.Language} {course.Level}!" +
-                                   $" Your hard work and dedication have truly paid off. Thank you for your outstanding performance.\n\nBest regards,\n{director.FirstName}";
+                string emailBody = $"Dear {student.FirstName}, Congratulations on being one of the top students in {course.Language} {course.Level}!" +
+                                   $" Your hard work and dedication have truly paid off. Thank you for your outstanding performance. Best regards, {director.FirstName}";
                 var examTerm = new ExamTerm();
                 examTerm.ExamID = -1;
                 mailController.ConstructMail(director, student, course, examTerm, TypeOfMessage.TopStudentsMessage,emailBody);

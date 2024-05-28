@@ -123,7 +123,7 @@ namespace LangLang.View.Director
             var courses = _teacherController.GetAllCourses();
             if (coursesId != null)
             {
-                foreach (Course course in courses)
+               /* foreach (Course course in courses)
                     if (coursesId.Contains(course.Id))
                     {
                         CourseDTO courseViewModel = new CourseDTO(course);
@@ -133,9 +133,9 @@ namespace LangLang.View.Director
                         else
                             courseViewModel.HasTeacher = false;
                         TableViewModel.CoursesDirector.Add(courseViewModel);
-                        foreach (int examTermId in director.ExamsId)
+                        foreach (int examTermId in course.ExamTerms)
                             TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
-                    }
+                    }*/
             }
         }
         private void SetDirectorExamTerms()
