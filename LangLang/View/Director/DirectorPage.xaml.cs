@@ -93,6 +93,7 @@ namespace LangLang.View.Director
                 SetTeachers();
                 SetCourses();
                 SetExamTerms();
+                SetDirectorExamTerms();
             }
             catch (Exception ex)
             {
@@ -132,6 +133,19 @@ namespace LangLang.View.Director
                         foreach (int examTermId in course.ExamTerms)
                             TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
                     }
+            }
+        }
+        private void SetDirectorExamTerms()
+        {
+            TableViewModel.ExamTermsDirector.Clear();
+            var examsId = director.ExamsId;
+            var exams = _examTermController.GetAllExamTerms();
+
+            if (examsId != null)
+            {
+                foreach (ExamTerm exam in exams)
+                    if (examsId.Contains(exam.ExamID))
+                        TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(exam));
             }
         }
 
