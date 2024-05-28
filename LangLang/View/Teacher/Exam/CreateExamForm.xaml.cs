@@ -145,14 +145,12 @@ namespace LangLang.View.Teacher
             foreach (Course course in courses)
             {
                 if (course.Language == lang && course.Level == lvl)
-                {
-                    CreatedExamTerm.CourseID = course.Id;
+                { 
                     CreatedExamTerm.Language = lang;
                     CreatedExamTerm.Level = lvl;    
                     return;
                 }
             }
-            CreatedExamTerm.CourseID = -1;
             CreatedExamTerm.Language = lang;
             CreatedExamTerm.Level = lvl;
         }
@@ -217,14 +215,11 @@ namespace LangLang.View.Teacher
                     {
                         course.ExamTerms.Add(examId + 1);
                         courseController.UpdateCourse(course);
-                        examTerm.CourseID = course.Id;
                         foundMatchingCourse = true;
                         break;
                     }
                 }
-                if (!foundMatchingCourse)
-                    examTerm.CourseID = -1;
-
+              
                 teacher.ExamsId.Add(examId + 1);
                 examTermController.AddExamTerm(CreatedExamTerm.ToExamTermWithLanguage());
 
