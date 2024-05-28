@@ -36,10 +36,11 @@ namespace LangLang.DTO
         {
             _courseController = courseController;
         }
-        public void SetTeacher(Domain.Model.Teacher teacher)
+        public void SetTeacher(Domain.Model.Teacher teacher, Domain.Model.Course course)
         {
             this.teacher = teacher;
             hasTeacher = true;
+            teacher.CoursesId.Add(course.Id);
         }
         public List<string> LanguageAndLevelValues
         {

@@ -116,10 +116,8 @@ namespace LangLang.Controller
 
             foreach (var exam in allExams)
             {
-                Course course = teacherController.GetCourseById(exam.CourseID);
-
-                bool matchesLanguage = !language.HasValue || course.Language == language;
-                bool matchesLevel = !level.HasValue || course.Level == level;
+                bool matchesLanguage = !language.HasValue || exam.Language == language;
+                bool matchesLevel = !level.HasValue || exam.Level == level;
                 bool matchesExamDate = !examDate.HasValue || exam.ExamTime.Date >= examDate.Value.Date;
 
                 if (matchesLanguage && matchesLevel && matchesExamDate)
