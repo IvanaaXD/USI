@@ -19,7 +19,7 @@ namespace LangLang.View.Director
 
         private readonly string teacherEmail;
 
-        public UpdateTeacherForm(int teacherId, DirectorController directorController)
+        public UpdateTeacherForm(int teacherId)
         {
             InitializeComponent();
             this.directorController = Injector.CreateInstance<DirectorController>();    
