@@ -29,11 +29,10 @@ namespace LangLang.View.Student
         }
         private void AddExamTermInfo()
         {
-            Course course = teacherController.GetCourseById(examTerm.CourseID);
             ExamTermGrade grade = examTermGradeController.GetExamTermGradeByStudentExam(student.Id, examTerm.ExamID);
 
-            examTermLanguageTextBlock.Text = $"{course.Language}";
-            examTermLevelTextBlock.Text = $"{course.Level}";
+            examTermLanguageTextBlock.Text = $"{examTerm.Language}";
+            examTermLevelTextBlock.Text = $"{examTerm.Level}";
             if (grade != null)
             {
                 examTermReadingPointsTextBlock.Text = $"{grade.ReadingPoints}";

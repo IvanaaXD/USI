@@ -70,6 +70,32 @@ namespace LangLang.Controller
 
             return availableCourses;
         }
+        public List<int> GetCoursesIdByExamTerm(ExamTerm exam)
+        {
+            List<Course> allCourses = courseController.GetAllCourses();
+            List<int> courses = new List<int>();
+
+            foreach (Course course in allCourses)
+            {
+                if (course.Language == exam.Language && course.Level == exam.Level)
+                    courses.Add(course.Id);
+            }
+
+            return courses;
+        }
+        public List<int> GetFinishedCoursesIdByExamTerm(ExamTerm exam)
+        {
+            List<Course> allCourses = courseController.GetAllCourses();
+            List<int> finishedCourses = new List<int>();
+
+            foreach (Course course in allCourses)
+            {
+                if (course.Language== exam.Language && course.Level == exam.Level && course.StartDate < DateTime.Now)
+                    finishedCourses.Add(course.Id);
+            }
+                
+            return finishedCourses;
+        }
         private bool IsCourseAvailable(Course course, Student student)
         {
             List<int> passedCoursesIds = GetPassedCourses(student);
@@ -90,22 +116,27 @@ namespace LangLang.Controller
         private List<int> GetCourseIdsByRegisteredExams(Student student)
         {
             List<int> courses = new List<int>();
+            List<int> finishedCourses = new List<int>();
             foreach (int examTermId in student.RegisteredExamsIds)
             {
                 ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
-                if (!courses.Contains(examTerm.CourseID))
-                    courses.Add(examTerm.CourseID);
+                finishedCourses = GetCoursesIdByExamTerm(examTerm);
+                foreach (int courseId in finishedCourses)
+                    courses.Add(courseId);
             }
             return courses;
+
         }
         private List<int> GetPassedCourses(Student student)
         {
             List<int> courses = new List<int>();
+            List<int> finishedCourses = new List<int>();
             foreach (int examTermId in student.PassedExamsIds)
             {
                 ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
-                courses.Add(examTerm.CourseID);
-
+                finishedCourses = GetFinishedCoursesIdByExamTerm(examTerm);
+                foreach(int courseId in finishedCourses)
+                    courses.Add(courseId);
             }
             return courses;
         }
@@ -192,15 +223,18 @@ namespace LangLang.Controller
         public List<Course> GetPassedCourses(int studentId)
         {
             Student student = GetStudentById(studentId);
-            List<Course> registeredCourses = new List<Course>();
+            List<Course> courses = new List<Course>();
+            List<int> finishedCourses = new List<int>();
             foreach (int examTermId in student.PassedExamsIds)
             {
                 ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
-                registeredCourses.Add(courseController.GetCourseById(examTerm.CourseID));
+                finishedCourses = GetFinishedCoursesIdByExamTerm(examTerm);
+                foreach (int courseId in finishedCourses)
+                    courses.Add(courseController.GetCourseById(courseId));
             }
-
-            return registeredCourses;
+            return courses;
         }
+
         public List<Student> GetAllStudentsRequestingCourse(int courseId)
         {
             List<Student> filteredStudents = new List<Student>();

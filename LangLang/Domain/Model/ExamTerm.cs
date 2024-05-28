@@ -108,13 +108,13 @@ namespace LangLang.Domain.Model
         public void FromCSV(string[] values)
         {
             ExamID = int.Parse(values[0]);
-            Language = (Language)Enum.Parse(typeof(Language), values[2]);
-            Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), values[3]);
-            ExamTime = DateTime.ParseExact(values[4], "yyyy-MM-dd HH:mm", null);
-            MaxStudents = int.Parse(values[5]);
-            CurrentlyAttending = int.Parse(values[6]);
-            Confirmed = bool.Parse(values[7]);
-            Informed = bool.Parse(values[8]);
+            Language = (Language)Enum.Parse(typeof(Language), values[1]);
+            Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), values[2]);
+            ExamTime = DateTime.ParseExact(values[3], "yyyy-MM-dd HH:mm", null);
+            MaxStudents = int.Parse(values[4]);
+            CurrentlyAttending = int.Parse(values[5]);
+            Confirmed = bool.Parse(values[6]);
+            Informed = bool.Parse(values[7]);
         }
     }
 }

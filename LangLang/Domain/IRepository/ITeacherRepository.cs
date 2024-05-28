@@ -6,7 +6,6 @@ namespace LangLang.Domain.IRepository
 {
     public interface ITeacherRepository 
     {
-        Course GetCourseByExamId(int id);
         string FindLanguageAndLevel(int courseID);
         void Subscribe(IObserver observer);
     }

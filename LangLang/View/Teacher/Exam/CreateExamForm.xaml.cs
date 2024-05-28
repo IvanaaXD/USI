@@ -219,7 +219,7 @@ namespace LangLang.View.Teacher
                         break;
                     }
                 }
-              
+
                 teacher.ExamsId.Add(examId + 1);
                 examTermController.AddExamTerm(CreatedExamTerm.ToExamTermWithLanguage());
 

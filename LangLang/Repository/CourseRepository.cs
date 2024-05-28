@@ -14,13 +14,10 @@ namespace LangLang.Repository
         private readonly List<Course> _courses;
         private readonly Storage<Course> _courseStorage;
 
-        private readonly ExamTermRepository examTermRepository;
-
         public CourseRepository()
         {
             _courseStorage = new Storage<Course>("course.csv");
             _courses = _courseStorage.Load();
-            examTermRepository = new ExamTermRepository();
         }
 
         private int GenerateCourseId()
@@ -51,7 +48,6 @@ namespace LangLang.Repository
             oldCourse.IsOnline = course.IsOnline;
             oldCourse.CurrentlyEnrolled = course.CurrentlyEnrolled;
             oldCourse.MaxEnrolledStudents = course.MaxEnrolledStudents;
-            oldCourse.ExamTerms = course.ExamTerms;
 
             _courseStorage.Save(_courses);
             NotifyObservers();
@@ -64,10 +60,6 @@ namespace LangLang.Repository
             if (course == null) return null;
 
             _courses.Remove(course);
-            foreach (int examTermId in course.ExamTerms)
-            {
-                examTermRepository.RemoveExamTerm(examTermId);
-            }
 
             _courseStorage.Save(_courses);
             NotifyObservers();

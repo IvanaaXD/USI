@@ -102,7 +102,7 @@ namespace LangLang.Domain.Model
 
         public void FromCSV(string[] values)
         {
-            if (values.Length != 8)
+            if (values.Length != 9)
             {
                 throw new ArgumentException("Invalid number of mail values in CSV");
             }

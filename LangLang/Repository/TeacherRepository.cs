@@ -38,22 +38,6 @@ namespace LangLang.Repository
         {
             return _examTerms;
         }
-
-        public Course GetCourseByExamId(int id)
-        {
-            Course course = null;
-            List<ExamTerm> examTerms = GetAllExamTerms();
-            foreach (ExamTerm examTerm in examTerms)
-            {
-                if (examTerm.ExamID == id)
-                {
-
-                    course = GetCourseById(examTerm.CourseID);
-                    break;
-                }
-            }
-            return course;
-        }
         public string FindLanguageAndLevel(int courseID)
         {
             string res = "";
