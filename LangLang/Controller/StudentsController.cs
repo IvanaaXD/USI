@@ -122,16 +122,17 @@ namespace LangLang.Controller
                 List<ExamTerm> examTerms = examTermController.GetAllExamTerms();
                 Course course = courseController.GetCourseById(courseId);
 
-                foreach (ExamTerm examTerm in examTerms)
+                if (course.StartDate.AddDays(course.Duration * 7) >= DateTime.Now)
                 {
-                   /* Course secondCourse = teacherController.GetCourseByExamId(examTerm.ExamID);
-                    if (examTerm.CurrentlyAttending < examTerm.MaxStudents &&
-                        (examTerm.ExamTime - currentTime).TotalDays > 30 &&
-                        course.Language == secondCourse.Language &&
-                        course.Level == secondCourse.Level && !student.RegisteredExamsIds.Contains(examTerm.ExamID))
+                    foreach (ExamTerm examTerm in examTerms)
                     {
-                        availableExamTerms.Add(examTerm);
-                    }*/
+                        
+                         if (course.Language == examTerm.Language &&
+                             course.Level == examTerm.Level && !student.RegisteredExamsIds.Contains(examTerm.ExamID))
+                         {
+                             availableExamTerms.Add(examTerm);
+                         }
+                    }
                 }
             }
 
