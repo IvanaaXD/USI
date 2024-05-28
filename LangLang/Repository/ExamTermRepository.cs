@@ -46,7 +46,7 @@ namespace LangLang.Repository
             NotifyObservers();
             return oldExamTerm;
         }
-
+        
         public ExamTerm? RemoveExamTerm(int id)
         {
             ExamTerm? examTerm = GetExamTermById(id);
@@ -57,7 +57,7 @@ namespace LangLang.Repository
             NotifyObservers();
             return examTerm;
         }
-
+        
         public ExamTerm GetExamTermById(int id)
         {
             return _examTerms.Find(et => et.ExamID == id);

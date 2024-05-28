@@ -48,7 +48,7 @@ namespace LangLang.Controller
 
         public void Delete(ExamTerm examTerm)
         {
-            _exams.RemoveExamTerm(examTerm.ExamID);
+            teacherController.RemoveExamTerm(examTerm.ExamID);
         }
         public bool ValidateExamTimeslot(ExamTerm exam, Teacher teacher)
         {
