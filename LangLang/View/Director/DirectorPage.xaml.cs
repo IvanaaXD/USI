@@ -9,6 +9,9 @@ using System;
 using System.Windows;
 using LangLang.View.Teacher;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
+using LangLang.View.Student;
+using System.Reflection.Metadata.Ecma335;
 
 namespace LangLang.View.Director
 {
@@ -48,10 +51,12 @@ namespace LangLang.View.Director
         public TeacherDTO? SelectedTeacher { get; set; }
         public CourseDTO SelectedCourse { get; set; }
         public ExamTermDTO SelectedExamTerm { get; set; }
-
         public ViewModel TableViewModel { get; set; }
 
         private bool isSearchButtonClicked = false;
+        private int selectedTabIndex = 0;
+        private int currentTeacherPage = 1;
+        private string teacherSortCriteria;
 
         public DirectorPage(int directorId)
         {
@@ -77,6 +82,7 @@ namespace LangLang.View.Director
 
             Update();
             UpdateCourses();
+            UpdatePagination();
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
@@ -243,6 +249,7 @@ namespace LangLang.View.Director
         private void SearchTeachers_Click(object sender, RoutedEventArgs e)
         {
             UpdateSearch();
+            UpdatePagination();
             isSearchButtonClicked = true;
         }
 
@@ -251,6 +258,7 @@ namespace LangLang.View.Director
             isSearchButtonClicked = false;
             Update();
             ResetSearchElements();
+            UpdatePagination();
         }
 
         private void ResetSearchElements()
@@ -445,6 +453,85 @@ namespace LangLang.View.Director
         public void ResetExam_Click(object sender, EventArgs e)
         {
 
+        }
+
+        // ------------------------- TEACHER PAGINATION ---------------------------
+
+
+        private void TeacherNextPage_Click(object sender, RoutedEventArgs e)
+        {
+            currentTeacherPage++;
+            TeacherPreviousButton.IsEnabled = true;
+            UpdatePagination();
+
+        }
+
+        private void TeacherPreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentTeacherPage > 1)
+            {
+                currentTeacherPage--;
+                TeacherNextButton.IsEnabled = true;
+                UpdatePagination();
+            }
+            else if (currentTeacherPage == 1)
+            {
+                TeacherPreviousButton.IsEnabled = false;
+            }
+        }
+
+        private void UpdatePagination()
+        {
+            if (currentTeacherPage == 1)
+            {
+                TeacherPreviousButton.IsEnabled = false;
+            }
+            TeacherPageNumberTextBlock.Text = $"{currentTeacherPage}";
+
+            try
+            {
+                TableViewModel.Teachers.Clear();
+                var filteredTeachers= GetFilteredTeachers();
+                List<Domain.Model.Teacher> teachers = _directorController.GetAllTeachers(currentTeacherPage, 4, teacherSortCriteria, filteredTeachers);
+                List<Domain.Model.Teacher> newTeachers = _directorController.GetAllTeachers(currentTeacherPage + 1, 4, teacherSortCriteria, filteredTeachers);
+                if (newTeachers.Count == 0)
+                    TeacherNextButton.IsEnabled = false;
+                else
+                    TeacherNextButton.IsEnabled = true;
+                if (filteredTeachers != null)
+                {
+                    foreach (Domain.Model.Teacher teacher in teachers)
+                        TableViewModel.Teachers.Add(new TeacherDTO(teacher));
+                }
+                else
+                {
+                    MessageBox.Show("No exam terms found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+        private void TeacherSortCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (teacherSortCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string selectedContent = selectedItem.Content.ToString();
+                switch (selectedContent)
+                {
+                    case "FirstName":
+                        teacherSortCriteria = "FirstName";
+                        break;
+                    case "LastName":
+                        teacherSortCriteria = "LastName";
+                        break;
+                    case "StartedWork":
+                        teacherSortCriteria = "StartedWork";
+                        break;
+                }
+                UpdatePagination();
+            }
         }
     }
 }

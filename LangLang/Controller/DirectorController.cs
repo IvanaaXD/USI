@@ -108,6 +108,11 @@ namespace LangLang.Controller
             return filteredTeachers;
         }
 
+        public List<Teacher> GetAllTeachers(int page, int pageSize, string sortCriteria, List<Teacher> teachers)
+        {
+            return _directors.GetAllTeachers(page, pageSize, sortCriteria, teachers);
+        }
+
         public Teacher? GetTeacherByCourse(int courseId)
         {
             foreach (Teacher teacher in GetAllTeachers())

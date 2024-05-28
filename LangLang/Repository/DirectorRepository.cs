@@ -121,5 +121,27 @@ namespace LangLang.Repository
         {
             throw new NotImplementedException();
         }
+
+        public List<Teacher> GetAllTeachers(int page, int pageSize, string sortCriteria, List<Teacher> teachersToPaginate)
+        {
+            IEnumerable<Teacher> teachers = teachersToPaginate;
+
+            switch (sortCriteria)
+            {
+                case "FirstName":
+                    teachers = teachers.OrderBy(x => x.FirstName);
+                    break;
+                case "LastName":
+                    teachers = teachers.OrderBy(x => x.LastName);
+                    break;
+                case "StartedWork":
+                    teachers = teachers.OrderBy(x => x.StartedWork);
+                    break;
+            }
+
+            teachers = teachers.Skip((page - 1) * pageSize).Take(pageSize);
+
+            return teachers.ToList();
+        }
     }
 }
