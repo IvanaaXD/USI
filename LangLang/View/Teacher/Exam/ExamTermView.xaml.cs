@@ -192,7 +192,7 @@ namespace LangLang.View.Teacher
             if (HasExamTermBeenGraded())
                 Mark.Visibility = Visibility.Collapsed;
 
-            if (!IsDirectorPage() && examTerm.Informed == false)
+            if (!IsDirectorPage() || examTerm.Informed == true)
                 Email.Visibility = Visibility.Collapsed;
         }
 
