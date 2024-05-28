@@ -173,8 +173,10 @@ namespace LangLang.View.Teacher
                     MessageBox.Show("Cannot delete a course that starts in less than a week.");
                 else
                 {
-                    directorController.RemoveCourseFromList(teacherId, SelectedCourse.Id);
-                    courseController.DeleteCourse(SelectedCourse.Id);
+                    int courseId = SelectedCourse.Id;
+                    courseController.DeleteCourse(courseId);
+                    directorController.RemoveCourseFromList(teacherId, courseId);
+                    directorController.RemoveCourseFromDirector(courseId);
                 }
             }
         }
