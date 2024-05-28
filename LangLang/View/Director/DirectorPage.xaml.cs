@@ -345,20 +345,30 @@ namespace LangLang.View.Director
             }
             else
             {
-                int teacherId = _directorController.FindMostAppropriateTeacher(SelectedCourse.ToCourse());
-                if (teacherId != -1)
-                {
-                    Domain.Model.Teacher teacher = _directorController.GetTeacherById(teacherId);
-                    SelectedCourse.SetTeacher(teacher);
-                    teacher.CoursesId.Add(SelectedCourse.Id);
-                    _directorController.Update(teacher);
-                    MessageBox.Show($"{teacher.FirstName} {teacher.LastName}", "Teacher who was chosen");
-                }
+                Domain.Model.Teacher? courseTeacher = _directorController.GetTeacherByCourse(SelectedCourse.Id);
+                if (courseTeacher != null)
+                    MessageBox.Show("This course already has a teacher!");
                 else
                 {
-                    SelectedCourse.HasTeacher = false;
-                    MessageBox.Show("There is no available teacher for that course");
+                    AssignTeacher();
                 }
+            }
+        }
+        private void AssignTeacher()
+        {
+            int teacherCourseId = _directorController.FindMostAppropriateTeacher(SelectedCourse.ToCourse());
+            if (teacherCourseId != -1)
+            {
+                Domain.Model.Teacher teacher = _directorController.GetTeacherById(teacherCourseId);
+                SelectedCourse.SetTeacher(teacher);
+                teacher.CoursesId.Add(SelectedCourse.Id);
+                _directorController.Update(teacher);
+                MessageBox.Show($"{teacher.FirstName} {teacher.LastName}", "Teacher who was chosen");
+            }
+            else
+            {
+                SelectedCourse.HasTeacher = false;
+                MessageBox.Show("There is no available teacher for that course");
             }
         }
         private void SendReport_Click(object sender, RoutedEventArgs e)

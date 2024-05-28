@@ -255,9 +255,12 @@ namespace LangLang.DTO
 
         public Domain.Model.Course ToCourse()
         {
-            TimeSpan timeSpan = TimeSpan.Parse(startTime);
+            string startTimes = startDate.ToString().Split(" ")[1];
+            TimeSpan timeSpan = TimeSpan.Parse(startTimes);
 
             DateTime combinedDateTime = startDate.Date + timeSpan;
+            /*TimeSpan timeSpan = TimeSpan.Parse(startTime);
+            DateTime combinedDateTime = startDate.Date + timeSpan;*/
 
             if (examTerms == null)
             {
