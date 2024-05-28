@@ -14,7 +14,7 @@ namespace LangLang.Controller
         private readonly ICourseRepository _courses;
         private readonly IDirectorRepository _director;
         private readonly IExamTermRepository _examTerms;
-        private readonly PenaltyPointRepository _penaltyPoints;
+        private readonly IPenaltyPointRepository _penaltyPoints;
 
         public TeacherController()
         {
@@ -22,7 +22,7 @@ namespace LangLang.Controller
             _courses = Injector.CreateInstance<ICourseRepository>();
             _examTerms = Injector.CreateInstance<IExamTermRepository>();
             _director = Injector.CreateInstance<IDirectorRepository>(); 
-            _penaltyPoints = Injector.CreateInstance<PenaltyPointRepository>();
+            _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
         }
         public Course? GetCourseById(int courseId)
         {

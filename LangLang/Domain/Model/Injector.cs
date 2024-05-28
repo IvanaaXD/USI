@@ -27,12 +27,15 @@ namespace LangLang.Domain.Model
             { typeof(IExamTermGradeRepository), new Lazy<object>(() => new ExamTermGradeRepository()) },
             { typeof(ExamTermGradeController), new Lazy<object>(() => new ExamTermGradeController()) },
             { typeof(IStudentGradeRepository), new Lazy<object>(() => new StudentGradeRepository()) },
-            { typeof(PenaltyPointController), new Lazy<object>(() => new PenaltyPointController()) },
-            { typeof(IPenaltyPointRepository), new Lazy<object>(() => new PenaltyPointRepository()) },
-            { typeof(ReportController), new Lazy<object>(() => new ReportController()) },
-
         };
 
+        static Injector()
+        {
+            _implementations.Add(typeof(IPenaltyPointRepository), new Lazy<object>(() => new PenaltyPointRepository()));
+            _implementations.Add(typeof(PenaltyPointController), new Lazy<object>(() => new PenaltyPointController()));
+            _implementations.Add(typeof(ReportController), new Lazy<object>(() => new ReportController()));
+        }
+            
         public static T CreateInstance<T>()
         {
             Type type = typeof(T);

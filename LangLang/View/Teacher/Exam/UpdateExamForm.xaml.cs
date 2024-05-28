@@ -43,20 +43,16 @@ namespace LangLang.View.Teacher
             this.examId = examId;
             Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
 
-            SetInitialLanguageAndLevel(examTerm.CourseID);
+            SetInitialLanguageAndLevel(ExamTerm);
             FillLanguageAndLevelCombobox();
 
             examDatePicker.SelectedDate = ExamTerm.ExamDate;
             examTimeTextBox.Text = ExamTerm.ExamDate.ToString("HH:mm");
             maxStudentsTextBox.Text = ExamTerm.MaxStudents.ToString();
         }
-        private void SetInitialLanguageAndLevel(int courseId)
+        private void SetInitialLanguageAndLevel(ExamTermDTO ExamTerm)
         {
-            TeacherRepository teacherDAO = new TeacherRepository();
-            string languageAndLevel = teacherDAO.FindLanguageAndLevel(courseId);
-
-            string[] parts = languageAndLevel.Split(',');
-            languageAndLevel = parts[0].Trim() + " " + parts[1].Trim();
+            string languageAndLevel = ExamTerm.Language+ " "+ ExamTerm.Level;
             languageComboBox.SelectedItem = languageAndLevel;
         }
         private void FillLanguageAndLevelCombobox()
@@ -94,37 +90,14 @@ namespace LangLang.View.Teacher
             LanguageLevel lvl = LanguageLevel.A1;
             if (parts.Length == 2)
             {
-                if (Enum.TryParse(parts[0], out Language language))
-                    lang = language;
-                else
-                    MessageBox.Show($"Invalid language: {parts[0]}");
-
-                if (Enum.TryParse(parts[1], out LanguageLevel level))
-                    lvl = level;
-                else
-                    MessageBox.Show($"Invalid level: {parts[1]}");
-                SetCourseForExamTerm(lang, lvl);
+                ExamTerm.Language = lang;
+                ExamTerm.Level = lvl;
             }
             else
             {
                 MessageBox.Show("Invalid language and level format.");
             }
 
-        }
-        private void SetCourseForExamTerm(Domain.Model.Enums.Language lang, Domain.Model.Enums.LanguageLevel lvl)
-        {
-            //TeacherDAO teacherDAO = new TeacherDAO();
-            teacher = directorController.GetTeacherById(teacherId);
-            //List<Course> courses = teacherDAO.GetAvailableCourses(teacher);
-            List<Course> courses = teacherController.GetAvailableCourses(teacher);
-            foreach (Course course in courses)
-            {
-                if (course.Language == lang && course.Level == lvl)
-                {
-                    ExamTerm.CourseID = course.Id;
-                    break;
-                }
-            }
         }
         private void PickDataFromDatePicker()
         {
