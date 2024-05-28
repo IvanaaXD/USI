@@ -20,7 +20,7 @@ namespace LangLang.Controller
         private readonly StudentsController? _studentController;
         private readonly CourseController? _courseController;
         private readonly ExamTermGradeController? _examTermGradeController;
-
+        
         public ReportController()
         {
             _directors = Injector.CreateInstance<IDirectorRepository>();
@@ -346,11 +346,10 @@ namespace LangLang.Controller
         public int GetPassedCount(int courseId)
         {
             int count = 0;
-            Course course = _courseController.GetCourseById(courseId);
-            List<ExamTermGrade> grades = _examTermGradeController.GetAllExamTermGrades();
-            foreach (ExamTermGrade grade in grades)
+            List<CourseGrade> grades = _courseGrade.GetCourseGradesByCourse(courseId);
+            foreach (CourseGrade grade in grades)
             {
-                if (course.ExamTerms.Contains(grade.ExamId) && grade.Value >= 6)
+                if (grade.StudentKnowledgeValue >= 6 && grade.StudentActivityValue >= 6)
                     count++;
             }
             return count;

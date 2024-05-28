@@ -133,7 +133,7 @@ namespace LangLang.View.Director
                         else
                             courseViewModel.HasTeacher = false;
                         TableViewModel.CoursesDirector.Add(courseViewModel);
-                        foreach (int examTermId in course.ExamTerms)
+                        foreach (int examTermId in director.ExamsId)
                             TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
                     }
             }
