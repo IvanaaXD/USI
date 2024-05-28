@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace LangLang.View.Teacher
 {
@@ -323,30 +324,13 @@ namespace LangLang.View.Teacher
             LanguageLevel? selectedLevel = (LanguageLevel?)examLevelComboBox.SelectedItem;
             DateTime? selectedStartDate = examDatePicker.SelectedDate;
 
-            var courses = GetFilteredCourses();
+            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
 
-            List<ExamTerm> examTerms = teacherController.GetAllExamTerms();
-            List<ExamTerm> finalExamTerms = new List<ExamTerm>();
-
-            foreach (Course course in courses)
-            {
-                foreach (ExamTerm exam in examTerms)
-                {
-                    if (course.Id == exam.CourseID)
-                    {
-                        finalExamTerms.Add(exam);
-                    }
-                }
-            }
-
-            if (isSearchExamClicked)
-            {
-                TeacherRepository teacherDAO = new TeacherRepository();
-                finalExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
-            }
-            return finalExamTerms;
+            List<ExamTerm> availableExams = teacherController.GetAvailableExamTerms(teacher);
+            
+            return examTermController.GetExamsForDisplay(isSearchCourseClicked, availableExams, selectedLanguage, selectedLevel, selectedStartDate);
         }
-
+    
         private void NextPage_Click(object sender, RoutedEventArgs e)
         {
 
@@ -385,8 +369,7 @@ namespace LangLang.View.Teacher
                 List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentPage + 1, 4, sortCriteria, examTerms);
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
-                else 
-                    NextButton.IsEnabled = true;   
+                else NextButton.IsEnabled = true;   
                 if (examTerms != null)
                 {
                     foreach (ExamTerm examTerm in exams)

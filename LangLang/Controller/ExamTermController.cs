@@ -50,7 +50,6 @@ namespace LangLang.Controller
         {
             _exams.RemoveExamTerm(examTerm.ExamID);
         }
-       
         public bool ValidateExamTimeslot(ExamTerm exam, Teacher teacher)
         {
             bool isOverlap = CheckExamOverlap(exam, teacher);
@@ -185,6 +184,26 @@ namespace LangLang.Controller
 
             teacher.CoursesId = teacherExamTerms;
             return teacher;
+        }
+        public List<ExamTerm>? GetExamsForDisplay(bool isSearchClicked, List<ExamTerm> availableExams, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate)
+        {
+            List<ExamTerm> finalExams = new();
+            if (!isSearchClicked)
+            {
+                return availableExams;
+            }
+
+            List<ExamTerm> allFilteredExams = FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+            foreach (ExamTerm examTerm in allFilteredExams)
+            {
+                foreach (ExamTerm teacherExam in availableExams)
+                {
+                    if (teacherExam.ExamID == examTerm.ExamID)
+                        finalExams.Add(examTerm);
+                }
+            }
+
+            return finalExams;
         }
     }
 }
