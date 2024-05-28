@@ -430,7 +430,7 @@ namespace LangLang.View.Director
             else
             {
                 ExamTerm? examTerm = _teacherController.GetExamTermById(SelectedExamTerm.ExamID);
-                Domain.Model.Teacher? teacher = _directorController.GetTeacherByCourse(examTerm.CourseID);
+                Domain.Model.Teacher? teacher = _directorController.GetTeacherByExamTerm(examTerm.ExamID);
                 ExamTermView examTermView = new ExamTermView(examTerm, teacher, this);
                 examTermView.Owner = this;
                 this.Visibility = Visibility.Collapsed;
