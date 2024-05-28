@@ -125,6 +125,12 @@ namespace LangLang.Controller
             }
             return null;
         }
+        public void RemoveCourseFromDirector(int courseId)
+        {
+            Director director = GetDirector();
+            director.CoursesId.Remove(courseId);
+            Update(director);
+        }
 
         public Teacher? GetTeacherByExamTerm(int examTermId)
         {

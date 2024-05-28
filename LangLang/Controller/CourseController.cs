@@ -10,6 +10,7 @@ namespace LangLang.Controller
 {
     public class CourseController
     {
+        private readonly IStudentRepository _students;
         private readonly ICourseRepository _courses;
         private readonly ITeacherRepository? _teachers;
         private readonly TeacherController _teacherController;
@@ -18,6 +19,7 @@ namespace LangLang.Controller
         private readonly IMailRepository? _mails;
         public CourseController()
         {
+            _students = Injector.CreateInstance<IStudentRepository>();
             _courses = Injector.CreateInstance<ICourseRepository>();
             _teachers = Injector.CreateInstance<ITeacherRepository>();
             _teacherController = Injector.CreateInstance<TeacherController>();
@@ -257,6 +259,20 @@ namespace LangLang.Controller
         public void DeleteCourse(int courseId)
         {
             _courses.RemoveCourse(courseId);
+            RemoveCourseFromRequests(courseId);
+        }
+
+        public void RemoveCourseFromRequests(int courseId)
+        {
+            List<Student> students = _students.GetAllStudents();
+            foreach(Student student in students)
+            {
+                if (student.RegisteredCoursesIds.Contains(courseId))
+                {
+                    student.RegisteredCoursesIds.Remove(courseId);
+                    _students.UpdateStudent(student);
+                }
+            }       
         }
 
         public void Subscribe(IObserver observer)
