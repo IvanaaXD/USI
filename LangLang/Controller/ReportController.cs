@@ -14,12 +14,13 @@ namespace LangLang.Controller
         private readonly ITeacherRepository? _teachers;
         private readonly IExamTermRepository? _examTerms;
         private readonly IStudentGradeRepository? _studentGrades;
-        private readonly PenaltyPointRepository? _penaltyPoints;
-        private readonly CourseController? _courseController;
+        private readonly IPenaltyPointRepository? _penaltyPoints;
         private readonly ICourseGradeRepository? _courseGrade;
         private readonly DirectorController? _directorController;
         private readonly ExamTermController? _examTermController;
-        private readonly IExamTermGradeRepository? _examTermGrades;
+        private readonly StudentsController? _studentController;
+        private readonly CourseController? _courseController;
+        private readonly ExamTermGradeController? _examTermGradeController;
 
         public ReportController()
         {
@@ -27,18 +28,18 @@ namespace LangLang.Controller
             _teachers = Injector.CreateInstance<ITeacherRepository>();
             _examTerms = Injector.CreateInstance<IExamTermRepository>();
             _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
-            _penaltyPoints = Injector.CreateInstance<PenaltyPointRepository>();
-            _examTermGrades = Injector.CreateInstance<IExamTermGradeRepository>();
+            _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
             _courseGrade = Injector.CreateInstance<ICourseGradeRepository>();
 
             _examTermController = Injector.CreateInstance<ExamTermController>();
             _courseController = Injector.CreateInstance<CourseController>();
             _directorController = Injector.CreateInstance<DirectorController>();
+            _studentController = Injector.CreateInstance<StudentsController>();
+            _examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
         }
 
         public void GenerateFirstReport()
         {
-            StudentsController studentController = Injector.CreateInstance<StudentsController>();
             PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report1.pdf");
             pdfGenerator.AddTitle("Number of penalty points in the last year");
             pdfGenerator.AddNewLine();
@@ -49,7 +50,7 @@ namespace LangLang.Controller
             for (int i = 0; i <= 3; i++)
             {
                 pdfGenerator.AddSubtitle("Number of penalty points: " + i);
-                pdfGenerator.AddTable(studentController.GetStudentsAveragePointsPerPenalty()[i], "Student", "Average points");
+                pdfGenerator.AddTable(_studentController.GetStudentsAveragePointsPerPenalty()[i], "Student", "Average points");
             }
             pdfGenerator.SaveAndClose();
         }
@@ -252,7 +253,7 @@ namespace LangLang.Controller
 
                 foreach (var examTerm in examTerms)
                 {
-                    var grades = _examTermGrades.GetExamTermGradeByExam(examTerm.ExamID);
+                    var grades = _examTermGradeController.GetExamTermGradeByExam(examTerm.ExamID);
 
                     if (examTerm.Language == number.Key)
                     {
@@ -295,7 +296,7 @@ namespace LangLang.Controller
         public double CalculateAveragePoints(string typeOfPoints)
         {
             int result = 0, count = 0;
-            List<ExamTermGrade> examGrades = _examTermGrades.GetAllExamTermGrades();
+            List<ExamTermGrade> examGrades = _examTermGradeController.GetAllExamTermGrades();
             foreach (ExamTermGrade grade in examGrades)
             {
                 ExamTerm exam = _examTerms.GetExamTermById(grade.ExamId);
@@ -373,7 +374,7 @@ namespace LangLang.Controller
         {
             int count = 0;
             Course course = _courseController.GetCourseById(courseId);
-            List<ExamTermGrade> grades = _examTermGrades.GetAllExamTermGrades();
+            List<ExamTermGrade> grades = _examTermGradeController.GetAllExamTermGrades();
             foreach (ExamTermGrade grade in grades)
             {
                 if (course.ExamTerms.Contains(grade.ExamId) && grade.Value >= 6)
