@@ -373,7 +373,7 @@ namespace LangLang.View.Director
             if (teacherCourseId != -1)
             {
                 Domain.Model.Teacher teacher = _directorController.GetTeacherById(teacherCourseId);
-                SelectedCourse.SetTeacher(teacher);
+                SelectedCourse.SetTeacher(teacher, SelectedCourse.ToCourse());
                 teacher.CoursesId.Add(SelectedCourse.Id);
                 _directorController.Update(teacher);
                 MessageBox.Show($"{teacher.FirstName} {teacher.LastName}", "Teacher who was chosen");

@@ -180,7 +180,7 @@ namespace LangLang.View.Teacher
                 Domain.Model.Course course = CreatedCourse.ToCourse();
                 int teacherId = directorController.FindMostAppropriateTeacher(course);
                 Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
-                CreatedCourse.SetTeacher(teacher);
+                CreatedCourse.SetTeacher(teacher,course);
                 if (CreatedCourse.IsValid)
                 {
                     int courseId = teacherController.GetAllCourses().Last().Id;
