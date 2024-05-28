@@ -15,6 +15,7 @@ namespace LangLang.View.Director
     public partial class DirectorPage : Window, IObserver
     {
         public ObservableCollection<TeacherDTO>? Teachers { get; set; }
+        public ObservableCollection<CourseDTO> CoursesDirector { get; set; }
 
         public class ViewModel
         {
@@ -92,6 +93,7 @@ namespace LangLang.View.Director
                 SetTeachers();
                 SetCourses();
                 SetExamterms();
+
             }
             catch (Exception ex)
             {
@@ -113,39 +115,34 @@ namespace LangLang.View.Director
 
         private void SetCourses()
         {
-                TableViewModel.CoursesDirector.Clear();
-                var coursesId = director.CoursesId;
-                var courses = _teacherController.GetAllCourses();
-                if (coursesId != null)
-                {
-                    foreach (Course course in courses)
-                        if (coursesId.Contains(course.Id))
-                        {
-                            CourseDTO courseViewModel = new CourseDTO(course);
-                            Domain.Model.Teacher? courseTeacher = _directorController.GetTeacherByCourse(course.Id);
-                            if (courseTeacher != null)
-                                courseViewModel.HasTeacher = true;
-                            else
-                                courseViewModel.HasTeacher = false;
-                            TableViewModel.CoursesDirector.Add(courseViewModel);
-                            foreach (int examTermId in course.ExamTerms)
-                                TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
-                        }
-                }
+            TableViewModel.CoursesDirector.Clear();
+            var coursesId = director.CoursesId;
+            var courses = _teacherController.GetAllCourses();
+            if (coursesId != null)
+            {
+                foreach (Course course in courses)
+                    if (coursesId.Contains(course.Id))
+                    {
+                        CourseDTO courseViewModel = new CourseDTO(course);
+                        Domain.Model.Teacher? courseTeacher = _directorController.GetTeacherByCourse(course.Id);
+                        if (courseTeacher != null)
+                            courseViewModel.HasTeacher = true;
+                        else
+                            courseViewModel.HasTeacher = false;
+                        TableViewModel.CoursesDirector.Add(courseViewModel);
+                        foreach (int examTermId in course.ExamTerms)
+                            TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
+                    }
+            }
         }
 
         private void SetExamterms()
         {
-            TableViewModel.CoursesDirector.Clear();
-            var examsId = director.ExamsId;
+            TableViewModel.ExamTermsDirector.Clear();
             var exams = _examTermController.GetAllExamTerms();
 
-            if (examsId != null)
-            {
-                foreach (ExamTerm exam in exams)
-                    if (examsId.Contains(exam.ExamID))
-                        TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(exam));
-            }
+            foreach (ExamTerm exam in exams)
+                TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(exam));
         }
 
         public bool HasExamTermBeenGraded(ExamTerm examTerm, Domain.Model.Teacher teacher)
@@ -207,7 +204,7 @@ namespace LangLang.View.Director
         {
             if (SelectedTeacher == null)
                 MessageBox.Show("Please choose a teacher to delete!");
-            else 
+            else
             {
                 int id = SelectedTeacher.Id;
                 var activeCoursesWithoutTeacher = _directorController.GetActiveCourses(SelectedTeacher.ToTeacher());
@@ -215,7 +212,7 @@ namespace LangLang.View.Director
                 if (activeCoursesWithoutTeacher.Count > 0)
                 {
                     foreach (var course in activeCoursesWithoutTeacher)
-                    { 
+                    {
                         ChooseTeacherView choseTeacherView = new ChooseTeacherView(course, id);
                         choseTeacherView.Show();
                         choseTeacherView.Activate();
@@ -361,7 +358,7 @@ namespace LangLang.View.Director
                 }
             }
         }
-        private void SendReport_Click(object sender, RoutedEventArgs e) 
+        private void SendReport_Click(object sender, RoutedEventArgs e)
         {
             EmailSender emailSender = new EmailSender("smtp.gmail.com", 587, "diirrektorr@gmail.com", "dvwa dbkw bzyl cauy");
             if (ReportOneRadioButton.IsChecked == true)
