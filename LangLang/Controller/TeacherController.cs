@@ -87,22 +87,7 @@ namespace LangLang.Controller
 
             return !overlappingExams.Any();
         }
-        public Course GetCourseByExamId(int id)
-        {
-            Course course = null;
-            List<ExamTerm> examTerms = GetAllExamTerms();
-            foreach (ExamTerm examTerm in examTerms)
-            {
-                if (examTerm.ExamID == id)
-                {
-
-                    course = GetCourseById(examTerm.CourseID);
-                    break;
-                }
-            }
-            return course;
-        }
-
+        
         public void Subscribe(IObserver observer)
         {
             _teachers.Subscribe(observer);
@@ -111,33 +96,15 @@ namespace LangLang.Controller
         }
         public List<ExamTerm> GetAvailableExamTerms(Teacher teacher)
         {
-            List<ExamTerm> allExamTerms = _examTerms.GetAllExamTerms();
-            List<Course> allTeacherCourses = GetAvailableCourses(teacher);
+            List<int> allTeacherExams = teacher.ExamsId;
 
-            List<ExamTerm> availableExamTerms = new();
-            List<int> examTermIds = new();
+            List<ExamTerm> availableExams = new List<ExamTerm>();
 
-            foreach (Course course in allTeacherCourses)
+            foreach (int examId in allTeacherExams)
             {
-                if (course != null)
-                {
-                    foreach (int examId in course.ExamTerms)
-                    {
-                        examTermIds.Add(examId);
-                    }
-                }
-                
+                availableExams.Add(_examTerms.GetExamTermById(examId));
             }
-
-            foreach (ExamTerm examTerm in allExamTerms)
-            {
-                if (examTermIds.Contains(examTerm.ExamID))
-                {
-                    availableExamTerms.Add(examTerm);
-                }
-            }
-
-            return availableExamTerms;
+            return availableExams;
         }
 
         public List<PenaltyPoint> GetAllPenaltyPoints()
