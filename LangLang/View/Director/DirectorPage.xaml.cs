@@ -97,6 +97,7 @@ namespace LangLang.View.Director
                 SetCourses();
                 SetExamTerms();
                 SetDirectorExamTerms();
+                UpdatePagination();
             }
             catch (Exception ex)
             {
@@ -186,14 +187,10 @@ namespace LangLang.View.Director
                 List<Domain.Model.Teacher> teachers = GetFilteredTeachers();
 
                 if (teachers != null)
-                {
                     foreach (Domain.Model.Teacher teacher in teachers)
                         TableViewModel.Teachers.Add(new TeacherDTO(teacher));
-                }
                 else
-                {
                     MessageBox.Show("No courses found.");
-                }
             }
             catch (Exception ex)
             {
@@ -206,7 +203,6 @@ namespace LangLang.View.Director
             CreateTeacherFrom createTeacherFrom = new CreateTeacherFrom();
             createTeacherFrom.Show();
             Update();
-            UpdatePagination();
         }
 
         private void UpdateTeacher_Click(object sender, RoutedEventArgs e)
@@ -218,9 +214,8 @@ namespace LangLang.View.Director
                 UpdateTeacherForm updateTeacherForm = new UpdateTeacherForm(SelectedTeacher.Id);
                 updateTeacherForm.Show();
                 updateTeacherForm.Activate();
+                Update();
             }
-            Update();
-            UpdatePagination();
         }
 
         private void DeleteTeacher_Click(object sender, RoutedEventArgs e)
@@ -241,10 +236,8 @@ namespace LangLang.View.Director
                         choseTeacherView.Activate();
                     }
                 }
-
                 _directorController.Delete(id);
                 Update();
-                UpdatePagination();
             }
         }
 
@@ -297,17 +290,12 @@ namespace LangLang.View.Director
                 List<Domain.Model.Teacher> allFilteredTeachers = _directorController.FindTeachersByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
 
                 foreach (Domain.Model.Teacher teacher in allFilteredTeachers)
-                {
-
                     finalTeachers.Add(teacher);
-                }
             }
             else
             {
                 foreach (Domain.Model.Teacher teacher in _directorController.GetAllTeachers())
-                {
                     finalTeachers.Add(teacher);
-                }
             }
             return finalTeachers;
         }
@@ -339,9 +327,7 @@ namespace LangLang.View.Director
         private void ViewCourseButton_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
-            {
                 MessageBox.Show("Please choose a course to view!");
-            }
             else
             {
                 CourseView courseView = new CourseView(SelectedCourse.Id, _directorController.GetDirector());
@@ -363,18 +349,14 @@ namespace LangLang.View.Director
         private void AssignTeacherCourse_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedCourse == null)
-            {
                 MessageBox.Show("Please choose a course to assign teacher!");
-            }
             else
             {
                 Domain.Model.Teacher? courseTeacher = _directorController.GetTeacherByCourse(SelectedCourse.Id);
                 if (courseTeacher != null)
                     MessageBox.Show("This course already has a teacher!");
                 else
-                {
                     AssignTeacher();
-                }
             }
         }
         private void AssignTeacher()
