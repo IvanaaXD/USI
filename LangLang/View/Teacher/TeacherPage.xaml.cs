@@ -88,7 +88,7 @@ namespace LangLang.View.Teacher
             DataContext = this;
 
             Update();
-            UpdatePagination();
+            UpdateExamPagination();
             UpdateCoursePagination();
             //UpdateExam();
         }
@@ -99,7 +99,7 @@ namespace LangLang.View.Teacher
             {
                 //UpdateCourses();
                 //UpdateExam();
-                UpdatePagination();
+                UpdateExamPagination();
                 UpdateCoursePagination();
             }
             catch (Exception ex)
@@ -238,16 +238,20 @@ namespace LangLang.View.Teacher
         {
             isSearchExamClicked = false;
             //UpdateExam();
-            UpdatePagination();
-            examLanguageComboBox.SelectedItem = null;
-            examLevelComboBox.SelectedItem = null;
-            examDatePicker.SelectedDate = null;
+            ResetExam_Click();
+            UpdateExamPagination();
         }
         private void SearchExam_Click(object sender, RoutedEventArgs e)
         {
             //UpdateExam();
-            UpdatePagination();
+            UpdateExamPagination();
             isSearchExamClicked = true;
+        }
+        private void ResetExam_Click()
+        {
+            examLanguageComboBox.SelectedItem = null;
+            examLevelComboBox.SelectedItem = null;
+            examDatePicker.SelectedDate = null;
         }
         private void DeleteExam_Click(object sender, RoutedEventArgs e)
         {
@@ -328,7 +332,6 @@ namespace LangLang.View.Teacher
             {
                 foreach (ExamTerm exam in examTerms)
                 {
-
                     if (course.Id == exam.CourseID)
                     {
                         finalExamTerms.Add(exam);
@@ -349,7 +352,7 @@ namespace LangLang.View.Teacher
 
             currentPage++;
             PreviousButton.IsEnabled = true;
-            UpdatePagination();
+            UpdateExamPagination();
 
         }
 
@@ -359,14 +362,14 @@ namespace LangLang.View.Teacher
             {
                 currentPage--;
                 NextButton.IsEnabled = true;
-                UpdatePagination();
+                UpdateExamPagination();
             }
             else if (currentPage == 1)
             {
                 PreviousButton.IsEnabled = false;
             }
         }
-        private void UpdatePagination()
+        private void UpdateExamPagination()
         {
             if (currentPage == 1)
             {
@@ -382,6 +385,8 @@ namespace LangLang.View.Teacher
                 List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentPage + 1, 4, sortCriteria, examTerms);
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
+                else 
+                    NextButton.IsEnabled = true;   
                 if (examTerms != null)
                 {
                     foreach (ExamTerm examTerm in exams)
@@ -415,7 +420,7 @@ namespace LangLang.View.Teacher
                         sortCriteria = "Datetime";
                         break;
                 }
-                UpdatePagination();
+                UpdateExamPagination();
             }
         }
         //--------------------------- COURSE PAGINATION --------------------------------
