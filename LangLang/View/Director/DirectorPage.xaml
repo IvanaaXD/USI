@@ -26,20 +26,22 @@
                     <RowDefinition Height="60"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="68.1"></ColumnDefinition>
+                    <ColumnDefinition Width="131.9"/>
+                    <ColumnDefinition Width="81*"></ColumnDefinition>
+                    <ColumnDefinition Width="316*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0">
+                <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2">
                     <Image Source="https://cdn2.iconfinder.com/data/icons/avatars-2-7/128/37-512.png" Width="150" RenderTransformOrigin="0.52,0.499"></Image>
                 </Border>
 
-                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Center"
-                                 FontSize="30">Welcome</TextBlock>
-                <Button x:Name="logoutBtn"  Click="Logout_Click" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
-                             Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Log out</Button>
+                <TextBlock Grid.Row="1" Grid.Column="3"  VerticalAlignment="Center" HorizontalAlignment="Left"
+                                 FontSize="30" Margin="174,0,0,0">Welcome</TextBlock>
+                <Button x:Name="logoutBtn"  Click="Logout_Click" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left"
+                             Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray" Margin="160,0,0,0">Log out</Button>
 
-                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="270"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -80,8 +82,8 @@
                 </Grid>
 
                 <Grid>
-                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
-                        <TabControl VerticalAlignment="Top" Height="213">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0, 100">
+                        <TabControl VerticalAlignment="Center" Height="auto">
                             <DataGrid Height="350"
                                       AutoGenerateColumns="False"
                                       x:Name="TeachersDataGrid"
@@ -115,10 +117,9 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                         </TabControl>
-
                     </Grid>
 
-                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,234,0,0" Height="77">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0, 0" Height="85">
                         <ComboBox x:Name="teacherSortCriteriaComboBox" SelectionChanged="TeacherSortCriteriaComboBox_SelectionChanged"  Width="150">
                             <ComboBoxItem Content="FirstName"/>
                             <ComboBoxItem Content="LastName"/>
@@ -135,7 +136,6 @@
                             <Button Content="Delete" Click="DeleteTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
                         </StackPanel>
                     </StackPanel>
-
                 </Grid>
             </DockPanel>
         </TabItem>
