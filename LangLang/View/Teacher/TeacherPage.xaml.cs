@@ -328,7 +328,7 @@ namespace LangLang.View.Teacher
 
             List<ExamTerm> availableExams = teacherController.GetAvailableExamTerms(teacher);
             
-            return examTermController.GetExamsForDisplay(isSearchCourseClicked, availableExams, selectedLanguage, selectedLevel, selectedStartDate);
+            return examTermController.GetExamsForDisplay(isSearchExamClicked, availableExams, selectedLanguage, selectedLevel, selectedStartDate);
         }
     
         private void NextPage_Click(object sender, RoutedEventArgs e)
