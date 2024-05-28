@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
-using LangLang.Controller;
 using LangLang.Observer;
 using LangLang.Storage;
 using System.Collections.Generic;
 using LangLang.Domain.Model;
 using LangLang.Domain.IRepository;
-using LangLang.Domain.Model.Enums;
 
 namespace LangLang.Repository
 {

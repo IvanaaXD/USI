@@ -1,6 +1,5 @@
 ﻿using LangLang.Domain.IRepository;
 using LangLang.Domain.Model;
-using LangLang.Repository;
 using System;
 using System.Collections.Generic;
 using LangLang.Domain.Model.Enums;
@@ -116,12 +115,13 @@ namespace LangLang.Controller
             Dictionary<Course, double> averageKnowledgeGrade = CalculateAverageGrade("knowledge");
             Dictionary<Course, double> averageActivityGrade = CalculateAverageGrade("activity");
             List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
+
             foreach (Course course in lastYearCourses)
-            {
                 finalCourses[course] = (averageTeacherGrade[course], averageKnowledgeGrade[course], averageActivityGrade[course]);
-            }
+
             return finalCourses;
         }
+
         public Dictionary<string, double> GetPartsOfExamReport()
         {
             Dictionary<string, double> examAverageResult = new();
@@ -130,62 +130,37 @@ namespace LangLang.Controller
             examAverageResult["speaking"] = GetAverageSpeakingPointsLastYear();
             return examAverageResult;
         }
+
         public Dictionary<Course, (int, int, double)> GetStudentsCourseReport()
         {
             Dictionary<Course, (int, int, double)> finalCourses = new();
             List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
+
             foreach (Course course in lastYearCourses)
             {
                 int attendedCount = GetAttendedCount(course.Id);
                 int passedCount = GetPassedCount(course.Id);
                 finalCourses[course] = (attendedCount, passedCount, CalculatePassPercentage(passedCount, attendedCount));
             }
+
             return finalCourses;
         }
-        public Dictionary<Language, int> GetLanguagesInt()
+
+        public Dictionary<Language, T> GetLanguages<T>() where T : struct
         {
-            Dictionary<Language, int> languages = new Dictionary<Language, int>();
+            Dictionary<Language, T> languages = new Dictionary<Language, T>();
             var langs = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
 
             foreach (Language language in langs)
-            {
                 if (language != Language.NULL)
-                    languages.Add(language, 0);
-            }
+                    languages.Add(language, default(T));
 
             return languages;
-        }
-
-        public Dictionary<Language, double> GetLanguagesDouble()
-        {
-            Dictionary<Language, double> languages = new Dictionary<Language, double>();
-            var langs = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
-
-            foreach (Language language in langs)
-            {
-                if (language != Language.NULL)
-                    languages.Add(language, 0);
-            }
-
-            return languages;
-        }
-
-        public Dictionary<LanguageLevel, int> GetLanguageLevels()
-        {
-            Dictionary<LanguageLevel, int> levels = new Dictionary<LanguageLevel, int>();
-            var languages = Enum.GetValues(typeof(LanguageLevel)).Cast<LanguageLevel>().ToList();
-
-            foreach (LanguageLevel language in languages)
-            {
-                levels.Add(language, 0);
-            }
-
-            return levels;
         }
 
         public Dictionary<Language, int> GetNumberOfCourses()
         {
-            Dictionary<Language, int> numberOfCourses = GetLanguagesInt();
+            Dictionary<Language, int> numberOfCourses = GetLanguages<int>();
             var courses = _courseController.FindCoursesByDate(DateTime.Today.AddYears(-1));
 
             foreach (var course in courses)
@@ -196,7 +171,7 @@ namespace LangLang.Controller
 
         public Dictionary<Language, int> GetNumberOfExamTerms()
         {
-            Dictionary<Language, int> numberOfExamTerms = GetLanguagesInt();
+            Dictionary<Language, int> numberOfExamTerms = GetLanguages<int>();
             var examTerms = _examTermController.FindExamTermsByDate(DateTime.Today.AddYears(-1));
 
             foreach (var examTerm in examTerms)
@@ -207,9 +182,9 @@ namespace LangLang.Controller
 
         public Dictionary<Language, double> GetNumberOfPenaltyPoints()
         {
-            Dictionary<Language, double> numberOfPenaltyPoints = GetLanguagesDouble();
-
+            Dictionary<Language, double> numberOfPenaltyPoints = GetLanguages<double>();
             var penaltyPoints = _penaltyPoints.GetAllPenaltyPoints();
+
             if (penaltyPoints.Count == 0)
                 return numberOfPenaltyPoints;
 
@@ -236,14 +211,12 @@ namespace LangLang.Controller
 
                 numberOfPenaltyPoints[number.Key] = averageNumber;
             }
-
             return numberOfPenaltyPoints;
         }
 
         public Dictionary<Language, double> GetNumberOfPoints()
         {
-            Dictionary<Language, double> numberOfPoints = GetLanguagesDouble();
-
+            Dictionary<Language, double> numberOfPoints = GetLanguages<double>();
             var examTerms = _examTerms.GetAllExamTerms();
 
             foreach (var number in numberOfPoints)
@@ -261,9 +234,7 @@ namespace LangLang.Controller
                             levels.Add(examTerm.Level);
 
                         foreach (var grade in grades)
-                        {
                             sum += grade.ListeningPoints + grade.ReadingPoints + grade.SpeakingPoints + grade.WritingPoints;
-                        }
                     }
                 }
 
@@ -273,7 +244,6 @@ namespace LangLang.Controller
 
                 numberOfPoints[number.Key] = averageNumber;
             }
-
             return numberOfPoints;
         }
 
@@ -281,18 +251,22 @@ namespace LangLang.Controller
         {
             return CalculateAveragePoints("reading");
         }
+
         public double GetAverageSpeakingPointsLastYear()
         {
             return CalculateAveragePoints("speaking");
         }
+
         public double GetAverageWritingPointsLastYear()
         {
             return CalculateAveragePoints("writing");
         }
+
         public double GetAverageListeningPointsLastYear()
         {
             return CalculateAveragePoints("listening");
         }
+
         public double CalculateAveragePoints(string typeOfPoints)
         {
             int result = 0, count = 0;
@@ -301,9 +275,7 @@ namespace LangLang.Controller
             {
                 ExamTerm exam = _examTerms.GetExamTermById(grade.ExamId);
                 if (exam == null)
-                {
                     continue;
-                }
                 else if (exam.ExamTime >= DateTime.Now.AddYears(-1))
                 {
                     if (typeOfPoints == "listening")
@@ -320,21 +292,19 @@ namespace LangLang.Controller
             }
             return result == 0 ? 0 : result / count;
         }
+
         public Dictionary<Course, double> GetAverageTeacherGradeByCourse()
         {
             Dictionary<Course, double> finalResult = new();
             foreach (Course course in _courseController.GetCoursesLastYear())
             {
                 int result = 0;
-
                 Teacher teacher = _directorController.GetTeacherByCourse(course.Id);
-
                 List<StudentGrade> teachersGrades = _studentGrades.GetStudentGradesByTeacherCourse(teacher.Id, course.Id);
 
                 foreach (StudentGrade studentGrade in teachersGrades)
-                {
                     result += studentGrade.Value;
-                }
+
                 if (teachersGrades.Count == 0)
                     finalResult[course] = 0;
                 else
@@ -342,6 +312,7 @@ namespace LangLang.Controller
             }
             return finalResult;
         }
+
         public Dictionary<Course, double> CalculateAverageGrade(string typeOfGrade)
         {
             Dictionary<Course, double> finalResult = new();
@@ -365,11 +336,13 @@ namespace LangLang.Controller
             }
             return finalResult;
         }
+
         public int GetAttendedCount(int courseId)
         {
             Course course = _courseController.GetCourseById(courseId);
             return course.CurrentlyEnrolled;
         }
+
         public int GetPassedCount(int courseId)
         {
             int count = 0;
@@ -378,9 +351,7 @@ namespace LangLang.Controller
             foreach (ExamTermGrade grade in grades)
             {
                 if (course.ExamTerms.Contains(grade.ExamId) && grade.Value >= 6)
-                {
                     count++;
-                }
             }
             return count;
         }

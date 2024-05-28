@@ -50,12 +50,12 @@ namespace LangLang.View.Teacher
 
             if (teacherId != -1)
             {
-                CreatedCourse = new CourseDTO(courseController, directorController.GetTeacherById(teacherId));
+                CreatedCourse = new CourseDTO(directorController.GetTeacherById(teacherId));
                 Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
             }
             else
             {
-                CreatedCourse = new CourseDTO(courseController);
+                CreatedCourse = new CourseDTO();
             }
             this.teacherId = teacherId;
             DataContext = CreatedCourse;

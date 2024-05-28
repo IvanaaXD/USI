@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using LangLang.Domain.Model;
-using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
 using LangLang.Domain.IRepository;
