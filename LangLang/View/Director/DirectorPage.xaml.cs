@@ -203,8 +203,10 @@ namespace LangLang.View.Director
 
         private void CreateTeacher_Click(object sender, RoutedEventArgs e)
         {
-            CreateTeacherFrom createTeacherFrom = new CreateTeacherFrom(_directorController);
+            CreateTeacherFrom createTeacherFrom = new CreateTeacherFrom();
             createTeacherFrom.Show();
+            Update();
+            UpdatePagination();
         }
 
         private void UpdateTeacher_Click(object sender, RoutedEventArgs e)
@@ -213,10 +215,12 @@ namespace LangLang.View.Director
                 MessageBox.Show("Please choose a teacher to update!");
             else
             {
-                UpdateTeacherForm updateTeacherForm = new UpdateTeacherForm(SelectedTeacher.Id, _directorController);
+                UpdateTeacherForm updateTeacherForm = new UpdateTeacherForm(SelectedTeacher.Id);
                 updateTeacherForm.Show();
                 updateTeacherForm.Activate();
             }
+            Update();
+            UpdatePagination();
         }
 
         private void DeleteTeacher_Click(object sender, RoutedEventArgs e)
@@ -240,6 +244,7 @@ namespace LangLang.View.Director
 
                 _directorController.Delete(id);
                 Update();
+                UpdatePagination();
             }
         }
 
@@ -435,32 +440,16 @@ namespace LangLang.View.Director
             }
         }
 
-        public void SearchDirectorCourse_Click(object sender, EventArgs e)
-        {
-
-        }
-        public void ResetDirectorCourse_Click(object sender, EventArgs e)
-        {
-
-        }
-        public void SearchDirectorExams_Click(object sender, EventArgs e)
-        {
-
-        }
-        public void ResetExam_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        // ------------------------- TEACHER PAGINATION ---------------------------
-
+        public void SearchDirectorCourse_Click(object sender, EventArgs e) {}
+        public void ResetDirectorCourse_Click(object sender, EventArgs e) {}
+        public void SearchDirectorExams_Click(object sender, EventArgs e) {}
+        public void ResetExam_Click(object sender, EventArgs e) {}
 
         private void TeacherNextPage_Click(object sender, RoutedEventArgs e)
         {
             currentTeacherPage++;
             TeacherPreviousButton.IsEnabled = true;
             UpdatePagination();
-
         }
 
         private void TeacherPreviousPage_Click(object sender, RoutedEventArgs e)
@@ -472,17 +461,13 @@ namespace LangLang.View.Director
                 UpdatePagination();
             }
             else if (currentTeacherPage == 1)
-            {
-                TeacherPreviousButton.IsEnabled = false;
-            }
+               TeacherPreviousButton.IsEnabled = false;
         }
 
         private void UpdatePagination()
         {
             if (currentTeacherPage == 1)
-            {
                 TeacherPreviousButton.IsEnabled = false;
-            }
             TeacherPageNumberTextBlock.Text = $"{currentTeacherPage}";
 
             try
@@ -491,25 +476,26 @@ namespace LangLang.View.Director
                 var filteredTeachers= GetFilteredTeachers();
                 List<Domain.Model.Teacher> teachers = _directorController.GetAllTeachers(currentTeacherPage, 4, teacherSortCriteria, filteredTeachers);
                 List<Domain.Model.Teacher> newTeachers = _directorController.GetAllTeachers(currentTeacherPage + 1, 4, teacherSortCriteria, filteredTeachers);
+
                 if (newTeachers.Count == 0)
                     TeacherNextButton.IsEnabled = false;
                 else
                     TeacherNextButton.IsEnabled = true;
+
                 if (filteredTeachers != null)
                 {
                     foreach (Domain.Model.Teacher teacher in teachers)
                         TableViewModel.Teachers.Add(new TeacherDTO(teacher));
                 }
                 else
-                {
                     MessageBox.Show("No exam terms found.");
-                }
-            }
+           }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
+
         private void TeacherSortCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (teacherSortCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)

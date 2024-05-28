@@ -6,6 +6,7 @@ using LangLang.Domain.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
 using System.Collections.Generic;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Director
 {
@@ -34,7 +35,7 @@ namespace LangLang.View.Director
 
         private readonly DirectorController? directorController;
 
-        public CreateTeacherFrom(DirectorController directorController)
+        public CreateTeacherFrom()
         {
             InitializeComponent();
             Teacher = new TeacherDTO();
@@ -42,7 +43,7 @@ namespace LangLang.View.Director
             Teacher.Password = passwordBox.Password;
             Teacher.DateOfBirth = new DateTime(DateTime.Today.AddYears(-64).Year, 1, 1);
             Teacher.StartedWork = new DateTime(DateTime.Today.AddYears(-64+18).Year, 1, 1);
-            this.directorController = directorController;
+            this.directorController = Injector.CreateInstance<DirectorController>();
 
             SetPlaceholders();
         }

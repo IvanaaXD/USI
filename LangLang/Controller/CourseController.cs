@@ -17,6 +17,7 @@ namespace LangLang.Controller
         private readonly IExamTermRepository? _examTerms;
         private readonly IDirectorRepository? _director;
         private readonly IMailRepository? _mails;
+
         public CourseController()
         {
             _students = Injector.CreateInstance<IStudentRepository>();
@@ -51,9 +52,7 @@ namespace LangLang.Controller
             foreach (Course course in allCourses)
             {
                 if (allTeacherCourses.Contains(course.Id))
-                {
                     availableCourses.Add(course);
-                }
             }
             return availableCourses;
         }
@@ -113,9 +112,8 @@ namespace LangLang.Controller
             foreach (Course secondCourse in teacherCourses)
             {
                 if (course.Id == secondCourse.Id)
-                {
                     continue;
-                }
+
                 DateTime secondCourseStartTime = secondCourse.StartDate;
                 DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
 
@@ -145,9 +143,8 @@ namespace LangLang.Controller
             foreach (ExamTerm examTerm in teacherExams)
             {
                 if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
-                {
                     continue;
-                }
+
                 DateTime examStartTime = examTerm.ExamTime;
                 DateTime examEndTime = examTerm.ExamTime.AddMinutes(examDurationInMinutes);
 
@@ -156,10 +153,7 @@ namespace LangLang.Controller
 
                 if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
                     (maxStartTime < minEndTime))
-                {
-
                     return true;
-                }
             }
             return false;
         }
@@ -180,9 +174,7 @@ namespace LangLang.Controller
                     TimeSpan maxStartTime = sessionOneStart > sessionTwoStart ? sessionOneStart : sessionTwoStart;
                     TimeSpan minEndTime = sessionOneEnd < sessionTwoEnd ? sessionOneEnd : sessionTwoEnd;
                     if ((sessionOneStart == sessionTwoStart) || (maxStartTime < minEndTime))
-                    {
                         return true;
-                    }
                 }
             }
             return false;
@@ -233,9 +225,7 @@ namespace LangLang.Controller
             foreach (ExamTerm examTerm in allAvailableExams)
             {
                 if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
-                {
                     continue;
-                }
 
                 DateTime examStartTime = examTerm.ExamTime;
                 DateTime examEndTime = examTerm.ExamTime.AddMinutes(examDurationInMinutes);
@@ -436,9 +426,7 @@ namespace LangLang.Controller
         {
             List<Course> finalCourses = new();
             if (!isSearchClicked)
-            {
                 return availableCourses;
-            }
 
             List<Course> allFilteredCourses = FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
             foreach (Course course in allFilteredCourses)
@@ -457,12 +445,11 @@ namespace LangLang.Controller
         {
             var courses = GetAllCourses();
             var teacherCourses = teacher.CoursesId;
+            var director = _director.GetDirector();
 
             foreach (var course in courses)
-            {
-                if (teacherCourses.Contains(course.Id) && course.StartDate > DateTime.Today.Date)
+                if (teacherCourses.Contains(course.Id) && course.StartDate > DateTime.Today.Date && !director.CoursesId.Contains(course.Id))
                     teacherCourses.Remove(course.Id);
-            }
 
             teacher.CoursesId = teacherCourses;
             return teacher;
