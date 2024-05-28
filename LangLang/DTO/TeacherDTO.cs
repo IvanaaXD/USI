@@ -27,6 +27,7 @@ namespace LangLang.DTO
         private List<Language> languages;
         private List<LanguageLevel> levelOfLanguages;
         private List<int> coursesId;
+        private List<int> examTermsId;
 
         private string fullName;
 
@@ -153,6 +154,11 @@ namespace LangLang.DTO
         {
             get { return coursesId; }
             set { SetProperty(ref coursesId, value); }
+        }
+        public List<int> ExamTermsId
+        {
+            get { return examTermsId; }
+            set { SetProperty(ref examTermsId, value); }
         }
 
         public string FullName
@@ -315,6 +321,7 @@ namespace LangLang.DTO
                 StartedWork = startedWork,
                 AverageRating = averageRating,
                 CoursesId = coursesId,
+                ExamsId = examTermsId,
             };
         }
 
@@ -340,6 +347,7 @@ namespace LangLang.DTO
             languages = teacher.Languages;
             levelOfLanguages = teacher.LevelOfLanguages;
             coursesId = teacher.CoursesId;
+            examTermsId = teacher.ExamsId;
             fullName = teacher.FirstName + " " + teacher.LastName;
         }
     }

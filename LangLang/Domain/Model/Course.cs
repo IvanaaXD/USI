@@ -17,8 +17,6 @@ namespace LangLang.Domain.Model
         private bool isOnline;
         private int currentlyEnrolled;
         private int maxEnrolledStudents;
-        private List<int> examTerms;
-
         public int Id
         {
             get { return id; }
@@ -70,17 +68,10 @@ namespace LangLang.Domain.Model
             get { return maxEnrolledStudents; }
             set { maxEnrolledStudents = value; }
         }
-
-        public List<int> ExamTerms
-        {
-            get { return examTerms; }
-            set { examTerms = value; }
-        }
-
         public Course()
         {
         }
-        public Course(int id, Language language, LanguageLevel languageLevel, int duration, List<DayOfWeek> workDays, DateTime startDate, bool isOnline, int currentlyEnrolled, int maxEnrolledStudents, List<int> examTerms)
+        public Course(int id, Language language, LanguageLevel languageLevel, int duration, List<DayOfWeek> workDays, DateTime startDate, bool isOnline, int currentlyEnrolled, int maxEnrolledStudents)
         {
             this.id = id;
             this.language = language;
@@ -91,14 +82,11 @@ namespace LangLang.Domain.Model
             this.isOnline = isOnline;
             this.currentlyEnrolled = currentlyEnrolled;
             this.maxEnrolledStudents = maxEnrolledStudents;
-            this.examTerms = examTerms;
         }
 
         public string[] ToCSV()
         {
             string workDaysStr = string.Join(",", workDays.Select(d => d.ToString()));
-
-            string examTermsStr = string.Join(",", examTerms);
 
             string[] csvValues =
             {
@@ -110,8 +98,7 @@ namespace LangLang.Domain.Model
                 StartDate.ToString("yyyy-MM-dd HH:mm"),
                 IsOnline.ToString(),
                 CurrentlyEnrolled.ToString(),
-                MaxEnrolledStudents.ToString(),
-                examTermsStr
+                MaxEnrolledStudents.ToString()
             };
 
             return csvValues;
@@ -128,14 +115,6 @@ namespace LangLang.Domain.Model
             IsOnline = bool.Parse(values[6]);
             CurrentlyEnrolled = int.Parse(values[7]);
             MaxEnrolledStudents = int.Parse(values[8]);
-            if (values[9] == "")
-            {
-                ExamTerms = new List<int>();
-            }
-            else
-            {
-                ExamTerms = values[9].Split(',').Select(int.Parse).ToList();
-            }
         }
         public override string ToString()
         {

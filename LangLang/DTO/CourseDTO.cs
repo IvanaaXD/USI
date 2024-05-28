@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using LangLang.Controller;
+using LangLang.Domain.Model;
 
 namespace LangLang.DTO
 {
@@ -21,22 +22,21 @@ namespace LangLang.DTO
         private bool isOnline;
         private int currentlyEnrolled;
         private string maxEnrolledStudents;
-        private List<int> examTerms;
         private bool hasTeacher;
 
         private readonly CourseController _courseController;
         private Domain.Model.Teacher teacher;
 
-        public CourseDTO(CourseController courseController, Domain.Model.Teacher teacher)
+        public CourseDTO(Teacher teacher)
         {
-            _courseController = courseController;
+            _courseController = Injector.CreateInstance<CourseController>();
             this.teacher = teacher;
         }
-        public CourseDTO(CourseController courseController)
+        public CourseDTO()
         {
-            _courseController = courseController;
+            _courseController = Injector.CreateInstance<CourseController>();
         }
-        public void SetTeacher(Domain.Model.Teacher teacher, Domain.Model.Course course)
+        public void SetTeacher(Teacher teacher, Course course)
         {
             this.teacher = teacher;
             hasTeacher = true;
@@ -215,7 +215,7 @@ namespace LangLang.DTO
         {
             DateTime combinedDateTime = StartDate.Date + TimeSpan.Parse(StartTime);
 
-            Domain.Model.Course course = new Domain.Model.Course
+            Course course = new Course
             {
                 Id = id,
                 Language = language,
@@ -225,8 +225,7 @@ namespace LangLang.DTO
                 StartDate = combinedDateTime,
                 IsOnline = isOnline,
                 CurrentlyEnrolled = currentlyEnrolled,
-                MaxEnrolledStudents = int.Parse(maxEnrolledStudents),
-                ExamTerms = examTerms
+                MaxEnrolledStudents = int.Parse(maxEnrolledStudents)
             };
             if (this.teacher == null)
                 return "Cannot create course!";
@@ -254,7 +253,7 @@ namespace LangLang.DTO
         }
 
 
-        public Domain.Model.Course ToCourse()
+        public Course ToCourse()
         {
             string startTimes = startDate.ToString().Split(" ")[1];
             TimeSpan timeSpan = TimeSpan.Parse(startTimes);
@@ -263,16 +262,12 @@ namespace LangLang.DTO
             /*TimeSpan timeSpan = TimeSpan.Parse(startTime);
             DateTime combinedDateTime = startDate.Date + timeSpan;*/
 
-            if (examTerms == null)
-            {
-                examTerms = new List<int>();
-            }
             if (isOnline)
             {
                 maxEnrolledStudents = "0";
             }
 
-            return new Domain.Model.Course
+            return new Course
             {
                 Id = id,
                 Language = language,
@@ -282,16 +277,11 @@ namespace LangLang.DTO
                 StartDate = combinedDateTime,
                 IsOnline = isOnline,
                 CurrentlyEnrolled = currentlyEnrolled,
-                MaxEnrolledStudents = int.Parse(maxEnrolledStudents),
-                ExamTerms = examTerms
+                MaxEnrolledStudents = int.Parse(maxEnrolledStudents)
             };
         }
 
-        public CourseDTO()
-        {
-        }
-
-        public CourseDTO(Domain.Model.Course course)
+        public CourseDTO(Course course)
         {
             id = course.Id;
             language = course.Language;
@@ -303,10 +293,9 @@ namespace LangLang.DTO
             isOnline = course.IsOnline;
             currentlyEnrolled = course.CurrentlyEnrolled;
             maxEnrolledStudents = course.MaxEnrolledStudents.ToString();
-            examTerms = course.ExamTerms;
         }
 
-        public CourseDTO(CourseController courseController, Domain.Model.Course course, Domain.Model.Teacher teacher)
+        public CourseDTO(CourseController courseController, Course course, Teacher teacher)
         {
             _courseController = courseController;
             this.teacher = teacher;
@@ -320,8 +309,6 @@ namespace LangLang.DTO
             isOnline = course.IsOnline;
             currentlyEnrolled = course.CurrentlyEnrolled;
             maxEnrolledStudents = course.MaxEnrolledStudents.ToString();
-
-            examTerms = course.ExamTerms;
         }
 
     }
