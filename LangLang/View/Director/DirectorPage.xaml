@@ -8,7 +8,7 @@
         xmlns:converters="clr-namespace:LangLang.View.Converters"
         mc:Ignorable="d"
         WindowStartupLocation = "CenterScreen"
-        Title="WelcomePage" Height="450" Width="1000">
+        Title="WelcomePage" Height="480" Width="1000">
 
     <Window.Resources>
         <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
@@ -81,7 +81,7 @@
 
                 <Grid>
                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
-                        <TabControl VerticalAlignment="Center" Grid.ColumnSpan="2">
+                        <TabControl VerticalAlignment="Top" Height="213">
                             <DataGrid Height="350"
                                       AutoGenerateColumns="False"
                                       x:Name="TeachersDataGrid"
@@ -118,10 +118,22 @@
 
                     </Grid>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
-                        <Button Content="Create" Click="CreateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
-                        <Button Content="Update" Click="UpdateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
-                        <Button Content="Delete" Click="DeleteTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,234,0,0" Height="77">
+                        <ComboBox x:Name="teacherSortCriteriaComboBox" SelectionChanged="TeacherSortCriteriaComboBox_SelectionChanged"  Width="150">
+                            <ComboBoxItem Content="FirstName"/>
+                            <ComboBoxItem Content="LastName"/>
+                            <ComboBoxItem Content="StartedWork"/>
+                        </ComboBox>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                            <Button Content="&lt;" x:Name ="TeacherPreviousButton" Click="TeacherPreviousPage_Click" Foreground="White" Background="#555555" Width="80"/>
+                            <TextBlock x:Name="TeacherPageNumberTextBlock" Text="Page 1" Margin="10,0,10,0" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <Button Content="&gt;" x:Name ="TeacherNextButton" Click="TeacherNextPage_Click" Foreground="White" Background="#555555" Width="80"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+                            <Button Content="Create" Click="CreateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
+                            <Button Content="Update" Click="UpdateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
+                            <Button Content="Delete" Click="DeleteTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                        </StackPanel>
                     </StackPanel>
 
                 </Grid>
@@ -338,6 +350,6 @@ IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
                 <Button Grid.Row="7" Grid.Column="1" Content="Send Report" Click="SendReport_Click"  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,33,0,0" Width="138" Height="30" FontSize="15" Background="#4F518C" Foreground="White"/>
             </Grid>
         </TabItem>
-        
+
     </TabControl>
 </Window>

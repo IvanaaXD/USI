@@ -13,6 +13,7 @@ namespace LangLang.Domain.IRepository
         Teacher? RemoveTeacher(int id);
         Teacher? GetTeacherById(int id);
         List<Teacher> GetAllTeachers();
+        List<Teacher> GetAllTeachers(int page, int pageSize, string sortCriteria, List<Teacher> teachersToPaginate);
         void Subscribe(IObserver observer);
     }
 }
