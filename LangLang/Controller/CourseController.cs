@@ -60,9 +60,12 @@ namespace LangLang.Controller
         public Course AddCourse(Course course, int teacherId)
         {
             Course createdCourse = _courses.AddCourse(course);
-            Teacher teacher = _director.GetTeacherById(teacherId);
-            teacher.CoursesId.Add(course.Id);
-            _director.UpdateTeacher(teacher);
+            if (teacherId != -1)
+            {
+                Teacher teacher = _director.GetTeacherById(teacherId);
+                teacher.CoursesId.Add(course.Id);
+                _director.UpdateTeacher(teacher);
+            }
             return createdCourse;
         }
         public void UpdateCourse(Course course)
