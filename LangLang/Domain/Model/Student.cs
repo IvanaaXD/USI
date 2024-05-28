@@ -112,8 +112,11 @@ namespace LangLang.Domain.Model
         }
         private List<int> ListFromCSV(string listElements)
         {
-            return !string.IsNullOrEmpty(listElements) ? new List<int>(Array.ConvertAll(listElements.Split(','), int.Parse))
-                                                       : new List<int>();  
+            List<int> list = new List<int>();
+            if (!string.IsNullOrEmpty(listElements))
+                list = new List<int>(Array.ConvertAll(listElements.Split(','), int.Parse));
+
+            return list;             
         }
     }
 }
