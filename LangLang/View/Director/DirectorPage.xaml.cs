@@ -8,10 +8,7 @@ using System.Collections.ObjectModel;
 using System;
 using System.Windows;
 using LangLang.View.Teacher;
-using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using LangLang.View.Student;
-using System.Reflection.Metadata.Ecma335;
 
 namespace LangLang.View.Director
 {

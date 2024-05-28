@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using LangLang.Domain.Model;
 using LangLang.Storage;
 using LangLang.Observer;
-using LangLang.Controller;
 using LangLang.Domain.IRepository;
 
 namespace LangLang.Repository

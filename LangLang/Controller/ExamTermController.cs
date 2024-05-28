@@ -1,11 +1,9 @@
-﻿using LangLang.Repository;
-using LangLang.Domain.Model.Enums;
+﻿using LangLang.Domain.Model.Enums;
 using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using LangLang.Domain.IRepository;
-using System.IO;
 using System.Linq;
 
 namespace LangLang.Controller

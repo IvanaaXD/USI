@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using LangLang.Domain.Model;
-using LangLang.Controller;
-using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using LangLang.Storage;
 using LangLang.Domain.IRepository;
