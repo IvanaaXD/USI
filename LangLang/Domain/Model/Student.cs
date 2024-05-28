@@ -107,26 +107,15 @@ namespace LangLang.Domain.Model
             password = values[7];
             educationLevel = (EducationLevel)Enum.Parse(typeof(EducationLevel), values[8]);
             activeCourseId = int.Parse(values[9]);
-
-            if (!string.IsNullOrEmpty(values[10]))
-                passedExamsIds = new List<int>(Array.ConvertAll(values[10].Split(','), int.Parse));
-            else
-                passedExamsIds = new List<int>();
-
-            if (!string.IsNullOrEmpty(values[11]))
-                registeredCoursesIds = new List<int>(Array.ConvertAll(values[11].Split(','), int.Parse));
-            else
-                registeredCoursesIds = new List<int>();
-
-            if (!string.IsNullOrEmpty(values[12]))
-                completedCoursesIds = new List<int>(Array.ConvertAll(values[12].Split(','), int.Parse));
-            else
-                completedCoursesIds = new List<int>();
-
-            if (!string.IsNullOrEmpty(values[13]))
-                registeredExamsIds = new List<int>(Array.ConvertAll(values[13].Split(','), int.Parse));
-            else
-                registeredExamsIds = new List<int>();
+            passedExamsIds = ListFromCSV(values[10]);
+            registeredCoursesIds = ListFromCSV(values[10]);
+            completedCoursesIds = ListFromCSV(values[10]);
+            registeredExamsIds = ListFromCSV(values[10]);
+        }
+        private List<int> ListFromCSV(string listElements)
+        {
+            return !string.IsNullOrEmpty(listElements) ? new List<int>(Array.ConvertAll(listElements.Split(','), int.Parse))
+                                                       : new List<int>();  
         }
     }
 }

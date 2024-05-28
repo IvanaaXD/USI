@@ -132,64 +132,37 @@ namespace LangLang.DTO
         private Regex _LastNameRegex = new Regex(@"^[A-Za-z]+$");
         private Regex _PhoneNumberRegex = new Regex(@"^\d{9,15}$");
         private Regex _EmailRegex = new Regex(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
-        //private Regex _PasswordRegex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$"); // Minimum 8 characters, at least one letter and one number
-
+       
         public string this[string columnName]
         {
             get
             {
-                if (columnName == "FirstName")
+                switch (columnName)
                 {
-                    if (string.IsNullOrEmpty(FirstName))
-                        return "First name is required";
-
-                    Match match = _FirstNameRegex.Match(FirstName);
-                    if (!match.Success)
-                        return "Format not good. Try again.";
-
+                    case "FirstName":
+                        if (string.IsNullOrEmpty(FirstName))           return "First name is required";
+                        if (!_FirstNameRegex.Match(FirstName).Success) return "Format not good. Try again.";
+                        break;
+                    case "LastName":
+                        if (string.IsNullOrEmpty(LastName))           return "Last name is required";
+                        if (!_LastNameRegex.Match(LastName).Success)  return "Format not good. Try again.";
+                        break;
+                    case "PhoneNumber":
+                        if (string.IsNullOrEmpty(PhoneNumber))              return "Phone number is required";
+                        if (!_PhoneNumberRegex.Match(PhoneNumber).Success)  return "Format not good. Try again.";
+                        break;
+                    case "Email":
+                        if (string.IsNullOrEmpty(Email))       return "Email is required";
+                        if (!_EmailRegex.Match(Email).Success) return "Format not good. Try again.";
+                        break;
+                    case "Password":
+                        if (string.IsNullOrEmpty(Password))  return "Password is required";
+                        break;
+                    case "DateOfBirth":
+                        if (DateOfBirth < new DateTime(1900, 1, 1) || DateOfBirth > DateTime.Today)  
+                            return "Invalid Date of birth.";
+                        break;
                 }
-                else if (columnName == "LastName")
-                {
-                    if (string.IsNullOrEmpty(LastName))
-                        return "Last name is required";
-
-                    Match match = _LastNameRegex.Match(LastName);
-                    if (!match.Success)
-                        return "Format not good. Try again.";
-
-                }
-                else if (columnName == "PhoneNumber")
-                {
-                    if (string.IsNullOrEmpty(PhoneNumber))
-                        return "Phone number is required";
-
-                    Match match = _PhoneNumberRegex.Match(PhoneNumber);
-                    if (!match.Success)
-                        return "Format not good. Try again.";
-
-                }
-                else if (columnName == "Email")
-                {
-                    if (string.IsNullOrEmpty(Email))
-                        return "Email is required";
-
-                    Match match = _EmailRegex.Match(Email);
-                    if (!match.Success)
-                        return "Format not good. Try again.";
-
-                }
-                else if (columnName == "Password")
-                {
-                    if (string.IsNullOrEmpty(Password))
-                        return "Password is required";
-
-                }
-                else if (columnName == "DateOfBirth")
-                {
-                    if (DateOfBirth < new DateTime(1900, 1, 1) || DateOfBirth > DateTime.Today)
-                        return "Invalid Date of birth.";
-                }
-
                 return null;
             }
         }

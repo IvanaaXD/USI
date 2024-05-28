@@ -55,9 +55,7 @@ namespace LangLang.Controller
                 courseController.DecrementCourseCurrentlyEnrolled(student.ActiveCourseId);
 
             foreach (int examTermId in student.RegisteredExamsIds)
-            {
                 examTermController.DecrementExamTermCurrentlyAttending(examTermId);
-            }
             NotifyObservers();
         }
         public List<Course> GetAvailableCourses(int studentId)
@@ -319,8 +317,7 @@ namespace LangLang.Controller
         }
         public bool IsStudentAttendingCourse(int studentId)
         {
-            Student student = GetStudentById(studentId);
-            return student.ActiveCourseId != -1;
+            return GetStudentById(studentId).ActiveCourseId != -1;
         }
         public bool GivePenaltyPoint(int studentId)
         {
