@@ -56,6 +56,8 @@ namespace LangLang.Domain.Model.Enums
         PenaltyPointMessage,
         TeacherGradeStudentMessage,
         TopStudentsMessage,
+
+        StudentGradeMessage,
         NULL
     }
     public enum StudentGradePriority {

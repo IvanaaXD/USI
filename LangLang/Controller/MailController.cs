@@ -16,35 +16,43 @@ namespace LangLang.Controller
         {
             _mails = Injector.CreateInstance<IMailRepository>();
         }
+
         public void Send(Mail mail)
         {
             _mails.AddMail(mail);
         }
+
         public void Delete(int mailId)
         {
             _mails.RemoveMail(mailId);
         }
+
         public void Update(Mail mail)
         {
             _mails.UpdateMail(mail);
         }
+
         public void Subscribe(IObserver observer)
         {
             _mails.Subscribe(observer);
         }
+
         public Mail? GetMailById(int id)
         {
             return _mails.GetMailById(id);
         }
+
         public List<Mail> GetAllMail()
         {
             return _mails.GetAllMails();
         }
+
         public void SetMailToAnswered(Mail mail)
         {
             mail.Answered = true;
             Update(mail);
         }
+
         public void ConstructMail(Person sender, Person receiver, Course course, TypeOfMessage type, string body)
         {
             Send(new Mail
@@ -58,6 +66,7 @@ namespace LangLang.Controller
                 Answered = false
             });
         }
+
         public List<Mail> GetSentMails(Student student)
         {
             List<Mail> filteredMails = new List<Mail>();
@@ -119,6 +128,7 @@ namespace LangLang.Controller
                     return true;
             return false;
         }
+
         public bool IsTopStudentsMailSent(int courseId)
         {
             foreach (Mail mail in _mails.GetAllMails())
@@ -126,6 +136,7 @@ namespace LangLang.Controller
                     return true;
             return false;
         }
+
         public List<Mail> GetSentCourseMail(Teacher teacher, int courseId)
         {
             List<Mail> filteredMails = new List<Mail>();
@@ -139,6 +150,7 @@ namespace LangLang.Controller
             }
             return filteredMails;
         }
+
         public List<Mail> GetReceivedCourseMails(Teacher teacher, int courseId)
         {
             List<Mail> filteredMails = new List<Mail>();
@@ -152,6 +164,7 @@ namespace LangLang.Controller
             }
             return filteredMails;
         }
+
         public bool IsStudentAccepted(Student student, int courseId)
         {
             List<Mail> sentMail = GetAllMail();

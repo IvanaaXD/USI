@@ -109,7 +109,7 @@ Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGr
                         <Button Name="Confirm" Content="Confirm" Click="ConfirmExamTerm_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
                         <Button Name="Suspend" Content="Suspend" Click="SuspendStudent_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
                         <Button Name="Mark" Content="Grade" Click="GradeStudent_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
-                        <Button Name="Email" Content="Mail" Click="GradeStudent_Click" Margin="10,0,0,0" Foreground="White" Background="#6d6fbf" Width="80"/>
+                        <Button Name="Email" Content="Mail" Click="MailStudent_Click" Margin="10,0,0,0" Foreground="White" Background="#6d6fbf" Width="80"/>
                     </StackPanel>
 
                 </Grid>

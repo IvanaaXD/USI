@@ -86,7 +86,7 @@ namespace LangLang.Domain.Model
 
         public override string ToString()
         {
-            return $"Id: {id}, StudentId: {studentId}, TeacherId: {teacherId}, ExamTermId: {examId}, ReadingPoints: {readingPoints}, SpeakingPoints: {speakingPoints}, WritingPoints: {writingPoints}, ListeningPoints: {listeningPoints}, Value: {value}";
+            return $"ReadingPoints: {readingPoints}, SpeakingPoints: {speakingPoints}, WritingPoints: {writingPoints}, ListeningPoints: {listeningPoints}, Value: {value}";
         }
 
         public string[] ToCSV()
