@@ -93,9 +93,7 @@ namespace LangLang.Domain.Model
         public override void FromCSV(string[] values)
         {
             if (values.Length != 14)
-            {
                 throw new ArgumentException("Invalid number of student values in CSV");
-            }
 
             id = int.Parse(values[0]);
             firstName = values[1];
@@ -108,9 +106,9 @@ namespace LangLang.Domain.Model
             educationLevel = (EducationLevel)Enum.Parse(typeof(EducationLevel), values[8]);
             activeCourseId = int.Parse(values[9]);
             passedExamsIds = ListFromCSV(values[10]);
-            registeredCoursesIds = ListFromCSV(values[10]);
-            completedCoursesIds = ListFromCSV(values[10]);
-            registeredExamsIds = ListFromCSV(values[10]);
+            registeredCoursesIds = ListFromCSV(values[11]);
+            completedCoursesIds = ListFromCSV(values[12]);
+            registeredExamsIds = ListFromCSV(values[13]);
         }
         private List<int> ListFromCSV(string listElements)
         {
