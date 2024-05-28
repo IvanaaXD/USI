@@ -10,6 +10,7 @@ namespace LangLang.Domain.Model
         private string sender;
         private string receiver;
         private int courseId;
+        private int examTermId;
         private TypeOfMessage typeOfMessage;
         private DateTime dateOfMessage;
         private string message;
@@ -20,20 +21,29 @@ namespace LangLang.Domain.Model
             get { return id; }
             set { id = value; }
         }
+
         public string Sender
         {
             get { return sender; }
             set { sender = value; }
         }
+
         public string Receiver
         {
             get { return receiver; }
             set { receiver = value; }
         }
+
         public int CourseId
         {
             get { return courseId; }
             set { courseId = value; }
+        }
+
+        public int ExamTermId
+        {
+            get { return examTermId; }
+            set { examTermId = value; }
         }
 
         public TypeOfMessage TypeOfMessage
@@ -59,13 +69,14 @@ namespace LangLang.Domain.Model
 
         public Mail() { }
 
-        public Mail(int id, string sender, string receiver, int courseId, TypeOfMessage typeOfMessage, DateTime dateOfMessage, string message, bool answered)
+        public Mail(int id, string sender, string receiver, int courseId, int examTermId, TypeOfMessage typeOfMessage, DateTime dateOfMessage, string message, bool answered)
         {
 
             this.id = id;
             this.sender = sender;
             this.receiver = receiver;
             this.courseId = courseId;
+            this.examTermId = examTermId;
             this.typeOfMessage = typeOfMessage;
             this.dateOfMessage = dateOfMessage;
             this.message = message;
@@ -80,6 +91,7 @@ namespace LangLang.Domain.Model
                 Sender,
                 Receiver,
                 CourseId.ToString(),
+                ExamTermId.ToString(),
                 TypeOfMessage.ToString(),
                 DateOfMessage.ToString("yyyy-MM-dd"),
                 Message,
@@ -100,10 +112,11 @@ namespace LangLang.Domain.Model
             sender = values[1];
             receiver = values[2];
             courseId = int.Parse(values[3]);
-            typeOfMessage = (TypeOfMessage)Enum.Parse(typeof(TypeOfMessage), values[4]);
-            dateOfMessage = DateTime.ParseExact(values[5], "yyyy-MM-dd", null);
-            message = values[6];
-            answered = bool.Parse(values[7]);
+            examTermId = int.Parse(values[4]);
+            typeOfMessage = (TypeOfMessage)Enum.Parse(typeof(TypeOfMessage), values[5]);
+            dateOfMessage = DateTime.ParseExact(values[6], "yyyy-MM-dd", null);
+            message = values[7];
+            answered = bool.Parse(values[8]);
         }
     }
 }

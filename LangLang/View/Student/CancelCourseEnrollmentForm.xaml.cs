@@ -61,7 +61,7 @@ namespace LangLang.View.Student
             Domain.Model.Student student = studentController.GetStudentById(studentId);
             Domain.Model.Teacher teacher = directorService.GetTeacherByCourse(courseId);
             
-            mailDTO = new MailDTO(mailController.PrepareQuitCourseMail(student.Email,teacher.Email,courseId));
+            mailDTO = new MailDTO(mailController.PrepareQuitCourseMail(student.Email,teacher.Email,courseId, -1));
         }
         private string GetCourseName(int courseId)
         {

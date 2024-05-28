@@ -72,7 +72,10 @@ namespace LangLang.View.Teacher
                 string messageBody = "Your final grade from course " + course.Language.ToString() + " " + course.Level.ToString() + " is " + StudentCourseGrade.StudentActivityValue.ToString() +
                 " for your activity on course, and " + StudentCourseGrade.StudentKnowledgeValue.ToString() + " for knowledge shown during course.";
 
-                mailController.ConstructMail(teacher, student, course, Domain.Model.Enums.TypeOfMessage.TeacherGradeStudentMessage, messageBody);
+                var examTerm = new ExamTerm();
+                examTerm.ExamID = -1;
+
+                mailController.ConstructMail(teacher, student, course, examTerm, Domain.Model.Enums.TypeOfMessage.TeacherGradeStudentMessage, messageBody);
                 courseGradeController.AddGrade(StudentCourseGrade.ToCourseGrade());
                 studentController.CompleteCourse(student, course);
 

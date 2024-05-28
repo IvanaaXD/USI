@@ -144,10 +144,8 @@ namespace LangLang.View.Teacher
 
         private void AddExamTermInfo()
         {
-            Course? course = _teacherController.GetCourseById(examTerm.CourseID);
-
-            examTermLanguageTextBlock.Text = $"{course?.Language}";
-            examTermLevelTextBlock.Text = $"{course?.Level}";
+            examTermLanguageTextBlock.Text = $"{examTerm?.Language}";
+            examTermLevelTextBlock.Text = $"{examTerm?.Level}";
             examTermStartDateTextBlock.Text = examTerm.ExamTime.ToString("yyyy-MM-dd HH:mm");
             examTermMaxStudentsTextBlock.Text = examTerm.MaxStudents.ToString();
             examTermCurrentlyAttendingTextBlock.Text = examTerm.CurrentlyAttending.ToString();
@@ -329,7 +327,7 @@ namespace LangLang.View.Teacher
                 MailToSend.Receiver = student.Email;
                 MailToSend.TypeOfMessage = Domain.Model.Enums.TypeOfMessage.StudentGradeMessage;
                 MailToSend.DateOfMessage = DateTime.Now;
-                MailToSend.CourseId = examTerm.CourseID;
+                MailToSend.CourseId = -1;
                 MailToSend.Message = GetMailMessage(student);
                 MailToSend.Answered = false;
 
