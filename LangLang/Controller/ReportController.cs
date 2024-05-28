@@ -300,6 +300,8 @@ namespace LangLang.Controller
             {
                 int result = 0;
                 Teacher teacher = _directorController.GetTeacherByCourse(course.Id);
+                if (teacher == null)
+                    continue;
                 List<StudentGrade> teachersGrades = _studentGrades.GetStudentGradesByTeacherCourse(teacher.Id, course.Id);
 
                 foreach (StudentGrade studentGrade in teachersGrades)
