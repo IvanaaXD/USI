@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LangLang.Domain.IRepository;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace LangLang.Controller
 {
@@ -12,6 +13,7 @@ namespace LangLang.Controller
     {
         private readonly ITeacherRepository _teachers;
         private readonly ICourseRepository _courses;
+        private readonly IStudentRepository _students;
         private readonly IDirectorRepository _director;
         private readonly IExamTermRepository _examTerms;
         private readonly IPenaltyPointRepository _penaltyPoints;
@@ -20,6 +22,7 @@ namespace LangLang.Controller
         {
             _teachers = Injector.CreateInstance<ITeacherRepository>();
             _courses = Injector.CreateInstance<ICourseRepository>();
+            _students = Injector.CreateInstance<IStudentRepository>();
             _examTerms = Injector.CreateInstance<IExamTermRepository>();
             _director = Injector.CreateInstance<IDirectorRepository>(); 
             _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
@@ -45,8 +48,15 @@ namespace LangLang.Controller
         {
             ExamTerm? examTerm = GetExamTermById(id);
             if (examTerm == null) return null;
-
-            foreach(Teacher teacher in _director.GetAllTeachers())
+            RemoveExamIdFromTeachers(id);
+            RemoveExamIdFromStudents(id);
+            
+            _examTerms.RemoveExamTerm(examTerm.ExamID);
+            return examTerm;
+        }
+        private void RemoveExamIdFromTeachers(int id)
+        {
+            foreach (Teacher teacher in _director.GetAllTeachers())
             {
                 if (teacher.ExamsId.Contains(id))
                 {
@@ -54,10 +64,23 @@ namespace LangLang.Controller
                     _director.UpdateTeacher(teacher);
                 }
             }
-            _examTerms.RemoveExamTerm(examTerm.ExamID);
-            return examTerm;
         }
-
+        private void RemoveExamIdFromStudents(int id)
+        {
+            foreach (Student student in _students.GetAllStudents())
+            {
+                if (student.RegisteredExamsIds.Contains(id))
+                {
+                    student.RegisteredExamsIds.Remove(id);
+                    _students.UpdateStudent(student);
+                }
+                else if (student.PassedExamsIds.Contains(id))
+                {
+                    student.PassedExamsIds.Remove(id);
+                    _students.UpdateStudent(student);
+                }
+            }
+        }
         public List<Course> GetAvailableCourses(Teacher teacher)
         {
             List<int> allTeacherCourses = teacher.CoursesId;
