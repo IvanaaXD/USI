@@ -270,7 +270,8 @@ IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
       SelectionMode="Single" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
-                            <DataGridTextColumn Header="Language and Level" Width ="*" Binding="{Binding LanguageAndLevel}"/>
+                            <DataGridTextColumn Header="Language" Width ="*" Binding="{Binding Language}"/>
+                            <DataGridTextColumn Header="Level" Width ="*" Binding="{Binding Level}"/>
                             <DataGridTextColumn Header="Exam Date" Width ="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
                             <DataGridTextColumn Header="Max Students" Width ="*" Binding="{Binding MaxStudents}"/>
                             <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
