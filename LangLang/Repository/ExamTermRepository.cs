@@ -37,9 +37,12 @@ namespace LangLang.Repository
             ExamTerm? oldExamTerm = GetExamTermById(examTerm.ExamID);
             if (oldExamTerm == null) return null;
 
-            oldExamTerm.CourseID = examTerm.CourseID;
             oldExamTerm.ExamTime = examTerm.ExamTime;
             oldExamTerm.MaxStudents = examTerm.MaxStudents;
+            oldExamTerm.Language = examTerm.Language;   
+            oldExamTerm.Level = examTerm.Level; 
+            oldExamTerm.Confirmed = examTerm.Confirmed; 
+            oldExamTerm.CurrentlyAttending = examTerm.CurrentlyAttending;   
 
             _examTermsStorage.Save(_examTerms);
             NotifyObservers();

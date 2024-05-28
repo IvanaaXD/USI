@@ -9,7 +9,6 @@ namespace LangLang.Domain.Model
         private int examID;
         private Language language;
         private LanguageLevel languageLevel;
-        private int courseID;
         private DateTime examTime;
         private int maxStudents;
         private int currentlyAttending;
@@ -20,11 +19,6 @@ namespace LangLang.Domain.Model
         {
             get { return examID; }
             set { examID = value; }
-        }
-        public int CourseID
-        {
-            get { return courseID; }
-            set { courseID = value; }
         }
         public Language Language
         {
@@ -74,7 +68,6 @@ namespace LangLang.Domain.Model
             this.examID = examID;
             this.language = language;
             this.languageLevel = languageLevel;
-            this.courseID = courseID;
             this.examTime = examTime;
             this.maxStudents = maxStudents;
             this.currentlyAttending = currentlyAttending;
@@ -84,7 +77,6 @@ namespace LangLang.Domain.Model
         public ExamTerm(int examID, int courseID, DateTime examTime, int maxStudents, int currentlyAttending)
         {
             this.examID = examID;
-            this.courseID = courseID;
             this.examTime = examTime;
             this.maxStudents = maxStudents;
             this.currentlyAttending = currentlyAttending;
@@ -94,7 +86,7 @@ namespace LangLang.Domain.Model
 
         public override string ToString()
         {
-            return $"ExamID: {examID}, CourseID: {courseID}, ExamTime: {examTime}, MaxStudents: {maxStudents}, CurrentlyAttending:{currentlyAttending}, Confirmed:{confirmed}, Informed:{informed}";
+            return $"ExamID: {examID}, ExamTime: {examTime}, MaxStudents: {maxStudents}, CurrentlyAttending:{currentlyAttending}, Confirmed:{confirmed}, Informed:{informed}";
         }
 
         public string[] ToCSV()
@@ -102,7 +94,6 @@ namespace LangLang.Domain.Model
             string[] csvValues =
             {
                 examID.ToString(),
-                courseID.ToString(),
                 Language.ToString(),
                 Level.ToString(),
                 examTime.ToString("yyyy-MM-dd HH:mm"),
@@ -117,7 +108,6 @@ namespace LangLang.Domain.Model
         public void FromCSV(string[] values)
         {
             ExamID = int.Parse(values[0]);
-            CourseID = int.Parse(values[1]);
             Language = (Language)Enum.Parse(typeof(Language), values[2]);
             Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), values[3]);
             ExamTime = DateTime.ParseExact(values[4], "yyyy-MM-dd HH:mm", null);

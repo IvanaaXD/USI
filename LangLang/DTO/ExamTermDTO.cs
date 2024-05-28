@@ -14,7 +14,6 @@ namespace LangLang.DTO
     public class ExamTermDTO : INotifyPropertyChanged, IDataErrorInfo
     {
         private int examID;
-        private int courseID;
         private DateTime examDate;
         private string examTime;
         private int maxStudents;
@@ -67,12 +66,6 @@ namespace LangLang.DTO
         {
             get { return examID; }
             set { SetProperty(ref examID, value); }
-        }
-
-        public int CourseID
-        {
-            get { return courseID; }
-            set { SetProperty(ref courseID, value); }
         }
 
         public DateTime ExamDate
@@ -216,7 +209,6 @@ namespace LangLang.DTO
             ExamTerm exam = new ExamTerm
             {
                 ExamID = ExamID,
-                CourseID = CourseID,
                 ExamTime = combinedDateTime,
                 MaxStudents = MaxStudents,
                 CurrentlyAttending = CurrentlyAttending,
@@ -234,7 +226,6 @@ namespace LangLang.DTO
             return new ExamTerm
             {
                 ExamID = ExamID,
-                CourseID = CourseID,
                 ExamTime = combinedDateTime,
                 MaxStudents = MaxStudents,
                 CurrentlyAttending = CurrentlyAttending,
@@ -248,7 +239,6 @@ namespace LangLang.DTO
             return new ExamTerm
             {
                 ExamID = ExamID,
-                CourseID = CourseID,
                 Language = Language,
                 Level = Level,
                 ExamTime = combinedDateTime,
@@ -262,7 +252,6 @@ namespace LangLang.DTO
         public ExamTermDTO(ExamTerm examTerm, Teacher teacher)
         {
             examID = examTerm.ExamID;
-            courseID = examTerm.CourseID;
             language = examTerm.Language;
             languageLevel = examTerm.Level;
             examDate = examTerm.ExamTime;
@@ -271,13 +260,11 @@ namespace LangLang.DTO
             confirmed = examTerm.Confirmed;
             informed = examTerm.Informed;
             TeacherRepository teacherDAO = new TeacherRepository();
-            languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
             this.teacher = teacher;
         }
         public ExamTermDTO(ExamTerm examTerm)
         {
             examID = examTerm.ExamID;
-            courseID = examTerm.CourseID;
             language = examTerm.Language;
             languageLevel = examTerm.Level;
             examDate = examTerm.ExamTime;
@@ -286,12 +273,10 @@ namespace LangLang.DTO
             confirmed = examTerm.Confirmed;
             informed = examTerm.Informed;
             TeacherRepository teacherDAO = new TeacherRepository();
-            languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
         }
         public ExamTermDTO(ExamTerm examTerm, int studentId)
         {
             examID = examTerm.ExamID;
-            courseID = examTerm.CourseID;
             language = examTerm.Language;
             languageLevel = examTerm.Level;
             examDate = examTerm.ExamTime;
@@ -301,7 +286,6 @@ namespace LangLang.DTO
             informed = examTerm.Informed;
 
             TeacherRepository teacherDAO = new TeacherRepository();
-            languageAndLevel = teacherDAO.FindLanguageAndLevel(courseID);
             //TeacherController teacherController = new TeacherController();
             grade = _examTermGrade.GetExamTermGradeByStudentExam(studentId, examTerm.ExamID);
             if (grade == null)
