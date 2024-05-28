@@ -213,7 +213,6 @@ namespace LangLang.View.Teacher
                     Course course = courseController.GetCourseById(courseId);
                     if (examTerm.Language == course.Language && examTerm.Level == course.Level)
                     {
-                        course.ExamTerms.Add(examId + 1);
                         courseController.UpdateCourse(course);
                         foundMatchingCourse = true;
                         break;
