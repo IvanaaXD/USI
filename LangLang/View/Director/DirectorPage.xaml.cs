@@ -149,7 +149,6 @@ namespace LangLang.View.Director
             }
         }
 
-        // NE DIRAJ MI FUNCKIJU - IVANA
         private void SetExamTerms()
         {
             TableViewModel.GradedExamTerms.Clear();

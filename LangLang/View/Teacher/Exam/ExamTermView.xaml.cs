@@ -163,6 +163,8 @@ namespace LangLang.View.Teacher
             {
                 if (!HasExamTermBeenGraded())
                     examTermStatusCheck = "ExamTerm has finished. It needs to be graded";
+                else if (examTerm.Informed)
+                    examTermStatusCheck = "ExamTerm grades have been sent to students";
                 else if (HasExamTermBeenGraded())
                     examTermStatusCheck = "ExamTerm has been graded";
                 else
@@ -170,8 +172,6 @@ namespace LangLang.View.Teacher
             }
             else if (examTerm.Confirmed)
                 examTermStatusCheck = "ExamTerm has been confirmed";
-            else if (examTerm.Informed)
-                examTermStatusCheck = "ExamTerm grades have been sent to students";
             else
                 examTermStatusCheck = "ExamTerm hasn't started";
 
@@ -324,6 +324,7 @@ namespace LangLang.View.Teacher
 
             foreach (Domain.Model.Student student in examTermStudents)
             {
+                MailToSend = new MailDTO();
                 MailToSend.Sender = director.Email;
                 MailToSend.Receiver = student.Email;
                 MailToSend.TypeOfMessage = Domain.Model.Enums.TypeOfMessage.StudentGradeMessage;
