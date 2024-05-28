@@ -92,8 +92,7 @@ namespace LangLang.View.Director
             {
                 SetTeachers();
                 SetCourses();
-                SetExamterms();
-
+                SetExamTerms();
             }
             catch (Exception ex)
             {
@@ -136,18 +135,22 @@ namespace LangLang.View.Director
             }
         }
 
-        private void SetExamterms()
+        // NE DIRAJ MI FUNCKIJU - IVANA
+        private void SetExamTerms()
         {
-            TableViewModel.ExamTermsDirector.Clear();
+            TableViewModel.GradedExamTerms.Clear();
             var exams = _examTermController.GetAllExamTerms();
 
             foreach (ExamTerm exam in exams)
-                TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(exam));
+            {
+                if (HasExamTermBeenGraded(exam))
+                    TableViewModel.GradedExamTerms.Add(new ExamTermDTO(exam));
+            }
         }
 
-        public bool HasExamTermBeenGraded(ExamTerm examTerm, Domain.Model.Teacher teacher)
+        public bool HasExamTermBeenGraded(ExamTerm examTerm)
         {
-            var grades = _examTermGradeController.GetExamTermGradesByTeacherExam(teacher.Id, examTerm.ExamID);
+            var grades = _examTermGradeController.GetExamTermGradeByExam(examTerm.ExamID);
             var examTermStudents = _studentController.GetAllStudentsForExamTerm(examTerm.ExamID);
 
             if (grades.Count == 0)
