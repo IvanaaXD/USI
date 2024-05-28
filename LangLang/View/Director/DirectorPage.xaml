@@ -166,37 +166,13 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Grid VerticalAlignment="Top" Height="auto" DockPanel.Dock="Top" Grid.Row="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="35"></RowDefinition>
-                        <RowDefinition Height="50"></RowDefinition>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
-                        <TextBlock Text="Language:" Width="150" Margin="5,0,5,0"></TextBlock>
-                        <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0"></TextBlock>
-                        <TextBlock Text="Start date:" Width="150" Margin="5,0,5,0"></TextBlock>
-                        <TextBlock Text="Duration:" Width="150" Margin="5,0,5,0"></TextBlock>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
-                        <ComboBox x:Name="courseLanguageComboBox" Width="150" Margin="5"/>
-                        <ComboBox x:Name="courseLevelComboBox" Width="150" Margin="5"/>
-                        <DatePicker x:Name="courseStartDateDatePicker" Width="150" Margin="5"/>
-                        <TextBox x:Name="courseDurationTextBox" Width="150" Margin="5"/>
-                        <CheckBox x:Name="courseOnlineCheckBox" Content="Online" Margin="5,10,5,5"
-IsChecked="{Binding SelectedCourse.IsOnline, Mode=TwoWay}"/>
-                    </StackPanel>
-                    <Button Grid.Row="1" Content="Search" Click="SearchDirectorCourse_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,5,10,20"/>
-                    <Button Content="Reset values" Click="ResetDirectorCourse_Click" FontSize="14" Background="#6d6fbf" Foreground="White" Margin="720,5,129,20" Grid.Row="1"/>
-                </Grid>
 
                 <Grid Grid.Row="1">
                     <DataGrid Height="350"
               AutoGenerateColumns="False"
               x:Name="CoursesDataGrid"
               ItemsSource="{Binding TableViewModel.CoursesDirector, UpdateSourceTrigger=PropertyChanged}"
-              SelectedItem="{Binding SelectedCourse, UpdateSourceTrigger=PropertyChanged}"
+              SelectedItem="{Binding SelectedCourseDirector, UpdateSourceTrigger=PropertyChanged}"
               SelectionMode="Single" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Language" Width="*" Binding="{Binding Language}"/>

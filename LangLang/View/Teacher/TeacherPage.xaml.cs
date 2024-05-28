@@ -91,15 +91,12 @@ namespace LangLang.View.Teacher
             Update();
             UpdateExamPagination();
             UpdateCoursePagination();
-            //UpdateExam();
         }
 
         public void Update()
         {
             try
             {
-                //UpdateCourses();
-                //UpdateExam();
                 UpdateExamPagination();
                 UpdateCoursePagination();
             }
@@ -240,13 +237,11 @@ namespace LangLang.View.Teacher
         private void ResetExam_Click(object sender, RoutedEventArgs e)
         {
             isSearchExamClicked = false;
-            //UpdateExam();
             ResetExam_Click();
             UpdateExamPagination();
         }
         private void SearchExam_Click(object sender, RoutedEventArgs e)
         {
-            //UpdateExam();
             UpdateExamPagination();
             isSearchExamClicked = true;
         }

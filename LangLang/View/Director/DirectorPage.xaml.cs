@@ -47,6 +47,7 @@ namespace LangLang.View.Director
 
         public TeacherDTO? SelectedTeacher { get; set; }
         public CourseDTO SelectedCourse { get; set; }
+        public CourseDTO SelectedCourseDirector { get; set; }
         public ExamTermDTO SelectedExamTerm { get; set; }
         public ViewModel TableViewModel { get; set; }
 
@@ -124,7 +125,8 @@ namespace LangLang.View.Director
             var courses = _teacherController.GetAllCourses();
             if (coursesId != null)
             {
-               /* foreach (Course course in courses)
+                foreach (Course course in courses)
+                {
                     if (coursesId.Contains(course.Id))
                     {
                         CourseDTO courseViewModel = new CourseDTO(course);
@@ -134,9 +136,10 @@ namespace LangLang.View.Director
                         else
                             courseViewModel.HasTeacher = false;
                         TableViewModel.CoursesDirector.Add(courseViewModel);
-                        foreach (int examTermId in course.ExamTerms)
+                        foreach (int examTermId in director.ExamsId)
                             TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
-                    }*/
+                    }
+                }
             }
         }
         private void SetDirectorExamTerms()
@@ -348,31 +351,34 @@ namespace LangLang.View.Director
 
         private void AssignTeacherCourse_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedCourse == null)
+            if (SelectedCourseDirector == null)
                 MessageBox.Show("Please choose a course to assign teacher!");
             else
             {
-                Domain.Model.Teacher? courseTeacher = _directorController.GetTeacherByCourse(SelectedCourse.Id);
+                Domain.Model.Teacher? courseTeacher = _directorController.GetTeacherByCourse(SelectedCourseDirector.Id);
                 if (courseTeacher != null)
                     MessageBox.Show("This course already has a teacher!");
-                else
+                else 
+                { 
                     AssignTeacher();
+                    SetCourses();
+                }
             }
         }
         private void AssignTeacher()
         {
-            int teacherCourseId = _directorController.FindMostAppropriateTeacher(SelectedCourse.ToCourse());
+            int teacherCourseId = _directorController.FindMostAppropriateTeacher(SelectedCourseDirector.ToCourse());
             if (teacherCourseId != -1)
             {
                 Domain.Model.Teacher teacher = _directorController.GetTeacherById(teacherCourseId);
-                SelectedCourse.SetTeacher(teacher, SelectedCourse.ToCourse());
-                teacher.CoursesId.Add(SelectedCourse.Id);
+                SelectedCourseDirector.SetTeacher(teacher, SelectedCourseDirector.ToCourse());
+                teacher.CoursesId.Add(SelectedCourseDirector.Id);
                 _directorController.Update(teacher);
                 MessageBox.Show($"{teacher.FirstName} {teacher.LastName}", "Teacher who was chosen");
             }
             else
             {
-                SelectedCourse.HasTeacher = false;
+                SelectedCourseDirector.HasTeacher = false;
                 MessageBox.Show("There is no available teacher for that course");
             }
         }
