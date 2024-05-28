@@ -12,6 +12,7 @@ namespace LangLang.Controller
     {
         private readonly ITeacherRepository _teachers;
         private readonly ICourseRepository _courses;
+        private readonly IDirectorRepository _director;
         private readonly IExamTermRepository _examTerms;
         private readonly PenaltyPointRepository _penaltyPoints;
 
@@ -20,6 +21,7 @@ namespace LangLang.Controller
             _teachers = Injector.CreateInstance<ITeacherRepository>();
             _courses = Injector.CreateInstance<ICourseRepository>();
             _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _director = Injector.CreateInstance<IDirectorRepository>(); 
             _penaltyPoints = Injector.CreateInstance<PenaltyPointRepository>();
         }
         public Course? GetCourseById(int courseId)
@@ -44,11 +46,14 @@ namespace LangLang.Controller
             ExamTerm? examTerm = GetExamTermById(id);
             if (examTerm == null) return null;
 
-            int courseId = examTerm.CourseID;
-            Course? course = _courses.GetCourseById(courseId);
-            course.ExamTerms.Remove(id);
-            _courses.UpdateCourse(course);
-
+            foreach(Teacher teacher in _director.GetAllTeachers())
+            {
+                if (teacher.ExamsId.Contains(id))
+                {
+                    teacher.ExamsId.Remove(id);
+                    _director.UpdateTeacher(teacher);
+                }
+            }
             _examTerms.RemoveExamTerm(examTerm.ExamID);
             return examTerm;
         }

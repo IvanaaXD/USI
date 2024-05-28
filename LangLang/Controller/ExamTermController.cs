@@ -14,6 +14,7 @@ namespace LangLang.Controller
     {
         private readonly IExamTermRepository _exams;
         private readonly TeacherController teacherController;
+        private readonly IDirectorRepository _directorRepository;
 
         public ExamTermController(IExamTermRepository exams, TeacherController teacherController)
         {
@@ -24,6 +25,7 @@ namespace LangLang.Controller
         {
             _exams = Injector.CreateInstance<IExamTermRepository>();
             this.teacherController = Injector.CreateInstance<TeacherController>();
+            _directorRepository = Injector.CreateInstance<IDirectorRepository>();   
         }
         public ExamTerm? GetExamTermById(int examId)
         {
@@ -167,7 +169,7 @@ namespace LangLang.Controller
 
             return filteredCourses;
         }
-
+        /*
         public Teacher DeleteExamTermsByTeacher(Teacher teacher, List<Course> courses)
         {
             var examTerms = GetAllExamTerms();
@@ -181,6 +183,21 @@ namespace LangLang.Controller
             }
 
             teacher.CoursesId = teacherExamTerms;
+            return teacher;
+        }*/
+        public Teacher DeleteExamTermsByTeacher(Teacher teacher, List<Course> courses)
+        {
+            var examTerms = GetAllExamTerms();
+            var teacherExamTerms = teacher.ExamsId;
+
+            foreach (var examTerm in examTerms)
+            {
+                Director director = _directorRepository.GetDirector();
+                if (!director.ExamsId.Contains(examTerm.ExamID) && examTerm.ExamTime.Date > DateTime.Today.Date)
+                    teacherExamTerms.Remove(examTerm.ExamID);
+            }
+
+            teacher.ExamsId = teacherExamTerms;
             return teacher;
         }
         public List<ExamTerm>? GetExamsForDisplay(bool isSearchClicked, List<ExamTerm> availableExams, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate)
