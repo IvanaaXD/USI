@@ -205,9 +205,9 @@
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
                         <!-- Pagination Buttons -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,7">
-                            <Button Content="&lt;" x:Name ="PreviousButton" Click="PreviousPage_Click" Margin="10,0,0,0" Foreground="White" Background="#555555" Width="80"/>
+                            <Button Content="&lt;" x:Name ="PreviousButton" Click="PreviousExamPage_Click" Margin="10,0,0,0" Foreground="White" Background="#555555" Width="80"/>
                             <TextBlock x:Name="PageNumberTextBlock" Text="Page 1" Margin="10,0,10,0" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                            <Button Content="&gt;" x:Name ="NextButton" Click="NextPage_Click" Margin="10,0,0,0" Foreground="White" Background="#555555" Width="80"/>
+                            <Button Content="&gt;" x:Name ="NextButton" Click="NextExamPage_Click" Margin="10,0,0,0" Foreground="White" Background="#555555" Width="80"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">

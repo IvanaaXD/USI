@@ -40,7 +40,7 @@ namespace LangLang.View.Teacher
 
         private bool isSearchCourseClicked = false;
         private bool isSearchExamClicked = false;
-        private int currentPage = 1;
+        private int currentExamPage = 1;
         private int currentCoursePage = 1;
         private string sortCriteria;
         private string courseSortCriteria;
@@ -331,42 +331,42 @@ namespace LangLang.View.Teacher
             return examTermController.GetExamsForDisplay(isSearchExamClicked, availableExams, selectedLanguage, selectedLevel, selectedStartDate);
         }
     
-        private void NextPage_Click(object sender, RoutedEventArgs e)
+        private void NextExamPage_Click(object sender, RoutedEventArgs e)
         {
 
-            currentPage++;
+            currentExamPage++;
             PreviousButton.IsEnabled = true;
             UpdateExamPagination();
 
         }
 
-        private void PreviousPage_Click(object sender, RoutedEventArgs e)
+        private void PreviousExamPage_Click(object sender, RoutedEventArgs e)
         {
-            if (currentPage > 1)
+            if (currentExamPage > 1)
             {
-                currentPage--;
+                currentExamPage--;
                 NextButton.IsEnabled = true;
                 UpdateExamPagination();
             }
-            else if (currentPage == 1)
+            else if (currentExamPage == 1)
             {
                 PreviousButton.IsEnabled = false;
             }
         }
         private void UpdateExamPagination()
         {
-            if (currentPage == 1)
+            if (currentExamPage == 1)
             {
                 PreviousButton.IsEnabled = false;
             }
-            PageNumberTextBlock.Text = $"{currentPage}";
+            PageNumberTextBlock.Text = $"{currentExamPage}";
 
             try
             {
                 TableViewModel.ExamTerms.Clear();
                 var examTerms = GetFilteredExamTerms();
-                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentPage, 4, sortCriteria, examTerms);
-                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentPage + 1, 4, sortCriteria, examTerms);
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, sortCriteria, examTerms);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, sortCriteria, examTerms);
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
                 else NextButton.IsEnabled = true;   
