@@ -92,6 +92,7 @@ namespace LangLang.View.Student
                 CoursePreviousButton = (Button)FindName("CoursePreviousButton" + selectedTabIndex);
                 CoursePageNumberTextBlock = (TextBlock)FindName("CoursePageNumberTextBlock" + selectedTabIndex);
                 courseSortCriteriaComboBox = (ComboBox)FindName("courseSortCriteriaComboBox" + selectedTabIndex);
+                currentCoursePage = 1;
 
                 UpdatePagination();
             }

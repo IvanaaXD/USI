@@ -4,6 +4,7 @@ using LangLang.Observer;
 using LangLang.Domain.Model;
 using LangLang.Domain.IRepository;
 using System;
+using System.Linq;
 
 namespace LangLang.Controller
 {
@@ -136,7 +137,8 @@ namespace LangLang.Controller
                 ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
                 finishedCourses = GetFinishedCoursesIdByExamTerm(examTerm);
                 foreach(int courseId in finishedCourses)
-                    courses.Add(courseId);
+                    if (!courses.Contains(courseId))
+                        courses.Add(courseId);
             }
             return courses;
         }
@@ -209,7 +211,7 @@ namespace LangLang.Controller
             Student student = GetStudentById(studentId);
             List<ExamTerm> completedExamTerms = new List<ExamTerm>();
 
-            foreach (int id in student.RegisteredExamsIds)
+            foreach (int id in student.PassedExamsIds)
             {
                 ExamTerm examTerm = examTermController.GetExamTermById(id);
                 if (examTerm.ExamTime < DateTime.Now)
@@ -230,7 +232,8 @@ namespace LangLang.Controller
                 ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
                 finishedCourses = GetFinishedCoursesIdByExamTerm(examTerm);
                 foreach (int courseId in finishedCourses)
-                    courses.Add(courseController.GetCourseById(courseId));
+                    if (!courses.Contains(courseController.GetCourseById(courseId)))
+                        courses.Add(courseController.GetCourseById(courseId));
             }
             return courses;
         }
@@ -452,7 +455,7 @@ namespace LangLang.Controller
             DateTime currentDate = DateTime.Now;
             if (currentDate.Day == 1)
             {
-                PenaltyPointRepository penaltyPointDAO = Injector.CreateInstance<PenaltyPointRepository>();
+                IPenaltyPointRepository penaltyPointDAO = Injector.CreateInstance<IPenaltyPointRepository>();
                 foreach (Student student in _students.GetAllStudents())
                 {
                     List<PenaltyPoint> deletedPoints = penaltyPointDAO.GetDeletedPenaltyPointsByStudentId(student.Id);
@@ -468,8 +471,9 @@ namespace LangLang.Controller
 
         public int GetPenaltyPointCount(int studentId)
         {
-            PenaltyPointRepository penaltyPointDAO = Injector.CreateInstance<PenaltyPointRepository>();
-            return penaltyPointDAO.GetPenaltyPointsByStudentId(studentId).Count;
+            IPenaltyPointRepository penaltyPointDAO = Injector.CreateInstance<IPenaltyPointRepository>();
+            List<PenaltyPoint> penalties = penaltyPointDAO.GetPenaltyPointsByStudentId(studentId);
+            return penalties != null ? penalties.Count : 0;
         }
 
         public void DeactivateStudentAccount(Student student)
