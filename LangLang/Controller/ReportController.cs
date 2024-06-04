@@ -117,7 +117,12 @@ namespace LangLang.Controller
             List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
 
             foreach (Course course in lastYearCourses)
-                finalCourses[course] = (averageTeacherGrade[course], averageKnowledgeGrade[course], averageActivityGrade[course]);
+            {
+                if (_courseController.HasGradingPeriodStarted(course))
+                {
+                    finalCourses[course] = (averageTeacherGrade[course], averageKnowledgeGrade[course], averageActivityGrade[course]);
+                }
+            }
 
             return finalCourses;
         }
@@ -125,9 +130,10 @@ namespace LangLang.Controller
         public Dictionary<string, double> GetPartsOfExamReport()
         {
             Dictionary<string, double> examAverageResult = new();
-            examAverageResult["reading"] = GetAverageReadingPointsLastYear();
-            examAverageResult["listening"] = GetAverageListeningPointsLastYear();
-            examAverageResult["speaking"] = GetAverageSpeakingPointsLastYear();
+            examAverageResult["reading"] = CalculateAveragePoints("reading");
+            examAverageResult["listening"] = CalculateAveragePoints("listening");
+            examAverageResult["speaking"] = CalculateAveragePoints("speaking");
+            examAverageResult["writing"] = CalculateAveragePoints("writing");
             return examAverageResult;
         }
 
@@ -138,9 +144,12 @@ namespace LangLang.Controller
 
             foreach (Course course in lastYearCourses)
             {
-                int attendedCount = GetAttendedCount(course.Id);
-                int passedCount = GetPassedCount(course.Id);
-                finalCourses[course] = (attendedCount, passedCount, CalculatePassPercentage(passedCount, attendedCount));
+                if (_courseController.HasGradingPeriodStarted(course))
+                {
+                    int attendedCount = GetAttendedCount(course.Id);
+                    int passedCount = GetPassedCount(course.Id);
+                    finalCourses[course] = (attendedCount, passedCount, CalculatePassPercentage(passedCount, attendedCount));
+                }
             }
 
             return finalCourses;
@@ -247,26 +256,6 @@ namespace LangLang.Controller
             return numberOfPoints;
         }
 
-        public double GetAverageReadingPointsLastYear()
-        {
-            return CalculateAveragePoints("reading");
-        }
-
-        public double GetAverageSpeakingPointsLastYear()
-        {
-            return CalculateAveragePoints("speaking");
-        }
-
-        public double GetAverageWritingPointsLastYear()
-        {
-            return CalculateAveragePoints("writing");
-        }
-
-        public double GetAverageListeningPointsLastYear()
-        {
-            return CalculateAveragePoints("listening");
-        }
-
         public double CalculateAveragePoints(string typeOfPoints)
         {
             int result = 0, count = 0;
@@ -298,6 +287,7 @@ namespace LangLang.Controller
             Dictionary<Course, double> finalResult = new();
             foreach (Course course in _courseController.GetCoursesLastYear())
             {
+                
                 int result = 0;
                 Teacher teacher = _directorController.GetTeacherByCourse(course.Id);
                 if (teacher == null)
@@ -311,6 +301,7 @@ namespace LangLang.Controller
                     finalResult[course] = 0;
                 else
                     finalResult[course] = result / teachersGrades.Count;
+                
             }
             return finalResult;
         }

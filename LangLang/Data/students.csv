@@ -1,4 +1,11 @@
-1|Marina|Marinkovic|Female|2000-04-26|098765432|marina@gmail.com|marina123|PostgraduateStudies|10|2,3||11,4,9|
-2|Ana|Stojkovic|Female|1999-12-27|065222358|ana@gmail.com|ana123|PostgraduateStudies|-1||||
-3|Stefan|Katic|Male|1999-01-01|434234234|stefan@gmail.com|stefan|HigherSchool|-1|4,13||2,3,7|4,13
-4|Kristina|Katic|Male|1999-01-01|434234234|kristina@gmail.com|kristina|HigherSchool|-1|4||2,3,7|4,13
+1|Marina|Marinkovic|Female|2000-04-26|098765432|marina@gmail.com|marina123|PostgraduateStudies|4|2,3||3,11,9,17,18,19|
+2|Ana|Stojkovic|Female|1999-12-27|065222358|ana@gmail.com|ana123|PostgraduateStudies|20|||18,19,3,7,2|
+3|Stefan|Katic|Male|1999-01-01|434234234|stefann@gmail.com|stefan|HigherSchool|21|4,13||2,3,7,19,17,18|4,13
+4|Kristina|Katic|Male|1999-01-01|434234234|kristina@gmail.com|kristina|HigherSchool|21|4||2,3,7,17|4,13
+5|Filip|Filipovic|Male|2005-11-02|0354651468|filip@gmail.com|filip123|HigherSchool|20|||18,17,19,2,7|
+6|Petra|Petrovic|Female|2001-12-15|0603200121|petra@gmail.com|petra123|NoEducation|20|||2,18,17,3,7,9|
+7|Sara|Saric|Female|2002-12-31|0165106416|sara@gmail.com|sara123|HighSchool|-1|5||7,9,11,18|
+8|Vuk|Vukovic|Male|2000-10-19|065486518|vuk@gmail.com|vuk123|PostgraduateStudies|-1|6|12,13|2,7,9,11,18|
+9|Viktorija|Vukic|Female|2004-07-13|0654891489|viktorija@gmail.com|viktorija123|HigherSchool|-1|7||2,9,11,18,19|
+10|Mirko|Mirkovic|Male|2001-03-25|065489451775|mirko@gmail.com|mirko123|HigherSchool|-1|||2,11,19|
+11|Luka|Lukic|Male|2003-03-01|065487851|luka@gmail.com|luka123|HigherSchool|-1||||

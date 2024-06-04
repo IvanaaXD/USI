@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media.Media3D;
 
 namespace LangLang.View.Teacher
 {
@@ -72,27 +73,28 @@ namespace LangLang.View.Teacher
         }
         private void FillLanguageAndLevelCombobox()
         {
-            List<Course> courses = courseController.GetAllCourses();
+            List<Domain.Model.Teacher> teachers = directorController.GetAllTeachers();
             List<string> levelLanguageStr = new List<string>();
             if (teacherId == -1)
             {
-                foreach (Course course in courses)
+                foreach (Domain.Model.Teacher teacher in teachers)
                 {
-                    string languageLevel = $"{course.Language} {course.Level}";
-                    if (!levelLanguageStr.Contains(languageLevel))
-                        levelLanguageStr.Add(languageLevel);
+                    for(int i = 0; i < teacher.Languages.Count; i++)
+                    {
+                        string languageLevel = $"{teacher.Languages[i]} {teacher.LevelOfLanguages[i]}";
+                        if (!levelLanguageStr.Contains(languageLevel))
+                            levelLanguageStr.Add(languageLevel);
+                    }
+                   
                 }
             }
             else
             {
-                foreach (Course course in courses)
+                for (int i = 0; i < Teacher.Languages.Count; i++)
                 {
-                    if (Teacher.CoursesId.Contains(course.Id))
-                    {
-                        string languageLevel = $"{course.Language} {course.Level}";
-                        if (!levelLanguageStr.Contains(languageLevel))
-                            levelLanguageStr.Add(languageLevel);
-                    }
+                    string languageLevel = $"{Teacher.Languages[i]} {Teacher.LevelOfLanguages[i]}";
+                    if (!levelLanguageStr.Contains(languageLevel))
+                        levelLanguageStr.Add(languageLevel);
                 }
             }
 
