@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using LangLang.Domain.Model.Enums;
 using LangLang.Storage.Serialization;
 
@@ -15,6 +16,7 @@ namespace LangLang.Domain.Model
         private bool confirmed;
         private bool informed;
 
+        [Key]
         public int ExamID
         {
             get { return examID; }
