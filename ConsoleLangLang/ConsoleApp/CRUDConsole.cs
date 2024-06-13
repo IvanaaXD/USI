@@ -1,13 +1,11 @@
 ﻿using System;
 using LangLang.Controller;
 using LangLang.Domain.Model;
-using LangLang.View.Director;
-using System;
 using System.Reflection;
 
 public class CRUDConsole
 {
-    public static void Display<T>(Person person)
+    public static void Display(Person person)
     {
         while (true)
         {

@@ -1,12 +1,10 @@
 ﻿using LangLang.Controller;
 using LangLang.Domain.IRepository;
 using LangLang.Domain.Model.Enums;
-using LangLang.Repository;
+using PdfSharp.Pdf.Content.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LangLang.Domain.Model.Reports
 {
@@ -128,30 +126,37 @@ namespace LangLang.Domain.Model.Reports
 
             foreach (var number in numberOfPoints)
             {
-                List<LanguageLevel> levels = new List<LanguageLevel>();
-                int sum = 0;
-
-                foreach (var examTerm in examTerms)
-                {
-                    var grades = _examTermGradeController.GetExamTermGradeByExam(examTerm.ExamID);
-
-                    if (examTerm.Language == number.Key)
-                    {
-                        if (!levels.Contains(examTerm.Level))
-                            levels.Add(examTerm.Level);
-
-                        foreach (var grade in grades)
-                            sum += grade.ListeningPoints + grade.ReadingPoints + grade.SpeakingPoints + grade.WritingPoints;
-                    }
-                }
+                var (sum, num) = GetNumberOfPointsByLanguage(examTerms, number.Key);
 
                 double averageNumber = 0;
                 if (sum != 0)
-                    averageNumber = sum / levels.Count();
+                    averageNumber = sum / num;
 
                 numberOfPoints[number.Key] = averageNumber;
             }
             return numberOfPoints;
+        }
+
+        private (int, int) GetNumberOfPointsByLanguage(List<ExamTerm> examTerms, Language language)
+        {
+            List<LanguageLevel> levels = new List<LanguageLevel>();
+            int sum = 0;
+
+            foreach (var examTerm in examTerms)
+            {
+                var grades = _examTermGradeController.GetExamTermGradeByExam(examTerm.ExamID);
+
+                if (examTerm.Language == language)
+                {
+                    if (!levels.Contains(examTerm.Level))
+                        levels.Add(examTerm.Level);
+
+                    foreach (var grade in grades)
+                        sum += grade.ListeningPoints + grade.ReadingPoints + grade.SpeakingPoints + grade.WritingPoints;
+                }
+            }
+
+            return (sum, levels.Count);
         }
     }
 }
