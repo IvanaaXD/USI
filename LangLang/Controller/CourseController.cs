@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using LangLang.Domain.IRepository;
 using System.Linq;
+using System.Windows.Input;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace LangLang.Controller
 {
@@ -12,21 +14,20 @@ namespace LangLang.Controller
     {
         private readonly IStudentRepository _students;
         private readonly ICourseRepository _courses;
-        private readonly ITeacherRepository? _teachers;
         private readonly TeacherController _teacherController;
-        private readonly IExamTermRepository? _examTerms;
-        private readonly IDirectorRepository? _director;
-        private readonly IMailRepository? _mails;
+        private readonly IExamTermRepository _examTerms;
+        private readonly IDirectorRepository _director;
+
+        private readonly int courseDurationInMinutes = 90;
+        private readonly int examDurationInMinutes = 240; 
 
         public CourseController()
         {
             _students = Injector.CreateInstance<IStudentRepository>();
             _courses = Injector.CreateInstance<ICourseRepository>();
-            _teachers = Injector.CreateInstance<ITeacherRepository>();
             _teacherController = Injector.CreateInstance<TeacherController>();
             _examTerms = Injector.CreateInstance<IExamTermRepository>();
             _director = Injector.CreateInstance<IDirectorRepository>();
-            _mails = Injector.CreateInstance<IMailRepository>();
         }
 
         public Course? GetById(int courseId)
@@ -49,7 +50,7 @@ namespace LangLang.Controller
             List<Course> allCourses = GetAllCourses();
             List<int> allTeacherCourses = teacher.CoursesId;
 
-            List<Course> availableCourses = new List<Course>();
+            List<Course> availableCourses = new();
 
             foreach (Course course in allCourses)
             {
@@ -100,140 +101,137 @@ namespace LangLang.Controller
             return true;
 
         }
-        public bool CheckTeacherCoursesOverlap(Course course, Teacher teacher)
+
+        private (DateTime, DateTime) GetStartEndDate(Course course)
         {
-            int courseDurationInMinutes = 90;
+            DateTime courseStartTime = course.StartDate;
+            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
 
-            DateTime courseStartTime = course.StartDate; // start of first ever course session 
-            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes); // end of last ever course session
+            return (courseStartTime, courseEndTime);
+        }
+        private (DateTime, DateTime) GetStartEndDate(ExamTerm examTerm)
+        {
+            DateTime examStartTime = examTerm.ExamTime;
+            DateTime examEndTime = examTerm.ExamTime.AddMinutes(examDurationInMinutes);
+            return (examStartTime, examEndTime);
+        }
+        private bool CompareDates(DateTime startDateOne, DateTime endDateOne, DateTime startDateTwo, DateTime endDateTwo)
+        {
+            DateTime maxStartTime = startDateOne > startDateTwo ? startDateOne : startDateTwo;
+            DateTime minEndTime = endDateOne < endDateTwo ? endDateOne : endDateTwo;
 
+            if ((startDateOne == startDateTwo && endDateOne == endDateTwo) ||
+                (maxStartTime < minEndTime))
+                return true;
+
+            return false;
+        }
+        private bool CompareTimes(Course course, Course secondCourse)
+        {
+            (TimeSpan courseSessionStart, TimeSpan courseSessionEnd) = GetSessionTimes(course);
+            (TimeSpan secondCourseSessionStart, TimeSpan secondCourseSessionEnd) = GetSessionTimes(secondCourse);
+
+            TimeSpan maxStartTime = courseSessionStart > secondCourseSessionStart ? courseSessionStart : secondCourseSessionStart;
+            TimeSpan minEndTime = courseSessionEnd < secondCourseSessionEnd ? courseSessionEnd : secondCourseSessionEnd;
+            if ((courseSessionStart == secondCourseSessionStart) || (maxStartTime < minEndTime))
+                return true;
+            return false;
+        }
+
+        private bool CheckTeacherCoursesOverlap(Course course, Teacher teacher)
+        {
             List<Course> teacherCourses = GetAvailableCourses(teacher);
             foreach (Course secondCourse in teacherCourses)
             {
                 if (course.Id == secondCourse.Id)
                     continue;
 
-                DateTime secondCourseStartTime = secondCourse.StartDate;
-                DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
-
-                DateTime maxStartTime = courseStartTime > secondCourseStartTime ? courseStartTime : secondCourseStartTime;
-                DateTime minEndTime = courseEndTime < secondCourseEndTime ? courseEndTime : secondCourseEndTime;
-
-                if ((courseStartTime == secondCourseStartTime && courseEndTime == secondCourseEndTime) ||
-                    (maxStartTime < minEndTime))
-                {
-                    bool isSessionOverlap = CheckSessionOverlap(course, secondCourse);
-                    if (isSessionOverlap)
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        public bool CheckTeacherCourseExamOverlap(Course course, Teacher teacher)
-        {
-            int courseDurationInMinutes = 90;
-            int examDurationInMinutes = 240;
-
-            DateTime courseStartTime = course.StartDate; // start of first ever course session 
-            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes); // end of last ever course session
-
-            List<ExamTerm> teacherExams = _teacherController.GetAvailableExamTerms(teacher);
-            foreach (ExamTerm examTerm in teacherExams)
-            {
-                if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
-                    continue;
-
-                DateTime examStartTime = examTerm.ExamTime;
-                DateTime examEndTime = examTerm.ExamTime.AddMinutes(examDurationInMinutes);
-
-                DateTime maxStartTime = courseStartTime > examStartTime ? courseStartTime : examStartTime;
-                DateTime minEndTime = courseEndTime < examEndTime ? courseEndTime : examEndTime;
-
-                if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
-                    (maxStartTime < minEndTime))
+                if (CompareCourseDurations(course, secondCourse))
                     return true;
             }
             return false;
         }
 
+        private bool CompareCourseDurations(Course currentCourse, Course secondCourse)
+        {
+            (DateTime courseStartTime, DateTime courseEndTime) = GetStartEndDate(currentCourse);
+
+            (DateTime secondCourseStartTime, DateTime secondCourseEndTime) = GetStartEndDate(secondCourse);
+
+            if (CompareDates(courseStartTime, courseEndTime, secondCourseStartTime, secondCourseEndTime))
+            {
+                bool isSessionOverlap = CheckSessionOverlap(currentCourse, secondCourse);
+                if (isSessionOverlap)
+                    return true;
+            }
+            return false;
+        }
+
+        private bool CompareCourseAndExam(Course course, ExamTerm examTerm)
+        {
+            if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
+                return false;
+
+            (DateTime courseStartTime, DateTime courseEndTime) = GetStartEndDate(course);
+            (DateTime examStartTime, DateTime examEndTime) = GetStartEndDate(examTerm);
+
+            if (CompareDates(courseStartTime, courseEndTime, examStartTime, examEndTime))
+                return true;
+
+            return false;
+        }
+        private bool CheckTeacherCourseExamOverlap(Course course, Teacher teacher)
+        {
+            List<ExamTerm> teacherExams = _teacherController.GetAvailableExamTerms(teacher);
+            foreach (ExamTerm examTerm in teacherExams)
+            {
+                if (CompareCourseAndExam(course, examTerm))
+                    return true;
+            }
+            return false;
+        }
+
+        private (TimeSpan,TimeSpan) GetSessionTimes(Course course)
+        {
+            TimeSpan sessionStart = course.StartDate.TimeOfDay;
+            TimeSpan sessionEnd = sessionStart.Add(TimeSpan.FromMinutes(courseDurationInMinutes));
+
+            return (sessionStart, sessionEnd);
+        }
+
         private bool CheckSessionOverlap(Course course, Course secondCourse)
         {
-            int courseDurationInMinutes = 90;
             foreach (DayOfWeek day in course.WorkDays)
             {
                 if (secondCourse.WorkDays.Contains(day))
                 {
-                    TimeSpan sessionOneStart = course.StartDate.TimeOfDay;
-                    TimeSpan sessionTwoStart = secondCourse.StartDate.TimeOfDay;
-
-                    TimeSpan sessionOneEnd = sessionOneStart.Add(TimeSpan.FromMinutes(courseDurationInMinutes));
-                    TimeSpan sessionTwoEnd = sessionTwoStart.Add(TimeSpan.FromMinutes(courseDurationInMinutes));
-
-                    TimeSpan maxStartTime = sessionOneStart > sessionTwoStart ? sessionOneStart : sessionTwoStart;
-                    TimeSpan minEndTime = sessionOneEnd < sessionTwoEnd ? sessionOneEnd : sessionTwoEnd;
-                    if ((sessionOneStart == sessionTwoStart) || (maxStartTime < minEndTime))
+                    if (CompareTimes(course,secondCourse))
                         return true;
                 }
             }
             return false;
         }
-        public (DateTime, DateTime) GetCourseDates(Course course, Course secondCourse)
-        {
-            DateTime courseStartTime = course.StartDate;
-            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(90);
 
-            DateTime secondCourseStartTime = secondCourse.StartDate;
-            DateTime secondCourseEndTime = secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(90);
-
-            DateTime maxStartTime = courseStartTime > secondCourseStartTime ? courseStartTime : secondCourseStartTime;
-            DateTime minEndTime = courseEndTime < secondCourseEndTime ? courseEndTime : secondCourseEndTime;
-
-            return (maxStartTime, minEndTime);
-        }
-
-        public bool CheckClassroomOverlap(Course course, List<Course> allAvailableCourses, List<ExamTerm> allAvailableExams)
+        private bool CheckClassroomOverlap(Course course, List<Course> allAvailableCourses, List<ExamTerm> allAvailableExams)
         {
             bool isClassroomOneTaken = false;
-
-            int courseDurationInMinutes = 90;
-            int examDurationInMinutes = 240;
-
-            DateTime courseStartTime = course.StartDate;
-            DateTime courseEndTime = course.StartDate.AddDays(course.Duration * 7).AddMinutes(courseDurationInMinutes);
 
             foreach (Course secondCourse in allAvailableCourses)
             {
                 if (secondCourse.IsOnline)
                     continue;
 
-                (DateTime maxStartTime, DateTime minEndTime) = GetCourseDates(course, secondCourse);
-
-                if ((courseStartTime == secondCourse.StartDate && courseEndTime == secondCourse.StartDate.AddDays(course.Duration * 7).AddMinutes(90)) ||
-                    (maxStartTime < minEndTime))
-                {
-                    bool isSessionOverlap = CheckSessionOverlap(course, secondCourse);
+                    bool isSessionOverlap = CompareCourseDurations(course,secondCourse);
                     if (isSessionOverlap)
                         if (isClassroomOneTaken)
                             return true;
                         else
                             isClassroomOneTaken = true;
-                }
             }
 
             foreach (ExamTerm examTerm in allAvailableExams)
             {
-                if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
-                    continue;
-
-                DateTime examStartTime = examTerm.ExamTime;
-                DateTime examEndTime = examTerm.ExamTime.AddMinutes(examDurationInMinutes);
-
-                DateTime maxStartTime = courseStartTime > examStartTime ? courseStartTime : examStartTime;
-                DateTime minEndTime = courseEndTime < examEndTime ? courseEndTime : examEndTime;
-
-                if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
-                    (maxStartTime < minEndTime))
+                if (CompareCourseAndExam(course, examTerm))
                 {
                     if (isClassroomOneTaken)
                         return true;
@@ -271,13 +269,17 @@ namespace LangLang.Controller
 
         public void IncrementCourseCurrentlyEnrolled(int courseId)
         {
-            Course course = GetById(courseId);
+            Course? course = GetById(courseId);
+            if (course == null)
+                return;
             ++course.CurrentlyEnrolled;
             Update(course);
         }
         public void DecrementCourseCurrentlyEnrolled(int courseId)
         {
-            Course course = GetById(courseId);
+            Course? course = GetById(courseId);
+            if (course == null)
+                return;
             --course.CurrentlyEnrolled;
             Update(course);
         }
@@ -295,10 +297,10 @@ namespace LangLang.Controller
             return filteredCourses;
         }
 
-        public List<Course> FindCoursesByDate(DateTime? startDate)
+        public List<Course> FindCoursesByDate(DateTime startDate)
         {
             var filteredCourses = _courses.GetAllCourses().Where(course =>
-                (course.StartDate.Date >= (startDate.Value.Date) && course.StartDate.Date <= DateTime.Today.Date)
+                course.StartDate.Date >= startDate.Date && course.StartDate.Date <= DateTime.Today.Date
             ).ToList();
 
             return filteredCourses;
@@ -348,9 +350,9 @@ namespace LangLang.Controller
         }
         private List<Course> GetCompletedCourses()
         {
-            StudentsController studentController = new StudentsController();
+            StudentsController studentController = new();
             List<Course> courses = GetAllCourses();
-            List<Course> completedCourses = new List<Course>();
+            List<Course> completedCourses = new();
             foreach (Course course in courses)
                 if (HasCourseFinished(course, studentController.GetAllStudentsEnrolledCourse(course.Id).Count))
                     completedCourses.Add(course);
@@ -358,9 +360,9 @@ namespace LangLang.Controller
         }
         public List<Course> GetCoursesForTopStudentMails()
         {
-            MailController mailController = new MailController();
+            MailController mailController = new();
             List<Course> courses = GetCompletedCourses();
-            List<Course> sendMailCourses = new List<Course>();
+            List<Course> sendMailCourses = new();
 
             foreach (Course course in courses)
                 if (!mailController.IsTopStudentsMailSent(course.Id))
@@ -370,13 +372,13 @@ namespace LangLang.Controller
 
         private int GetCoursePenaltyPoints(int courseId)
         {
-            PenaltyPointController penaltyPointController = new PenaltyPointController();
+            PenaltyPointController penaltyPointController = new();
             return penaltyPointController.GetPointsByCourseId(courseId).Count;
         }
 
         public Dictionary<Course, int> GetPenaltyPointsLastYearPerCourse()
         {
-            Dictionary<Course, int> coursePenaltyPoints = new Dictionary<Course, int>();
+            Dictionary<Course, int> coursePenaltyPoints = new();
             foreach (Course course in GetCoursesLastYear())
                 coursePenaltyPoints[course] = GetCoursePenaltyPoints(course.Id);
             return coursePenaltyPoints;
@@ -409,7 +411,7 @@ namespace LangLang.Controller
         }
         public List<Course> GetCoursesLastYear()
         {
-            List<Course> courses = new List<Course>();
+            List<Course> courses = new();
             foreach (Course course in GetAllCourses())
                 if (IsCourseLastYear(course) && !courses.Contains(course))
                     courses.Add(course);

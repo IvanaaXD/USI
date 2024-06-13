@@ -11,10 +11,10 @@ namespace LangLang.Domain.Model.Reports
     public class SecondReportGenerator : IReportGenerator
     {
 
-        IStudentGradeRepository _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
-        ICourseGradeRepository _courseGrade = Injector.CreateInstance<ICourseGradeRepository>();
-        CourseController _courseController = Injector.CreateInstance<CourseController>();
-        DirectorController _directorController = Injector.CreateInstance<DirectorController>();
+        readonly IStudentGradeRepository _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
+        readonly ICourseGradeRepository _courseGrade = Injector.CreateInstance<ICourseGradeRepository>();
+        readonly CourseController _courseController = Injector.CreateInstance<CourseController>();
+        readonly DirectorController _directorController = Injector.CreateInstance<DirectorController>();
           
         public void GenerateReport()
         {
@@ -56,9 +56,8 @@ namespace LangLang.Domain.Model.Reports
             Dictionary<Course, double> finalResult = new();
             foreach (Course course in _courseController.GetCoursesLastYear())
             {
-
                 int result = 0;
-                Teacher teacher = _directorController.GetTeacherByCourse(course.Id);
+                Teacher? teacher = _directorController.GetTeacherByCourse(course.Id);
                 if (teacher == null)
                     continue;
                 List<StudentGrade> teachersGrades = _studentGrades.GetStudentGradesByTeacherCourse(teacher.Id, course.Id);
