@@ -58,7 +58,7 @@ public class GenericCrud
         Console.WriteLine("Item deleted.");
     }*/
 
-    private void PrintTable<T>(List<T> dataStore)
+    public void PrintTable<T>(List<T> dataStore)
     {
         if (!dataStore.Any())
         {
