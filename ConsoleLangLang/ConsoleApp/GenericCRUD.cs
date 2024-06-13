@@ -8,13 +8,23 @@ public class GenericCrud
 {
     public T Create<T>() where T : new()
     {
-        T item = new T(); 
+        T item = new T();
+
+        bool isFirstProperty = true;
 
         foreach (PropertyInfo prop in typeof(T).GetProperties())
         {
-            if (prop.CanWrite)
+            if (isFirstProperty)
             {
-                Console.Write($"Enter {prop.Name} ({prop.PropertyType}): ");
+                isFirstProperty = false;
+                continue;
+            }
+
+            if (prop.CanWrite && !IsCollectionType(prop.PropertyType))
+            {
+                string formatHint = GetFormatHint(prop.PropertyType);
+                Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
+
                 string input = Console.ReadLine();
                 object value = ConvertValue(input, prop.PropertyType);
                 prop.SetValue(item, value);
@@ -24,6 +34,24 @@ public class GenericCrud
         return item;
     }
 
+    private bool IsCollectionType(Type type)
+    {
+        return typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string);
+    }
+
+    private string GetFormatHint(Type type)
+    {
+        if (type == typeof(int))
+            return " (e.g., 123)";
+        else if (type == typeof(double))
+            return " (e.g., 123.45)";
+        else if (type == typeof(DateTime))
+            return " (e.g., 2023-01-01 12:00:00)";
+        else if (type == typeof(bool))
+            return " (e.g., true or false)";
+        else
+            return string.Empty;
+    }
     public void Read<T>(T item)
     {
         PrintTable(new List<T> { item });
@@ -167,6 +195,10 @@ public class GenericCrud
 
     private static object ConvertListType(string input, Type type)
     {
+        if (string.IsNullOrEmpty(input)) 
+        {
+            return null;
+        }
         Type itemType = type.GetGenericArguments()[0];
         string[] items = input.Split(',');
         var list = (IList)Activator.CreateInstance(type);

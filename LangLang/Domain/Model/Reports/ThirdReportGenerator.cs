@@ -2,9 +2,6 @@
 using LangLang.Domain.IRepository;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LangLang.Domain.Model.Reports
 {
@@ -14,6 +11,7 @@ namespace LangLang.Domain.Model.Reports
         IExamTermRepository _examTerms = Injector.CreateInstance<IExamTermRepository>();
         ExamTermGradeController _examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
         ICourseGradeRepository _courseGrade = Injector.CreateInstance<ICourseGradeRepository>();
+
         public void GenerateReport()
         {
             PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report3.pdf");
