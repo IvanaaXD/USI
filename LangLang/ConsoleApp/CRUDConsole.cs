@@ -58,56 +58,16 @@ public class CRUDConsole
             switch (operation)
             {
                 case "c":
-                    T newItem = crud.Create<T>();
-                    controller.Add(newItem);
-
-                    Console.WriteLine("Item created: ");
-                    crud.Read(newItem);
-
-                    CheckType(newItem, person);
+                    CreateItem<T>(crud, person, controller);
                     break;
                 case "r":
-                    Console.Write("Enter ID of item to read: ");
-
-                    if (int.TryParse(Console.ReadLine(), out int readId))
-                    {
-                        T itemToRead = new T();
-                        itemToRead = controller.GetById(readId);
-                        crud.Read(itemToRead);
-                    }
-                    else
-                        Console.WriteLine("Invalid input.");
-
+                    ReadItem<T>(crud, person, controller);
                     break;
                 case "u":
-                    Console.Write("Enter ID of item to update: ");
-                    if (int.TryParse(Console.ReadLine(), out int updateId))
-                    {
-                        T itemToUpdate = new T(); 
-                        T updatedItem = crud.Update(itemToUpdate);
-                        controller.Update(updatedItem);
-
-                        Console.WriteLine("Item updated:");
-                        crud.Read(updatedItem);
-
-                        CheckType(updatedItem, person);
-                    }
-                    else
-                        Console.WriteLine("Invalid input.");
-
+                    UpdateItem<T>(crud, person, controller);
                     break;
                 case "d":
-                    Console.Write("Enter ID of item to delete: ");
-                    if (int.TryParse(Console.ReadLine(), out int deleteId))
-                    {
-                        T itemToDelete = new T(); 
-                        controller.GetById(deleteId);
-                        controller.Delete(itemToDelete);
-                        Console.WriteLine("Item deleted.");
-                    }
-                    else
-                        Console.WriteLine("Invalid input.");
-
+                    DeleteItem<T>(crud, person, controller);
                     break;
                 case "e":
                     return;
@@ -118,6 +78,61 @@ public class CRUDConsole
         }
     }
 
+    private static void CreateItem<T>(GenericCrud crud, Person person, dynamic controller) where T : new()
+    {
+        T newItem = crud.Create<T>();
+
+        Console.WriteLine("Item created: ");
+        crud.Read(newItem);
+
+        AddCheckType(newItem, person);
+        controller.Add(newItem);
+    }
+
+    private static void ReadItem<T>(GenericCrud crud, Person person, dynamic controller) where T : new()
+    {
+        Console.Write("Enter ID of item to read: ");
+
+        if (int.TryParse(Console.ReadLine(), out int readId))
+        {
+            T itemToRead = new T();
+            itemToRead = controller.GetById(readId);
+            crud.Read(itemToRead);
+        }
+        else
+            Console.WriteLine("Invalid input.");
+    }
+
+    private static void UpdateItem<T>(GenericCrud crud, Person person, dynamic controller) where T : new()
+    {
+        Console.Write("Enter ID of item to update: ");
+
+        if (int.TryParse(Console.ReadLine(), out int updateId))
+        {
+            T itemToUpdate = new T();
+            T updatedItem = crud.Update(itemToUpdate);
+            controller.Update(updatedItem);
+
+            Console.WriteLine("Item updated:");
+            crud.Read(updatedItem);
+        }
+        else
+            Console.WriteLine("Invalid input.");
+    }
+
+    private static void DeleteItem<T>(GenericCrud crud, Person person, dynamic controller) where T : new()
+    {
+        Console.Write("Enter ID of item to delete: ");
+        if (int.TryParse(Console.ReadLine(), out int deleteId))
+        {
+            T itemToDelete = new T();
+            controller.GetById(deleteId);
+            controller.Delete(itemToDelete);
+            Console.WriteLine("Item deleted.");
+        }
+        else
+            Console.WriteLine("Invalid input.");
+    }
     /*
     private static void CreateObject<T>(GenericCrud crud, object controller) where T : new()
     {
@@ -162,7 +177,7 @@ public class CRUDConsole
         return controller;
     }
 
-    private static void CheckType<T>(T item, Person person)
+    private static void AddCheckType<T>(T item, Person person)
     {
         if (person.GetType() == typeof(Teacher))
         {
