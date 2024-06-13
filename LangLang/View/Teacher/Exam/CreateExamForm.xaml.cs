@@ -215,14 +215,14 @@ namespace LangLang.View.Teacher
                     Course course = courseController.GetCourseById(courseId);
                     if (examTerm.Language == course.Language && examTerm.Level == course.Level)
                     {
-                        courseController.UpdateCourse(course);
+                        courseController.Update(course);
                         foundMatchingCourse = true;
                         break;
                     }
                 }
 
                 teacher.ExamsId.Add(examId + 1);
-                examTermController.AddExamTerm(CreatedExamTerm.ToExamTermWithLanguage());
+                examTermController.Add(CreatedExamTerm.ToExamTermWithLanguage());
 
                 directorController.Update(teacher);
 

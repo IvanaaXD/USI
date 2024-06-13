@@ -171,7 +171,7 @@ namespace LangLang.View.Teacher
                 else
                 {
                     int courseId = SelectedCourse.Id;
-                    courseController.DeleteCourse(courseId);
+                    courseController.Delete(courseId);
                     directorController.RemoveCourseFromList(teacherId, courseId);
                     directorController.RemoveCourseFromDirector(courseId);
                 }

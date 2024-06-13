@@ -56,18 +56,14 @@ namespace LangLang.Controller
             }
             return availableCourses;
         }
-        public Course AddCourse(Course course, int teacherId)
+
+        public Course Add(Course course)
         {
             Course createdCourse = _courses.AddCourse(course);
-            if (teacherId != -1)
-            {
-                Teacher teacher = _director.GetTeacherById(teacherId);
-                teacher.CoursesId.Add(course.Id);
-                _director.UpdateTeacher(teacher);
-            }
             return createdCourse;
         }
-        public void UpdateCourse(Course course)
+
+        public void Update(Course course)
         {
             _courses.UpdateCourse(course);
         }
@@ -79,6 +75,7 @@ namespace LangLang.Controller
                 return isOverlap;
             return true;
         }
+
         private bool CheckCourseOverlap(Course course, Teacher teacher)
         {
             List<Course> allAvailableCourses = _courses.GetAllCourses();
@@ -246,7 +243,7 @@ namespace LangLang.Controller
             return false;
         }
 
-        public void DeleteCourse(int courseId)
+        public void Delete(int courseId)
         {
             _courses.RemoveCourse(courseId);
             RemoveCourseFromRequests(courseId);
@@ -274,13 +271,13 @@ namespace LangLang.Controller
         {
             Course course = GetCourseById(courseId);
             ++course.CurrentlyEnrolled;
-            UpdateCourse(course);
+            Update(course);
         }
         public void DecrementCourseCurrentlyEnrolled(int courseId)
         {
             Course course = GetCourseById(courseId);
             --course.CurrentlyEnrolled;
-            UpdateCourse(course);
+            Update(course);
         }
 
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)

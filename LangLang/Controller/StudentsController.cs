@@ -329,7 +329,7 @@ namespace LangLang.Controller
             student.RegisteredExamsIds.Add(examId);
 
             examTerm.CurrentlyAttending += 1;
-            examTermController.UpdateExamTerm(examTerm);
+            examTermController.Update(examTerm);
 
             Update(student);
             return true;
@@ -345,7 +345,7 @@ namespace LangLang.Controller
                 student.RegisteredExamsIds.Remove(examTermId);
 
                 examTerm.CurrentlyAttending -= 1;
-                examTermController.UpdateExamTerm(examTerm);
+                examTermController.Update(examTerm);
 
                 Update(student);
                 return true;
@@ -485,7 +485,7 @@ namespace LangLang.Controller
                 if (DateTime.Now < courseEndDate)
                 {
                     course.CurrentlyEnrolled--;
-                    courseController.UpdateCourse(course);
+                    courseController.Update(course);
                 }
             }
             student.ActiveCourseId = -10;

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using LangLang.Domain.Model;
+using System.Windows.Input;
 
 namespace LangLang.View.Teacher
 {
@@ -170,7 +171,10 @@ namespace LangLang.View.Teacher
 
             if (CreatedCourse.IsValid && teacherId != -1)
             {
-                courseController.AddCourse(CreatedCourse.ToCourse(), teacherId);
+                courseController.Add(CreatedCourse.ToCourse());
+                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                teacher.CoursesId.Add(CreatedCourse.ToCourse().Id);
+                directorController.Update(teacher);
 
                 Close();
             }
@@ -193,7 +197,10 @@ namespace LangLang.View.Teacher
                     }
                     director.CoursesId.Add(courseId + 1);
                     directorController.Update(director);
-                    courseController.AddCourse(CreatedCourse.ToCourse(), teacherId);
+                    courseController.Add(CreatedCourse.ToCourse());
+                    Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                    teacher.CoursesId.Add(CreatedCourse.ToCourse().Id);
+                    directorController.Update(teacher);
 
                     Close();
                 }

@@ -114,7 +114,7 @@ namespace LangLang.View.Teacher
             PickDataFromListBox();
             if (Course.IsValid)
             {
-                courseController.UpdateCourse(Course.ToCourse());
+                courseController.Update(Course.ToCourse());
                 Close();
             }
             else
