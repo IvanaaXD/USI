@@ -1,5 +1,4 @@
 ﻿using System;
-using LangLang.Domain.Model;
 
 public class MainConsole
 {
