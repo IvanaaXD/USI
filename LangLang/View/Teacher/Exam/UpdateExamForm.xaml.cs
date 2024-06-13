@@ -33,7 +33,7 @@ namespace LangLang.View.Teacher
             this.teacherController = Injector.CreateInstance<TeacherController>();
             this.examTermController = Injector.CreateInstance<ExamTermController>();
 
-            teacher = directorController.GetTeacherById(teacherId);
+            teacher = directorController.GetById(teacherId);
             ExamTerm examTerm = teacherController.GetExamTermById(examId);
             ExamTerm = new ExamTermDTO(examTerm, teacher);
             DataContext = ExamTerm;
@@ -41,7 +41,7 @@ namespace LangLang.View.Teacher
             InitializeComponent();
             this.teacherId = teacherId;
             this.examId = examId;
-            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            Teacher = new TeacherDTO(directorController.GetById(teacherId));
 
             SetInitialLanguageAndLevel(ExamTerm);
             FillLanguageAndLevelCombobox();
@@ -57,7 +57,7 @@ namespace LangLang.View.Teacher
         }
         private void FillLanguageAndLevelCombobox()
         {
-            teacher = directorController.GetTeacherById(teacherId);
+            teacher = directorController.GetById(teacherId);
             List<Course> courses = teacherController.GetAllCourses();
             List<string> levelLanguageStr = new List<string>();
 

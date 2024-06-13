@@ -61,7 +61,7 @@ namespace LangLang.View.Teacher
             teacherController.Subscribe(this);
             directorController.Subscribe(this);
 
-            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher = directorController.GetById(teacherId);
             firstAndLastName.Text = teacher.FirstName + " " + teacher.LastName;
 
             studentRating.Text = directorController.GetAverageTeacherGrade(teacherId).ToString();
@@ -209,7 +209,7 @@ namespace LangLang.View.Teacher
             }
             bool isOnline = courseOnlineCheckBox.IsChecked ?? false;
 
-            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher = directorController.GetById(teacherId);
 
             List<Course> availableCourses = courseController.GetAvailableCourses(teacher);
 
@@ -273,7 +273,7 @@ namespace LangLang.View.Teacher
             else
             {
                 Course course = teacherController.GetCourseById(SelectedCourse.Id);
-                CourseView courseView = new CourseView(course, directorController.GetTeacherById(this.teacherId));
+                CourseView courseView = new CourseView(course, directorController.GetById(this.teacherId));
                 courseView.Show();
             }
         }
@@ -285,7 +285,7 @@ namespace LangLang.View.Teacher
             else
             {
                 ExamTerm? examTerm = teacherController.GetExamTermById(SelectedExamTerm.ExamID);
-                Domain.Model.Teacher? teacher = directorController.GetTeacherById(this.teacherId);
+                Domain.Model.Teacher? teacher = directorController.GetById(this.teacherId);
                 ExamTermView examTermView = new ExamTermView(examTerm, teacher, this);
                 examTermView.Owner = this;
                 this.Visibility = Visibility.Collapsed;
@@ -321,7 +321,7 @@ namespace LangLang.View.Teacher
             LanguageLevel? selectedLevel = (LanguageLevel?)examLevelComboBox.SelectedItem;
             DateTime? selectedStartDate = examDatePicker.SelectedDate;
 
-            Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+            Domain.Model.Teacher teacher = directorController.GetById(teacherId);
 
             List<ExamTerm> availableExams = teacherController.GetAvailableExamTerms(teacher);
             

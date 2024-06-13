@@ -38,7 +38,7 @@ namespace LangLang.View.Director
             InitializeComponent();
             InitializeControllers();
 
-            course = courseController.GetCourseById(courseId);
+            course = courseController.GetById(courseId);
             this.director = director;
 
             StudentsTableViewModel = new ViewModel();

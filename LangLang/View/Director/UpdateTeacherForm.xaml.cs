@@ -23,7 +23,7 @@ namespace LangLang.View.Director
         {
             InitializeComponent();
             this.directorController = Injector.CreateInstance<DirectorController>();    
-            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            Teacher = new TeacherDTO(directorController.GetById(teacherId));
             DataContext = Teacher;
             teacherEmail = Teacher.Email;
 

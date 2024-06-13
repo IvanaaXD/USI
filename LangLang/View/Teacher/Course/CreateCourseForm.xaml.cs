@@ -51,8 +51,8 @@ namespace LangLang.View.Teacher
 
             if (teacherId != -1)
             {
-                CreatedCourse = new CourseDTO(directorController.GetTeacherById(teacherId));
-                Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+                CreatedCourse = new CourseDTO(directorController.GetById(teacherId));
+                Teacher = new TeacherDTO(directorController.GetById(teacherId));
             }
             else
             {
@@ -172,7 +172,7 @@ namespace LangLang.View.Teacher
             if (CreatedCourse.IsValid && teacherId != -1)
             {
                 courseController.Add(CreatedCourse.ToCourse());
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                Domain.Model.Teacher teacher = directorController.GetById(teacherId);
                 teacher.CoursesId.Add(CreatedCourse.ToCourse().Id);
                 directorController.Update(teacher);
 
@@ -184,7 +184,7 @@ namespace LangLang.View.Teacher
                 int teacherId = directorController.FindMostAppropriateTeacher(course);
                 if (teacherId != -1)
                 {
-                    Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                    Domain.Model.Teacher teacher = directorController.GetById(teacherId);
                     CreatedCourse.SetTeacher(teacher, course);
                 }
                 if (CreatedCourse.IsValid)
@@ -198,7 +198,7 @@ namespace LangLang.View.Teacher
                     director.CoursesId.Add(courseId + 1);
                     directorController.Update(director);
                     courseController.Add(CreatedCourse.ToCourse());
-                    Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                    Domain.Model.Teacher teacher = directorController.GetById(teacherId);
                     teacher.CoursesId.Add(CreatedCourse.ToCourse().Id);
                     directorController.Update(teacher);
 

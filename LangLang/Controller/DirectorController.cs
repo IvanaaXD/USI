@@ -37,7 +37,7 @@ namespace LangLang.Controller
             return _directors.GetDirector();
         }
 
-        public Teacher? GetTeacherById(int teacherId)
+        public Teacher? GetById(int teacherId)
         {
             return _directors.GetTeacherById(teacherId);
         }
@@ -64,7 +64,7 @@ namespace LangLang.Controller
 
         public void Delete(int teacherId)
         {
-            Teacher teacher = GetTeacherById(teacherId);
+            Teacher teacher = GetById(teacherId);
             var courses = _courseController.GetAllCourses();
 
             Update(_courseController.DeleteCoursesByTeacher(teacher));
@@ -149,7 +149,7 @@ namespace LangLang.Controller
 
         public void RemoveCourseFromList(int teacherId, int courseId)
         {
-            Teacher? teacher = GetTeacherById(teacherId);
+            Teacher? teacher = GetById(teacherId);
             teacher?.CoursesId?.Remove(courseId);
             Update(teacher);
         }

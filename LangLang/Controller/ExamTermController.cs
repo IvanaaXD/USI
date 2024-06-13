@@ -25,7 +25,7 @@ namespace LangLang.Controller
             this.teacherController = Injector.CreateInstance<TeacherController>();
             _directorRepository = Injector.CreateInstance<IDirectorRepository>();   
         }
-        public ExamTerm? GetExamTermById(int examId)
+        public ExamTerm? GetById(int examId)
         {
             return _exams.GetExamTermById(examId);
         }
@@ -103,7 +103,7 @@ namespace LangLang.Controller
         }
         public ExamTerm ConfirmExamTerm(int examTermId)
         {
-            ExamTerm examTerm = GetExamTermById(examTermId);
+            ExamTerm examTerm = GetById(examTermId);
             examTerm.Confirmed = true;
             _exams.UpdateExamTerm(examTerm);
             return examTerm;
@@ -154,7 +154,7 @@ namespace LangLang.Controller
 
         public void DecrementExamTermCurrentlyAttending(int examTermId)
         {
-            ExamTerm examTerm = GetExamTermById(examTermId);
+            ExamTerm examTerm = GetById(examTermId);
             --examTerm.CurrentlyAttending;
             Update(examTerm);
         }
