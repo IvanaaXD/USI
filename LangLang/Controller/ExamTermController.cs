@@ -77,29 +77,33 @@ namespace LangLang.Controller
         
         public bool CheckTeacherExamOverlapsCourses(ExamTerm examTerm, Teacher teacher)
         {
-            int courseDurationInMinutes = 90;
-            int examDurationInMinutes = 240;
-
-            System.DateTime examStartTime = examTerm.ExamTime;
-            DateTime examEndTime = examStartTime.AddMinutes(examDurationInMinutes);
-
             List<Course> teacherCourses = teacherController.GetAvailableCourses(teacher);
             foreach (Course course in teacherCourses)
             {
                 if (!course.WorkDays.Contains(examTerm.ExamTime.DayOfWeek))
                     continue;
 
-                DateTime courseStartTime = course.StartDate;
-                DateTime courseEndTime = courseStartTime.AddMinutes(courseDurationInMinutes);
-
-                DateTime maxStartTime = courseStartTime > examStartTime ? courseStartTime : examStartTime;
-                DateTime minEndTime = courseEndTime < examEndTime ? courseEndTime : examEndTime;
-
-                if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
-                    (maxStartTime < minEndTime))
+                if (CompareCourseExamTime(course,examTerm))
                     return true;
             }
             return false;
+        }
+        public bool CompareCourseExamTime(Course course, ExamTerm examTerm)
+        {
+            System.DateTime examStartTime = examTerm.ExamTime;
+            DateTime examEndTime = examStartTime.AddMinutes(240); // examDurationInMinutes = 240
+
+            DateTime courseStartTime = course.StartDate;
+            DateTime courseEndTime = courseStartTime.AddMinutes(90); // courseDurationInMinutes = 90
+
+            DateTime maxStartTime = courseStartTime > examStartTime ? courseStartTime : examStartTime;
+            DateTime minEndTime = courseEndTime < examEndTime ? courseEndTime : examEndTime;
+
+            if ((courseStartTime == examStartTime || courseEndTime == examEndTime) ||
+                (maxStartTime < minEndTime))
+                return true;
+        
+           return false;
         }
         public ExamTerm ConfirmExamTerm(int examTermId)
         {
@@ -128,10 +132,6 @@ namespace LangLang.Controller
 
         public bool CheckTeacherExamsOverlap(ExamTerm examTerm, Teacher teacher)
         {
-            int examDurationInMinutes = 240;
-
-            System.DateTime examStartTime = examTerm.ExamTime;
-            DateTime examEndTime = examStartTime.AddMinutes(examDurationInMinutes);
 
             List<ExamTerm> teacherExams = teacherController.GetAvailableExamTerms(teacher);
             foreach (ExamTerm secondExam in teacherExams)
@@ -139,19 +139,27 @@ namespace LangLang.Controller
                 if (examTerm.ExamID == secondExam.ExamID)
                     continue;
 
-                DateTime secondExamStartTime = secondExam.ExamTime;
-                DateTime secondExamEndTime = secondExamStartTime.AddMinutes(examDurationInMinutes);
-
-                DateTime maxStartTime = examStartTime > secondExamStartTime ? examStartTime : secondExamStartTime;
-                DateTime minEndTime = examEndTime < secondExamEndTime ? examEndTime : secondExamEndTime;
-
-                if ((examStartTime == secondExamStartTime && examEndTime == secondExamEndTime) ||
-                    (maxStartTime < minEndTime))
+                
+                if (CompareExamsTime(examTerm, secondExam))
                     return true;
             }
             return false;
         }
+        public bool CompareExamsTime(ExamTerm examTerm, ExamTerm secondExamTerm)
+        {
+            System.DateTime examStartTime = examTerm.ExamTime;
+            DateTime examEndTime = examStartTime.AddMinutes(240);  // examDurationInMinutes = 240;
+            DateTime secondExamStartTime = secondExamTerm.ExamTime;
+            DateTime secondExamEndTime = secondExamStartTime.AddMinutes(240);
 
+            DateTime maxStartTime = examStartTime > secondExamStartTime ? examStartTime : secondExamStartTime;
+            DateTime minEndTime = examEndTime < secondExamEndTime ? examEndTime : secondExamEndTime;
+
+            if ((examStartTime == secondExamStartTime && examEndTime == secondExamEndTime) ||
+                (maxStartTime < minEndTime))
+                return true;
+            return false;
+        }
         public void DecrementExamTermCurrentlyAttending(int examTermId)
         {
             ExamTerm examTerm = GetById(examTermId);
@@ -167,23 +175,7 @@ namespace LangLang.Controller
 
             return filteredCourses;
         }
-        /*
-        public Teacher DeleteExamTermsByTeacher(Teacher teacher, List<Course> courses)
-        {
-            var examTerms = GetAllExamTerms();
-            var teacherExamTerms = teacher.CoursesId;
-
-            foreach (var examTerm in examTerms)
-            {
-                var course = courses.Find(x => x.Id == examTerm.CourseID);
-                if (teacherExamTerms.Contains(examTerm.CourseID) && course.StartDate > DateTime.Today.Date)
-                    teacherExamTerms.Remove(course.Id);
-            }
-
-            teacher.CoursesId = teacherExamTerms;
-            return teacher;
-        }*/
-        public Teacher DeleteExamTermsByTeacher(Teacher teacher, List<Course> courses)
+        public Teacher DeleteExamTermsByTeacher(Teacher teacher)
         {
             var examTerms = GetAllExamTerms();
             var teacherExamTerms = teacher.ExamsId;

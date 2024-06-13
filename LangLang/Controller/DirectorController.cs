@@ -66,7 +66,7 @@ namespace LangLang.Controller
             var courses = _courseController.GetAllCourses();
 
             Update(_courseController.DeleteCoursesByTeacher(teacher));
-            Update(_examTermController.DeleteExamTermsByTeacher(teacher, courses));
+            Update(_examTermController.DeleteExamTermsByTeacher(teacher));
 
             _directors.RemoveTeacher(teacherId);
         }
@@ -208,18 +208,7 @@ namespace LangLang.Controller
             if (availableTeachers.Count == 0)
                 return -1;
 
-            Dictionary<int, double> teacherGrade = new();
-            foreach (Teacher teacher in availableTeachers)
-            {
-                teacherGrade.Add(teacher.Id, GetAverageTeacherGrade(teacher.Id));
-            }
-
-            int teacherWithMaxGradeId = teacherGrade.OrderByDescending(kv => kv.Value).First().Key;
-            int firstUngradedTeacherId;
-            if (teacherGrade.ContainsValue(0))
-            {
-                firstUngradedTeacherId = teacherGrade.FirstOrDefault(pair => pair.Value == 0).Key;
-            }
+            int teacherWithMaxGradeId = GetBestGradedTeacherId(availableTeachers);
             return teacherWithMaxGradeId;
         }
         public int FindMostAppropriateTeacher(ExamTerm examTerm)
@@ -228,18 +217,17 @@ namespace LangLang.Controller
             if (availableTeachers.Count == 0)
                 return -1;
 
+            int teacherWithMaxGradeId = GetBestGradedTeacherId(availableTeachers);
+            return teacherWithMaxGradeId;
+        }
+        public int GetBestGradedTeacherId(List<Teacher> availableTeachers)
+        {
             Dictionary<int, double> teacherGrade = new();
             foreach (Teacher teacher in availableTeachers)
             {
                 teacherGrade.Add(teacher.Id, GetAverageTeacherGrade(teacher.Id));
             }
-
             int teacherWithMaxGradeId = teacherGrade.OrderByDescending(kv => kv.Value).First().Key;
-            int firstUngradedTeacherId;
-            if (teacherGrade.ContainsValue(0))
-            {
-                firstUngradedTeacherId = teacherGrade.FirstOrDefault(pair => pair.Value == 0).Key;
-            }
             return teacherWithMaxGradeId;
         }
 
