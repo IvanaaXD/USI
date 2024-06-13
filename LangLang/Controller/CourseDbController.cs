@@ -17,29 +17,25 @@ namespace LangLang.Controller
             _courseRepository = courseRepository;
         }
 
-        public async Task<IEnumerable<Course>> GetAllCourses()
+       
+        public Course GetCourseById(int id)
         {
-            return await _courseRepository.GetAllAsync();
+            return _courseRepository.GetById(id);
         }
 
-        public async Task<Course> GetCourseById(int id)
+        public void AddCourse(Course course)
         {
-            return await _courseRepository.GetByIdAsync(id);
+            _courseRepository.Add(course);
         }
 
-        public async Task AddCourse(Course course)
+        public void UpdateCourse(Course course)
         {
-            await _courseRepository.AddAsync(course);
+            _courseRepository.Update(course);
         }
 
-        public async Task UpdateCourse(Course course)
+        public void DeleteCourse(int id)
         {
-            await _courseRepository.UpdateAsync(course);
-        }
-
-        public async Task DeleteCourse(int id)
-        {
-            await _courseRepository.DeleteAsync(id);
+            _courseRepository.Delete(id);
         }
     }
 }

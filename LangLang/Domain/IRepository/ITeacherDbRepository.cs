@@ -9,10 +9,10 @@ namespace LangLang.Domain.IRepository
 {
     public interface ITeacherDbRepository
     {
-        Task<IEnumerable<Teacher>> GetAllAsync();
-        Task<Teacher> GetByIdAsync(int id);
-        Task AddAsync(Teacher teacher);
-        Task UpdateAsync(Teacher teacher);
-        Task DeleteAsync(int id);
+        Teacher GetById(int id);
+        void Add(Teacher teacher);
+        void Update(Teacher teacher);
+        void Remove(Teacher teacher);
+        void Delete(int id);
     }
 }

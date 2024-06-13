@@ -1,50 +1,64 @@
 ﻿using LangLang.Data;
 using LangLang.Domain.IRepository;
 using LangLang.Domain.Model;
+using LangLang.Observer;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace LangLang.Repository
 {
     public class CourseDbRepository : ICourseDbRepository
     {
         private readonly AppDbContext _context;
+        private readonly Subject _subject;
 
         public CourseDbRepository(AppDbContext context)
         {
             _context = context;
+            _subject = new Subject();
         }
-
-        public async Task<IEnumerable<Course>> GetAllAsync()
+        public void Add(Course course)
         {
-            return await _context.Courses.ToListAsync();
+            _context.Courses.Add(course);
+            _context.SaveChanges();
+            _subject.NotifyObservers();
+
         }
 
-        public async Task<Course> GetByIdAsync(int id)
+        public Course GetById(int id)
         {
-            return await _context.Courses.FindAsync(id);
-        }
+            var course = _context.Courses.Find(id);
+            if (course == null)
+            {
+                throw new KeyNotFoundException($"Course with ID {id} not found.");
+            }
 
-        public async Task AddAsync(Course course)
+            return course;
+        }
+        public void Remove(Course course)
         {
-            await _context.Courses.AddAsync(course);
-            await _context.SaveChangesAsync();
+            _context.Courses.Remove(course);
+            _context.SaveChanges();
+            _subject.NotifyObservers();
         }
-
-        public async Task UpdateAsync(Course course)
+        public void Update(Course course)
         {
             _context.Courses.Update(course);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+            _subject.NotifyObservers();
         }
 
-        public async Task DeleteAsync(int id)
+        public void Delete(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = GetById(id);
             if (course != null)
             {
                 _context.Courses.Remove(course);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
+                _subject.NotifyObservers();
             }
         }
     }

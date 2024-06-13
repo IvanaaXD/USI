@@ -17,29 +17,25 @@ namespace LangLang.Controller
             _examTermRepository = examTermRepository;
         }
 
-        public async Task<IEnumerable<ExamTerm>> GetAllExamTerms()
+       
+        public ExamTerm GetExamTermById(int id)
         {
-            return await _examTermRepository.GetAllAsync();
+            return  _examTermRepository.GetById(id);
         }
 
-        public async Task<ExamTerm> GetExamTermById(int id)
+        public void AddExamTerm(ExamTerm examTerm)
         {
-            return await _examTermRepository.GetByIdAsync(id);
+            _examTermRepository.Add(examTerm);
         }
 
-        public async Task AddExamTerm(ExamTerm examTerm)
+        public void UpdateExamTerm(ExamTerm examTerm)
         {
-            await _examTermRepository.AddAsync(examTerm);
+            _examTermRepository.Update(examTerm);
         }
 
-        public async Task UpdateExamTerm(ExamTerm examTerm)
+        public void DeleteExamTerm(int id)
         {
-            await _examTermRepository.UpdateAsync(examTerm);
-        }
-
-        public async Task DeleteExamTerm(int id)
-        {
-            await _examTermRepository.DeleteAsync(id);
+            _examTermRepository.Delete(id);
         }
     }
 }

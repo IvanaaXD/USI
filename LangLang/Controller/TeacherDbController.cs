@@ -16,30 +16,30 @@ namespace LangLang.Controller
         {
             _teacherRepository = teacherRepository;
         }
-
-        public async Task<IEnumerable<Teacher>> GetAllTeachers()
+        /* TODO
+        public List<Teacher> GetAllTeachers()
         {
-            return await _teacherRepository.GetAllAsync();
+            return 
+        }*/
+
+        public Teacher GetTeacherById(int id)
+        {
+            return _teacherRepository.GetById(id);
         }
 
-        public async Task<Teacher> GetTeacherById(int id)
+        public void AddTeacher(Teacher teacher)
         {
-            return await _teacherRepository.GetByIdAsync(id);
+            _teacherRepository.Add(teacher);
         }
 
-        public async Task AddTeacher(Teacher teacher)
+        public void UpdateTeacher(Teacher teacher)
         {
-            await _teacherRepository.AddAsync(teacher);
+            _teacherRepository.Update(teacher);
         }
 
-        public async Task UpdateTeacher(Teacher teacher)
+        public void DeleteTeacher(int id)
         {
-            await _teacherRepository.UpdateAsync(teacher);
-        }
-
-        public async Task DeleteTeacher(int id)
-        {
-            await _teacherRepository.DeleteAsync(id);
+            _teacherRepository.Delete(id);
         }
     }
 }
