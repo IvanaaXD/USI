@@ -20,7 +20,7 @@ namespace LangLang.ConsoleApp
             {
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) CRUD operations\n" +
-                                  "\t2) Exit");
+                                  "\tx) Exit");
 
                 string operation = Console.ReadLine().ToLower();
 

@@ -17,8 +17,8 @@ namespace LangLang.ConsoleApp
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) CRUD operations\n" +
                                   "\t2) Smart selection of course teacher\n" +
-                                  "\t3) Smart selection of the theacher on the exam\n" +
-                                  "\t4) Exit");
+                                  "\t3) Smart selection of the teacher on the exam\n" +
+                                  "\tx) Exit");
 
                 string operation = Console.ReadLine().ToLower();
 

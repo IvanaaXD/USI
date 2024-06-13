@@ -95,16 +95,15 @@ namespace LangLang.Domain.Model
             title = int.Parse(values[8]);
 
             languages = new List<Language>();
-            foreach (string lang in values[9].Split(','))
-            {
-                languages.Add((Language)Enum.Parse(typeof(Language), lang));
-            }
+            if (!string.IsNullOrEmpty(values[9]))
+                foreach (string lang in values[9].Split(','))
+                    languages.Add((Language)Enum.Parse(typeof(Language), lang));
 
             levelOfLanguages = new List<LanguageLevel>();
-            foreach (string level in values[10].Split(','))
-            {
-                levelOfLanguages.Add((LanguageLevel)Enum.Parse(typeof(LanguageLevel), level));
-            }
+            if (!string.IsNullOrEmpty(values[10]))
+                foreach (string level in values[10].Split(','))
+                    levelOfLanguages.Add((LanguageLevel)Enum.Parse(typeof(LanguageLevel), level));
+
 
             startedWork = DateTime.ParseExact(values[11], "yyyy-MM-dd", null);
             averageRating = int.Parse(values[12]);

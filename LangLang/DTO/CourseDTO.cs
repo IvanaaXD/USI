@@ -25,7 +25,7 @@ namespace LangLang.DTO
         private bool hasTeacher;
 
         private readonly CourseController _courseController;
-        private Domain.Model.Teacher teacher;
+        private Teacher teacher;
 
         public CourseDTO(Teacher teacher)
         {
