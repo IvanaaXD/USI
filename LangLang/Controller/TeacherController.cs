@@ -85,11 +85,13 @@ namespace LangLang.Controller
         {
             List<int> allTeacherCourses = teacher.CoursesId;
 
-            List<Course> availableCourses = new List<Course>();
+            List<Course> availableCourses = new();
 
             foreach (int courseId in allTeacherCourses)
             {
-                availableCourses.Add(_courses.GetCourseById(courseId));
+                Course? course = _courses.GetCourseById(courseId);
+                if (course!=null)
+                    availableCourses.Add(course);
             }
             return availableCourses;
         }
