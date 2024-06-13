@@ -1,15 +1,12 @@
-﻿using LangLang.Model.Enums;
+﻿using LangLang.Domain.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using LangLang.Model;
 using System.Text.RegularExpressions;
-using System.Configuration;
 using LangLang.Controller;
+using LangLang.Domain.Model;
 
 namespace LangLang.DTO
 {
@@ -25,17 +22,26 @@ namespace LangLang.DTO
         private bool isOnline;
         private int currentlyEnrolled;
         private string maxEnrolledStudents;
-        private List<int> examTerms;
+        private bool hasTeacher;
 
-        private readonly TeacherController _teacherController;
-        private readonly Teacher teacher;
+        private readonly CourseController _courseController;
+        private Teacher teacher;
 
-        public CourseDTO(TeacherController teacherController, Teacher teacher)
+        public CourseDTO(Teacher teacher)
         {
-            _teacherController = teacherController;
+            _courseController = Injector.CreateInstance<CourseController>();
             this.teacher = teacher;
         }
-
+        public CourseDTO()
+        {
+            _courseController = Injector.CreateInstance<CourseController>();
+        }
+        public void SetTeacher(Teacher teacher, Course course)
+        {
+            this.teacher = teacher;
+            hasTeacher = true;
+            teacher.CoursesId.Add(course.Id);
+        }
         public List<string> LanguageAndLevelValues
         {
             get
@@ -124,7 +130,11 @@ namespace LangLang.DTO
             get { return maxEnrolledStudents; }
             set { SetProperty(ref maxEnrolledStudents, value); }
         }
-
+        public bool HasTeacher
+        {
+            get { return hasTeacher; }
+            set { SetProperty(ref hasTeacher, value); }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -182,12 +192,14 @@ namespace LangLang.DTO
                             return "Number of enrolled students can't be less than 0 or greater than max enrolled";
                         break;
                     case "MaxEnrolledStudents":
-                        if (MaxEnrolledStudents == null)
-                            return "Max enrolled students must be >=0";
+                        if (MaxEnrolledStudents == null || MaxEnrolledStudents == "")
+                            return "Value must be >=0";
                         if (int.Parse(MaxEnrolledStudents) < 0)
-                            return "Max enrolled students must be >= 0";
+                            return "Value must be >= 0";
                         if (int.Parse(MaxEnrolledStudents) > 150)
-                            return "Max enrolled students must be <= 150";
+                            return "Value must be <= 150";
+                        if (int.Parse(MaxEnrolledStudents) == 0 && !IsOnline)
+                            return "Offline courses can't have 0 students";
                         break;
                     case "WorkDays":
                         if (WorkDays == null || !WorkDays.Any())
@@ -213,10 +225,11 @@ namespace LangLang.DTO
                 StartDate = combinedDateTime,
                 IsOnline = isOnline,
                 CurrentlyEnrolled = currentlyEnrolled,
-                MaxEnrolledStudents = int.Parse(maxEnrolledStudents),
-                ExamTerms = examTerms
+                MaxEnrolledStudents = int.Parse(maxEnrolledStudents)
             };
-            if (!_teacherController.ValidateCourseTimeslot(course, this.teacher))
+            if (this.teacher == null)
+                return "Cannot create course!";
+            if (!_courseController.ValidateCourseTimeslot(course, this.teacher))
                 return "Cannot create course because of course time overlaps!";
             return null;
         }
@@ -242,14 +255,13 @@ namespace LangLang.DTO
 
         public Course ToCourse()
         {
-            TimeSpan timeSpan = TimeSpan.Parse(startTime);
+            string startTimes = startDate.ToString().Split(" ")[1];
+            TimeSpan timeSpan = TimeSpan.Parse(startTimes);
 
             DateTime combinedDateTime = startDate.Date + timeSpan;
+            /*TimeSpan timeSpan = TimeSpan.Parse(startTime);
+            DateTime combinedDateTime = startDate.Date + timeSpan;*/
 
-            if (examTerms == null)
-            {
-                examTerms = new List<int>();
-            }
             if (isOnline)
             {
                 maxEnrolledStudents = "0";
@@ -265,13 +277,8 @@ namespace LangLang.DTO
                 StartDate = combinedDateTime,
                 IsOnline = isOnline,
                 CurrentlyEnrolled = currentlyEnrolled,
-                MaxEnrolledStudents = int.Parse(maxEnrolledStudents),
-                ExamTerms = examTerms
+                MaxEnrolledStudents = int.Parse(maxEnrolledStudents)
             };
-        }
-
-        public CourseDTO()
-        {
         }
 
         public CourseDTO(Course course)
@@ -286,13 +293,11 @@ namespace LangLang.DTO
             isOnline = course.IsOnline;
             currentlyEnrolled = course.CurrentlyEnrolled;
             maxEnrolledStudents = course.MaxEnrolledStudents.ToString();
-
-            examTerms = course.ExamTerms;
         }
 
-        public CourseDTO(TeacherController tc, Course course, Teacher teacher)
+        public CourseDTO(CourseController courseController, Course course, Teacher teacher)
         {
-            _teacherController = tc;
+            _courseController = courseController;
             this.teacher = teacher;
             id = course.Id;
             language = course.Language;
@@ -304,8 +309,6 @@ namespace LangLang.DTO
             isOnline = course.IsOnline;
             currentlyEnrolled = course.CurrentlyEnrolled;
             maxEnrolledStudents = course.MaxEnrolledStudents.ToString();
-
-            examTerms = course.ExamTerms;
         }
 
     }

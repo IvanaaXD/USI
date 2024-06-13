@@ -1,12 +1,11 @@
-﻿using LangLang.Controller;
+using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -32,18 +31,26 @@ namespace LangLang.View.Student
         public CourseDTO SelectedCourse { get; set; }
         private StudentsController studentsController { get; set; }
         private TeacherController teacherController { get; set; }
+        private CourseController courseController { get; set; }
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
         private int selectedTabIndex = 0;
+        private int currentCoursePage = 1;
+        private string courseSortCriteria;
 
         private CoursesTable studentCoursesTable;
+        private Button CourseNextButton;
+        private Button CoursePreviousButton;
+        private TextBlock CoursePageNumberTextBlock;
+        private ComboBox courseSortCriteriaComboBox;
 
         public CoursesView(int studentId, int tabIndex)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            studentsController = new StudentsController();
-            teacherController = new TeacherController();
+            studentsController = Injector.CreateInstance<StudentsController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            courseController = Injector.CreateInstance<CourseController>();
 
             this.studentId = studentId;
             studentCoursesTable = (CoursesTable) FindName("StudentCoursesTable" + selectedTabIndex);
@@ -52,7 +59,7 @@ namespace LangLang.View.Student
 
             DataContext = this;
             studentsController.Subscribe(this);
-            Update();
+            UpdatePagination();
         }
         public void Update()
         {
@@ -63,14 +70,10 @@ namespace LangLang.View.Student
                 var courses = GetFilteredCourses();
 
                 if (courses != null)
-                {
                     foreach (Course course in courses)
                         TableViewModel.Courses.Add(new CourseDTO(course));
-                }
                 else
-                {
                     MessageBox.Show("No courses found.");
-                }
             }
             catch (Exception ex)
             {
@@ -80,9 +83,19 @@ namespace LangLang.View.Student
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabControl tabControl = sender as TabControl;
-            selectedTabIndex = tabControl.SelectedIndex;
-            Update();
+            if (e.Source is TabControl)
+            {
+                TabControl tabControl = sender as TabControl;
+                selectedTabIndex = tabControl.SelectedIndex;
+
+                CourseNextButton = (Button)FindName("CourseNextButton" + selectedTabIndex);
+                CoursePreviousButton = (Button)FindName("CoursePreviousButton" + selectedTabIndex);
+                CoursePageNumberTextBlock = (TextBlock)FindName("CoursePageNumberTextBlock" + selectedTabIndex);
+                courseSortCriteriaComboBox = (ComboBox)FindName("courseSortCriteriaComboBox" + selectedTabIndex);
+                currentCoursePage = 1;
+
+                UpdatePagination();
+            }
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -91,13 +104,13 @@ namespace LangLang.View.Student
         }
         private void SearchButton_Click(object sender, EventArgs e)
         {
-            Update();
+            UpdatePagination();
             isSearchButtonClicked = true;
         }
         private void ResetButton_Click(object sender, EventArgs e)
         {
             isSearchButtonClicked = false;
-            Update();
+            UpdatePagination();
             ResetSearchElements();
         }
 
@@ -119,55 +132,40 @@ namespace LangLang.View.Student
             LanguageLevel? selectedLevel = (LanguageLevel?) studentCoursesTable.levelComboBox.SelectedItem;
             DateTime? selectedStartDate = studentCoursesTable.startDateDatePicker.SelectedDate;
             int selectedDuration = 0;
+
             if (!string.IsNullOrEmpty(studentCoursesTable.durationTextBox.Text))
-            {
                 if (int.TryParse(studentCoursesTable.durationTextBox.Text, out int duration))
-                {
                     selectedDuration = duration;
-                }
-            }
 
-            List<Course> studentsAvailableCourses = GetSelectedTabCourses();
-            List<Course> finalCourses = new List<Course>();
+           return DoFilter(selectedLanguage,selectedLevel,selectedStartDate,selectedDuration);
+        }
 
-            if (isSearchButtonClicked)
-            {
-                bool isOnline = studentCoursesTable.onlineCheckBox.IsChecked ?? false;
-                List<Course> allFilteredCourses = teacherController.FindCoursesByCriteria(selectedLanguage, selectedLevel, selectedStartDate, selectedDuration, isOnline);
+        private List<Course> DoFilter(Language? language, LanguageLevel? languageLevel, DateTime? startDate, int duration)
+        {
+            List<Course> courses = GetSelectedTabCourses();
+ 
+            if (!isSearchButtonClicked)
+                return courses;
 
-                foreach (Course course in allFilteredCourses)
-                {
-                    foreach (Course studentCourse in studentsAvailableCourses)
-                    {
-                        if (studentCourse.Id == course.Id && !finalCourses.Contains(course))
-                        {
-                            finalCourses.Add(course);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                foreach (Course studentCourse in studentsAvailableCourses)
-                {
-                    finalCourses.Add(studentCourse);
-                }
-            }
-            return finalCourses;
+            List<Course> filteredCourses = new List<Course>();
+            bool isOnline = studentCoursesTable.onlineCheckBox.IsChecked ?? false;
+            List<Course> allFilteredCourses = courseController.FindCoursesByCriteria(language, languageLevel, startDate, duration, isOnline);
+
+            foreach (Course course in allFilteredCourses)
+                foreach (Course studentCourse in courses)
+                    if (studentCourse.Id == course.Id && !filteredCourses.Contains(course))
+                        filteredCourses.Add(course);
+            return filteredCourses;
         }
 
         private List<Course>? GetSelectedTabCourses()
         {
             switch(selectedTabIndex)
             {
-                case 0:
-                    return studentsController.GetAvailableCourses(studentId);
-                case 1:
-                    return studentsController.GetRegisteredCourses(studentId);
-                case 2:
-                    return studentsController.GetCompletedCourses(studentId);
-                case 3:
-                    return studentsController.GetPassedCourses(studentId);
+                case 0: return studentsController.GetAvailableCourses(studentId);
+                case 1: return studentsController.GetRegisteredCourses(studentId);
+                case 2: return studentsController.GetCompletedCourses(studentId);
+                case 3: return studentsController.GetPassedCourses(studentId);
             }
             return null;
         }
@@ -186,45 +184,110 @@ namespace LangLang.View.Student
         private void SignUpButton_Click(object sender, EventArgs e)
         {
             if (SelectedCourse == null)
-            {
                 MessageBox.Show("Please choose a course to register!");
-            }
             else
             {
                 bool isRegisteredForCourse = studentsController.RegisterForCourse(studentId, SelectedCourse.Id);
                 if (isRegisteredForCourse)
                 {
-                    /* MessageBox.Show("You have sent a request to register for the course: " +
-                                     $"{SelectedCourse.Language} {SelectedCourse.Level}");*/
-                    MessageBox.Show("You have sent a request to register for the course: ");
-                    Update();
+                    MessageBox.Show("You have sent a request to register for the course");
+                    UpdatePagination();
                 }
                 else
-                {
                     MessageBox.Show("You are already taking a course.");
-                }
             }
         }
         private void CancelRequestButton_Click(object sender, EventArgs e)
         {
             if (SelectedCourse == null)
-            {
                 MessageBox.Show("Please choose a course to cancel course request!");
-            }
             else
             {
                 bool isRequestCanceled = studentsController.CancelCourseRegistration(studentId, SelectedCourse.Id);
                 if (isRequestCanceled)
                 {
-                    /* MessageBox.Show("You have canceled your request to register for the course: " +
-                                     $"{SelectedCourse.Language} {SelectedCourse.Level}");*/
-                    MessageBox.Show("You have canceled your request to register for the course: ");
-                    Update();
+                    MessageBox.Show("You have canceled your request to register for the course");
+                    UpdatePagination();
                 }
                 else
-                {
                     MessageBox.Show("You cannot cancel your request less than 7 days before the start of the course.");
+            }
+        }
+
+        //--------------------------- COURSE PAGINATION --------------------------------
+        private void CourseNextPage_Click(object sender, RoutedEventArgs e)
+        {
+            currentCoursePage++;
+            CoursePreviousButton.IsEnabled = true;
+            UpdatePagination();
+
+        }
+
+        private void CoursePreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentCoursePage > 1)
+            {
+                currentCoursePage--;
+                CourseNextButton.IsEnabled = true;
+                UpdatePagination();
+            }
+            else if (currentCoursePage == 1)
+            {
+                CoursePreviousButton.IsEnabled = false;
+            }
+        }
+        private void UpdatePagination()
+        {
+            if (currentCoursePage == 1)
+            {
+                CoursePreviousButton = (Button)FindName("CoursePreviousButton" + selectedTabIndex);
+                CoursePreviousButton.IsEnabled = false;
+            }
+            CoursePageNumberTextBlock.Text = $"{currentCoursePage}";
+
+            try
+            {
+                SetCancelRequestButtonAvailability();
+                TableViewModel.Courses.Clear();
+
+                var filteredCourses = GetFilteredCourses();
+                List<Course> courses = courseController.GetAllCourses(currentCoursePage, 1, courseSortCriteria, filteredCourses);
+                List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 1, courseSortCriteria, filteredCourses);
+
+                if (newCourses.Count == 0)
+                    CourseNextButton.IsEnabled = false;
+                else
+                    CourseNextButton.IsEnabled = true;
+
+                if (filteredCourses != null)
+                    foreach (Course course in courses)
+                        TableViewModel.Courses.Add(new CourseDTO(course));
+                else
+                    MessageBox.Show("No exam terms found.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+        private void CourseSortCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (courseSortCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string selectedContent = selectedItem.Content.ToString();
+                switch (selectedContent)
+                {
+                    case "Language":
+                        courseSortCriteria = "Language";
+                        break;
+                    case "Level":
+                        courseSortCriteria = "Level";
+                        break;
+                    case "StartDate":
+                        courseSortCriteria = "StartDate";
+                        break;
                 }
+                UpdatePagination();
             }
         }
     }

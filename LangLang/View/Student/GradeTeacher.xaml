@@ -1,11 +1,12 @@
-﻿<Window x:Class="LangLang.View.Student.GradeTeacher"
+<Window x:Class="LangLang.View.Student.GradeTeacher"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
-                Title="Grade teacher" Height="Auto" Width="450">
+        WindowStartupLocation = "CenterScreen"
+        Title="Grade teacher" Height="380" Width="450">
 
     <Window.Resources>
 
@@ -55,7 +56,7 @@
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <TextBlock Text="Grade:" Width="80" FontSize="15"/>
-                <TextBox x:Name="gradeValueTextBox" Width="150" FontSize="16" Text="{Binding TeacherGrade.Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBox x:Name="gradeValueTextBox" Width="150" FontSize="16" Text="{Binding Path=teacherGrade.Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                  Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
             </StackPanel>
         </StackPanel>

@@ -1,4 +1,4 @@
-﻿using LangLang.Model;
+﻿using LangLang.Domain.Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -11,7 +11,7 @@ namespace LangLang.DTO
         private int studentId;
         private int teacherId;
         private int courseId;
-        private int valueOfCourseGrade;
+        private int teacherGradeValue;
 
         private string firstName;
         private string lastName;
@@ -43,8 +43,8 @@ namespace LangLang.DTO
 
         public int Value
         {
-            get { return valueOfCourseGrade; }
-            set { SetProperty(ref valueOfCourseGrade, value); }
+            get { return teacherGradeValue; }
+            set { SetProperty(ref teacherGradeValue, value); }
         }
 
         public string FirstName
@@ -118,27 +118,34 @@ namespace LangLang.DTO
             }
         }
 
-        public CourseGrade ToCourseGrade()
+        public StudentGrade ToStudentGrade()
         {
-            return new CourseGrade
+            return new StudentGrade
             {
                 Id = id,
                 TeacherId = teacherId,
                 StudentId = studentId,
                 CourseId = courseId,
-                Value = valueOfCourseGrade,
+                Value = teacherGradeValue,
             };
         }
 
         public StudentGradeDTO() { }
 
-        public StudentGradeDTO(CourseGrade grade, Teacher teacher)
+        public StudentGradeDTO(Teacher teacher)
+        {
+            firstName = teacher.FirstName;
+            lastName = teacher.LastName;
+            email = teacher.Email;
+        }
+
+        public StudentGradeDTO(StudentGrade grade, Teacher teacher)
         {
             id = grade.Id;
             studentId = grade.StudentId;
             teacherId = grade.TeacherId;
             courseId = grade.CourseId;
-            valueOfCourseGrade = grade.Value;
+            teacherGradeValue = grade.Value;
             firstName = teacher.FirstName;
             lastName = teacher.LastName;
             email = teacher.Email;

@@ -1,0 +1,66 @@
+﻿<Window x:Class="LangLang.View.Student.ExamTermStudentView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LangLang.View.Student"
+        mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
+        Title="ExamTermStudentView" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="131.533"></ColumnDefinition>
+            <ColumnDefinition Width="68.467"/>
+            <ColumnDefinition Width="600"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2">
+            <Image Source="https://cdn-icons-png.flaticon.com/512/8812/8812428.png" Width="180"></Image>
+        </Border>
+
+        <TextBlock Grid.Row="1" Grid.Column="2"  VerticalAlignment="Top" HorizontalAlignment="Center"
+        FontSize="30" Margin="0,17,0,0">Exam result</TextBlock>
+        <Button x:Name="close" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="resultClose_Click"
+        Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Close</Button>
+
+        <Grid Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="229"></ColumnDefinition>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="0*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Language:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="27" Margin="0,0,21,0"/>
+            <TextBlock Grid.Row="1" Text="Language Level:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+            <TextBlock Grid.Row="2" Text="ReadingPoints:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+            <TextBlock Grid.Row="3" Text="SpeakingPoints:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+            <TextBlock Grid.Row="4" Text="WritingPoints:" VerticalAlignment="Center" FontSize="16" Height="26" Margin="0,0,71,0"/>
+            <TextBlock Grid.Row="5" Text="ListeningPoints:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+            <TextBlock Grid.Row="6" Text="Grade:" VerticalAlignment="Center" FontSize="16" Grid.ColumnSpan="2" Height="26" Margin="0,0,71,0"></TextBlock>
+
+            <TextBlock x:Name="examTermLanguageTextBlock" FontSize="16" Grid.Column="1"/>
+            <TextBlock x:Name="examTermLevelTextBlock" FontSize="16" Grid.Column="1" Margin="0,0,0,26" Grid.RowSpan="2" Grid.Row="1" Text=""/>
+            <TextBlock x:Name="examTermReadingPointsTextBlock" FontSize="16" Grid.Column="1" Margin="0,0,0,26" Grid.RowSpan="2" Grid.Row="2"/>
+            <TextBlock x:Name="examTermSpeakingPointsTextBlock" FontSize="16" Grid.Column="1"  Grid.Row="3"/>
+            <TextBlock x:Name="examTermWritingPointsTextBlock" FontSize="16" Grid.Column="1" Grid.Row="4" Margin="0,0,0,26" Grid.RowSpan="2"/>
+            <TextBlock x:Name="examTermListeningPointsTextBlock" FontSize="16" Grid.Column="1" Grid.Row="5" Margin="0,0,0,26" Grid.RowSpan="2"/>
+            <TextBlock x:Name="examTermGradeTextBlock" FontSize="16" Grid.Column="1" Grid.Row="6" Margin="0,0,0,0" Grid.RowSpan="2"/>
+
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,68 @@
+﻿<Window x:Class="LangLang.View.Teacher.GradeStudentCourseForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LangLang.View.Teacher" xmlns:dto="clr-namespace:LangLang.DTO"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="Grade Student" Height="350" Width="360">
+
+    <Window.Resources>
+
+        <ControlTemplate x:Key="ValidationTemplate">
+            <StackPanel>
+                <!-- Placeholder for the TextBox itself -->
+                <AdornedElementPlaceholder x:Name="textBox" />
+                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" />
+            </StackPanel>
+
+        </ControlTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto" MinHeight="45"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Grade Student" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" Margin="0,20,0,0" Height="27" Grid.RowSpan="2" Width="126"/>
+
+        <StackPanel Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,78,0,0" Orientation="Vertical" Height="180" Width="300">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="First Name:" Width="150" FontSize="16"/>
+                <TextBlock x:Name="firstNameTextBlock" Width="150" FontSize="16" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Last Name:" Width="150" FontSize="16"/>
+                <TextBlock x:Name="lastNameTextBlock" Width="150" FontSize="16" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Email:" Width="150" FontSize="16"/>
+                <TextBlock x:Name="emailTextBlock" Width="150" FontSize="16" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <TextBlock Text="Activity Grade:" Width="150" FontSize="16"/>
+                <TextBox x:Name="activityValueTextBox" Width="150" FontSize="16" Text="{Binding StudentCourseGrade.StudentActivityValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Knowledge Grade:" Width="150" FontSize="16"/>
+                <TextBox x:Name="knowledgeValueTextBox" Width="150" FontSize="16" Text="{Binding StudentCourseGrade.StudentKnowledgeValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+     Validation.ErrorTemplate="{StaticResource ValidationTemplate}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Height="45" Width="100">
+            <Button Content="Grade" Click="GradeStudent_Click" Width="100" FontSize="16" HorizontalAlignment="Center"  Margin="0,10,0,10" Foreground="White" Background="#6d6fbf"/>
+        </StackPanel>
+    </Grid>
+</Window>

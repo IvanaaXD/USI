@@ -1,4 +1,4 @@
-﻿using LangLang.Model;
+﻿using LangLang.Domain.Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -11,7 +11,8 @@ namespace LangLang.DTO
         private int studentId;
         private int teacherId;
         private int courseId;
-        private int valueOfCourseGrade;
+        private int studentActivityValue;
+        private int studentKnowledgeValue;
 
         private string firstName;
         private string lastName;
@@ -41,10 +42,15 @@ namespace LangLang.DTO
             set { SetProperty(ref courseId, value); }
         }
 
-        public int Value
+        public int StudentActivityValue
         {
-            get { return valueOfCourseGrade; }
-            set { SetProperty(ref valueOfCourseGrade, value); }
+            get { return studentActivityValue; }
+            set { SetProperty(ref studentActivityValue, value); }
+        }
+        public int StudentKnowledgeValue
+        {
+            get { return studentKnowledgeValue; }
+            set { SetProperty(ref studentKnowledgeValue, value); }
         }
 
         public string FirstName
@@ -93,8 +99,12 @@ namespace LangLang.DTO
             {
                 switch (columnName)
                 {
-                    case "Value":
-                        if (Value <= 0 || Value > 10)
+                    case "StudentActivityValue":
+                        if (StudentActivityValue <= 0 || StudentActivityValue > 10)
+                            return "Grade value must be between 1 and 10.";
+                        break;
+                    case "StudentKnowledgeValue":
+                        if (StudentKnowledgeValue <= 0 || StudentKnowledgeValue > 10)
                             return "Grade value must be between 1 and 10.";
                         break;
                 }
@@ -103,7 +113,7 @@ namespace LangLang.DTO
             }
         }
 
-        private readonly string[] _validatedProperties = { "Value" };
+        private readonly string[] _validatedProperties = { "StudentActivityValue", "StudentKnowledgeValue" };
 
         public bool IsValid
         {
@@ -126,7 +136,8 @@ namespace LangLang.DTO
                 TeacherId = teacherId,
                 StudentId = studentId,
                 CourseId = courseId,
-                Value = valueOfCourseGrade,
+                StudentActivityValue = studentActivityValue,
+                StudentKnowledgeValue = studentKnowledgeValue
             };
         }
 
@@ -138,7 +149,8 @@ namespace LangLang.DTO
             studentId = grade.StudentId;
             teacherId = grade.TeacherId;
             courseId = grade.CourseId;
-            valueOfCourseGrade = grade.Value;
+            studentActivityValue = grade.StudentActivityValue;
+            studentKnowledgeValue = grade.StudentKnowledgeValue;
             firstName = student.FirstName;
             lastName = student.LastName;
             email = student.Email;

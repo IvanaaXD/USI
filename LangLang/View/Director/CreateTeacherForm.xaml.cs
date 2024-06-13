@@ -2,29 +2,28 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using LangLang.Controller;
 using LangLang.DTO;
 using System.Collections.Generic;
-using LangLang.Model;
-using System.Windows.Input;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Director
 {
     public partial class CreateTeacherFrom : Window, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public Gender[] genderValues => (Gender[])Enum.GetValues(typeof(Gender));
+        public Gender[] GenderValues => (Gender[])Enum.GetValues(typeof(Gender));
 
-        private TeacherDTO _teacher;
+        private TeacherDTO? _teacher;
 
-        public TeacherDTO Teacher
+        public TeacherDTO? Teacher
         {
             get { return _teacher; }
             set
@@ -34,9 +33,9 @@ namespace LangLang.View.Director
             }
         }
 
-        private DirectorController directorController;
+        private readonly DirectorController? directorController;
 
-        public CreateTeacherFrom(DirectorController directorController)
+        public CreateTeacherFrom()
         {
             InitializeComponent();
             Teacher = new TeacherDTO();
@@ -44,18 +43,22 @@ namespace LangLang.View.Director
             Teacher.Password = passwordBox.Password;
             Teacher.DateOfBirth = new DateTime(DateTime.Today.AddYears(-64).Year, 1, 1);
             Teacher.StartedWork = new DateTime(DateTime.Today.AddYears(-64+18).Year, 1, 1);
-            this.directorController = directorController;
+            this.directorController = Injector.CreateInstance<DirectorController>();
 
             SetPlaceholders();
         }
 
         private void SetPlaceholders()
         {
-            Teacher.FirstName = "Name";
-            Teacher.LastName = "Surname";
-            Teacher.Email = "example@gmail.com";
-            Teacher.PhoneNumber = "0123456789";
-            Teacher.Password = "password";
+            if (Teacher != null)
+            {
+                Teacher.FirstName = "Name";
+                Teacher.LastName = "Surname";
+                Teacher.Email = "example@gmail.com";
+                Teacher.PhoneNumber = "0123456789";
+                Teacher.Password = "password";
+            }
+
             passwordBox.Password = "password";
 
             firstNameTextBox.GotFocus += FirstNameTextBox_GotFocus;
@@ -98,9 +101,8 @@ namespace LangLang.View.Director
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)
-            {
-                Teacher.Password = passwordBox.Password;
-            }
+                if (Teacher != null)
+                    Teacher.Password = passwordBox.Password;
         }
 
         private void Create_Click(object sender, RoutedEventArgs e)
@@ -109,35 +111,32 @@ namespace LangLang.View.Director
             PickDataFromDatePicker();
             PickDataFromComboBox();
 
-            if (Teacher.IsValid)
+            if (Teacher != null && Teacher.IsValid)
             {
-                directorController.Add(Teacher.ToTeacher());
+                directorController?.Add(Teacher.ToTeacher());
                 Close();
             }
             else
-            {
                 MessageBox.Show("Teacher cannot be created. Not all fields are valid.");
-            }
         }
 
         private void PickDataFromListBox()
         {
-            Teacher.Languages = new List<Language>();
-            Teacher.LevelOfLanguages = new List<LanguageLevel>();
-
-            foreach (var selectedItem in languagesListBox.SelectedItems)
+            if (Teacher != null)
             {
-                string[] parts = selectedItem.ToString().Split(' ');
-                if (parts.Length == 2)
-                {
-                    if (Enum.TryParse(parts[0], out Language lan))
-                    {
-                        Teacher.Languages.Add(lan);
-                    }
+                Teacher.Languages = new List<Language>();
+                Teacher.LevelOfLanguages = new List<LanguageLevel>();
 
-                    if (Enum.TryParse(parts[1], out LanguageLevel level))
+                foreach (var selectedItem in languagesListBox.SelectedItems)
+                {
+                    string[] parts = selectedItem.ToString().Split(' ');
+                    if (parts.Length == 2)
                     {
-                        Teacher.LevelOfLanguages.Add(level);
+                        if (Enum.TryParse(parts[0], out Language lan))
+                            Teacher.Languages.Add(lan);
+
+                        if (Enum.TryParse(parts[1], out LanguageLevel level))
+                            Teacher.LevelOfLanguages.Add(level);
                     }
                 }
             }
@@ -145,37 +144,30 @@ namespace LangLang.View.Director
 
         private void PickDataFromDatePicker()
         {
-            if (dateOfBirthDatePicker.SelectedDate.HasValue)
+            if (Teacher != null)
             {
-                Teacher.DateOfBirth = dateOfBirthDatePicker.SelectedDate.Value;
-            }
-            else
-            {
-                MessageBox.Show("Please select a valid date of birth.");
-            }
+                if (dateOfBirthDatePicker.SelectedDate.HasValue)
+                    Teacher.DateOfBirth = dateOfBirthDatePicker.SelectedDate.Value;
+                else
+                    MessageBox.Show("Please select a valid date of birth.");
 
-            if (startedWorkDatePicker.SelectedDate.HasValue)
-            {
-                Teacher.StartedWork = startedWorkDatePicker.SelectedDate.Value;
-            }
-            else
-            {
-                MessageBox.Show("Please select a valid start date of work.");
+                if (startedWorkDatePicker.SelectedDate.HasValue)
+                    Teacher.StartedWork = startedWorkDatePicker.SelectedDate.Value;
+                else
+                    MessageBox.Show("Please select a valid start date of work.");
             }
         }
 
         private void PickDataFromComboBox()
         {
-            if (genderComboBox.SelectedItem != null)
+            if (genderComboBox.SelectedItem != null && Teacher != null)
             {
                 if (genderComboBox.SelectedItem is Gender selectedGender)
-                {
                     Teacher.Gender = selectedGender;
-                }
             }
         }
 
-        private void languagesListBox_SelectionChanged(object sender, RoutedEventArgs e) {}
+        private void LanguagesListBox_SelectionChanged(object sender, RoutedEventArgs e) {}
 
     }
 }

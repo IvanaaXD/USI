@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
-using LangLang.Model.Enums;
-using LangLang.Model;
+using LangLang.Domain.Model.Enums;
+using LangLang.Domain.Model;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using LangLang.Controller;
-
 
 namespace LangLang.DTO
 {
@@ -28,6 +27,9 @@ namespace LangLang.DTO
         private List<Language> languages;
         private List<LanguageLevel> levelOfLanguages;
         private List<int> coursesId;
+        private List<int> examTermsId;
+
+        private string fullName;
 
         public List<string> LevelAndLanguages
         {
@@ -153,6 +155,17 @@ namespace LangLang.DTO
             get { return coursesId; }
             set { SetProperty(ref coursesId, value); }
         }
+        public List<int> ExamTermsId
+        {
+            get { return examTermsId; }
+            set { SetProperty(ref examTermsId, value); }
+        }
+
+        public string FullName
+        {
+            get { return firstName + " " + lastName; }
+            set { SetProperty(ref fullName, value); }
+        }
 
         public event PropertyChangedEventHandler ?PropertyChanged;
 
@@ -234,10 +247,10 @@ namespace LangLang.DTO
                         if (!_EmailRegex.IsMatch(Email))
                             return "Format not good. Try again.";
 
-                        DirectorController directorController = new DirectorController();
-                        StudentsController studentsController = new StudentsController();
+                        DirectorController _directorController = Injector.CreateInstance<DirectorController>();
+                        StudentsController studentsController = Injector.CreateInstance<StudentsController>();
 
-                        foreach (Teacher teacher in directorController.GetAllTeachers())
+                        foreach (Teacher teacher in _directorController.GetAllTeachers())
                         {
                             if (teacher.Email.Equals(Email) && teacher.Id != Id)
                                 return "Email already exists. Try again.";
@@ -254,10 +267,10 @@ namespace LangLang.DTO
                         if (string.IsNullOrEmpty(Password))
                             return "Password is required";
 
-                        directorController = new DirectorController();
-                        studentsController = new StudentsController();
+                        _directorController = Injector.CreateInstance<DirectorController>();
+                        studentsController = Injector.CreateInstance<StudentsController>();
 
-                        foreach (Teacher teacher in directorController.GetAllTeachers())
+                        foreach (Teacher teacher in _directorController.GetAllTeachers())
                         {
                             if (teacher.Password.Equals(Password) && teacher.Id != Id)
                                 return "Email already exists. Try again.";
@@ -307,7 +320,8 @@ namespace LangLang.DTO
                 LevelOfLanguages = levelOfLanguages,
                 StartedWork = startedWork,
                 AverageRating = averageRating,
-                CoursesId = coursesId
+                CoursesId = coursesId,
+                ExamsId = examTermsId,
             };
         }
 
@@ -333,6 +347,8 @@ namespace LangLang.DTO
             languages = teacher.Languages;
             levelOfLanguages = teacher.LevelOfLanguages;
             coursesId = teacher.CoursesId;
+            examTermsId = teacher.ExamsId;
+            fullName = teacher.FirstName + " " + teacher.LastName;
         }
     }
 }

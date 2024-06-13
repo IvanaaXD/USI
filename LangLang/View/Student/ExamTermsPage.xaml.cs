@@ -1,22 +1,13 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model.Enums;
-using LangLang.Model;
+using LangLang.Domain.Model.Enums;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LangLang.View.Student
 {
@@ -47,16 +38,20 @@ namespace LangLang.View.Student
         public ExamTermDTO SelectedCompletedExamTerm { get; set; }
         private StudentsController studentController { get; set; }
         private TeacherController teacherController { get; set; }
+        private ExamTermController examTermController { get; set; }
 
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
+        private int currentExamPage = 1;
+        private string sortCriteria;
 
         public ExamTermsPage(int studentId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            studentController = new StudentsController();
-            teacherController = new TeacherController();
+            studentController = Injector.CreateInstance<StudentsController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            examTermController = Injector.CreateInstance<ExamTermController>();
             this.studentId = studentId;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
@@ -120,7 +115,7 @@ namespace LangLang.View.Student
             }
         }
 
-        public void UpdateCompletedExamsTable()
+       /* public void UpdateCompletedExamsTable()
         {
             try
             {
@@ -145,7 +140,7 @@ namespace LangLang.View.Student
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
-        }
+        }*/
 
         private void Cancel_Click(object sender, EventArgs e)
         {
@@ -156,12 +151,12 @@ namespace LangLang.View.Student
            bool registered = studentController.RegisterForExam(studentId, SelectedAvailableExamTerm.ExamID);
             if (registered) 
             {
-                MessageBox.Show("Uspesno ste se prijavili za ispit.");
+                MessageBox.Show("You have successfully registered for the exam.");
                 Update();
             }
             else
             {
-                MessageBox.Show("Nije moguce da se prijavi na dati ispit.");
+                MessageBox.Show("It is not possible to register for the given exam.");
 
             }
         }
@@ -170,13 +165,25 @@ namespace LangLang.View.Student
             bool unregistered = studentController.CancelExamRegistration(studentId, SelectedRegisteredExamTerm.ExamID);
             if (unregistered)
             {
-                MessageBox.Show("Uspesno ste se odjavili za ispit.");
+                MessageBox.Show("You have successfully checked out for the exam.");
                 Update();
             }
             else
             {
-                MessageBox.Show("Nije moguce da se odjavi na dati ispit.");
+                MessageBox.Show("It is not possible to unregister from the given exam.");
 
+            }
+        }
+        private void ViewExam_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedCompletedExamTerm == null)
+                MessageBox.Show("Please choose an exam term to view!");
+            else
+            {
+                ExamTerm? examTerm = teacherController.GetExamTermById(SelectedCompletedExamTerm.ExamID);
+                Domain.Model.Student? student = studentController.GetStudentById(this.studentId);
+                ExamTermStudentView? examTermView = new ExamTermStudentView(examTerm, student, teacherController, studentController);
+                examTermView.Show();
             }
         }
         private void btnSearch_Click(object sender, EventArgs e)
@@ -216,18 +223,9 @@ namespace LangLang.View.Student
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                List<ExamTerm> allFilteredExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsAvailableExamTerms);
 
-                foreach (ExamTerm examTerm in allFilteredExamTerms)
-                {
-                    foreach (ExamTerm studentExamTerm in studentsAvailableExamTerms)
-                    {
-                        if (studentExamTerm.ExamID == examTerm.ExamID && !finalExamTerms.Contains(examTerm))
-                        {
-                            finalExamTerms.Add(examTerm);
-                        }
-                    }
-                }
             }
             else
             {
@@ -245,27 +243,17 @@ namespace LangLang.View.Student
             LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
             DateTime? selectedStartDate = startDateDatePicker.SelectedDate;
 
-            List<ExamTerm> studentsAvailableExamTerms = studentController.GetRegisteredExamTerms(studentId);
+            List<ExamTerm> studentsRegisteredExamTerms = studentController.GetRegisteredExamTerms(studentId);
             List<ExamTerm> finalExamTerms = new List<ExamTerm>();
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
-
-                foreach (ExamTerm examTerm in allFilteredExamTerms)
-                {
-                    foreach (ExamTerm studentExamTerm in studentsAvailableExamTerms)
-                    {
-                        if (studentExamTerm.ExamID == examTerm.ExamID && !finalExamTerms.Contains(examTerm))
-                        {
-                            finalExamTerms.Add(examTerm);
-                        }
-                    }
-                }
+                List<ExamTerm> allFilteredExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);           
+                finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsRegisteredExamTerms);
             }
             else
             {
-                foreach (ExamTerm studentExamTerm in studentsAvailableExamTerms)
+                foreach (ExamTerm studentExamTerm in studentsRegisteredExamTerms)
                 {
                     finalExamTerms.Add(studentExamTerm);
                 }
@@ -279,34 +267,113 @@ namespace LangLang.View.Student
             LanguageLevel? selectedLevel = (LanguageLevel?)levelComboBox.SelectedItem;
             DateTime? selectedStartDate = startDateDatePicker.SelectedDate;
 
-            List<ExamTerm> studentsAvailableExamTerms = studentController.GetCompletedExamTerms(studentId);
+            List<ExamTerm> studentsCompletedExamTerms = studentController.GetCompletedExamTerms(studentId);
             List<ExamTerm> finalExamTerms = new List<ExamTerm>();
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
-
-                foreach (ExamTerm examTerm in allFilteredExamTerms)
-                {
-                    foreach (ExamTerm studentExamTerm in studentsAvailableExamTerms)
-                    {
-                        if (studentExamTerm.ExamID == examTerm.ExamID && !finalExamTerms.Contains(examTerm))
-                        {
-                            finalExamTerms.Add(examTerm);
-                        }
-                    }
-                }
+                List<ExamTerm> allFilteredExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                finalExamTerms = GetFinalExamTerms(allFilteredExamTerms, studentsCompletedExamTerms);
             }
             else
             {
-                foreach (ExamTerm studentExamTerm in studentsAvailableExamTerms)
+                foreach (ExamTerm studentExamTerm in studentsCompletedExamTerms)
                 {
                     finalExamTerms.Add(studentExamTerm);
                 }
             }
             return finalExamTerms;
         }
+        private List<ExamTerm> GetFinalExamTerms(List<ExamTerm> allFilteredExamTerms, List<ExamTerm> studentsExamTerms)
+        {
+            List<ExamTerm> finalExamTerms = new List<ExamTerm>();
+            foreach (ExamTerm examTerm in allFilteredExamTerms)
+            {
+                foreach (ExamTerm studentExamTerm in studentsExamTerms)
+                {
+                    if (studentExamTerm.ExamID == examTerm.ExamID && !finalExamTerms.Contains(examTerm))
+                    {
+                        finalExamTerms.Add(examTerm);
+                    }
+                }
+            }
+            return finalExamTerms;
+        }
 
+        private void NextPage_Click(object sender, RoutedEventArgs e)
+        {
 
+            currentExamPage++;
+            PreviousButton.IsEnabled = true;
+            UpdateCompletedExamsTable();
+
+        }
+
+        private void PreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentExamPage > 1)
+            {
+                currentExamPage--;
+                NextButton.IsEnabled = true;
+                UpdateCompletedExamsTable();
+            }
+            else if (currentExamPage == 1)
+            {
+                PreviousButton.IsEnabled = false;
+            }
+        }
+        private void UpdateCompletedExamsTable()
+        {
+            if (currentExamPage == 1)
+            {
+                PreviousButton.IsEnabled = false;
+            }
+            PageNumberTextBlock.Text = $"{currentExamPage}";
+
+            try
+            {
+                TableViewModel.CompletedExamTerms.Clear();
+                var examTerms = GetFilteredCompletedExamTerms();
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 1, sortCriteria, examTerms);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 1, sortCriteria, examTerms);
+                if (newExams.Count == 0)
+                    NextButton.IsEnabled = false;
+                else NextButton.IsEnabled = true;
+                if (examTerms != null)
+                {
+                    foreach (ExamTerm examTerm in exams)
+                        TableViewModel.CompletedExamTerms.Add(new ExamTermDTO(examTerm));
+                }
+                else
+                {
+                    MessageBox.Show("No exam terms found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+        private void SortCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SortCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string selectedContent = selectedItem.Content.ToString();
+
+                switch (selectedContent)
+                {
+                    case "Language":
+                        sortCriteria = "Language";
+                        break;
+                    case "Level":
+                        sortCriteria = "Level";
+                        break;
+                    case "Datetime":
+                        sortCriteria = "Datetime";
+                        break;
+                }
+                UpdateCompletedExamsTable();
+            }
+        }
     }
 }

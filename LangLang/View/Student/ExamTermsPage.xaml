@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
         WindowStartupLocation = "CenterScreen"
-        Title="ExamTermsPage" Height="450" Width="800">
+        Title="ExamTermsPage" Height="550" Width="800">
 
 
     <TabControl>
@@ -58,7 +58,7 @@
                 <DockPanel Grid.Row="1" Grid.ColumnSpan="4">
                     <TabControl>
                         <TabItem Header="Exam Terms">
-                            <DataGrid Height="350"
+                            <DataGrid 
                   AutoGenerateColumns="False"
                   x:Name="AvailableExamTermsDataGrid"
                   ItemsSource="{Binding TableViewModel.AvailableExamTerms, UpdateSourceTrigger=PropertyChanged}"
@@ -66,7 +66,8 @@
                   SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
-                                    <DataGridTextColumn Header="Language and Level" Width ="*" Binding="{Binding LanguageAndLevel}"/>
+                                    <DataGridTextColumn Header="Language" Width ="*" Binding="{Binding Language}"/>
+                                    <DataGridTextColumn Header="Level" Width ="*" Binding="{Binding Level}"/>
                                     <DataGridTextColumn Header="Exam Date" Width ="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
                                     <DataGridTextColumn Header="Max Students" Width ="*" Binding="{Binding MaxStudents}"/>
                                     <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
@@ -133,7 +134,7 @@
                 <DockPanel Grid.Row="1" Grid.ColumnSpan="5">
                     <TabControl>
                         <TabItem Header="Exam Terms">
-                            <DataGrid Height="350"
+                            <DataGrid 
       AutoGenerateColumns="False"
       x:Name="RegisteredExamTermsDataGrid"
       ItemsSource="{Binding TableViewModel.RegisteredExamTerms, UpdateSourceTrigger=PropertyChanged}"
@@ -141,7 +142,8 @@
       SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
-                                    <DataGridTextColumn Header="Language and Level" Width ="*" Binding="{Binding LanguageAndLevel}"/>
+                                    <DataGridTextColumn Header="Language" Width ="*" Binding="{Binding Language}"/>
+                                    <DataGridTextColumn Header="Level" Width ="*" Binding="{Binding Level}"/>
                                     <DataGridTextColumn Header="Exam Date" Width ="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
                                     <DataGridTextColumn Header="Max Students" Width ="*" Binding="{Binding MaxStudents}"/>
                                     <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
@@ -164,7 +166,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="100"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="70"></RowDefinition>
+                    <RowDefinition Height="110"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="121*"></ColumnDefinition>
@@ -207,7 +209,7 @@
                 <DockPanel Grid.Row="1" Grid.ColumnSpan="4">
                     <TabControl>
                         <TabItem Header="Exam Terms">
-                            <DataGrid Height="350"
+                            <DataGrid 
 AutoGenerateColumns="False"
 x:Name="CompletedExamTermsDataGrid"
 ItemsSource="{Binding TableViewModel.CompletedExamTerms, UpdateSourceTrigger=PropertyChanged}"
@@ -215,7 +217,8 @@ SelectedItem="{Binding SelectedCompletedExamTerm, UpdateSourceTrigger=PropertyCh
 SelectionMode="Single" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
-                                    <DataGridTextColumn Header="Language and Level" Width ="*" Binding="{Binding LanguageAndLevel}"/>
+                                    <DataGridTextColumn Header="Language" Width ="*" Binding="{Binding Language}"/>
+                                    <DataGridTextColumn Header="Level" Width ="*" Binding="{Binding Level}"/>
                                     <DataGridTextColumn Header="Exam Date" Width ="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
                                     <DataGridTextColumn Header="Max Students" Width ="*" Binding="{Binding MaxStudents}"/>
                                     <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
@@ -228,9 +231,21 @@ SelectionMode="Single" IsReadOnly="True">
                     </TabControl>
                 </DockPanel>
 
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="114,15,0,15" Grid.Column="2">
-                    <Button Content="View the exam" Click="SignUp_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
-                    <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="4" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <ComboBox x:Name="SortCriteriaComboBox" SelectionChanged="SortCriteriaComboBox_SelectionChanged"  Width="150">
+                        <ComboBoxItem Content="Level"/>
+                        <ComboBoxItem Content="Language"/>
+                        <ComboBoxItem Content="StartDate"/>
+                    </ComboBox>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                        <Button Content="&lt;" x:Name ="PreviousButton" Click="PreviousPage_Click" Foreground="White" Background="#555555" Width="80"/>
+                        <TextBlock x:Name="PageNumberTextBlock" Text="Page 1" Margin="10,0,10,0" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                        <Button Content="&gt;" x:Name ="NextButton" Click="NextPage_Click" Foreground="White" Background="#555555" Width="80"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
+                        <Button Content="View the exam" Click="ViewExam_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                        <Button Content="Cancel" Click="Cancel_Click" Width="100"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </TabItem>

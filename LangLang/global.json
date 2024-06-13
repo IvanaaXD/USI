@@ -1,5 +1,9 @@
 {
   "sdk": {
     "version": "6.0.100"
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "ProjectDatabase": "Host=localhost; Database=usi_data; Username=postgres; Password=1234"
   }
 }

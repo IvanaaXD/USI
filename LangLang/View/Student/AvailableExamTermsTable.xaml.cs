@@ -1,22 +1,12 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model.Enums;
-using LangLang.Model;
+using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LangLang.View.Student
 {
@@ -40,17 +30,18 @@ namespace LangLang.View.Student
         public ExamTermDTO SelectedExamTerm { get; set; }
         private StudentsController studentsController { get; set; }
         private TeacherController teacherController { get; set; }
+        private ExamTermController examTermController { get; set; }
 
         private int studentId { get; set; }
         private bool isSearchButtonClicked = false;
-
 
         public AvailableExamTermsTable(int studentId)
         {
             InitializeComponent();
             TableViewModel = new ViewModel();
-            studentsController = new StudentsController();
-            teacherController = new TeacherController();
+            studentsController = Injector.CreateInstance<StudentsController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            examTermController = Injector.CreateInstance<ExamTermController>();
             this.studentId = studentId;
 
             languageComboBox.ItemsSource = Enum.GetValues(typeof(Language));
@@ -122,7 +113,7 @@ namespace LangLang.View.Student
 
             if (isSearchButtonClicked)
             {
-                List<ExamTerm> allFilteredExamTerms = teacherController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
+                List<ExamTerm> allFilteredExamTerms = examTermController.FindExamTermsByCriteria(selectedLanguage, selectedLevel, selectedStartDate);
 
                 foreach (ExamTerm examTerm in allFilteredExamTerms)
                 {

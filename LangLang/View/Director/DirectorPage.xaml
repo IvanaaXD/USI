@@ -4,16 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Director"
+        xmlns:coursetable="clr-namespace:LangLang.View.Student"
         xmlns:converters="clr-namespace:LangLang.View.Converters"
         mc:Ignorable="d"
         WindowStartupLocation = "CenterScreen"
-        Title="WelcomePage" Height="450" Width="1000">
-    
+        Title="WelcomePage" Height="480" Width="1000">
+
     <Window.Resources>
         <converters:LanguageStringConverter x:Key="LanguageStringConverter"/>
         <converters:LevelOfLanguageToStringConverter x:Key="LevelOfLanguageToStringConverter"/>
+        <converters:DayOfWeekToStringConverter x:Key="DayOfWeekToStringConverter"/>
     </Window.Resources>
-    
+
     <TabControl>
         <TabItem Header="Account">
             <Grid>
@@ -24,20 +26,22 @@
                     <RowDefinition Height="60"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="68.1"></ColumnDefinition>
+                    <ColumnDefinition Width="131.9"/>
+                    <ColumnDefinition Width="81*"></ColumnDefinition>
+                    <ColumnDefinition Width="316*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0">
+                <Border Background="#4F518C" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2">
                     <Image Source="https://cdn2.iconfinder.com/data/icons/avatars-2-7/128/37-512.png" Width="150" RenderTransformOrigin="0.52,0.499"></Image>
                 </Border>
 
-                <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Center"
-                                 FontSize="30">Welcome</TextBlock>
-                <Button x:Name="logoutBtn"  Click="Logout_Click" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
-                             Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray">Log out</Button>
+                <TextBlock Grid.Row="1" Grid.Column="3"  VerticalAlignment="Center" HorizontalAlignment="Left"
+                                 FontSize="30" Margin="174,0,0,0">Welcome</TextBlock>
+                <Button x:Name="logoutBtn"  Click="Logout_Click" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left"
+                             Width="150" Height="30" FontSize="16" Background="LightGray" BorderBrush="DarkGray" Margin="160,0,0,0">Log out</Button>
 
-                <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="270"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -78,8 +82,8 @@
                 </Grid>
 
                 <Grid>
-                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0,35">
-                        <TabControl VerticalAlignment="Center" Grid.ColumnSpan="2">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,5,0, 100">
+                        <TabControl VerticalAlignment="Center" Height="auto">
                             <DataGrid Height="350"
                                       AutoGenerateColumns="False"
                                       x:Name="TeachersDataGrid"
@@ -113,17 +117,216 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                         </TabControl>
-
                     </Grid>
-                    
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
-                        <Button Content="Create" Click="CreateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
-                        <Button Content="Update" Click="UpdateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
-                        <Button Content="Delete" Click="DeleteTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0, 0" Height="85">
+                        <ComboBox x:Name="teacherSortCriteriaComboBox" SelectionChanged="TeacherSortCriteriaComboBox_SelectionChanged"  Width="150">
+                            <ComboBoxItem Content="FirstName"/>
+                            <ComboBoxItem Content="LastName"/>
+                            <ComboBoxItem Content="StartedWork"/>
+                        </ComboBox>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                            <Button Content="&lt;" x:Name ="TeacherPreviousButton" Click="TeacherPreviousPage_Click" Foreground="White" Background="#555555" Width="80"/>
+                            <TextBlock x:Name="TeacherPageNumberTextBlock" Text="Page 1" Margin="10,0,10,0" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <Button Content="&gt;" x:Name ="TeacherNextButton" Click="TeacherNextPage_Click" Foreground="White" Background="#555555" Width="80"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,7">
+                            <Button Content="Create" Click="CreateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#399142" Width="80"/>
+                            <Button Content="Update" Click="UpdateTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#4a93b0" Width="80"/>
+                            <Button Content="Delete" Click="DeleteTeacher_Click" Margin="10,0,0,0" Foreground="White" Background="#ba3e38" Width="80"/>
+                        </StackPanel>
                     </StackPanel>
-                    
                 </Grid>
             </DockPanel>
+        </TabItem>
+        <TabItem Header="Completed courses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <coursetable:CoursesTable x:Name="StudentCoursesTable0" Grid.ColumnSpan="2"
+                            SearchButtonClicked="SearchButton_Click"/>
+
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content="View course" Click="ViewCourseButton_Click" Width="150"  Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Available courses">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+                <Grid Grid.Row="1">
+                    <DataGrid Height="350"
+              AutoGenerateColumns="False"
+              x:Name="CoursesDataGrid"
+              ItemsSource="{Binding TableViewModel.CoursesDirector, UpdateSourceTrigger=PropertyChanged}"
+              SelectedItem="{Binding SelectedCourseDirector, UpdateSourceTrigger=PropertyChanged}"
+              SelectionMode="Single" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Language" Width="*" Binding="{Binding Language}"/>
+                            <DataGridTextColumn Header="Level" Width="*" Binding="{Binding Level}"/>
+                            <DataGridTextColumn Header="Duration In Weeks" Width="*" Binding="{Binding Duration}"/>
+                            <DataGridTemplateColumn Header="Work Days" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding WorkDays, Converter={StaticResource DayOfWeekToStringConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Start Date" Width="*" Binding="{Binding StartDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                            <DataGridTextColumn Header="Online" Width="*" Binding="{Binding IsOnline}"/>
+                            <DataGridTextColumn Header="Currently Enrolled" Width="*" Binding="{Binding CurrentlyEnrolled}"/>
+                            <DataGridTextColumn Header="Max Students" Width="*" Binding="{Binding MaxEnrolledStudents}"/>
+                        </DataGrid.Columns>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasTeacher}" Value="false">
+                                        <Setter Property="Background" Value="LightCoral" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
+                </Grid>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content="Create course" Click="CreateCourse_Click" Width="150" Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                    <Button Content="Assign Teacher" Click="AssignTeacherCourse_Click" Width="150" Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Available exam terms">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid VerticalAlignment="Top" Height="auto" DockPanel.Dock="Top" Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"></RowDefinition>
+                        <RowDefinition Height="50"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,5">
+                        <TextBlock Text="Language:" Width="150" Margin="5,0,5,0" />
+                        <TextBlock Text="Language level:" Width="150" Margin="5,0,5,0" />
+                        <TextBlock Text="Exam Date:" Width="150" Margin="5,0,5,0" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,10,15">
+                        <ComboBox x:Name="examLanguageComboBox" Width="150" Margin="5" />
+                        <ComboBox x:Name="examLevelComboBox" Width="150" Margin="5" />
+                        <DatePicker x:Name="examDatePicker" Width="150" Margin="5" />
+                        <Button Content="Reset values" Click="ResetExam_Click" Width="107" FontSize="14" Background="#6d6fbf" Foreground="White" Height="26"/>
+                    </StackPanel>
+                    <Button Grid.Row="1" Content="Search" Click="SearchDirectorExams_Click" HorizontalAlignment="Right" Width="100" Height="25" Margin="0,5,10,20"/>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <DataGrid Height="350"
+      AutoGenerateColumns="False"
+      x:Name="ExamsDataGrid"
+      ItemsSource="{Binding TableViewModel.ExamTermsDirector, UpdateSourceTrigger=PropertyChanged}"
+      SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+      SelectionMode="Single" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Exam ID" Width ="*" Binding="{Binding ExamID}"/>
+                            <DataGridTextColumn Header="Language" Width ="*" Binding="{Binding Language}"/>
+                            <DataGridTextColumn Header="Level" Width ="*" Binding="{Binding Level}"/>
+                            <DataGridTextColumn Header="Exam Date" Width ="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                            <DataGridTextColumn Header="Max Students" Width ="*" Binding="{Binding MaxStudents}"/>
+                            <DataGridTextColumn Header="Currently Attending" Width ="*" Binding="{Binding CurrentlyAttending}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                    <Button Content="Create exam" Click="CreateExam_Click" Width="150" Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+
+
+        <TabItem Header="Graded Exams">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <DockPanel Grid.Row="0" Grid.ColumnSpan="1">
+                    <TabControl>
+                        <TabItem Header="Exam Terms">
+                            <DataGrid Height="350"
+                                      AutoGenerateColumns="False"
+                                      x:Name="ExamTermsDataGrid"
+                                      ItemsSource="{Binding TableViewModel.GradedExamTerms, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedItem="{Binding SelectedExamTerm, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectionMode="Single" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Exam ID" Width="*" Binding="{Binding ExamID}"/>
+                                    <DataGridTextColumn Header="Language" Width="*" Binding="{Binding Language}"/>
+                                    <DataGridTextColumn Header="Level" Width="*" Binding="{Binding Level}"/>
+                                    <DataGridTextColumn Header="Exam Date" Width="*" Binding="{Binding ExamDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}"/>
+                                    <DataGridTextColumn Header="Max Students" Width="*" Binding="{Binding MaxStudents}"/>
+                                    <DataGridTextColumn Header="Currently Attending" Width="*" Binding="{Binding CurrentlyAttending}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="View" Click="ViewExam_Click" Width="150" Margin="10,0,10,0" FontSize="15" Foreground="White" Background="#4F519A"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Reports">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="54*" />
+                    <RowDefinition Height="Auto" MinHeight="50.851" />
+                    <RowDefinition Height="Auto" MinHeight="14" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
+                    <RowDefinition Height="167*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Reports" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Height="27" Width="74" />
+
+                <RadioButton x:Name="ReportOneRadioButton" Grid.Row="3" Grid.Column="1" Content="Report 1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="64" />
+                <RadioButton x:Name="ReportTwoRadioButton" Grid.Row="4" Grid.Column="1" Content="Report 2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="64" />
+                <RadioButton x:Name="ReportThreeRadioButton" Grid.Row="5" Grid.Column="1" Content="Report 3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="64" />
+                <RadioButton x:Name="ReportFourRadioButton" Grid.Row="6" Grid.Column="1" Content="Report 4" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Width="64" />
+
+                <Button Grid.Row="7" Grid.Column="1" Content="Send Report" Click="SendReport_Click"  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,33,0,0" Width="138" Height="30" FontSize="15" Background="#4F518C" Foreground="White"/>
+            </Grid>
         </TabItem>
 
     </TabControl>

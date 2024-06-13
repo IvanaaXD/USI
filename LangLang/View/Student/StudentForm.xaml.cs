@@ -1,5 +1,5 @@
 ﻿using LangLang.Controller;
-using LangLang.Model;
+using LangLang.Domain.Model;
 using System;
 using System.Windows;
 
@@ -12,20 +12,30 @@ namespace LangLang.View.Student
     {
         int studentId;
         StudentsController studentController;
-        public StudentForm(int studentId, StudentsController studentController)
+
+        public StudentForm(int studentId)
         {
             InitializeComponent();
             this.studentId = studentId;
-            this.studentController = studentController;
+            this.studentController = Injector.CreateInstance<StudentsController>();
 
             SetWelcomeHeading();
+            SetStudentInformations();
+            DisplayAcceptedCourseRequest();
             SetActiveCourse();
         }
-
+ 
         private void SetWelcomeHeading()
         {
-            Model.Student student = studentController.GetStudentById(studentId);
+            Domain.Model.Student student = studentController.GetStudentById(studentId);
             welcomeTextBlock.Text = welcomeTextBlock.Text + " " + student.FirstName;
+        }
+        private void SetStudentInformations()
+        {
+            PenaltyPointController penaltyPointController = new PenaltyPointController();
+            completedCoursesTextBlock.Text = studentController.GetCompletedCourseNumber(studentId).ToString();
+            passedExamsTextBlock.Text = studentController.GetPassedExamsNumber(studentId).ToString();
+            penaltyPoinsTextBlcok.Text = penaltyPointController.GetPenaltyPointsByStudentId(studentId).Count.ToString();
         }
 
         private void SetActiveCourse()
@@ -34,17 +44,40 @@ namespace LangLang.View.Student
             if (activeCourse != null)
             {
                 activeCourseTextBlock.Text = GetCourseName(activeCourse);
+
                 if (studentController.IsQuitCourseMailSent(studentId, activeCourse.Id) ||
                     (DateTime.Now - activeCourse.StartDate).TotalDays < 7)
+                {
                     dropOutButton.Visibility = Visibility.Collapsed;
+                }
             }
             else
             {
                 activeCourseTextBlock.Text = "/";
                 dropOutButton.Visibility = Visibility.Collapsed;
+
+                int currentlyCompletedCourseId = studentController.IsSomeCourseCompleted(studentId);
+                if (currentlyCompletedCourseId >= 0)
+                {
+                    DisplayCompletedCourseForm(currentlyCompletedCourseId);
+                }
             }
         }
+        private void DisplayCompletedCourseForm(int courseId)
+        {
+            GradeTeacher gradeTeacherForm = new GradeTeacher(studentId, courseId);
+            gradeTeacherForm.Show();
+        }
 
+        private void DisplayAcceptedCourseRequest()
+        {
+            if(studentController.IsEnterCourseRequestAccepted(studentId))
+            {
+                Course activeCourse = studentController.GetActiveCourse(studentId);
+                AcceptedEnterCourseRequestForm acceptedCourseForm = new AcceptedEnterCourseRequestForm(GetCourseName(activeCourse));
+                acceptedCourseForm.Show();
+            }
+        }
         private void DropOutFromCourseBoutton_Click(object sender, RoutedEventArgs e)
         {
             CancelCourseEnrollmentForm cancelCourseEnrollmentForm = new CancelCourseEnrollmentForm(studentId,studentController.GetStudentById(studentId).ActiveCourseId);
@@ -56,7 +89,7 @@ namespace LangLang.View.Student
 
         private void AvailableCourses_Click(object sender, RoutedEventArgs e)
         {
-            CoursesView coursesView = new CoursesView(studentId,0);
+            CoursesView coursesView = new CoursesView(studentId, 0);
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
@@ -78,18 +111,18 @@ namespace LangLang.View.Student
             coursesView.Owner = this;
             coursesView.ShowDialog();
         }
-        private void AvailableExamTerms_Click(object sender, RoutedEventArgs e)
+        private void ExamTerms_Click(object sender, RoutedEventArgs e)
         {
-            AvailableExamTermsTable availableExamTermsForm = new AvailableExamTermsTable(studentId);
-            availableExamTermsForm.Show();
+            ExamTermsPage examTermsPage = new ExamTermsPage(studentId);
+            examTermsPage.Show();
         }
 
         private void UpdateAccount_Click(object sender, RoutedEventArgs e)
         {
-            LangLang.Model.Student student = studentController.GetStudentById(studentId);
-            if (student.ActiveCourseId != -1 || student.RegisteredExamsIds != null)
+            Domain.Model.Student student = studentController.GetStudentById(studentId);
+            if (student.ActiveCourseId != -1 || student.RegisteredExamsIds.Count != 0)
             {
-                MessageBox.Show("The student attends the course and cannot change the data.");
+                MessageBox.Show("The student cannot change the data.");
             }
             else
             {
@@ -118,6 +151,11 @@ namespace LangLang.View.Student
         private void CancelCourseEnrollmentForm_WindowClosed(object sender, System.EventArgs e)
         {
             SetActiveCourse();
+        }
+        private void Mail_Click(object sender, RoutedEventArgs e)
+        {
+            StudentMail studentMail = new StudentMail(studentController.GetStudentById(studentId));
+            studentMail.Show();
         }
     }
 }

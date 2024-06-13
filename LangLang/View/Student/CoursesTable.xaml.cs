@@ -1,4 +1,4 @@
-﻿using LangLang.Model.Enums;
+﻿using LangLang.Domain.Model.Enums;
 using System;
 using System.Windows;
 using System.Windows.Controls;

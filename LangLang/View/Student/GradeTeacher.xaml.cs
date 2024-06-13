@@ -1,7 +1,9 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
+using LangLang.Domain.Model;
+using LangLang.Repository;
 using System.Windows;
+using LangLang.Domain.IRepository;
 
 namespace LangLang.View.Student
 {
@@ -10,56 +12,52 @@ namespace LangLang.View.Student
     /// </summary>
     public partial class GradeTeacher : Window
     {
-        private TeacherDTO teacher { get; set; }
         private StudentGradeDTO teacherGrade { get; set; }
-
-        private int studentId, courseId;
-
+        private int studentId, courseId, teacherId;
         private TeacherController teacherController;
         private StudentsController studentController;
-        private DirectorController directorController;
+        private DirectorController directorService;
 
         public GradeTeacher(int studentId, int courseId)
         {
             InitializeComponent();
-            DataContext = this;
 
-            teacherController = new TeacherController();
-            studentController = new StudentsController();
-            directorController = new DirectorController();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            studentController = Injector.CreateInstance<StudentsController>();
+            directorService = Injector.CreateInstance<DirectorController>();
 
             this.studentId = studentId;
             this.courseId = courseId;
 
             InitializeDTO();
-            SetGUIElements();
 
-        }
-
-        private void SetGUIElements()
-        {
             completedCourseName.Text = GetCourseName(courseId);
-            firstNameTextBlock.Text = teacher.FirstName;
-            lastNameTextBlock.Text = teacher.LastName;
-            emailTextBlock.Text = teacher.Email;
+
+            DataContext = teacherGrade;
+
         }
+
         private void InitializeDTO()
         {
-            Model.Teacher teacher = directorController.GetTeacherByCourse(courseId);
-            this.teacher = new TeacherDTO(teacher);
-            teacherGrade = new StudentGradeDTO();
+            Domain.Model.Teacher teacher = directorService.GetTeacherByCourse(courseId);
+            this.teacherId = teacher.Id;
+            teacherGrade = new StudentGradeDTO(teacher);
         }
 
         public void GradeStudent_Click(object sender, RoutedEventArgs e)
         {
-            if (teacherGrade.IsValid)
+            if (!string.IsNullOrWhiteSpace(gradeValueTextBox.Text))
             {
-                teacherGrade.TeacherId = teacher.Id;
-                teacherGrade.CourseId = courseId;
-                teacherGrade.StudentId = studentId;
-                studentController.GradeStudentCourse(teacherGrade.ToCourseGrade());
+                teacherGrade.Value = int.Parse(gradeValueTextBox.Text);
+                if (teacherGrade.IsValid)
+                {
+                    teacherGrade.TeacherId = teacherId;
+                    teacherGrade.CourseId = courseId;
+                    teacherGrade.StudentId = studentId;
+                    studentController.GradeStudentCourse(teacherGrade.ToStudentGrade());
+                    Close();
+                }
             }
-            Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

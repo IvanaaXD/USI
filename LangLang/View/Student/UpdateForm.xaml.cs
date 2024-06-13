@@ -1,19 +1,10 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Student
 {
@@ -31,7 +22,7 @@ namespace LangLang.View.Student
         public UpdateForm(int studentId, StudentsController studentsController)
         {
             InitializeComponent();
-            this.studentsController = studentsController;
+            this.studentsController = Injector.CreateInstance<StudentsController>();
             Student = new StudentDTO(studentsController.GetStudentById(studentId));
             DataContext = Student;
             studentEmail = Student.Email;

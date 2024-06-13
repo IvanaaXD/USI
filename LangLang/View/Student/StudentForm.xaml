@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LangLang.View.Student"
         mc:Ignorable="d"
+        WindowStartupLocation = "CenterScreen"
         Title="StudentForm" Height="450" Width="800">
 
     <Grid>
@@ -33,9 +34,9 @@
                         <MenuItem Header="Completed courses" Click="CompletedCourses_Click"></MenuItem>
                         <MenuItem Header="Passed courses" Click="PassedCourses_Click"></MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Available exam terms" Click="AvailableExamTerms_Click"></MenuItem>
+                    <MenuItem Header="Exam terms" Click="ExamTerms_Click"></MenuItem>
                 </MenuItem>
-                <MenuItem Header="Mail"></MenuItem>
+                <MenuItem Header="Mail" Click="Mail_Click"></MenuItem>
             </Menu>
         </DockPanel>
 
@@ -58,7 +59,7 @@
 
         <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="270"></ColumnDefinition>
+                <ColumnDefinition Width="300"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -67,13 +68,13 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Number of courses attended:" VerticalAlignment="Center" FontSize="20"></TextBlock>
-            <TextBlock Grid.Row="1" Text="Number of passed exams:" VerticalAlignment="Center" FontSize="20"></TextBlock>
+            <TextBlock Grid.Row="0" Text="Number of completed courses: " VerticalAlignment="Center" FontSize="20"></TextBlock>
+            <TextBlock Grid.Row="1" Text="Number of passed exams: " VerticalAlignment="Center" FontSize="20"></TextBlock>
             <TextBlock Grid.Row="2" Text="Number of penalty points:" VerticalAlignment="Center" FontSize="20"></TextBlock>
 
-            <TextBlock x:Name="completedCoursesBlock" Grid.Row="0" Grid.Column="1" FontSize="20">2</TextBlock>
-            <TextBlock x:Name="passedExamsBlock" Grid.Row="1" Grid.Column="1" FontSize="20">1</TextBlock>
-            <TextBlock x:Name="penaltyPoinsBlcok" Grid.Row="2" Grid.Column="1"  FontSize="20">0</TextBlock>
+            <TextBlock x:Name="completedCoursesTextBlock" Grid.Row="0" Grid.Column="1" FontSize="20"></TextBlock>
+            <TextBlock x:Name="passedExamsTextBlock" Grid.Row="1" Grid.Column="1" FontSize="20"></TextBlock>
+            <TextBlock x:Name="penaltyPoinsTextBlcok" Grid.Row="2" Grid.Column="1"  FontSize="20"></TextBlock>
         </Grid>
     </Grid>
 </Window>

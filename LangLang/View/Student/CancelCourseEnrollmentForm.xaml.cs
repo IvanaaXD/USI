@@ -1,8 +1,10 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model;
+using LangLang.Domain.Model;
+using LangLang.Repository;
 using System;
 using System.Windows;
+using LangLang.Domain.IRepository;
 
 namespace LangLang.View.Student
 {
@@ -15,7 +17,7 @@ namespace LangLang.View.Student
 
         StudentsController studentController;
         TeacherController teacherController;
-        DirectorController directorController;
+        DirectorController directorService;
         MailController mailController;
 
         MailDTO mailDTO { get; set; }
@@ -28,10 +30,10 @@ namespace LangLang.View.Student
             InitializeComponent();
             this.studentId = studentId;
             this.courseId = courseId;
-            studentController = new StudentsController();
-            teacherController = new TeacherController();
-            directorController = new DirectorController();
-            mailController = new MailController();
+            studentController = Injector.CreateInstance<StudentsController>();
+            teacherController = Injector.CreateInstance<TeacherController>();
+            directorService = Injector.CreateInstance<DirectorController>();
+            mailController = Injector.CreateInstance<MailController>();
 
             CreateMailDTO();
 
@@ -56,10 +58,10 @@ namespace LangLang.View.Student
 
         private void CreateMailDTO()
         {
-            Model.Student student = studentController.GetStudentById(studentId);
-            Model.Teacher teacher = directorController.GetTeacherByCourse(courseId);
+            Domain.Model.Student student = studentController.GetStudentById(studentId);
+            Domain.Model.Teacher teacher = directorService.GetTeacherByCourse(courseId);
             
-            mailDTO = new MailDTO(mailController.PrepareQuitCourseMail(student.Email,teacher.Email,courseId));
+            mailDTO = new MailDTO(mailController.PrepareQuitCourseMail(student.Email,teacher.Email,courseId, -1));
         }
         private string GetCourseName(int courseId)
         {

@@ -1,35 +1,36 @@
 ﻿using LangLang.Controller;
 using LangLang.DTO;
-using LangLang.Model.Enums;
+using LangLang.Domain.Model.Enums;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using LangLang.Domain.Model;
 
 namespace LangLang.View.Director
 {
     /// <summary>
-    /// Interaction logic for ModifyDataForm.xaml
+    /// Interaction logic for UpdateTeacherForm.xaml
     /// </summary>
     public partial class UpdateTeacherForm : Window
     {
+        public TeacherDTO? Teacher { get; set; }
 
-        public TeacherDTO Teacher { get; set; }
+        private readonly DirectorController directorController;
 
-        private DirectorController directorController;
+        private readonly string teacherEmail;
 
-        private string teacherEmail;
-
-        public UpdateTeacherForm(int teacherId, DirectorController directorController)
+        public UpdateTeacherForm(int teacherId)
         {
             InitializeComponent();
-            this.directorController = directorController;
-            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            this.directorController = Injector.CreateInstance<DirectorController>();    
+            Teacher = new TeacherDTO(directorController.GetById(teacherId));
             DataContext = Teacher;
             teacherEmail = Teacher.Email;
 
             genderComboBox.ItemsSource = Enum.GetValues(typeof(Gender));
             genderComboBox.SelectedItem = Teacher.Gender;
             passwordBox.Password = Teacher.Password;
+            dateOfBirthDatePicker.SelectedDate = Teacher.DateOfBirth;
 
             languagesListBox.ItemsSource = Teacher.LevelAndLanguages;
 
@@ -38,9 +39,7 @@ namespace LangLang.View.Director
                 for (int j = 0; j < Teacher.Languages.Count; j++)
                 {
                     if (i == j)
-                    {
                         languagesListBox.SelectedItems.Add($"{Teacher.Languages[j]} {Teacher.LevelOfLanguages[i]}");
-                    }
                 }
             }
         }
@@ -53,9 +52,7 @@ namespace LangLang.View.Director
                 Close();
             }
             else
-            {
                 MessageBox.Show("Teacher can not be updated. Not all fields are valid.");
-            }
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -66,9 +63,7 @@ namespace LangLang.View.Director
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)
-            {
                 Teacher.Password = passwordBox.Password;
-            }
         }
 
         private void LanguagesListBox_SelectionChanged(object sender, RoutedEventArgs e) { }
