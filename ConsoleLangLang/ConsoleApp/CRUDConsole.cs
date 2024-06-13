@@ -30,7 +30,7 @@ public class CRUDConsole
                         Console.WriteLine("Invalid choice.");
                     break;
                 case "c":
-                    DisplayCrudOperations<CourseDTO>(person);
+                    DisplayCrudOperations<Course>(person);
                     break;
                 case "e":
                     DisplayCrudOperations<ExamTerm>(person);
@@ -160,7 +160,7 @@ public class CRUDConsole
             case nameof(Teacher):
                 controller = Injector.CreateInstance<DirectorController>();
                 break;
-            case nameof(CourseDTO):
+            case nameof(Course):
                 controller = Injector.CreateInstance<CourseController>();
                 break;
             case nameof(ExamTerm):

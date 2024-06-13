@@ -47,16 +47,16 @@ public class GenericCrud
         return item;
     }
 
-/*    public void Delete(int index)
-    {
-        if (index < 0 || index >= dataStore.Count)
+    /*    public void Delete(int index)
         {
-            Console.WriteLine("Invalid index.");
-            return;
-        }
-        dataStore.RemoveAt(index);
-        Console.WriteLine("Item deleted.");
-    }*/
+            if (index < 0 || index >= dataStore.Count)
+            {
+                Console.WriteLine("Invalid index.");
+                return;
+            }
+            dataStore.RemoveAt(index);
+            Console.WriteLine("Item deleted.");
+        }*/
 
     public void PrintTable<T>(List<T> dataStore)
     {
@@ -66,29 +66,64 @@ public class GenericCrud
             return;
         }
 
-        var properties = typeof(T).GetProperties().Where(p => p.CanRead);
+        var properties = typeof(T).GetProperties().Where(p => p.CanRead).ToArray();
+        int[] columnWidths = CalculateColumnWidths(dataStore, properties);
 
-        // Print header
-        foreach (var prop in properties)
+        PrintHeader(properties, columnWidths);
+        PrintRows(dataStore, properties, columnWidths);
+    }
+
+    private int[] CalculateColumnWidths<T>(List<T> dataStore, PropertyInfo[] properties)
+    {
+        int[] columnWidths = new int[properties.Length];
+
+        // Calculate maximum widths of each column
+        for (int i = 0; i < properties.Length; i++)
         {
-            Console.Write($"{prop.Name}\t");
+            columnWidths[i] = properties[i].Name.Length; // Start with the header length
+
+            foreach (var item in dataStore)
+            {
+                var value = properties[i].GetValue(item);
+                string valueString;
+
+                if (value is IEnumerable enumerable && !(value is string))
+                    valueString = string.Join(",", enumerable.Cast<object>());
+                else
+                    valueString = value?.ToString() ?? string.Empty;
+
+                if (valueString.Length > columnWidths[i])
+                    columnWidths[i] = valueString.Length;
+            }
+        }
+
+        return columnWidths;
+    }
+
+    private void PrintHeader(PropertyInfo[] properties, int[] columnWidths)
+    {
+        for (int i = 0; i < properties.Length; i++)
+        {
+            Console.Write(properties[i].Name.PadRight(columnWidths[i] + 2));
         }
         Console.WriteLine();
+    }
 
-        // Print rows
+    private void PrintRows<T>(List<T> dataStore, PropertyInfo[] properties, int[] columnWidths)
+    {
         foreach (var item in dataStore)
         {
-            foreach (var prop in properties)
+            for (int i = 0; i < properties.Length; i++)
             {
-                var value = prop.GetValue(item);
+                var value = properties[i].GetValue(item);
+                string valueString;
+
                 if (value is IEnumerable enumerable && !(value is string))
-                {
-                    Console.Write($"{string.Join(",", enumerable.Cast<object>())}\t");
-                }
+                    valueString = string.Join(",", enumerable.Cast<object>());
                 else
-                {
-                    Console.Write($"{value}\t");
-                }
+                    valueString = value?.ToString() ?? string.Empty;
+
+                Console.Write(valueString.PadRight(columnWidths[i] + 2));
             }
             Console.WriteLine();
         }
