@@ -4,356 +4,361 @@ using System;
 using System.Collections.Generic;
 using LangLang.Domain.Model.Enums;
 using System.Linq;
+using LangLang.Domain.Model.Reports;
 
 namespace LangLang.Controller
 {
     public class ReportController
     {
-        private readonly IDirectorRepository _directors;
-        private readonly ITeacherRepository? _teachers;
-        private readonly IExamTermRepository? _examTerms;
-        private readonly IStudentGradeRepository? _studentGrades;
-        private readonly IPenaltyPointRepository? _penaltyPoints;
-        private readonly ICourseGradeRepository? _courseGrade;
-        private readonly DirectorController? _directorController;
-        private readonly ExamTermController? _examTermController;
-        private readonly StudentsController? _studentController;
-        private readonly CourseController? _courseController;
-        private readonly ExamTermGradeController? _examTermGradeController;
-        
-        public ReportController()
+        public void GenerateReport(IReportGenerator reportGenerator)
         {
-            _directors = Injector.CreateInstance<IDirectorRepository>();
-            _teachers = Injector.CreateInstance<ITeacherRepository>();
-            _examTerms = Injector.CreateInstance<IExamTermRepository>();
-            _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
-            _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
-            _courseGrade = Injector.CreateInstance<ICourseGradeRepository>();
-
-            _examTermController = Injector.CreateInstance<ExamTermController>();
-            _courseController = Injector.CreateInstance<CourseController>();
-            _directorController = Injector.CreateInstance<DirectorController>();
-            _studentController = Injector.CreateInstance<StudentsController>();
-            _examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
+            reportGenerator.GenerateReport();
         }
+        /* private readonly IDirectorRepository _directors;
+         private readonly ITeacherRepository? _teachers;
+         private readonly IExamTermRepository? _examTerms;
+         private readonly IStudentGradeRepository? _studentGrades;
+         private readonly IPenaltyPointRepository? _penaltyPoints;
+         private readonly ICourseGradeRepository? _courseGrade;
+         private readonly DirectorController? _directorController;
+         private readonly ExamTermController? _examTermController;
+         private readonly StudentsController? _studentController;
+         private readonly CourseController? _courseController;
+         private readonly ExamTermGradeController? _examTermGradeController;
 
-        public void GenerateFirstReport()
-        {
-            PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report1.pdf");
-            pdfGenerator.AddTitle("Number of penalty points in the last year");
-            pdfGenerator.AddNewLine();
-            pdfGenerator.AddTable(_courseController.GetPenaltyPointsLastYearPerCourse(), "Course", "Penalties");
-            pdfGenerator.AddNewPage();
-            pdfGenerator.AddTitle("Average points of students by penalties");
-            pdfGenerator.AddNewLine();
-            for (int i = 0; i <= 3; i++)
-            {
-                pdfGenerator.AddSubtitle("Number of penalty points: " + i);
-                pdfGenerator.AddTable(_studentController.GetStudentsAveragePointsPerPenalty()[i], "Student", "Average points");
-            }
-            pdfGenerator.SaveAndClose();
-        }
-        public void GenerateSecondReport()
-        {
-            PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report2.pdf");
-            pdfGenerator.AddTitle("Average teacher and course grades in the past year");
-            pdfGenerator.AddNewLine();
+         public ReportController()
+         {
+             _directors = Injector.CreateInstance<IDirectorRepository>();
+             _teachers = Injector.CreateInstance<ITeacherRepository>();
+             _examTerms = Injector.CreateInstance<IExamTermRepository>();
+             _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
+             _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
+             _courseGrade = Injector.CreateInstance<ICourseGradeRepository>();
 
-            pdfGenerator.AddTupleTable(GetTeacherCourseReport(), "Course", "Teacher Grade", "Knowledge Grade", "Activity Grade");
-            pdfGenerator.SaveAndClose();
-        }
-        public void GenerateThirdReport()
-        {
-            PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report3.pdf");
-            pdfGenerator.AddTitle("Statistics on the points of passed exams in the last year");
-            pdfGenerator.AddNewLine();
+             _examTermController = Injector.CreateInstance<ExamTermController>();
+             _courseController = Injector.CreateInstance<CourseController>();
+             _directorController = Injector.CreateInstance<DirectorController>();
+             _studentController = Injector.CreateInstance<StudentsController>();
+             _examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
+         }
 
-            pdfGenerator.AddTable(GetPartsOfExamReport(), "Each part of exam", "Average points");
+         public void GenerateFirstReport()
+         {
+             PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report1.pdf");
+             pdfGenerator.AddTitle("Number of penalty points in the last year");
+             pdfGenerator.AddNewLine();
+             pdfGenerator.AddTable(_courseController.GetPenaltyPointsLastYearPerCourse(), "Course", "Penalties");
+             pdfGenerator.AddNewPage();
+             pdfGenerator.AddTitle("Average points of students by penalties");
+             pdfGenerator.AddNewLine();
+             for (int i = 0; i <= 3; i++)
+             {
+                 pdfGenerator.AddSubtitle("Number of penalty points: " + i);
+                 pdfGenerator.AddTable(_studentController.GetStudentsAveragePointsPerPenalty()[i], "Student", "Average points");
+             }
+             pdfGenerator.SaveAndClose();
+         }
+         public void GenerateSecondReport()
+         {
+             PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report2.pdf");
+             pdfGenerator.AddTitle("Average teacher and course grades in the past year");
+             pdfGenerator.AddNewLine();
 
-            pdfGenerator.AddNewLine();
-            pdfGenerator.AddTitle("Course statistics in the last year");
-            pdfGenerator.AddNewLine();
+             pdfGenerator.AddTupleTable(GetTeacherCourseReport(), "Course", "Teacher Grade", "Knowledge Grade", "Activity Grade");
+             pdfGenerator.SaveAndClose();
+         }
+         public void GenerateThirdReport()
+         {
+             PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report3.pdf");
+             pdfGenerator.AddTitle("Statistics on the points of passed exams in the last year");
+             pdfGenerator.AddNewLine();
 
-            pdfGenerator.AddDifTypeTupleTable(GetStudentsCourseReport(), "Course", "Participants", "Passed", "Success Rate");
+             pdfGenerator.AddTable(GetPartsOfExamReport(), "Each part of exam", "Average points");
 
-            pdfGenerator.SaveAndClose();
-        }
+             pdfGenerator.AddNewLine();
+             pdfGenerator.AddTitle("Course statistics in the last year");
+             pdfGenerator.AddNewLine();
 
-        public void GenerateFourthReport()
-        {
-            PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report4.pdf");
+             pdfGenerator.AddDifTypeTupleTable(GetStudentsCourseReport(), "Course", "Participants", "Passed", "Success Rate");
 
-            pdfGenerator.AddTitle("Statistics on created courses in the last year");
-            pdfGenerator.AddNewLine();
-            pdfGenerator.AddTable(GetNumberOfCourses(), "Languages", "Number of courses");
+             pdfGenerator.SaveAndClose();
+         }
 
-            pdfGenerator.AddNewPage();
+         public void GenerateFourthReport()
+         {
+             PdfGenerator pdfGenerator = new PdfGenerator("..\\..\\..\\Data\\report4.pdf");
 
-            pdfGenerator.AddTitle("Statistics on created exams in the last year");
-            pdfGenerator.AddNewLine();
-            pdfGenerator.AddTable(GetNumberOfExamTerms(), "Languages", "Number of exams");
+             pdfGenerator.AddTitle("Statistics on created courses in the last year");
+             pdfGenerator.AddNewLine();
+             pdfGenerator.AddTable(GetNumberOfCourses(), "Languages", "Number of courses");
 
-            pdfGenerator.AddNewPage();
+             pdfGenerator.AddNewPage();
 
-            pdfGenerator.AddTitle("Statistics on penalty points");
-            pdfGenerator.AddNewLine();
-            pdfGenerator.AddTable(GetNumberOfPenaltyPoints(), "Languages", "Average number of penalty points");
+             pdfGenerator.AddTitle("Statistics on created exams in the last year");
+             pdfGenerator.AddNewLine();
+             pdfGenerator.AddTable(GetNumberOfExamTerms(), "Languages", "Number of exams");
 
-            pdfGenerator.AddNewPage();
+             pdfGenerator.AddNewPage();
 
-            pdfGenerator.AddTitle("Statistics on exam points");
-            pdfGenerator.AddNewLine();
-            pdfGenerator.AddTable(GetNumberOfPoints(), "Languages", "Average number of points on exams");
+             pdfGenerator.AddTitle("Statistics on penalty points");
+             pdfGenerator.AddNewLine();
+             pdfGenerator.AddTable(GetNumberOfPenaltyPoints(), "Languages", "Average number of penalty points");
 
-            pdfGenerator.SaveAndClose();
-        }
+             pdfGenerator.AddNewPage();
 
-        public Dictionary<Course, (double, double, double)> GetTeacherCourseReport()
-        {
-            Dictionary<Course, (double, double, double)> finalCourses = new();
-            Dictionary<Course, double> averageTeacherGrade = GetAverageTeacherGradeByCourse();
-            Dictionary<Course, double> averageKnowledgeGrade = CalculateAverageGrade("knowledge");
-            Dictionary<Course, double> averageActivityGrade = CalculateAverageGrade("activity");
-            List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
+             pdfGenerator.AddTitle("Statistics on exam points");
+             pdfGenerator.AddNewLine();
+             pdfGenerator.AddTable(GetNumberOfPoints(), "Languages", "Average number of points on exams");
 
-            foreach (Course course in lastYearCourses)
-            {
-                if (_courseController.HasGradingPeriodStarted(course))
-                {
-                    finalCourses[course] = (averageTeacherGrade[course], averageKnowledgeGrade[course], averageActivityGrade[course]);
-                }
-            }
+             pdfGenerator.SaveAndClose();
+         }
 
-            return finalCourses;
-        }
+         public Dictionary<Course, (double, double, double)> GetTeacherCourseReport()
+         {
+             Dictionary<Course, (double, double, double)> finalCourses = new();
+             Dictionary<Course, double> averageTeacherGrade = GetAverageTeacherGradeByCourse();
+             Dictionary<Course, double> averageKnowledgeGrade = CalculateAverageGrade("knowledge");
+             Dictionary<Course, double> averageActivityGrade = CalculateAverageGrade("activity");
+             List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
 
-        public Dictionary<string, double> GetPartsOfExamReport()
-        {
-            Dictionary<string, double> examAverageResult = new();
-            examAverageResult["reading"] = CalculateAveragePoints("reading");
-            examAverageResult["listening"] = CalculateAveragePoints("listening");
-            examAverageResult["speaking"] = CalculateAveragePoints("speaking");
-            examAverageResult["writing"] = CalculateAveragePoints("writing");
-            return examAverageResult;
-        }
+             foreach (Course course in lastYearCourses)
+             {
+                 if (_courseController.HasGradingPeriodStarted(course))
+                 {
+                     finalCourses[course] = (averageTeacherGrade[course], averageKnowledgeGrade[course], averageActivityGrade[course]);
+                 }
+             }
 
-        public Dictionary<Course, (int, int, double)> GetStudentsCourseReport()
-        {
-            Dictionary<Course, (int, int, double)> finalCourses = new();
-            List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
+             return finalCourses;
+         }
 
-            foreach (Course course in lastYearCourses)
-            {
-                if (_courseController.HasGradingPeriodStarted(course))
-                {
-                    int attendedCount = GetAttendedCount(course.Id);
-                    int passedCount = GetPassedCount(course.Id);
-                    finalCourses[course] = (attendedCount, passedCount, CalculatePassPercentage(passedCount, attendedCount));
-                }
-            }
+         public Dictionary<string, double> GetPartsOfExamReport()
+         {
+             Dictionary<string, double> examAverageResult = new();
+             examAverageResult["reading"] = CalculateAveragePoints("reading");
+             examAverageResult["listening"] = CalculateAveragePoints("listening");
+             examAverageResult["speaking"] = CalculateAveragePoints("speaking");
+             examAverageResult["writing"] = CalculateAveragePoints("writing");
+             return examAverageResult;
+         }
 
-            return finalCourses;
-        }
+         public Dictionary<Course, (int, int, double)> GetStudentsCourseReport()
+         {
+             Dictionary<Course, (int, int, double)> finalCourses = new();
+             List<Course> lastYearCourses = _courseController.GetCoursesLastYear();
 
-        public Dictionary<Language, T> GetLanguages<T>() where T : struct
-        {
-            Dictionary<Language, T> languages = new Dictionary<Language, T>();
-            var langs = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
+             foreach (Course course in lastYearCourses)
+             {
+                 if (_courseController.HasGradingPeriodStarted(course))
+                 {
+                     int attendedCount = GetAttendedCount(course.Id);
+                     int passedCount = GetPassedCount(course.Id);
+                     finalCourses[course] = (attendedCount, passedCount, CalculatePassPercentage(passedCount, attendedCount));
+                 }
+             }
 
-            foreach (Language language in langs)
-                if (language != Language.NULL)
-                    languages.Add(language, default(T));
+             return finalCourses;
+         }
 
-            return languages;
-        }
+         public Dictionary<Language, T> GetLanguages<T>() where T : struct
+         {
+             Dictionary<Language, T> languages = new Dictionary<Language, T>();
+             var langs = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
 
-        public Dictionary<Language, int> GetNumberOfCourses()
-        {
-            Dictionary<Language, int> numberOfCourses = GetLanguages<int>();
-            var courses = _courseController.FindCoursesByDate(DateTime.Today.AddYears(-1));
+             foreach (Language language in langs)
+                 if (language != Language.NULL)
+                     languages.Add(language, default(T));
 
-            foreach (var course in courses)
-                numberOfCourses[course.Language] += 1;
+             return languages;
+         }
 
-            return numberOfCourses;
-        }
+         public Dictionary<Language, int> GetNumberOfCourses()
+         {
+             Dictionary<Language, int> numberOfCourses = GetLanguages<int>();
+             var courses = _courseController.FindCoursesByDate(DateTime.Today.AddYears(-1));
 
-        public Dictionary<Language, int> GetNumberOfExamTerms()
-        {
-            Dictionary<Language, int> numberOfExamTerms = GetLanguages<int>();
-            var examTerms = _examTermController.FindExamTermsByDate(DateTime.Today.AddYears(-1));
+             foreach (var course in courses)
+                 numberOfCourses[course.Language] += 1;
 
-            foreach (var examTerm in examTerms)
-                numberOfExamTerms[examTerm.Language] += 1;
+             return numberOfCourses;
+         }
 
-            return numberOfExamTerms;
-        }
+         public Dictionary<Language, int> GetNumberOfExamTerms()
+         {
+             Dictionary<Language, int> numberOfExamTerms = GetLanguages<int>();
+             var examTerms = _examTermController.FindExamTermsByDate(DateTime.Today.AddYears(-1));
 
-        public Dictionary<Language, double> GetNumberOfPenaltyPoints()
-        {
-            Dictionary<Language, double> numberOfPenaltyPoints = GetLanguages<double>();
-            var penaltyPoints = _penaltyPoints.GetAllPenaltyPoints();
+             foreach (var examTerm in examTerms)
+                 numberOfExamTerms[examTerm.Language] += 1;
 
-            if (penaltyPoints.Count == 0)
-                return numberOfPenaltyPoints;
+             return numberOfExamTerms;
+         }
 
-            foreach (var number in numberOfPenaltyPoints)
-            {
-                List<LanguageLevel> levels = new List<LanguageLevel>();
-                int sum = 0;
+         public Dictionary<Language, double> GetNumberOfPenaltyPoints()
+         {
+             Dictionary<Language, double> numberOfPenaltyPoints = GetLanguages<double>();
+             var penaltyPoints = _penaltyPoints.GetAllPenaltyPoints();
 
-                foreach (var penaltyPoint in penaltyPoints)
-                {
-                    var course = _courseController.GetById(penaltyPoint.CourseId);
+             if (penaltyPoints.Count == 0)
+                 return numberOfPenaltyPoints;
 
-                    if (course.Language == number.Key)
-                    {
-                        if (!levels.Contains(course.Level))
-                            levels.Add(course.Level);
-                        sum += 1;
-                    }
-                }
+             foreach (var number in numberOfPenaltyPoints)
+             {
+                 List<LanguageLevel> levels = new List<LanguageLevel>();
+                 int sum = 0;
 
-                double averageNumber = 0;
-                if (sum != 0)
-                    averageNumber = sum / levels.Count();
+                 foreach (var penaltyPoint in penaltyPoints)
+                 {
+                     var course = _courseController.GetById(penaltyPoint.CourseId);
 
-                numberOfPenaltyPoints[number.Key] = averageNumber;
-            }
-            return numberOfPenaltyPoints;
-        }
+                     if (course.Language == number.Key)
+                     {
+                         if (!levels.Contains(course.Level))
+                             levels.Add(course.Level);
+                         sum += 1;
+                     }
+                 }
 
-        public Dictionary<Language, double> GetNumberOfPoints()
-        {
-            Dictionary<Language, double> numberOfPoints = GetLanguages<double>();
-            var examTerms = _examTerms.GetAllExamTerms();
+                 double averageNumber = 0;
+                 if (sum != 0)
+                     averageNumber = sum / levels.Count();
 
-            foreach (var number in numberOfPoints)
-            {
-                List<LanguageLevel> levels = new List<LanguageLevel>();
-                int sum = 0;
+                 numberOfPenaltyPoints[number.Key] = averageNumber;
+             }
+             return numberOfPenaltyPoints;
+         }
 
-                foreach (var examTerm in examTerms)
-                {
-                    var grades = _examTermGradeController.GetExamTermGradeByExam(examTerm.ExamID);
+         public Dictionary<Language, double> GetNumberOfPoints()
+         {
+             Dictionary<Language, double> numberOfPoints = GetLanguages<double>();
+             var examTerms = _examTerms.GetAllExamTerms();
 
-                    if (examTerm.Language == number.Key)
-                    {
-                        if (!levels.Contains(examTerm.Level))
-                            levels.Add(examTerm.Level);
+             foreach (var number in numberOfPoints)
+             {
+                 List<LanguageLevel> levels = new List<LanguageLevel>();
+                 int sum = 0;
 
-                        foreach (var grade in grades)
-                            sum += grade.ListeningPoints + grade.ReadingPoints + grade.SpeakingPoints + grade.WritingPoints;
-                    }
-                }
+                 foreach (var examTerm in examTerms)
+                 {
+                     var grades = _examTermGradeController.GetExamTermGradeByExam(examTerm.ExamID);
 
-                double averageNumber = 0;
-                if (sum != 0)
-                    averageNumber = sum / levels.Count();
+                     if (examTerm.Language == number.Key)
+                     {
+                         if (!levels.Contains(examTerm.Level))
+                             levels.Add(examTerm.Level);
 
-                numberOfPoints[number.Key] = averageNumber;
-            }
-            return numberOfPoints;
-        }
+                         foreach (var grade in grades)
+                             sum += grade.ListeningPoints + grade.ReadingPoints + grade.SpeakingPoints + grade.WritingPoints;
+                     }
+                 }
 
-        public double CalculateAveragePoints(string typeOfPoints)
-        {
-            int result = 0, count = 0;
-            List<ExamTermGrade> examGrades = _examTermGradeController.GetAllExamTermGrades();
-            foreach (ExamTermGrade grade in examGrades)
-            {
-                ExamTerm exam = _examTerms.GetExamTermById(grade.ExamId);
-                if (exam == null)
-                    continue;
-                else if (exam.ExamTime >= DateTime.Now.AddYears(-1))
-                {
-                    if (typeOfPoints == "listening")
-                        result += grade.ListeningPoints;
-                    else if (typeOfPoints == "speaking")
-                        result += grade.SpeakingPoints;
-                    else if (typeOfPoints == "writing")
-                        result += grade.WritingPoints;
-                    else if (typeOfPoints == "reading")
-                        result += grade.ReadingPoints;
+                 double averageNumber = 0;
+                 if (sum != 0)
+                     averageNumber = sum / levels.Count();
 
-                    count++;
-                }
-            }
-            return result == 0 ? 0 : result / count;
-        }
+                 numberOfPoints[number.Key] = averageNumber;
+             }
+             return numberOfPoints;
+         }
 
-        public Dictionary<Course, double> GetAverageTeacherGradeByCourse()
-        {
-            Dictionary<Course, double> finalResult = new();
-            foreach (Course course in _courseController.GetCoursesLastYear())
-            {
-                
-                int result = 0;
-                Teacher teacher = _directorController.GetTeacherByCourse(course.Id);
-                if (teacher == null)
-                    continue;
-                List<StudentGrade> teachersGrades = _studentGrades.GetStudentGradesByTeacherCourse(teacher.Id, course.Id);
+         public double CalculateAveragePoints(string typeOfPoints)
+         {
+             int result = 0, count = 0;
+             List<ExamTermGrade> examGrades = _examTermGradeController.GetAllExamTermGrades();
+             foreach (ExamTermGrade grade in examGrades)
+             {
+                 ExamTerm exam = _examTerms.GetExamTermById(grade.ExamId);
+                 if (exam == null)
+                     continue;
+                 else if (exam.ExamTime >= DateTime.Now.AddYears(-1))
+                 {
+                     if (typeOfPoints == "listening")
+                         result += grade.ListeningPoints;
+                     else if (typeOfPoints == "speaking")
+                         result += grade.SpeakingPoints;
+                     else if (typeOfPoints == "writing")
+                         result += grade.WritingPoints;
+                     else if (typeOfPoints == "reading")
+                         result += grade.ReadingPoints;
 
-                foreach (StudentGrade studentGrade in teachersGrades)
-                    result += studentGrade.Value;
+                     count++;
+                 }
+             }
+             return result == 0 ? 0 : result / count;
+         }
 
-                if (teachersGrades.Count == 0)
-                    finalResult[course] = 0;
-                else
-                    finalResult[course] = result / teachersGrades.Count;
-                
-            }
-            return finalResult;
-        }
+         public Dictionary<Course, double> GetAverageTeacherGradeByCourse()
+         {
+             Dictionary<Course, double> finalResult = new();
+             foreach (Course course in _courseController.GetCoursesLastYear())
+             {
 
-        public Dictionary<Course, double> CalculateAverageGrade(string typeOfGrade)
-        {
-            Dictionary<Course, double> finalResult = new();
-            foreach (Course course in _courseController.GetCoursesLastYear())
-            {
-                int result = 0;
+                 int result = 0;
+                 Teacher teacher = _directorController.GetTeacherByCourse(course.Id);
+                 if (teacher == null)
+                     continue;
+                 List<StudentGrade> teachersGrades = _studentGrades.GetStudentGradesByTeacherCourse(teacher.Id, course.Id);
 
-                List<CourseGrade> studentGrades = _courseGrade.GetCourseGradesByCourse(course.Id);
+                 foreach (StudentGrade studentGrade in teachersGrades)
+                     result += studentGrade.Value;
 
-                foreach (CourseGrade grade in studentGrades)
-                {
-                    if (typeOfGrade == "knowledge")
-                        result += grade.StudentKnowledgeValue;
-                    else
-                        result += grade.StudentActivityValue;
-                }
-                if (result == 0)
-                    finalResult[course] = 0;
-                else
-                    finalResult[course] = result / studentGrades.Count;
-            }
-            return finalResult;
-        }
+                 if (teachersGrades.Count == 0)
+                     finalResult[course] = 0;
+                 else
+                     finalResult[course] = result / teachersGrades.Count;
 
-        public int GetAttendedCount(int courseId)
-        {
-            Course course = _courseController.GetById(courseId);
-            return course.CurrentlyEnrolled;
-        }
+             }
+             return finalResult;
+         }
 
-        public int GetPassedCount(int courseId)
-        {
-            int count = 0;
-            List<CourseGrade> grades = _courseGrade.GetCourseGradesByCourse(courseId);
-            foreach (CourseGrade grade in grades)
-            {
-                if (grade.StudentKnowledgeValue >= 6 && grade.StudentActivityValue >= 6)
-                    count++;
-            }
-            return count;
-        }
-        public double CalculatePassPercentage(int passedCount, int attendedCount)
-        {
-            if (attendedCount == 0)
-            {
-                return 0;
-            }
-            return (double)passedCount / attendedCount * 100;
-        }
+         public Dictionary<Course, double> CalculateAverageGrade(string typeOfGrade)
+         {
+             Dictionary<Course, double> finalResult = new();
+             foreach (Course course in _courseController.GetCoursesLastYear())
+             {
+                 int result = 0;
+
+                 List<CourseGrade> studentGrades = _courseGrade.GetCourseGradesByCourse(course.Id);
+
+                 foreach (CourseGrade grade in studentGrades)
+                 {
+                     if (typeOfGrade == "knowledge")
+                         result += grade.StudentKnowledgeValue;
+                     else
+                         result += grade.StudentActivityValue;
+                 }
+                 if (result == 0)
+                     finalResult[course] = 0;
+                 else
+                     finalResult[course] = result / studentGrades.Count;
+             }
+             return finalResult;
+         }
+
+         public int GetAttendedCount(int courseId)
+         {
+             Course course = _courseController.GetById(courseId);
+             return course.CurrentlyEnrolled;
+         }
+
+         public int GetPassedCount(int courseId)
+         {
+             int count = 0;
+             List<CourseGrade> grades = _courseGrade.GetCourseGradesByCourse(courseId);
+             foreach (CourseGrade grade in grades)
+             {
+                 if (grade.StudentKnowledgeValue >= 6 && grade.StudentActivityValue >= 6)
+                     count++;
+             }
+             return count;
+         }
+         public double CalculatePassPercentage(int passedCount, int attendedCount)
+         {
+             if (attendedCount == 0)
+             {
+                 return 0;
+             }
+             return (double)passedCount / attendedCount * 100;
+         }*/
     }
 }

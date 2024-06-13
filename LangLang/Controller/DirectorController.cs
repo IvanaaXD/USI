@@ -56,12 +56,10 @@ namespace LangLang.Controller
         {
             _directors.UpdateTeacher(teacher);
         }
-
         public void Update(Director director)
         {
             _directors.UpdateDirector(director);
         }
-
         public void Delete(int teacherId)
         {
             Teacher teacher = GetById(teacherId);
@@ -245,5 +243,12 @@ namespace LangLang.Controller
             return teacherWithMaxGradeId;
         }
 
+        public Teacher? GetTeacherByEmail(string email)
+        {
+            foreach (Teacher teacher in GetAllTeachers())
+                if (teacher.Email == email)
+                    return teacher;
+            return null;
+        }
     }
 }
