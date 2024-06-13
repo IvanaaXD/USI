@@ -120,7 +120,7 @@ namespace LangLang.Controller
             List<int> finishedCourses = new List<int>();
             foreach (int examTermId in student.RegisteredExamsIds)
             {
-                ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
+                ExamTerm examTerm = examTermController.GetById(examTermId);
                 finishedCourses = GetCoursesIdByExamTerm(examTerm);
                 foreach (int courseId in finishedCourses)
                     courses.Add(courseId);
@@ -134,7 +134,7 @@ namespace LangLang.Controller
             List<int> finishedCourses = new List<int>();
             foreach (int examTermId in student.PassedExamsIds)
             {
-                ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
+                ExamTerm examTerm = examTermController.GetById(examTermId);
                 finishedCourses = GetFinishedCoursesIdByExamTerm(examTerm);
                 foreach(int courseId in finishedCourses)
                     if (!courses.Contains(courseId))
@@ -153,7 +153,7 @@ namespace LangLang.Controller
             foreach (int courseId in student.CompletedCoursesIds)
             {
                 List<ExamTerm> examTerms = examTermController.GetAllExamTerms();
-                Course course = courseController.GetCourseById(courseId);
+                Course course = courseController.GetById(courseId);
 
                 if (course.StartDate.AddDays(course.Duration * 7) >= DateTime.Now)
                 {
@@ -176,7 +176,7 @@ namespace LangLang.Controller
             Student student = GetStudentById(studentId);
             List<Course> registeredCourses = new List<Course>();
             foreach (int courseId in student.RegisteredCoursesIds)
-                registeredCourses.Add(courseController.GetCourseById(courseId));
+                registeredCourses.Add(courseController.GetById(courseId));
 
             return registeredCourses;
         }
@@ -185,7 +185,7 @@ namespace LangLang.Controller
             Student student = GetStudentById(studentId);
             List<Course> completedCourses = new List<Course>();
             foreach (int courseId in student.CompletedCoursesIds)
-                completedCourses.Add(courseController.GetCourseById(courseId));
+                completedCourses.Add(courseController.GetById(courseId));
 
             return completedCourses;
         }
@@ -197,7 +197,7 @@ namespace LangLang.Controller
 
             foreach (int id in student.RegisteredExamsIds)
             {
-                ExamTerm exam = examTermController.GetExamTermById(id);
+                ExamTerm exam = examTermController.GetById(id);
                 if (exam.ExamTime > DateTime.Now)
                 {
                     registeredExamTerms.Add(exam);
@@ -213,7 +213,7 @@ namespace LangLang.Controller
 
             foreach (int id in student.PassedExamsIds)
             {
-                ExamTerm examTerm = examTermController.GetExamTermById(id);
+                ExamTerm examTerm = examTermController.GetById(id);
                 if (examTerm.ExamTime < DateTime.Now)
                 {
                     completedExamTerms.Add(examTerm);
@@ -229,11 +229,11 @@ namespace LangLang.Controller
             List<int> finishedCourses = new List<int>();
             foreach (int examTermId in student.PassedExamsIds)
             {
-                ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
+                ExamTerm examTerm = examTermController.GetById(examTermId);
                 finishedCourses = GetFinishedCoursesIdByExamTerm(examTerm);
                 foreach (int courseId in finishedCourses)
-                    if (!courses.Contains(courseController.GetCourseById(courseId)))
-                        courses.Add(courseController.GetCourseById(courseId));
+                    if (!courses.Contains(courseController.GetById(courseId)))
+                        courses.Add(courseController.GetById(courseId));
             }
             return courses;
         }
@@ -301,7 +301,7 @@ namespace LangLang.Controller
         }
         public bool CancelCourseRegistration(int studentId, int courseId)
         {
-            Course course = courseController.GetCourseById(courseId);
+            Course course = courseController.GetById(courseId);
             DateTime currentDate = DateTime.Now;
 
             if ((course.StartDate - currentDate).TotalDays < 7)
@@ -316,7 +316,7 @@ namespace LangLang.Controller
         public bool RegisterForExam(int studentId, int examId)
         {
             Student student = GetStudentById(studentId);
-            ExamTerm examTerm = examTermController.GetExamTermById(examId);
+            ExamTerm examTerm = examTermController.GetById(examId);
             List<ExamTerm> completedExams = GetCompletedExamTerms(studentId);
             foreach (ExamTerm term in completedExams)
             {
@@ -337,7 +337,7 @@ namespace LangLang.Controller
         public bool CancelExamRegistration(int studentId, int examTermId)
         {
             Student student = GetStudentById(studentId);
-            ExamTerm examTerm = examTermController.GetExamTermById(examTermId);
+            ExamTerm examTerm = examTermController.GetById(examTermId);
             DateTime currentDate = DateTime.Now;
 
             if ((examTerm.ExamTime - currentDate).TotalDays >= 10)
@@ -377,7 +377,7 @@ namespace LangLang.Controller
         {
             Student student = GetStudentById(studentId);
             if (IsStudentAttendingCourse(studentId))
-                return courseController.GetCourseById(student.ActiveCourseId);
+                return courseController.GetById(student.ActiveCourseId);
 
             return null;
         }
@@ -427,7 +427,7 @@ namespace LangLang.Controller
 
             foreach (Mail mail in unreadReceivedMails)
             {
-                Course course = courseController.GetCourseById(mail.CourseId);
+                Course course = courseController.GetById(mail.CourseId);
                 if (mail.TypeOfMessage == Domain.Model.Enums.TypeOfMessage.AcceptEnterCourseRequestMessage &&
                     DateTime.Now.Date >= course.StartDate.AddDays(-7).Date)
                 {
@@ -480,7 +480,7 @@ namespace LangLang.Controller
         {
             if (student.ActiveCourseId != -1)
             {
-                Course course = courseController.GetCourseById(student.ActiveCourseId);
+                Course course = courseController.GetById(student.ActiveCourseId);
                 DateTime courseEndDate = course.StartDate.AddDays(course.Duration * 7);
                 if (DateTime.Now < courseEndDate)
                 {

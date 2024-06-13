@@ -204,7 +204,7 @@ namespace LangLang.Controller
 
                 foreach (var penaltyPoint in penaltyPoints)
                 {
-                    var course = _courseController.GetCourseById(penaltyPoint.CourseId);
+                    var course = _courseController.GetById(penaltyPoint.CourseId);
 
                     if (course.Language == number.Key)
                     {
@@ -332,7 +332,7 @@ namespace LangLang.Controller
 
         public int GetAttendedCount(int courseId)
         {
-            Course course = _courseController.GetCourseById(courseId);
+            Course course = _courseController.GetById(courseId);
             return course.CurrentlyEnrolled;
         }
 

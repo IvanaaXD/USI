@@ -1,29 +1,40 @@
-﻿using LangLang.Controller;
+﻿using iText.Forms.Fields.Properties;
+using LangLang.Controller;
 using LangLang.Domain.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using LangLang.View.Director;
 using System;
-using static iText.IO.Util.IntHashtable;
 using System.Reflection;
 
 public class CRUDConsole
 {
-    public static void Display()
+    public static void Display<T>(Person person)
     {
         while (true)
         {
-            Console.WriteLine("Choose an entity type: Teacher (t), Course (c), ExamTerm (e), Exit (x)");
+            Console.WriteLine("Choose an entity type:");
+
+            if (person.GetType() == typeof(Director))
+                Console.WriteLine("Teacher (t)");
+
+            Console.WriteLine("Course (c)");
+            Console.WriteLine("ExamTerm (e)");
+            Console.WriteLine("Exit (x)");
+
             string entityType = Console.ReadLine().ToLower();
 
             switch (entityType)
             {
                 case "t":
-                    DisplayCrudOperations<Teacher>();
+                    if (person.GetType() == typeof(Director))
+                        DisplayCrudOperations<Teacher>(person);
+                    else
+                        Console.WriteLine("Invalid choice.");
                     break;
                 case "c":
-                    DisplayCrudOperations<Course>();
+                    DisplayCrudOperations<Course>(person);
                     break;
                 case "e":
-                    DisplayCrudOperations<ExamTerm>();
+                    DisplayCrudOperations<ExamTerm>(person);
                     break;
                 case "x":
                     return;
@@ -34,10 +45,10 @@ public class CRUDConsole
         }
     }
 
-    public static void DisplayCrudOperations<T>() where T : new()
+    public static void DisplayCrudOperations<T>(Person person) where T : new()
     {
         GenericCrud crud = new GenericCrud();
-        object controller = GetControllerByModelType(typeof(T));
+        dynamic controller = GetControllerByModelType(typeof(T));
 
         while (true)
         {
@@ -47,58 +58,56 @@ public class CRUDConsole
             switch (operation)
             {
                 case "c":
-                   /* T newItem = crud.Create<T>();
-                    // Optionally, you can save the newItem to your data store or perform other operations
-                    Console.WriteLine("Item created:");
-                    crud.Read(newItem); // Display the created item*/
-                    
-                    CreateObject<T>(crud,controller);
+                    T newItem = crud.Create<T>();
+                    controller.Add(newItem);
+
+                    Console.WriteLine("Item created: ");
+                    crud.Read(newItem);
+
+                    CheckType(newItem, person);
                     break;
                 case "r":
                     Console.Write("Enter ID of item to read: ");
+
                     if (int.TryParse(Console.ReadLine(), out int readId))
                     {
-                        // Here you would fetch the item from your data store based on readId
-                        // For simplicity, I'll create a new instance of T and display it
-                        T itemToRead = new T(); // Replace with logic to fetch from data store
+                        T itemToRead = new T();
+                        itemToRead = controller.GetById(readId);
                         crud.Read(itemToRead);
                     }
                     else
-                    {
                         Console.WriteLine("Invalid input.");
-                    }
+
                     break;
                 case "u":
                     Console.Write("Enter ID of item to update: ");
                     if (int.TryParse(Console.ReadLine(), out int updateId))
                     {
-                        // Here you would fetch the item from your data store based on updateId
-                        // For simplicity, I'll create a new instance of T and update it
-                        T itemToUpdate = new T(); // Replace with logic to fetch from data store
+                        T itemToUpdate = new T(); 
                         T updatedItem = crud.Update(itemToUpdate);
-                        // Optionally, you can save the updatedItem to your data store
+                        controller.Update(updatedItem);
+
                         Console.WriteLine("Item updated:");
-                        crud.Read(updatedItem); // Display the updated item
+                        crud.Read(updatedItem);
+
+                        CheckType(updatedItem, person);
                     }
                     else
-                    {
                         Console.WriteLine("Invalid input.");
-                    }
+
                     break;
                 case "d":
                     Console.Write("Enter ID of item to delete: ");
                     if (int.TryParse(Console.ReadLine(), out int deleteId))
                     {
-                        // Here you would fetch the item from your data store based on deleteId
-                        // For simplicity, I'll create a new instance of T and delete it
-                        T itemToDelete = new T(); // Replace with logic to fetch from data store
-                        // Perform delete operation
+                        T itemToDelete = new T(); 
+                        controller.GetById(deleteId);
+                        controller.Delete(itemToDelete);
                         Console.WriteLine("Item deleted.");
                     }
                     else
-                    {
                         Console.WriteLine("Invalid input.");
-                    }
+
                     break;
                 case "e":
                     return;
@@ -109,6 +118,7 @@ public class CRUDConsole
         }
     }
 
+    /*
     private static void CreateObject<T>(GenericCrud crud, object controller) where T : new()
     {
         T newItem = crud.Create<T>();
@@ -126,6 +136,7 @@ public class CRUDConsole
             Console.WriteLine($"Add method not found on controller for entity type: {typeof(T).Name}");
         }
     }
+    */
 
     private static object GetControllerByModelType(Type type)
     {
@@ -133,7 +144,7 @@ public class CRUDConsole
         switch (type.Name)
         {
             case nameof(Teacher):
-                controller = Injector.CreateInstance<TeacherController>();
+                controller = Injector.CreateInstance<DirectorController>();
                 break;
             case nameof(Course):
                 controller = Injector.CreateInstance<CourseController>();
@@ -149,5 +160,27 @@ public class CRUDConsole
             Console.WriteLine($"Controller not found for entity type: {type.Name}");
 
         return controller;
+    }
+
+    private static void CheckType<T>(T item, Person person)
+    {
+        if (person.GetType() == typeof(Teacher))
+        {
+            DirectorController controller = Injector.CreateInstance<DirectorController>();
+            Teacher teacher = controller.GetById(person.Id);
+
+            if (item.GetType() == typeof(ExamTerm))
+            {
+                ExamTerm examTerm = item as ExamTerm;
+                teacher.CoursesId.Add(examTerm.ExamID);
+            }
+            else if (item.GetType() == typeof(Course))
+            {
+                Course course = item as Course;
+                teacher.ExamsId.Add(course.Id);
+            }
+
+            controller.Update(teacher);
+        }
     }
 }

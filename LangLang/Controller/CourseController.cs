@@ -29,14 +29,16 @@ namespace LangLang.Controller
             _mails = Injector.CreateInstance<IMailRepository>();
         }
 
-        public Course? GetCourseById(int courseId)
+        public Course? GetById(int courseId)
         {
             return _courses.GetCourseById(courseId);
         }
+
         public List<Course> GetAllCourses()
         {
             return _courses.GetAllCourses();
         }
+
         public List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> courses)
         {
             return _courses.GetAllCourses(page, pageSize, sortCriteria, courses);
@@ -269,13 +271,13 @@ namespace LangLang.Controller
 
         public void IncrementCourseCurrentlyEnrolled(int courseId)
         {
-            Course course = GetCourseById(courseId);
+            Course course = GetById(courseId);
             ++course.CurrentlyEnrolled;
             Update(course);
         }
         public void DecrementCourseCurrentlyEnrolled(int courseId)
         {
-            Course course = GetCourseById(courseId);
+            Course course = GetById(courseId);
             --course.CurrentlyEnrolled;
             Update(course);
         }

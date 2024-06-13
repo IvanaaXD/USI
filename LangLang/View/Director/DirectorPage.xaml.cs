@@ -137,7 +137,7 @@ namespace LangLang.View.Director
                             courseViewModel.HasTeacher = false;
                         TableViewModel.CoursesDirector.Add(courseViewModel);
                         foreach (int examTermId in director.ExamsId)
-                            TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetExamTermById(examTermId)));
+                            TableViewModel.ExamTermsDirector.Add(new ExamTermDTO(_examTermController.GetById(examTermId)));
                     }
                 }
             }
@@ -370,7 +370,7 @@ namespace LangLang.View.Director
             int teacherCourseId = _directorController.FindMostAppropriateTeacher(SelectedCourseDirector.ToCourse());
             if (teacherCourseId != -1)
             {
-                Domain.Model.Teacher teacher = _directorController.GetTeacherById(teacherCourseId);
+                Domain.Model.Teacher teacher = _directorController.GetById(teacherCourseId);
                 SelectedCourseDirector.SetTeacher(teacher, SelectedCourseDirector.ToCourse());
                 teacher.CoursesId.Add(SelectedCourseDirector.Id);
                 _directorController.Update(teacher);

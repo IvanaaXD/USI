@@ -24,8 +24,8 @@ namespace LangLang.View.Teacher
             teacherController = Injector.CreateInstance<TeacherController>();
             courseController = Injector.CreateInstance<CourseController>();
             DirectorController directorController = Injector.CreateInstance<DirectorController>();
-            Course = new CourseDTO(courseController, teacherController.GetCourseById(courseId), directorController.GetTeacherById(teacherId));
-            Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+            Course = new CourseDTO(courseController, teacherController.GetCourseById(courseId), directorController.GetById(teacherId));
+            Teacher = new TeacherDTO(directorController.GetById(teacherId));
             DataContext = Course;
 
             Course.StartTime = Course.StartDate.ToString("HH:mm");

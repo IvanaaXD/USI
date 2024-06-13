@@ -52,9 +52,9 @@ namespace LangLang.View.Teacher
 
             if (teacherId != -1)
             {
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                Domain.Model.Teacher teacher = directorController.GetById(teacherId);
                 CreatedExamTerm = new ExamTermDTO(teacherController, teacher);
-                Teacher = new TeacherDTO(directorController.GetTeacherById(teacherId));
+                Teacher = new TeacherDTO(directorController.GetById(teacherId));
             }
             else
             {
@@ -140,7 +140,7 @@ namespace LangLang.View.Teacher
             }
             else
             {
-                Domain.Model.Teacher teacher = directorController.GetTeacherById(teacherId);
+                Domain.Model.Teacher teacher = directorController.GetById(teacherId);
                 courses = teacherController.GetAvailableCourses(teacher);
             }
 
@@ -202,9 +202,9 @@ namespace LangLang.View.Teacher
             }
             Domain.Model.Teacher teacher;
             if (teacherId != -1)
-                teacher = directorController.GetTeacherById(teacherId);
+                teacher = directorController.GetById(teacherId);
             else
-                teacher = directorController.GetTeacherById(createdExamTeacherId);
+                teacher = directorController.GetById(createdExamTeacherId);
             CreatedExamTerm.SetTeacher(teacher);
 
             if (CreatedExamTerm.IsValid)
@@ -212,7 +212,7 @@ namespace LangLang.View.Teacher
                 bool foundMatchingCourse = false;
                 foreach (int courseId in teacher.CoursesId)
                 {
-                    Course course = courseController.GetCourseById(courseId);
+                    Course course = courseController.GetById(courseId);
                     if (examTerm.Language == course.Language && examTerm.Level == course.Level)
                     {
                         courseController.Update(course);
