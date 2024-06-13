@@ -56,10 +56,12 @@ namespace LangLang.Controller
         {
             _directors.UpdateTeacher(teacher);
         }
+
         public void Update(Director director)
         {
             _directors.UpdateDirector(director);
         }
+
         public void Delete(int teacherId)
         {
             Teacher teacher = GetTeacherById(teacherId);

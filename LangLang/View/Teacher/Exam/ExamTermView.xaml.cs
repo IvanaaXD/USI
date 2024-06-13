@@ -315,7 +315,7 @@ namespace LangLang.View.Teacher
         private void MailStudent_Click(object sender, RoutedEventArgs e)
         {
             examTerm.Informed = true;
-            _examTermController.UpdateExamTerm(examTerm);
+            _examTermController.Update(examTerm);
 
             var examTermStudents = GetAllStudentsForExamTerm(examTerm.ExamID);
             var director = _directorController.GetDirector();

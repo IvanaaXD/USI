@@ -37,11 +37,11 @@ namespace LangLang.Controller
         {
             return _exams.GetAllExamTerms(page, pageSize, sortCriteria, exams);
         }
-        public void AddExamTerm(ExamTerm examTerm)
+        public void Add(ExamTerm examTerm)
         {
             _exams.AddExamTerm(examTerm);
         }
-        public void UpdateExamTerm(ExamTerm examTerm)
+        public void Update(ExamTerm examTerm)
         {
             _exams.UpdateExamTerm(examTerm);
         }
@@ -156,7 +156,7 @@ namespace LangLang.Controller
         {
             ExamTerm examTerm = GetExamTermById(examTermId);
             --examTerm.CurrentlyAttending;
-            UpdateExamTerm(examTerm);
+            Update(examTerm);
         }
 
         public List<ExamTerm> FindExamTermsByDate(DateTime? startDate)

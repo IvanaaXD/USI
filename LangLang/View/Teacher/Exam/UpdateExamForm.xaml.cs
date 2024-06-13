@@ -121,7 +121,7 @@ namespace LangLang.View.Teacher
             PickLanguageAndLevel();
             if (ExamTerm.IsValid)
             {
-                examTermController.UpdateExamTerm(ExamTerm.ToExamTerm());
+                examTermController.Update(ExamTerm.ToExamTerm());
                 Close();
             }
             else

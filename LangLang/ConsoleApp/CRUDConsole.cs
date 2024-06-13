@@ -125,7 +125,6 @@ public class CRUDConsole
         {
             Console.WriteLine($"Add method not found on controller for entity type: {typeof(T).Name}");
         }
-
     }
 
     private static object GetControllerByModelType(Type type)
