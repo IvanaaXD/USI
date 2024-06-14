@@ -108,29 +108,29 @@ namespace ConsoleLangLang.DTO
         public string ValidateProperty(string propertyName)
         {
             switch (propertyName)
-            {
-                case "ExamDate":
-                    if (ExamDate <= DateTime.Today)
-                        return "Exam date cannot be in the past";
-                    break;
-                case "ExamTime":
-                    if (!_TimeRegex.IsMatch(ExamTime))
-                        return "Invalid time format. Use HH:mm format.";
-                    break;
-                case "CurrentlyAttending":
-                    if (CurrentlyAttending < 0 || CurrentlyAttending > MaxStudents)
-                        return "Number of attending students must be between 0 and Max Students.";
-                    break;
-                case "MaxStudents":
-                    if (MaxStudents <= 0)
-                        return "Max students must be greater than 0.";
-                    if (MaxStudents > 550)
-                        return "Max students cannot exceed 550.";
-                    break;
-            }
-            return null;
+                {
+                    case "ExamDate":
+                        if (ExamDate <= DateTime.Today)
+                            return "Exam date cannot be in the past";
+                        break;
+                    case "ExamTime":
+                        if (!_TimeRegex.IsMatch(ExamTime))
+                            return "Invalid time format. Use HH:mm format.";
+                        break;
+                    case "CurrentlyAttending":
+                        if (CurrentlyAttending < 0 || CurrentlyAttending > MaxStudents)
+                            return "Number of attending students must be between 0 and Max Students.";
+                        break;
+                    case "MaxStudents":
+                        if (MaxStudents <= 0)
+                            return "Max students must be greater than 0.";
+                        if (MaxStudents > 550)
+                            return "Max students cannot exceed 550.";
+                        break;
+                }
+                return null;
         }
-
+        
         private readonly string[] _validatedProperties = { "ExamDate", "ExamTime", "CurrentlyAttending", "MaxStudents" };
 
         public bool IsValid()

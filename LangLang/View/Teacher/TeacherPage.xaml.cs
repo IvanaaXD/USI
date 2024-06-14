@@ -2,14 +2,12 @@
 using LangLang.DTO;
 using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
-using LangLang.Repository;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace LangLang.View.Teacher
 {
