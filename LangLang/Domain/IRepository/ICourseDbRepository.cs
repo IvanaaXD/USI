@@ -1,18 +1,19 @@
 ﻿using LangLang.Domain.Model;
-using System;
+using LangLang.Observer;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace LangLang.Domain.IRepository
 {
-    public interface ICourseDbRepository
+    public interface ICourseDbRepository : IObserver
     {
         Course GetById(int id);
-        void Add(Course course);
-        void Update(Course course);
+        Course Add(Course course);
+        Course Update(Course course);
         void Remove(Course course);
         void Delete(int id);
+        List<Course> GetAll();
+        List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> coursesToPaginate);
+        void Subscribe(IObserver observer);
     }
 }

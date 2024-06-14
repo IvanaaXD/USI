@@ -12,7 +12,7 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly ITeacherRepository _teachers;
-        private readonly ICourseRepository _courses;
+        private readonly ICourseDbRepository _courses;
         private readonly IStudentRepository _students;
         private readonly IDirectorRepository _director;
         private readonly IExamTermDbRepository _examTerms;
@@ -21,7 +21,7 @@ namespace LangLang.Controller
         public TeacherController()
         {
             _teachers = Injector.CreateInstance<ITeacherRepository>();
-            _courses = Injector.CreateInstance<ICourseRepository>();
+            _courses = Injector.CreateInstance<ICourseDbRepository>();
             _students = Injector.CreateInstance<IStudentRepository>();
             _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
             _director = Injector.CreateInstance<IDirectorRepository>(); 
@@ -29,7 +29,7 @@ namespace LangLang.Controller
         }
         public Course? GetCourseById(int courseId)
         {
-            return _courses.GetCourseById(courseId);
+            return _courses.GetById(courseId);
         }
         public ExamTerm? GetExamTermById(int examId)
         {
@@ -37,7 +37,7 @@ namespace LangLang.Controller
         }
         public List<Course> GetAllCourses()
         {
-            return _courses.GetAllCourses();
+            return _courses.GetAll();
         }
         public List<ExamTerm> GetAllExamTerms()
         {
@@ -89,7 +89,7 @@ namespace LangLang.Controller
 
             foreach (int courseId in allTeacherCourses)
             {
-                Course? course = _courses.GetCourseById(courseId);
+                Course? course = _courses.GetById(courseId);
                 if (course!=null)
                     availableCourses.Add(course);
             }

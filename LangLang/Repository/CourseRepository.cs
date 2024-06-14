@@ -26,7 +26,7 @@ namespace LangLang.Repository
             return _courses.Last().Id + 1;
         }
 
-        public Course AddCourse(Course course)
+        public Course Add(Course course)
         {
             course.Id = GenerateCourseId();
             _courses.Add(course);
@@ -35,9 +35,9 @@ namespace LangLang.Repository
             return course;
         }
 
-        public Course? UpdateCourse(Course course)
+        public Course? Update(Course course)
         {
-            Course? oldCourse = GetCourseById(course.Id);
+            Course? oldCourse = GetById(course.Id);
             if (oldCourse == null) return null;
 
             oldCourse.Language = course.Language;
@@ -54,9 +54,9 @@ namespace LangLang.Repository
             return oldCourse;
         }
 
-        public Course? RemoveCourse(int id)
+        public Course? Remove(int id)
         {
-            Course? course = GetCourseById(id);
+            Course? course = GetById(id);
             if (course == null) return null;
 
             _courses.Remove(course);
@@ -66,12 +66,12 @@ namespace LangLang.Repository
             return course;
         }
 
-        public Course? GetCourseById(int id)
+        public Course? GetById(int id)
         {
             return _courses.Find(v => v.Id == id);
         }
 
-        public List<Course> GetAllCourses()
+        public List<Course> GetAll()
         {
             return _courses;
         }
@@ -99,11 +99,6 @@ namespace LangLang.Repository
         }
 
         public void Update()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Course> GetCoursesByTeacher(int teacherId)
         {
             throw new NotImplementedException();
         }

@@ -6,14 +6,12 @@ namespace LangLang.Domain.IRepository
 {
     public interface ICourseRepository : IObserver
     {
-        Course? GetCourseById(int id);
-        Course AddCourse(Course course);
-        Course UpdateCourse(Course course);
-        Course RemoveCourse(int id);
-        List<Course> GetAllCourses();
+        Course? GetById(int id);
+        Course Add(Course course);
+        Course Update(Course course);
+        Course Remove(int id);
+        List<Course> GetAll();
         List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> courses);
-
-        List<Course> GetCoursesByTeacher(int teacherId);
         void Subscribe(IObserver observer);
     }
 }
