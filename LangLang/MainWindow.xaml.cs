@@ -11,6 +11,7 @@ using LangLang.Data;
 using LangLang.Domain.Model.Enums;
 using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace LangLang
 {
@@ -21,73 +22,66 @@ namespace LangLang
     {
         private StudentsController studentController { get; set; }
         private DirectorController directorController { get; set; }
+        private CourseController courseController { get; set; }
+        private ExamTermController examTermController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             directorController = Injector.CreateInstance<DirectorController>();
             studentController = Injector.CreateInstance<StudentsController>();
+            courseController = Injector.CreateInstance<CourseController>(); 
+            examTermController = Injector.CreateInstance<ExamTermController>();
 
             SetPlaceholders();
 
-            List<Teacher> teachers = directorController.GetAllTeachers();
-            /*using (var dbContext = new AppDbContext())
-            {
-                DateTime dateOfBirth = DateTime.ParseExact("1999-11-18", "yyyy-MM-dd", null).Date;
-                DateTime specificDate = DateTime.ParseExact("2024-11-18", "yyyy-MM-dd", null).Date;
-                List<Language> languages = new List<Language>
-                {
-                    Domain.Model.Enums.Language.English, Domain.Model.Enums.Language.German
-                };
-                List<LanguageLevel> levels = new List<LanguageLevel> { LanguageLevel.B2, LanguageLevel.A1 };
-
-                Teacher t = new Teacher(1, "Mili", "bhbh", Gender.Female, dateOfBirth, "064544", "gvfc@bnam.com", "password", 0, languages, levels, specificDate, 1);
-
-                dbContext.Teachers.Remove(t);
-
-                foreach (Teacher teacher in teachers)
-                    {
-                        dbContext.Teachers.Add(teacher);
-                    }
-
-                dbContext.SaveChanges();
-            }*/
-
-            /*using (var dbContext = new AppDbContext())
-            {
-                DateTime dateOfBirth = DateTime.ParseExact("1999-11-18", "yyyy-MM-dd", null).Date;
-                DateTime specificDate = DateTime.ParseExact("2024-11-18", "yyyy-MM-dd", null).Date;
-                List<Language> languages = new List<Language>
-                {
-                    Domain.Model.Enums.Language.English, Domain.Model.Enums.Language.German
-                };
-                List<LanguageLevel> levels = new List<LanguageLevel> { LanguageLevel.B2, LanguageLevel.A1 };
-
-                Teacher t = new Teacher(1, "Mili", "bhbh", Gender.Female, dateOfBirth, "064544", "gvfc@bnam.com", "password", 0, languages, levels, specificDate, 1);
-
-                dbContext.Teachers.Add(t);
-                dbContext.SaveChanges();
-            }*/
-            /*
-            using (var dbContext = new AppDbContext())
-            {
-                DateTime startDate = DateTime.ParseExact("2024-11-18", "yyyy-MM-dd", null).Date;
-                List<DayOfWeek> daysOfWeek = new List<DayOfWeek> { DayOfWeek.Friday };
-                Course t = new Course(1,Domain.Model.Enums.Language.German,LanguageLevel.C1,5,daysOfWeek,startDate,false,15,20);
-                dbContext.Courses.Add(t);
-                dbContext.SaveChanges();
-            }*/
-            /*
+            //InitializeTeacherTable();
+            //InitializeCourseTable();
+            //InitializeExamTermTable();
             using (var dbContext = new AppDbContext())
             {
                 DateTime specificDate = DateTime.ParseExact("2024-11-18", "yyyy-MM-dd", null).Date;
-                ExamTerm e = new ExamTerm(1, Domain.Model.Enums.Language.French, LanguageLevel.B1, 1, specificDate, 150, 0);
-                dbContext.ExamTerms.Remove(e);
-
+                ExamTerm e = new ExamTerm(60,Domain.Model.Enums.Language.Russian, LanguageLevel.B1, 1, specificDate, 150, 0);
+                dbContext.ExamTerms.Add(e);
                 dbContext.SaveChanges();
-            }*/
+            }
         }
-
+        void InitializeTeacherTable()
+        {
+            List<Teacher> teachers = directorController.GetAllTeachers();
+            using (var dbContext = new AppDbContext())
+            {
+                foreach (Teacher teacher in teachers)
+                {
+                    dbContext.Teachers.Add(teacher);
+                }
+                dbContext.SaveChanges();
+            }
+        }
+        void InitializeCourseTable()
+        {
+            List<Course> courses = courseController.GetAllCourses();
+            using (var dbContext = new AppDbContext())
+            {
+                foreach (Course course in courses)
+                {
+                    dbContext.Courses.Add(course);
+                }
+                dbContext.SaveChanges();
+            }
+        }
+        void InitializeExamTermTable()
+        {
+            List<ExamTerm> examTerms = examTermController.GetAllExamTerms();
+            using (var dbContext = new AppDbContext())
+             {
+                foreach (ExamTerm examTerm in examTerms)
+                {
+                    dbContext.ExamTerms.Add(examTerm);
+                }
+                dbContext.SaveChanges();         
+             }
+        }
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             /*string email = "ivana@gmail.com";

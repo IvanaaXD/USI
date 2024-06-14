@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using LangLang.Observer;
 using System;
+using System.Linq;
 
 namespace LangLang.Repository
 {
@@ -18,8 +19,14 @@ namespace LangLang.Repository
             _context = context;
             _subject = new Subject();
         }
+        private int GenerateExamId()
+        {
+            int maxId = _context.ExamTerms.Any() ? _context.ExamTerms.Max(e => e.ExamID) : 0;
+            return maxId + 1;
+        }
         public void Add(ExamTerm examTerm)
         {
+            examTerm.ExamID = GenerateExamId();
             _context.ExamTerms.Add(examTerm);
             _context.SaveChanges();
             _subject.NotifyObservers();
