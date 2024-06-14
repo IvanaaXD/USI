@@ -25,7 +25,6 @@ namespace LangLang.ConsoleApp
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) CRUD operations\n" +
                                   "\t2) Smart selection of course teacher\n" +
-                                  "\t3) Smart selection of the teacher on the exam\n" +
                                   "\tx) Exit");
 
                 string operation = Console.ReadLine().ToLower();
@@ -38,8 +37,6 @@ namespace LangLang.ConsoleApp
                     case "2":
                         SmartSelectionOfCourseTeacher();
                         break;
-                    case "3":
-                        return;
                     case "x":
                         return;
                     default:
@@ -56,8 +53,8 @@ namespace LangLang.ConsoleApp
             while (true)
             {
                 Console.WriteLine("Choose an operation:\n" +
-                                  "\t1) Enter the course id" +
-                                  "\tx) Exit");
+                                  "\t1) Enter the course id\n" +
+                                  "\tx) Exit\n");
 
                 string operation = Console.ReadLine().ToLower();
 
@@ -66,9 +63,7 @@ namespace LangLang.ConsoleApp
                     case "1":
                         int courseId;
                         if (Int32.TryParse(Console.ReadLine(), out courseId))
-                        {
                             AssignTeacher(courseController.GetById(courseId));
-                        }
                         break;
                     case "x":
                         return;
@@ -77,7 +72,6 @@ namespace LangLang.ConsoleApp
                         break;
                 }
             }
-           
         }
         private static List<Course> GetCoursesWithoutTeacher()
         {
@@ -112,12 +106,8 @@ namespace LangLang.ConsoleApp
                 directorController.Update(teacher);
                 Console.WriteLine($"{teacher.FirstName} {teacher.LastName} was chosen");
             }
-            /*else
-            {
-                SelectedCourseDirector.HasTeacher = false;
+            else
                 MessageBox.Show("There is no available teacher for that course");
-            }*/
         }
-
     }
 }

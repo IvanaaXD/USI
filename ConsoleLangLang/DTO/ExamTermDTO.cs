@@ -40,7 +40,7 @@ namespace ConsoleLangLang.DTO
             this.teacher = teacher;
         }
 
-        public int ExamID
+        private int ExamID
         {
             get { return examID; }
             set { SetProperty(ref examID, value); }
@@ -105,50 +105,44 @@ namespace ConsoleLangLang.DTO
 
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
 
-        private string this[string columnName]
+        public string ValidateProperty(string propertyName)
         {
-            get
+            switch (propertyName)
             {
-                switch (columnName)
-                {
-                    case "ExamDate":
-                        if (ExamDate <= DateTime.Today)
-                            return "Exam date cannot be in the past";
-                        break;
-                    case "ExamTime":
-                        if (!_TimeRegex.IsMatch(ExamTime))
-                            return "Invalid time format. Use HH:mm format.";
-                        break;
-                    case "CurrentlyAttending":
-                        if (CurrentlyAttending < 0 || CurrentlyAttending > MaxStudents)
-                            return "Number of attending students must be between 0 and Max Students.";
-                        break;
-                    case "MaxStudents":
-                        if (MaxStudents <= 0)
-                            return "Max students must be greater than 0.";
-                        if (MaxStudents > 550)
-                            return "Max students cannot exceed 550.";
-                        break;
-                }
-                return null;
+                case "ExamDate":
+                    if (ExamDate <= DateTime.Today)
+                        return "Exam date cannot be in the past";
+                    break;
+                case "ExamTime":
+                    if (!_TimeRegex.IsMatch(ExamTime))
+                        return "Invalid time format. Use HH:mm format.";
+                    break;
+                case "CurrentlyAttending":
+                    if (CurrentlyAttending < 0 || CurrentlyAttending > MaxStudents)
+                        return "Number of attending students must be between 0 and Max Students.";
+                    break;
+                case "MaxStudents":
+                    if (MaxStudents <= 0)
+                        return "Max students must be greater than 0.";
+                    if (MaxStudents > 550)
+                        return "Max students cannot exceed 550.";
+                    break;
             }
+            return null;
         }
 
         private readonly string[] _validatedProperties = { "ExamDate", "ExamTime", "CurrentlyAttending", "MaxStudents" };
 
-        public bool IsValid
+        public bool IsValid()
         {
-            get
+            foreach (var property in _validatedProperties)
             {
-                foreach (var property in _validatedProperties)
-                {
-                    if (this[property] != null)
-                        return false;
-                }
-                if (!string.IsNullOrEmpty(IsValidExamTermTimeslot()))
+                if (ValidateProperty(property) != null)
                     return false;
-                return true;
             }
+            if (!string.IsNullOrEmpty(IsValidExamTermTimeslot()))
+                return false;
+            return true;
         }
 
         private string IsValidExamTermTimeslot()
