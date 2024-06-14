@@ -3,6 +3,7 @@ using System.Reflection;
 using ConsoleLangLang.DTO;
 using LangLang.Controller;
 using LangLang.Domain.Model;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 public class CRUDConsole
 {
@@ -85,25 +86,63 @@ public class CRUDConsole
         }
     }
 
+    private static TDto ToDTO<TDto>(object modelToRead) where TDto : new()
+    {
+        TDto newItem = new TDto();
+        MethodInfo toDtoMethod = typeof(TDto).GetMethod("ToDTO");
+
+        if (toDtoMethod != null)
+        {
+            newItem = (TDto)toDtoMethod.Invoke(newItem, new object[] { modelToRead });
+            return newItem;
+        }
+        else
+            throw new InvalidOperationException($"Method 'ToModelClass' not found in type '{typeof(TDto).Name}'.");
+    }
+
+    private static object ToModel<TDto>(TDto item) where TDto : new()
+    {
+        MethodInfo toModelMethod = typeof(TDto).GetMethod("ToModelClass");
+        if (toModelMethod != null)
+        {
+            var modelItem = toModelMethod.Invoke(item, null);
+            return modelItem;
+        }
+        else
+            throw new InvalidOperationException($"Method 'ToModelClass' not found in type '{typeof(TDto).Name}'.");
+    }
+
+    private static object GetById<TDto>()
+    {
+        Console.Write("Enter ID of item to read: ");
+        string input = Console.ReadLine();
+
+        if (int.TryParse(input, out int readId))
+        {
+            MethodInfo getByIdMethod = controller.GetType().GetMethod("GetById");
+            var modelToRead = getByIdMethod.Invoke(controller, new object[] { readId });
+            return modelToRead;
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please enter a valid integer ID.");
+            return null; 
+        }
+    }
+
     private static void CreateObject<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
         TDto newItem = crud.Create<TDto>();
         Console.WriteLine("Item created:");
-        crud.Read(newItem); 
+        crud.Read(newItem);
+
         MethodInfo addMethod = controller.GetType().GetMethod("Add");
 
         if (addMethod != null)
         {
-            MethodInfo toModelMethod = typeof(TDto).GetMethod("ToModelClass");
-            if (toModelMethod != null)
-            {
-                var modelItem = toModelMethod.Invoke(newItem, null);
-                addMethod.Invoke(controller, new object[] { modelItem });
-                Console.WriteLine($"{typeof(TDto).Name} added successfully.");
-                AddCheckType(newItem, person);
-            }
-            else
-                Console.WriteLine($"ToModelClass method not found on DTO type: {typeof(TDto).Name}");
+            var modelItem = ToModel(newItem);
+            addMethod.Invoke(controller, new object[] { modelItem });
+            AddCheckType(newItem, person);
         }
         else
             Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
@@ -111,72 +150,29 @@ public class CRUDConsole
 
     private static void ReadItem<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
-        Console.Write("Enter ID of item to read: ");
-        MethodInfo getByIdMethod = controller.GetType().GetMethod("GetById");
-
-        if (int.TryParse(Console.ReadLine(), out int readId))
-        {
-            var modelToRead = getByIdMethod.Invoke(controller, new object[] { readId });
-            TDto newItem = new TDto();
-            MethodInfo toDtoMethod = typeof(TDto).GetMethod("ToDTO");
-
-            newItem = (TDto)toDtoMethod.Invoke(newItem, new object[] { modelToRead });
-            crud.Read(newItem);
-        }
-        else
-        {
-            Console.WriteLine("Invalid input. Please enter a valid integer ID.");
-        }
+        var modelToRead = GetById<TDto>();
+        TDto newItem = ToDTO<TDto>(modelToRead);
+        crud.Read(newItem);
     }
-
-
-    private static GenericCrud.Converter<TDto, object> GetDtoToModelConverter<TDto>() where TDto : new()
-    {
-        return dto =>
-        {
-            MethodInfo toModelMethod = typeof(TDto).GetMethod("ToModelClass", Type.EmptyTypes);
-            if (toModelMethod == null)
-                throw new InvalidOperationException($"ToModelClass method not found on type {typeof(TDto).Name}");
-            return toModelMethod.Invoke(dto, null);
-        };
-    }
-
-    private static GenericCrud.Converter<object, TDto> GetModelToDtoConverter<TModel, TDto>() where TDto : new()
-    {
-        return model =>
-        {
-            if (!(model is TModel))
-                throw new ArgumentException($"Expected model of type {typeof(TModel).Name}, but got {model.GetType().Name}");
-
-            TModel modelObj = (TModel)model;
-            TDto dtoInstance = new TDto();
-            MethodInfo toDtoMethod = typeof(TDto).GetMethod("ToDTO", Type.EmptyTypes);
-            //MethodInfo toModelMethod = typeof(TDto).GetMethod("ToModelClass", Type.EmptyTypes);
-
-            if (toDtoMethod == null)
-                throw new InvalidOperationException($"ToDTO method not found on type {typeof(TDto).Name} that accepts {typeof(TModel).Name} as parameter.");
-            return (TDto)toDtoMethod.Invoke(dtoInstance, new object[] { modelObj });
-        };
-    }
-
-
 
     private static void UpdateItem<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
-        Console.Write("Enter ID of item to update: ");
+        var modelToRead = GetById<TDto>();
+        TDto updatedItem = ToDTO<TDto>(modelToRead);
+        TDto updated = crud.Update(updatedItem);
+        Console.WriteLine("Item updated:");
+        crud.Read(updated);
 
-        if (int.TryParse(Console.ReadLine(), out int updateId))
+        MethodInfo updateMethod = controller.GetType().GetMethod("Update");
+
+        if (updateMethod != null)
         {
-            TDto itemToUpdate = controller.GetById<TDto>(updateId); 
-            TDto updatedItem = crud.Update(itemToUpdate);
-            controller.Update(updatedItem);
-
-            Console.WriteLine("Item updated:");
-            var converter = GetDtoToModelConverter<TDto>();
-            crud.Read(updatedItem, converter); MethodInfo addMethod = controller.GetType().GetMethod("Add");
+            var modelItem = ToModel(updated);
+            updateMethod.Invoke(controller, new object[] { modelItem });
+            AddCheckType(updated, person);
         }
         else
-            Console.WriteLine("Invalid input.");
+            Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
     }
 
     private static void DeleteItem<TDto>(GenericCrud crud, Person person) where TDto : new()
@@ -184,7 +180,7 @@ public class CRUDConsole
         Console.Write("Enter ID of item to delete: ");
         if (int.TryParse(Console.ReadLine(), out int deleteId))
         {
-            TDto itemToDelete = controller.GetById<TDto>(deleteId); // Assuming GetById<TDto> is defined in the controller
+            TDto itemToDelete = controller.GetById<TDto>(deleteId); 
             controller.Delete(itemToDelete);
             Console.WriteLine("Item deleted.");
         }
