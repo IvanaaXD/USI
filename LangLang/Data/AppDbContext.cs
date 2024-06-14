@@ -13,7 +13,8 @@ namespace LangLang.Data
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<ExamTerm> ExamTerms { get; set; }
-        public AppDbContext() { }
+        public AppDbContext() {
+        }
         public AppDbContext(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -21,6 +22,7 @@ namespace LangLang.Data
         public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
         {
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,21 +33,31 @@ namespace LangLang.Data
                 .HasConversion(
                     v => string.Join(',', v),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), x)).ToList()
-                );
+                )
+                .HasColumnType("text");
 
             modelBuilder.Entity<Teacher>()
                 .Property(t => t.Languages)
                 .HasConversion(
                     v => string.Join(',', v),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (Language)Enum.Parse(typeof(Language), x)).ToList()
-                );
+                )
+                .HasColumnType("text");
 
             modelBuilder.Entity<Teacher>()
                 .Property(t => t.LevelOfLanguages)
                 .HasConversion(
                     v => string.Join(',', v),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (LanguageLevel)Enum.Parse(typeof(LanguageLevel), x)).ToList()
-                );
+                    )
+                .HasColumnType("text");
+            modelBuilder.Entity<Teacher>()
+                .Property(t => t.StartedWork)
+                .HasColumnType("date");
+
+            modelBuilder.Entity<Teacher>()
+                .Property(t => t.DateOfBirth)
+                .HasColumnType("date");
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

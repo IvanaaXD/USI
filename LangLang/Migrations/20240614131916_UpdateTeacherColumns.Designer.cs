@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using LangLang.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LangLang.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240614131916_UpdateTeacherColumns")]
+    partial class UpdateTeacherColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,6 +109,7 @@ namespace LangLang.Migrations
                         .HasColumnType("integer");
 
                     b.Property<List<int>>("CoursesId")
+                        .IsRequired()
                         .HasColumnType("integer[]");
 
                     b.Property<DateTime>("DateOfBirth")
@@ -117,6 +120,7 @@ namespace LangLang.Migrations
                         .HasColumnType("text");
 
                     b.Property<List<int>>("ExamsId")
+                        .IsRequired()
                         .HasColumnType("integer[]");
 
                     b.Property<string>("FirstName")
