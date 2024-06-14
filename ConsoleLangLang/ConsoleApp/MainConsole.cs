@@ -5,6 +5,7 @@ using LangLang.View.Director;
 using LangLang.View.Teacher;
 using LangLang.Controller;
 using LangLang.ConsoleApp;
+using ConsoleLangLang.ConsoleApp;
 
 public class MainConsole
 {

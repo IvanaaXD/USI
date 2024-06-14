@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ConsoleLangLang.ConsoleApp.DTO;
+using LangLang.Domain.Model;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,28 +14,31 @@ public class GenericCrud
     public T Create<T>() where T : new()
     {
         T item = new T();
-
-        bool isFirstProperty = true;
+        var validator = new PropertyValidator<T>(item);
 
         foreach (PropertyInfo prop in typeof(T).GetProperties())
         {
-            if (isFirstProperty)
-            {
-                isFirstProperty = false;
-                continue;
-            }
-
             if (prop.CanWrite && !IsCollectionType(prop.PropertyType))
             {
                 string formatHint = GetFormatHint(prop.PropertyType);
                 Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
-
                 string input = Console.ReadLine();
                 object value = ConvertValue(input, prop.PropertyType);
+                if (value == null)
+                    return default(T);
                 prop.SetValue(item, value);
+
+                string validationError = validator.ValidateProperty(prop.Name);
+                if (validationError != null)
+                {
+                    Console.WriteLine(validationError);
+                    return default(T);
+                }
             }
         }
 
+        if (!validator.IsValid())
+            return default(T);
         return item;
     }
     public void Read<TInput, TOutput>(TInput item, Converter<TInput, TOutput> converter)
@@ -59,12 +65,10 @@ public class GenericCrud
         else
             return string.Empty;
     }
-    
     public void Read<T>(T item)
     {
         PrintTable(new List<T> { item });
     }
-    
 
     public T Update<T>(T item)
     {
@@ -175,38 +179,46 @@ public class GenericCrud
 
     public static object ConvertValue(string input, Type type)
     {
-        if (type == typeof(int))
-        {
-            return int.Parse(input);
-        }
-        else if (type == typeof(float))
-        {
-            return float.Parse(input);
-        }
-        else if (type == typeof(double))
-        {
-            return double.Parse(input);
-        }
-        else if (type == typeof(bool))
-        {
-            return bool.Parse(input);
-        }
-        else if (type == typeof(DateTime))
-        {
-            return DateTime.Parse(input);
-        }
-        else if (type.IsEnum)
-        {
-            return Enum.Parse(type, input);
-        }
-        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-        {
-            return ConvertListType(input, type);
-        }
-        else
-        {
-            return input;
-        }
+            try
+            {
+                if (type == typeof(int))
+                {
+                    return int.Parse(input);
+                }
+                else if (type == typeof(float))
+                {
+                    return float.Parse(input);
+                }
+                else if (type == typeof(double))
+                {
+                    return double.Parse(input);
+                }
+                else if (type == typeof(bool))
+                {
+                    return bool.Parse(input);
+                }
+                else if (type == typeof(DateTime))
+                {
+                    return DateTime.Parse(input);
+                }
+                else if (type.IsEnum)
+                {
+                    return Enum.Parse(type, input);
+                }
+                else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    return ConvertListType(input, type);
+                }
+                else
+                {
+                    return input;
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                return null;
+            }
     }
 
     private static object ConvertListType(string input, Type type)
