@@ -2,8 +2,6 @@
 using LangLang.Domain.IRepository;
 using LangLang.Domain.Model;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using LangLang.Observer;
 using System;
 using System.Linq;

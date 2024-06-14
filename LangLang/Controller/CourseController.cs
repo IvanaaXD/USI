@@ -1,4 +1,5 @@
-﻿using LangLang.Domain.IRepository;
+﻿using LangLang.Data;
+using LangLang.Domain.IRepository;
 using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using LangLang.Observer;

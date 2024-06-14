@@ -1,17 +1,13 @@
 ﻿using ConsoleLangLang.ConsoleApp.DTO;
-using LangLang.Domain.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LangLang.Domain.Model.Enums;
+using LangLang.Domain.Model;
 
 public class GenericCrud
 {
-    public delegate TOutput Converter<in TInput, out TOutput>(TInput input);
-
     public T Create<T>() where T : new()
     {
         T item = new T();
@@ -21,12 +17,22 @@ public class GenericCrud
         {
             if (prop.CanWrite && !IsCollectionType(prop.PropertyType))
             {
-                string formatHint = GetFormatHint(prop.PropertyType);
-                Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
-                string input = Console.ReadLine();
-                object value = ConvertValue(input, prop.PropertyType);
+                object value;
+
+                if (prop.PropertyType.IsEnum)
+                    value = ReadEnumFromUser<T>(prop);
+                else
+                {
+                    string formatHint = GetFormatHint(prop.PropertyType);
+                    Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
+
+                    string input = Console.ReadLine();
+                    value = ConvertValue(input, prop.PropertyType);
+                }
+
                 if (value == null)
                     return default(T);
+
                 prop.SetValue(item, value);
 
                 string validationError = validator.ValidateProperty(prop.Name);
@@ -40,11 +46,69 @@ public class GenericCrud
 
         if (!validator.IsValid())
             return default(T);
+
         return item;
     }
 
-    private bool IsCollectionType(Type type)
+    private object ReadEnumFromUser<T>(PropertyInfo prop) where T : new()
     {
+        Console.WriteLine($"Choose {prop.Name}:");
+        var enumValues = Enum.GetValues(prop.PropertyType).Cast<Enum>().OrderBy(e => e.ToString()).ToList();
+
+        if (typeof(T) == typeof(Teacher) && (prop.Name == "Languages" || prop.Name == "LevelOfLanguages"))
+            return SelectMultipleEnum(enumValues);
+        else if (typeof(T) == typeof(Course) || typeof(T) == typeof(ExamTerm))
+            return SelectMultipleEnum(enumValues);
+        else
+            return SelectSingleEnum(enumValues);
+
+    }
+
+    private List<Enum> SelectMultipleEnum(List<Enum> enumValues)
+    {
+        Console.WriteLine("Select multiple options separated by commas (e.g., 1,2,3):");
+        for (int i = 0; i < enumValues.Count; i++)
+            Console.WriteLine($"{i + 1}. {enumValues[i]}");
+
+        Console.Write($"Enter choices (1-{enumValues.Count}): ");
+        string input = Console.ReadLine();
+
+        string[] choices = input.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        var selectedEnums = new List<Enum>();
+
+        foreach (var choice in choices)
+        {
+            if (int.TryParse(choice, out int index) && index >= 1 && index <= enumValues.Count)
+                selectedEnums.Add(enumValues[index - 1]);
+            else
+            {
+                Console.WriteLine("Invalid choice.");
+                return null;
+            }
+        }
+
+        return selectedEnums;
+    }
+
+    private Enum SelectSingleEnum(List<Enum> enumValues)
+    {
+        for (int i = 0; i < enumValues.Count; i++)
+            Console.WriteLine($"{i + 1}. {enumValues[i]}");
+
+        Console.Write($"Enter choice (1-{enumValues.Count}): ");
+        string input = Console.ReadLine();
+
+        if (!int.TryParse(input, out int choice) || choice < 1 || choice > enumValues.Count)
+        {
+            Console.WriteLine("Invalid choice.");
+            return null;
+        }
+
+        return enumValues[choice - 1];
+    }
+
+    private bool IsCollectionType(Type type)
+        {
         if (type == typeof(List<DayOfWeek>))
             return false;
         return typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string);
@@ -57,7 +121,7 @@ public class GenericCrud
         else if (type == typeof(double))
             return " (e.g., 123.45)";
         else if (type == typeof(DateTime))
-            return " (e.g., 2023-01-01 12:00:00)";
+            return " (e.g., 2023-01-01)";
         else if (type == typeof(bool))
             return " (e.g., true or false)";
         else
@@ -116,10 +180,9 @@ public class GenericCrud
     {
         int[] columnWidths = new int[properties.Length];
 
-        // Calculate maximum widths of each column
         for (int i = 0; i < properties.Length; i++)
         {
-            columnWidths[i] = properties[i].Name.Length; // Start with the header length
+            columnWidths[i] = properties[i].Name.Length; 
 
             foreach (var item in dataStore)
             {
