@@ -25,7 +25,7 @@ namespace LangLang.DTO
         private int gradeValue;
         private int points;
 
-        private readonly ExamTermController _examTermController;
+        private readonly ExamTermController _examTermController = Injector.CreateInstance<ExamTermController>();
         private readonly ExamTermGradeController _examTermGrade = Injector.CreateInstance<ExamTermGradeController>();
         private Teacher teacher;
         ExamTermGrade grade;
@@ -203,7 +203,12 @@ namespace LangLang.DTO
 
         private string IsValidExamTermTimeslot()
         {
-            DateTime combinedDateTime = examDate.Date + TimeSpan.Parse(examTime);
+            DateTime combinedDateTime;
+            if (examTime != null)
+                combinedDateTime = examDate.Date + TimeSpan.Parse(examTime);
+            else
+                combinedDateTime = examDate.Date;
+
 
             ExamTerm exam = new ExamTerm
             {
@@ -220,7 +225,11 @@ namespace LangLang.DTO
         }
         public ExamTerm ToExamTerm()
         {
-            DateTime combinedDateTime = examDate.Date + TimeSpan.Parse(examTime);
+            DateTime combinedDateTime;
+            if (examTime != null)
+                combinedDateTime = examDate.Date + TimeSpan.Parse(examTime);
+            else
+                combinedDateTime = examDate.Date;
 
             return new ExamTerm
             {

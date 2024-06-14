@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.DirectoryServices.ActiveDirectory;
+using static iText.Signatures.LtvVerification;
 
 namespace LangLang.View.Teacher
 {
@@ -90,8 +91,9 @@ namespace LangLang.View.Teacher
             LanguageLevel lvl = LanguageLevel.A1;
             if (parts.Length == 2)
             {
-                ExamTerm.Language = lang;
-                ExamTerm.Level = lvl;
+                ExamTerm.Language = (Language)Enum.Parse(typeof(Language), parts[0]);
+                ExamTerm.Level = (LanguageLevel)Enum.Parse(typeof(LanguageLevel), parts[1]);
+
             }
             else
             {
@@ -121,7 +123,7 @@ namespace LangLang.View.Teacher
             PickLanguageAndLevel();
             if (ExamTerm.IsValid)
             {
-                examTermController.Update(ExamTerm.ToExamTerm());
+                examTermController.Update(ExamTerm.ToExamTermWithLanguage());
                 Close();
             }
             else
