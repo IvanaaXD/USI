@@ -45,6 +45,14 @@ namespace LangLang
                 dbContext.Teachers.Add(t);
                 dbContext.SaveChanges();
             }*/
+            using (var dbContext = new AppDbContext())
+            {
+                DateTime startDate = DateTime.ParseExact("2024-11-18", "yyyy-MM-dd", null).Date;
+                List<DayOfWeek> daysOfWeek = new List<DayOfWeek> { DayOfWeek.Friday };
+                Course t = new Course(1,Domain.Model.Enums.Language.German,LanguageLevel.C1,5,daysOfWeek,startDate,false,15,20);
+                dbContext.Courses.Add(t);
+                dbContext.SaveChanges();
+            }
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
