@@ -2,6 +2,7 @@
 using LangLang.Controller;
 using LangLang.Domain.Model;
 using System.Reflection;
+using LangLang.DTO;
 
 public class CRUDConsole
 {
@@ -29,7 +30,7 @@ public class CRUDConsole
                         Console.WriteLine("Invalid choice.");
                     break;
                 case "c":
-                    DisplayCrudOperations<Course>(person);
+                    DisplayCrudOperations<CourseDTO>(person);
                     break;
                 case "e":
                     DisplayCrudOperations<ExamTerm>(person);
@@ -159,7 +160,7 @@ public class CRUDConsole
             case nameof(Teacher):
                 controller = Injector.CreateInstance<DirectorController>();
                 break;
-            case nameof(Course):
+            case nameof(CourseDTO):
                 controller = Injector.CreateInstance<CourseController>();
                 break;
             case nameof(ExamTerm):
