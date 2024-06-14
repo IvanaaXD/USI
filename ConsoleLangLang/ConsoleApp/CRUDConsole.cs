@@ -1,5 +1,8 @@
 ﻿using System;
+using System.DirectoryServices.ActiveDirectory;
 using System.Reflection;
+using System.Windows.Input;
+using System.Windows;
 using ConsoleLangLang.ConsoleApp;
 using ConsoleLangLang.ConsoleApp.DTO;
 using ConsoleLangLang.DTO;
@@ -235,6 +238,8 @@ public class CRUDConsole
             ExamTermDTO examTermDTO = (ExamTermDTO)(object)item;
             ExamTerm examTerm = examTermDTO.ToModelClass(); 
             director.ExamsId.Add(examTerm.ExamID);
+            SmartSelectionOfExamTeacher(controller,examTerm);
+            
         }
         else if (item is CourseDTO)
         {
@@ -246,7 +251,19 @@ public class CRUDConsole
         controller.Update(director);
     }
 
-
+    private static void SmartSelectionOfExamTeacher(DirectorController controller, ExamTerm examTerm)
+    {
+        int teacherCourseId = controller.FindMostAppropriateTeacher(examTerm);
+        if (teacherCourseId != -1)
+        {
+            Teacher teacher = controller.GetById(teacherCourseId);
+            teacher.CoursesId.Add(examTerm.ExamID);
+            controller.Update(teacher);
+            Console.WriteLine($"{teacher.FirstName} {teacher.LastName} was chosen");
+        }
+        else
+            MessageBox.Show("There is no available teacher for that course");
+    }
     private static void AddToTeacher<TDto>(TDto item, Person person)
     {
         DirectorController controller = Injector.CreateInstance<DirectorController>();
