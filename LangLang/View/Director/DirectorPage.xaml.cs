@@ -9,6 +9,7 @@ using System;
 using System.Windows;
 using LangLang.View.Teacher;
 using System.Windows.Controls;
+using LangLang.Domain.Model.Reports;
 
 namespace LangLang.View.Director
 {
@@ -384,31 +385,26 @@ namespace LangLang.View.Director
         }
         private void SendReport_Click(object sender, RoutedEventArgs e)
         {
-            EmailSender emailSender = new EmailSender("smtp.gmail.com", 587, "diirrektorr@gmail.com", "dvwa dbkw bzyl cauy");
+            IReportGenerator reportGenerator = null;
             if (ReportOneRadioButton.IsChecked == true)
             {
-                _reportController.GenerateFirstReport();
-                emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 1", "Report 1 body",
-                                      "..\\..\\..\\Data\\report1.pdf");
+                reportGenerator = new FirstReportGenerator();
             }
             else if (ReportTwoRadioButton.IsChecked == true)
             {
-                _reportController.GenerateSecondReport();
-                emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 2", "Report 2 body",
-                                      "..\\..\\..\\Data\\report2.pdf");
+                reportGenerator = new SecondReportGenerator();
             }
             else if (ReportThreeRadioButton.IsChecked == true)
             {
-                _reportController.GenerateThirdReport();
-                emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 3", "Report 3 body",
-                                      "..\\..\\..\\Data\\report3.pdf");
+                reportGenerator = new ThirdReportGenerator();
             }
             else if (ReportFourRadioButton.IsChecked == true)
             {
-                _reportController.GenerateFourthReport();
-                emailSender.SendEmail("diirrektorr@gmail.com", "diirrektorr@gmail.com", "Report 4", "Report 4 body",
-                      "..\\..\\..\\Data\\report4.pdf");
+                reportGenerator = new FourthReportGenerator();
             }
+
+            if (reportGenerator != null)
+                _reportController.GenerateReport(reportGenerator); 
             else
                 MessageBox.Show("Please select the report you want to send.");
         }
