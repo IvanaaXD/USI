@@ -78,16 +78,18 @@ namespace LangLang.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("ExamTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("date");
 
                     b.Property<bool>("Informed")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Language")
-                        .HasColumnType("integer");
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("Level")
-                        .HasColumnType("integer");
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("MaxStudents")
                         .HasColumnType("integer");
