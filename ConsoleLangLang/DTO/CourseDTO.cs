@@ -134,9 +134,7 @@ namespace ConsoleLangLang.ConsoleApp.DTO
                 CurrentlyEnrolled = this.CurrentlyEnrolled,
                 MaxEnrolledStudents = int.Parse(this.MaxEnrolledStudents)
             };
-            if (this.teacher == null)
-                return "Cannot create course!";
-            if (!_courseController.ValidateCourseTimeslot(course, this.teacher))
+            if (this.teacher != null && !_courseController.ValidateCourseTimeslot(course, this.teacher))
                 return "Cannot create course because of course time overlaps!";
             return null;
         }

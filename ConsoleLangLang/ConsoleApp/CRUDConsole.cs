@@ -135,6 +135,9 @@ public class CRUDConsole
     public static void CreateObject<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
         TDto newItem = crud.Create<TDto>();
+        if (newItem == null)
+            return;
+
         Console.WriteLine("Item created:");
         crud.Read(newItem);
 
@@ -224,8 +227,8 @@ public class CRUDConsole
 
     private static void AddToDirector<TDto>(TDto item)
     {
-        DirectorController directorController = controller as DirectorController;
-        Director director = directorController.GetDirector();
+        DirectorController controller = Injector.CreateInstance<DirectorController>();
+        Director director = controller.GetDirector();
 
         if (item is ExamTermDTO)
         {
@@ -240,7 +243,7 @@ public class CRUDConsole
             director.CoursesId.Add(course.Id);
         }
 
-        directorController.Update(director);
+        controller.Update(director);
     }
 
 
