@@ -6,6 +6,8 @@ using System.Reflection;
 
 public class GenericCrud
 {
+    public delegate TOutput Converter<in TInput, out TOutput>(TInput input);
+
     public T Create<T>() where T : new()
     {
         T item = new T();
@@ -33,6 +35,11 @@ public class GenericCrud
 
         return item;
     }
+    public void Read<TInput, TOutput>(TInput item, Converter<TInput, TOutput> converter)
+    {
+        var model = converter(item);
+        PrintTable(new List<TOutput> { model });
+    }
 
     private bool IsCollectionType(Type type)
     {
@@ -52,10 +59,12 @@ public class GenericCrud
         else
             return string.Empty;
     }
+    
     public void Read<T>(T item)
     {
         PrintTable(new List<T> { item });
     }
+    
 
     public T Update<T>(T item)
     {
@@ -143,15 +152,22 @@ public class GenericCrud
         {
             for (int i = 0; i < properties.Length; i++)
             {
-                var value = properties[i].GetValue(item);
-                string valueString;
+                try
+                {
+                    var value = properties[i].GetValue(item);
+                    string valueString;
 
-                if (value is IEnumerable enumerable && !(value is string))
-                    valueString = string.Join(",", enumerable.Cast<object>());
-                else
-                    valueString = value?.ToString() ?? string.Empty;
+                    if (value is IEnumerable enumerable && !(value is string))
+                        valueString = string.Join(",", enumerable.Cast<object>());
+                    else
+                        valueString = value?.ToString() ?? string.Empty;
 
-                Console.Write(valueString.PadRight(columnWidths[i] + 2));
+                    Console.Write(valueString.PadRight(columnWidths[i] + 2)); // Padding for table formatting
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error accessing property {properties[i].Name}: {ex.Message}");
+                }
             }
             Console.WriteLine();
         }
