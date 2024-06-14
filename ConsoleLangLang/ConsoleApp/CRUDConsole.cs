@@ -230,14 +230,14 @@ public class CRUDConsole
         if (item is ExamTermDTO)
         {
             ExamTermDTO examTermDTO = (ExamTermDTO)(object)item;
-            ExamTerm examTerm = examTermDTO.ToModelClass(); // Assuming ToModelClass() is defined on ExamTermDTO
+            ExamTerm examTerm = examTermDTO.ToModelClass(); 
             director.ExamsId.Add(examTerm.ExamID);
         }
         else if (item is CourseDTO)
         {
             CourseDTO courseDTO = (CourseDTO)(object)item;
-            //Course course = courseDTO.ToModelClass<Course>(); // Assuming ToModelClass<T>() is defined on CourseDTO
-            //director.CoursesId.Add(course.Id);
+            Course course = courseDTO.ToModelClass();
+            director.CoursesId.Add(course.Id);
         }
 
         directorController.Update(director);
@@ -257,8 +257,9 @@ public class CRUDConsole
         }
         else if (item.GetType() == typeof(CourseDTO))
         {
-            /*Course course = item.ToModelClass<Course>(); 
-            teacher.ExamsId.Add(course.Id);*/
+            CourseDTO courseDTO = (CourseDTO)(object)item;
+            Course course = courseDTO.ToModelClass();
+            teacher.CoursesId.Add(course.Id);
         }
 
         controller.Update(teacher);
