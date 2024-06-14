@@ -40,7 +40,7 @@ namespace LangLang.ConsoleApp
                         break;
                     case "3":
                         return;
-                    case "4":
+                    case "x":
                         return;
                     default:
                         Console.WriteLine("Invalid operation.");
@@ -78,8 +78,6 @@ namespace LangLang.ConsoleApp
                 }
             }
            
-
-
         }
         private static List<Course> GetCoursesWithoutTeacher()
         {
@@ -97,7 +95,7 @@ namespace LangLang.ConsoleApp
                         // CourseDTO courseDTO = new CourseDTO(course);    OVO TREBA DA RADI
                         Domain.Model.Teacher? courseTeacher = directorController.GetTeacherByCourse(course.Id);
                         if (courseTeacher == null)
-                            filteredCourses.Add(courseDTO);
+                            filteredCourses.Add(course);
                     }
                 }
             }

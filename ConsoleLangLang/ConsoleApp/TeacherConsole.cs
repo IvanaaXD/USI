@@ -30,7 +30,7 @@ namespace LangLang.ConsoleApp
                     case "1":
                         CRUDConsole.Display(teacher);
                         break;
-                    case "2":
+                    case "x":
                         return;
                     default:
                         Console.WriteLine("Invalid operation.");

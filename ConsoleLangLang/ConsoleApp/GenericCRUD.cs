@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using LangLang.Domain.Model.Enums;
 
 public class GenericCrud
 {
@@ -41,14 +42,11 @@ public class GenericCrud
             return default(T);
         return item;
     }
-    public void Read<TInput, TOutput>(TInput item, Converter<TInput, TOutput> converter)
-    {
-        var model = converter(item);
-        PrintTable(new List<TOutput> { model });
-    }
 
     private bool IsCollectionType(Type type)
     {
+        if (type == typeof(List<DayOfWeek>))
+            return false;
         return typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string);
     }
 
