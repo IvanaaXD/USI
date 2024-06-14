@@ -12,7 +12,7 @@ namespace LangLang.Domain.Model
         {
             { typeof(IStudentRepository), new Lazy<object>(() => new StudentRepository()) },
             { typeof(StudentsController), new Lazy<object>(() => new StudentsController()) },
-            { typeof(ICourseRepository), new Lazy<object>(() => new CourseRepository()) },
+            //{ typeof(ICourseRepository), new Lazy<object>(() => new CourseRepository()) },
             { typeof(CourseController), new Lazy<object>(() => new CourseController()) },
             /*
             { typeof(IExamTermRepository), new Lazy<object>(() => new ExamTermRepository()) },
@@ -38,6 +38,7 @@ namespace LangLang.Domain.Model
             _implementations.Add(typeof(PenaltyPointController), new Lazy<object>(() => new PenaltyPointController()));
             _implementations.Add(typeof(ReportController), new Lazy<object>(() => new ReportController()));
             _implementations.Add(typeof(IExamTermDbRepository), new Lazy<object>(() => new ExamTermDbRepository(appDbContext)));
+            _implementations.Add(typeof(ICourseDbRepository), new Lazy<object>(() => new CourseDbRepository(appDbContext)));
          
         }
             

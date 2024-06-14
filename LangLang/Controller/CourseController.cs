@@ -1,19 +1,17 @@
-﻿using LangLang.Domain.Model;
+﻿using LangLang.Domain.IRepository;
+using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
-using LangLang.Domain.IRepository;
 using System.Linq;
-using System.Windows.Input;
-using Org.BouncyCastle.Asn1.Cms;
 
 namespace LangLang.Controller
 {
     public class CourseController
     {
         private readonly IStudentRepository _students;
-        private readonly ICourseRepository _courses;
+        private readonly ICourseDbRepository _courses;
         private readonly TeacherController _teacherController;
         private readonly IExamTermDbRepository _examTerms;
         private readonly IDirectorRepository _director;
@@ -24,7 +22,7 @@ namespace LangLang.Controller
         public CourseController()
         {
             _students = Injector.CreateInstance<IStudentRepository>();
-            _courses = Injector.CreateInstance<ICourseRepository>();
+            _courses = Injector.CreateInstance<ICourseDbRepository>();
             _teacherController = Injector.CreateInstance<TeacherController>();
             _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
             _director = Injector.CreateInstance<IDirectorRepository>();
@@ -32,12 +30,12 @@ namespace LangLang.Controller
 
         public Course? GetById(int courseId)
         {
-            return _courses.GetCourseById(courseId);
+            return _courses.GetById(courseId);
         }
 
         public List<Course> GetAllCourses()
         {
-            return _courses.GetAllCourses();
+            return _courses.GetAll();
         }
 
         public List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> courses)
@@ -62,13 +60,13 @@ namespace LangLang.Controller
 
         public Course Add(Course course)
         {
-            Course createdCourse = _courses.AddCourse(course);
+            Course createdCourse = _courses.Add(course);
             return createdCourse;
         }
 
         public void Update(Course course)
         {
-            _courses.UpdateCourse(course);
+            _courses.Update(course);
         }
 
         public bool ValidateCourseTimeslot(Course course, Teacher teacher)
@@ -81,7 +79,7 @@ namespace LangLang.Controller
 
         private bool CheckCourseOverlap(Course course, Teacher teacher)
         {
-            List<Course> allAvailableCourses = _courses.GetAllCourses();
+            List<Course> allAvailableCourses = _courses.GetAll();
             List<ExamTerm> allAvailableExams = _examTerms.GetAll();
 
             bool isSameTeacherCourseOverlap = CheckTeacherCoursesOverlap(course, teacher);
@@ -245,7 +243,7 @@ namespace LangLang.Controller
 
         public void Delete(int courseId)
         {
-            _courses.RemoveCourse(courseId);
+            _courses.Delete(courseId);
             RemoveCourseFromRequests(courseId);
         }
 
@@ -286,7 +284,7 @@ namespace LangLang.Controller
 
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
-            var filteredCourses = _courses.GetAllCourses().Where(course =>
+            var filteredCourses = _courses.GetAll().Where(course =>
                 (!language.HasValue || course.Language == language.Value) &&
                 (!level.HasValue || course.Level == level.Value) &&
                 (!startDate.HasValue || course.StartDate.Date >= (startDate.Value.Date)) &&
@@ -299,7 +297,7 @@ namespace LangLang.Controller
 
         public List<Course> FindCoursesByDate(DateTime startDate)
         {
-            var filteredCourses = _courses.GetAllCourses().Where(course =>
+            var filteredCourses = _courses.GetAll().Where(course =>
                 course.StartDate.Date >= startDate.Date && course.StartDate.Date <= DateTime.Today.Date
             ).ToList();
 
@@ -416,11 +414,6 @@ namespace LangLang.Controller
                 if (IsCourseLastYear(course) && !courses.Contains(course))
                     courses.Add(course);
             return courses;
-        }
-
-        public List<Course> GetCoursesByTeacher(int teacherId)
-        {
-            return _courses.GetCoursesByTeacher(teacherId);
         }
 
         public List<Course>? GetCoursesForDisplay(bool isSearchClicked, List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)

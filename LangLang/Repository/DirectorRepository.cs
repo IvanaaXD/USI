@@ -97,7 +97,7 @@ namespace LangLang.Repository
             if (teacher.CoursesId != null)
             {
                 foreach (int courseId in teacher.CoursesId)
-                    courseRepository.RemoveCourse(courseId);
+                    courseRepository.Remove(courseId);
             }
 
             _teachers.Remove(teacher);

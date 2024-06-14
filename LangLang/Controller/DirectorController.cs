@@ -15,19 +15,11 @@ namespace LangLang.Controller
         private readonly IStudentGradeRepository? _studentGrades;
         private readonly CourseController? _courseController;
         private readonly ExamTermController? _examTermController;
-        private readonly TeacherController? _teacherController;
-        private readonly ICourseRepository? _courses;
-        private readonly IExamTermDbRepository? _examTerms;
-        private readonly MailController? _mailController;
         public DirectorController()
         {
             _directors = Injector.CreateInstance<IDirectorRepository>();
             _teachers = Injector.CreateInstance<ITeacherRepository>();
-            _teacherController = Injector.CreateInstance<TeacherController>();
-            _courses = Injector.CreateInstance<ICourseRepository>();
-            _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
             _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
-            _mailController = Injector.CreateInstance<MailController>();
             _examTermController = Injector.CreateInstance<ExamTermController>();
             _courseController = Injector.CreateInstance<CourseController>();
         }
