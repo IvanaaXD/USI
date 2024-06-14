@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using ConsoleLangLang.ConsoleApp;
+using ConsoleLangLang.ConsoleApp.DTO;
 using ConsoleLangLang.DTO;
 using LangLang.Controller;
 using LangLang.Domain.Model;
@@ -34,7 +36,7 @@ public class CRUDConsole
                         Console.WriteLine("Invalid choice.");
                     break;
                 case "c":
-                    // DisplayCrudOperations<CourseDTO>(person);
+                    DisplayCrudOperations<ConsoleLangLang.ConsoleApp.DTO.CourseDTO>(person);
                     break;
                 case "e":
                     DisplayCrudOperations<ExamTermDTO>(person);
@@ -130,7 +132,7 @@ public class CRUDConsole
         }
     }
 
-    private static void CreateObject<TDto>(GenericCrud crud, Person person) where TDto : new()
+    public static void CreateObject<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
         TDto newItem = crud.Create<TDto>();
         Console.WriteLine("Item created:");

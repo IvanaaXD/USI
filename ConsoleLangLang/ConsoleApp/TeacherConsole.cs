@@ -1,4 +1,5 @@
-﻿using LangLang.Controller;
+﻿using ConsoleLangLang.ConsoleApp;
+using LangLang.Controller;
 using LangLang.Domain.Model;
 using System;
 using System.Collections.Generic;
