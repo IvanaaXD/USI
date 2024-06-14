@@ -30,6 +30,29 @@ namespace LangLang
 
             SetPlaceholders();
 
+            List<Teacher> teachers = directorController.GetAllTeachers();
+            /*using (var dbContext = new AppDbContext())
+            {
+                DateTime dateOfBirth = DateTime.ParseExact("1999-11-18", "yyyy-MM-dd", null).Date;
+                DateTime specificDate = DateTime.ParseExact("2024-11-18", "yyyy-MM-dd", null).Date;
+                List<Language> languages = new List<Language>
+                {
+                    Domain.Model.Enums.Language.English, Domain.Model.Enums.Language.German
+                };
+                List<LanguageLevel> levels = new List<LanguageLevel> { LanguageLevel.B2, LanguageLevel.A1 };
+
+                Teacher t = new Teacher(1, "Mili", "bhbh", Gender.Female, dateOfBirth, "064544", "gvfc@bnam.com", "password", 0, languages, levels, specificDate, 1);
+
+                dbContext.Teachers.Remove(t);
+
+                foreach (Teacher teacher in teachers)
+                    {
+                        dbContext.Teachers.Add(teacher);
+                    }
+
+                dbContext.SaveChanges();
+            }*/
+
             /*using (var dbContext = new AppDbContext())
             {
                 DateTime dateOfBirth = DateTime.ParseExact("1999-11-18", "yyyy-MM-dd", null).Date;
