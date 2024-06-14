@@ -38,23 +38,6 @@ namespace LangLang.Repository
         {
             return _examTerms;
         }
-        public string FindLanguageAndLevel(int courseID)
-        {
-            string res = "";
-
-            Course course = GetAllCourses().FirstOrDefault(c => c.Id == courseID);
-
-            if (course != null)
-            {
-                res = $"{course.Language}, {course.Level}";
-            }
-            else
-            {
-                res = "Language and level not found";
-            }
-
-            return res;
-        }
-
+        
     }
 }

@@ -5,6 +5,7 @@ using LangLang.Observer;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LangLang.Repository
@@ -18,8 +19,14 @@ namespace LangLang.Repository
             _context = context;
             _subject = new Subject();
         }
+        private int GenerateExamId()
+        {
+            int maxId = _context.Teachers.Any() ? _context.Teachers.Max(e => e.Id) : 0;
+            return maxId + 1;
+        }
         public void Add(Teacher teacher)
         {
+            teacher.Id = GenerateExamId();
             _context.Teachers.Add(teacher);
             _context.SaveChanges();
             _subject.NotifyObservers();

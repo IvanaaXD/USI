@@ -15,7 +15,7 @@ namespace LangLang.Controller
         private readonly IStudentRepository _students;
         private readonly ICourseRepository _courses;
         private readonly TeacherController _teacherController;
-        private readonly IExamTermRepository _examTerms;
+        private readonly IExamTermDbRepository _examTerms;
         private readonly IDirectorRepository _director;
 
         private readonly int courseDurationInMinutes = 90;
@@ -26,7 +26,7 @@ namespace LangLang.Controller
             _students = Injector.CreateInstance<IStudentRepository>();
             _courses = Injector.CreateInstance<ICourseRepository>();
             _teacherController = Injector.CreateInstance<TeacherController>();
-            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
             _director = Injector.CreateInstance<IDirectorRepository>();
         }
 
@@ -82,7 +82,7 @@ namespace LangLang.Controller
         private bool CheckCourseOverlap(Course course, Teacher teacher)
         {
             List<Course> allAvailableCourses = _courses.GetAllCourses();
-            List<ExamTerm> allAvailableExams = _examTerms.GetAllExamTerms();
+            List<ExamTerm> allAvailableExams = _examTerms.GetAll();
 
             bool isSameTeacherCourseOverlap = CheckTeacherCoursesOverlap(course, teacher);
             if (isSameTeacherCourseOverlap)

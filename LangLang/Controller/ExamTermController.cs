@@ -10,28 +10,30 @@ namespace LangLang.Controller
 {
     public class ExamTermController
     {
-        private readonly IExamTermRepository _exams;
+        //private readonly IExamTermRepository _exams;
+        private readonly IExamTermDbRepository _exams;
         private readonly TeacherController teacherController;
         private readonly IDirectorRepository _directorRepository;
 
-        public ExamTermController(IExamTermRepository exams, TeacherController teacherController)
+        public ExamTermController(IExamTermDbRepository exams, TeacherController teacherController)
         {
             _exams = exams ?? throw new ArgumentNullException(nameof(exams));
             this.teacherController = teacherController;
         }
         public ExamTermController()
         {
-            _exams = Injector.CreateInstance<IExamTermRepository>();
+            _exams = Injector.CreateInstance<IExamTermDbRepository>();
             this.teacherController = Injector.CreateInstance<TeacherController>();
             _directorRepository = Injector.CreateInstance<IDirectorRepository>();   
         }
+
         public ExamTerm? GetById(int examId)
         {
-            return _exams.GetExamTermById(examId);
+            return _exams.GetById(examId);
         }
         public List<ExamTerm> GetAllExamTerms()
         {
-            return _exams.GetAllExamTerms();
+            return _exams.GetAll();
         }
         public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> exams)
         {
@@ -39,11 +41,11 @@ namespace LangLang.Controller
         }
         public void Add(ExamTerm examTerm)
         {
-            _exams.AddExamTerm(examTerm);
+            _exams.Add(examTerm);
         }
         public void Update(ExamTerm examTerm)
         {
-            _exams.UpdateExamTerm(examTerm);
+            _exams.Update(examTerm);
         }
 
         public void Delete(ExamTerm examTerm)
@@ -109,7 +111,7 @@ namespace LangLang.Controller
         {
             ExamTerm examTerm = GetById(examTermId);
             examTerm.Confirmed = true;
-            _exams.UpdateExamTerm(examTerm);
+            _exams.Update(examTerm);
             return examTerm;
         }
 
@@ -169,7 +171,7 @@ namespace LangLang.Controller
 
         public List<ExamTerm> FindExamTermsByDate(DateTime? startDate)
         {
-            var filteredCourses = _exams.GetAllExamTerms()
+            var filteredCourses = _exams.GetAll()
                 .Where(course => course.ExamTime.Date >= startDate.Value.Date && course.ExamTime.Date <= DateTime.Today.Date)
                 .ToList();
 

@@ -15,7 +15,7 @@ namespace LangLang.Controller
         private readonly ICourseRepository _courses;
         private readonly IStudentRepository _students;
         private readonly IDirectorRepository _director;
-        private readonly IExamTermRepository _examTerms;
+        private readonly IExamTermDbRepository _examTerms;
         private readonly IPenaltyPointRepository _penaltyPoints;
 
         public TeacherController()
@@ -23,7 +23,7 @@ namespace LangLang.Controller
             _teachers = Injector.CreateInstance<ITeacherRepository>();
             _courses = Injector.CreateInstance<ICourseRepository>();
             _students = Injector.CreateInstance<IStudentRepository>();
-            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
             _director = Injector.CreateInstance<IDirectorRepository>(); 
             _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
         }
@@ -33,7 +33,7 @@ namespace LangLang.Controller
         }
         public ExamTerm? GetExamTermById(int examId)
         {
-            return _examTerms.GetExamTermById(examId);
+            return _examTerms.GetById(examId);
         }
         public List<Course> GetAllCourses()
         {
@@ -41,7 +41,7 @@ namespace LangLang.Controller
         }
         public List<ExamTerm> GetAllExamTerms()
         {
-            return _examTerms.GetAllExamTerms();
+            return _examTerms.GetAll();
         }
 
         public ExamTerm? RemoveExamTerm(int id)
@@ -51,7 +51,7 @@ namespace LangLang.Controller
             RemoveExamIdFromTeachers(id);
             RemoveExamIdFromStudents(id);
             
-            _examTerms.RemoveExamTerm(examTerm.ExamID);
+            _examTerms.Delete(examTerm.ExamID);
             return examTerm;
         }
         private void RemoveExamIdFromTeachers(int id)
@@ -103,7 +103,7 @@ namespace LangLang.Controller
             DateTime examStartDateTime = ExamDate;
             DateTime examEndDateTime = examStartDateTime.AddMinutes(examDurationInMinutes);
 
-            IEnumerable<dynamic> overlappingExams = _examTerms.GetAllExamTerms()
+            IEnumerable<dynamic> overlappingExams = _examTerms.GetAll()
                 .Where(item =>
                 {
                     bool isDifferentId = item.ExamID != ExamID;
@@ -132,7 +132,7 @@ namespace LangLang.Controller
 
             foreach (int examId in allTeacherExams)
             {
-                availableExams.Add(_examTerms.GetExamTermById(examId));
+                availableExams.Add(_examTerms.GetById(examId));
             }
             return availableExams;
         }

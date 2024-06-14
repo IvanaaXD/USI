@@ -8,11 +8,11 @@ namespace LangLang.Domain.IRepository
 {
     public interface IExamTermRepository : IObserver
     {
-        ExamTerm? AddExamTerm(ExamTerm examTerm);
-        ExamTerm? UpdateExamTerm(ExamTerm examTerm);
-        ExamTerm? GetExamTermById(int id);
-        List<ExamTerm> GetAllExamTerms();
-        ExamTerm? RemoveExamTerm(int id);
+        ExamTerm? Add(ExamTerm examTerm);
+        ExamTerm? Update(ExamTerm examTerm);
+        ExamTerm? GetById(int id);
+        List<ExamTerm> GetAll();
+        ExamTerm? Remove(int id);
         List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> exams);
         void Subscribe(IObserver observer);
     }
