@@ -28,11 +28,18 @@ namespace LangLang.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Course>()
-                .Property(c => c.WorkDays)
+            OnCourseModelCreating(modelBuilder);
+
+            OnTeacherModelCreating(modelBuilder);
+        }
+
+        private static void OnTeacherModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Teacher>()
+                .Property(t => t.Gender)
                 .HasConversion(
-                    v => string.Join(',', v),
-                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), x)).ToList()
+                    v => v.ToString(),
+                    v => (Gender)Enum.Parse(typeof(Gender), v)
                 )
                 .HasColumnType("text");
 
@@ -59,6 +66,38 @@ namespace LangLang.Data
                 .Property(t => t.DateOfBirth)
                 .HasColumnType("date");
         }
+
+        private static void OnCourseModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Course>()
+                .Property(c => c.WorkDays)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), x)).ToList()
+                )
+                .HasColumnType("text");
+
+            modelBuilder.Entity<Course>()
+                .Property(t => t.Language)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (Language)Enum.Parse(typeof(Language), v)
+                )
+                .HasColumnType("text");
+
+            modelBuilder.Entity<Course>()
+                .Property(t => t.Level)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (LanguageLevel)Enum.Parse(typeof(LanguageLevel), v)
+                )
+                .HasColumnType("text");
+
+            modelBuilder.Entity<Course>()
+                .Property(t => t.StartDate)
+                .HasColumnType("date");
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

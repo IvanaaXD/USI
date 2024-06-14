@@ -30,7 +30,7 @@ namespace LangLang.Repository
             var teacher = _context.Teachers.Find(id);
             if (teacher == null)
             {
-                throw new KeyNotFoundException($"Tutor with ID {id} not found.");
+                throw new KeyNotFoundException($"Teacher with ID {id} not found.");
             }
 
             return teacher;
@@ -57,6 +57,8 @@ namespace LangLang.Repository
                 _context.SaveChanges();
                 _subject.NotifyObservers();
             }
+            else
+                throw new KeyNotFoundException($"Teacher with ID {id} not found.");
         }
         
     }
