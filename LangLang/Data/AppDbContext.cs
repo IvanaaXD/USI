@@ -29,7 +29,7 @@ namespace LangLang.Data
             base.OnModelCreating(modelBuilder);
 
             OnCourseModelCreating(modelBuilder);
-
+            OnExamTermModelCreating(modelBuilder);
             OnTeacherModelCreating(modelBuilder);
         }
 
@@ -97,7 +97,28 @@ namespace LangLang.Data
                 .Property(t => t.StartDate)
                 .HasColumnType("date");
         }
+        private static void OnExamTermModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ExamTerm>()
+                .Property(t => t.Language)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (Language)Enum.Parse(typeof(Language), v)
+                )
+                .HasColumnType("text");
 
+            modelBuilder.Entity<ExamTerm>()
+                .Property(t => t.Level)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (LanguageLevel)Enum.Parse(typeof(LanguageLevel), v)
+                )
+                .HasColumnType("text");
+
+            modelBuilder.Entity<ExamTerm>()
+                .Property(t => t.ExamTime)
+                .HasColumnType("date");
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -106,7 +127,5 @@ namespace LangLang.Data
                 optionsBuilder.UseNpgsql(connectionString);
             }
         }
-
-
     }
 }
