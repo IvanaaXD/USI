@@ -2,6 +2,7 @@
 using LangLang.Storage.Serialization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace LangLang.Domain.Model
