@@ -42,6 +42,10 @@ namespace LangLang.Repository
 
             return examTerm;
         }
+        public List<ExamTerm> GetAll()
+        {
+            return _context.ExamTerms.ToList();
+        }
         public void Remove(ExamTerm examTerm)
         {
             _context.ExamTerms.Remove(examTerm);
@@ -50,10 +54,22 @@ namespace LangLang.Repository
         }
         public void Update(ExamTerm examTerm)
         {
-            _context.ExamTerms.Update(examTerm);
+            var existingExamTerm = _context.ExamTerms.Find(examTerm.ExamID);
+            if (existingExamTerm == null)
+            {
+                throw new KeyNotFoundException($"ExamTerm with ID {examTerm.ExamID} not found.");
+            }
+            existingExamTerm.ExamTime = examTerm.ExamTime;
+            existingExamTerm.MaxStudents = examTerm.MaxStudents;
+            existingExamTerm.Language = examTerm.Language;
+            existingExamTerm.Level = examTerm.Level;
+            existingExamTerm.Confirmed = examTerm.Confirmed;
+            existingExamTerm.CurrentlyAttending = examTerm.CurrentlyAttending;
+
             _context.SaveChanges();
             _subject.NotifyObservers();
         }
+
 
         public void Delete(int id)
         {
@@ -64,6 +80,34 @@ namespace LangLang.Repository
                 _context.SaveChanges();
                 _subject.NotifyObservers();
             }
+        }
+
+        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> examsToPaginate)
+        {
+            IEnumerable<ExamTerm> exams = examsToPaginate;
+
+            switch (sortCriteria)
+            {
+                case "Datetime":
+                    exams = examsToPaginate.OrderBy(x => x.ExamTime);
+                    break;
+                case "Language":
+                    exams = examsToPaginate.OrderBy(x => x.Language);
+                    break;
+                case "Level":
+                    exams = examsToPaginate.OrderBy(x => x.Level);
+                    break;
+            }
+            exams = exams.Skip((page - 1) * pageSize).Take(pageSize);
+            return exams.ToList();
+        }
+        public void Update()
+        {
+            throw new NotImplementedException();
+        }
+        public void Subscribe(IObserver observer)
+        {
+
         }
     }
 }

@@ -14,7 +14,9 @@ namespace LangLang.Domain.Model
             { typeof(StudentsController), new Lazy<object>(() => new StudentsController()) },
             { typeof(ICourseRepository), new Lazy<object>(() => new CourseRepository()) },
             { typeof(CourseController), new Lazy<object>(() => new CourseController()) },
+            /*
             { typeof(IExamTermRepository), new Lazy<object>(() => new ExamTermRepository()) },
+            */
             { typeof(ExamTermController), new Lazy<object>(() => new ExamTermController()) },
             { typeof(ITeacherRepository), new Lazy<object>(() => new TeacherRepository()) },
             { typeof(TeacherController), new Lazy<object>(() => new TeacherController()) },
@@ -31,9 +33,12 @@ namespace LangLang.Domain.Model
 
         static Injector()
         {
+            Data.AppDbContext appDbContext = new Data.AppDbContext();   
             _implementations.Add(typeof(IPenaltyPointRepository), new Lazy<object>(() => new PenaltyPointRepository()));
             _implementations.Add(typeof(PenaltyPointController), new Lazy<object>(() => new PenaltyPointController()));
             _implementations.Add(typeof(ReportController), new Lazy<object>(() => new ReportController()));
+            _implementations.Add(typeof(IExamTermDbRepository), new Lazy<object>(() => new ExamTermDbRepository(appDbContext)));
+         
         }
             
         public static T CreateInstance<T>()

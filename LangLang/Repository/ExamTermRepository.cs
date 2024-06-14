@@ -22,7 +22,7 @@ namespace LangLang.Repository
             if (_examTerms.Count == 0) return 0;
             return _examTerms.Last().ExamID + 1;
         }
-        public ExamTerm AddExamTerm(ExamTerm examTerm)
+        public ExamTerm Add(ExamTerm examTerm)
         {
             examTerm.ExamID = GenerateExamId();
             _examTerms.Add(examTerm);
@@ -30,9 +30,9 @@ namespace LangLang.Repository
             NotifyObservers();
             return examTerm;
         }
-        public ExamTerm? UpdateExamTerm(ExamTerm examTerm)
+        public ExamTerm? Update(ExamTerm examTerm)
         {
-            ExamTerm? oldExamTerm = GetExamTermById(examTerm.ExamID);
+            ExamTerm? oldExamTerm = GetById(examTerm.ExamID);
             if (oldExamTerm == null) return null;
 
             oldExamTerm.ExamTime = examTerm.ExamTime;
@@ -47,9 +47,9 @@ namespace LangLang.Repository
             return oldExamTerm;
         }
         
-        public ExamTerm? RemoveExamTerm(int id)
+        public ExamTerm? Remove(int id)
         {
-            ExamTerm? examTerm = GetExamTermById(id);
+            ExamTerm? examTerm = GetById(id);
             if (examTerm == null) return null;
 
             _examTerms.Remove(examTerm);
@@ -58,11 +58,11 @@ namespace LangLang.Repository
             return examTerm;
         }
         
-        public ExamTerm GetExamTermById(int id)
+        public ExamTerm GetById(int id)
         {
             return _examTerms.Find(et => et.ExamID == id);
         }
-        public List<ExamTerm> GetAllExamTerms()
+        public List<ExamTerm> GetAll()
         {
             return _examTerms;
         }
