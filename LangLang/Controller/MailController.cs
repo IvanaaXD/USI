@@ -58,6 +58,14 @@ namespace LangLang.Controller
             ConstructMail(sender, receiver, course, examTerm, messageType, emailBody);
         }
 
+        public void GenerateMail(ExamTermGrade examTermGrade, Director sender, Student receiver, Course course, ExamTerm examTerm, TypeOfMessage messageType)
+        {
+            IMailStrategy mailStrategy = MailStrategyFactory.GetStrategy(messageType);
+            MailMessageGenerator context = new MailMessageGenerator(mailStrategy);
+            string emailBody = context.GenerateMailMessage(examTermGrade, examTerm);
+            ConstructMail(sender, receiver, course, examTerm, messageType, emailBody);
+        }
+
         public void GenerateMail(int messageId, Teacher sender, Student receiver, Course course, ExamTerm examTerm, TypeOfMessage messageType)
         {
             IMailStrategy mailStrategy = MailStrategyFactory.GetStrategy(messageType);
@@ -79,6 +87,14 @@ namespace LangLang.Controller
             IMailStrategy mailStrategy = MailStrategyFactory.GetStrategy(messageType);
             MailMessageGenerator context = new MailMessageGenerator(mailStrategy);
             string emailBody = context.GenerateMailMessage(studentCourseGrade, course);
+            ConstructMail(sender, receiver, course, examTerm, messageType, emailBody);
+        }
+
+        public void GenerateMail(Teacher sender, Student receiver, Course course, ExamTerm examTerm, TypeOfMessage messageType)
+        {
+            IMailStrategy mailStrategy = MailStrategyFactory.GetStrategy(messageType);
+            MailMessageGenerator context = new MailMessageGenerator(mailStrategy);
+            string emailBody = context.GenerateMailMessage(course);
             ConstructMail(sender, receiver, course, examTerm, messageType, emailBody);
         }
 

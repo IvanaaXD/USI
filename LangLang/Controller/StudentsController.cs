@@ -4,7 +4,6 @@ using LangLang.Observer;
 using LangLang.Domain.Model;
 using LangLang.Domain.IRepository;
 using System;
-using System.Linq;
 
 namespace LangLang.Controller
 {
@@ -427,6 +426,9 @@ namespace LangLang.Controller
 
             foreach (Mail mail in unreadReceivedMails)
             {
+                if (mail.CourseId == -1)
+                    continue;
+
                 Course course = courseController.GetById(mail.CourseId);
                 if (mail.TypeOfMessage == Domain.Model.Enums.TypeOfMessage.AcceptEnterCourseRequestMessage &&
                     DateTime.Now.Date >= course.StartDate.AddDays(-7).Date)
