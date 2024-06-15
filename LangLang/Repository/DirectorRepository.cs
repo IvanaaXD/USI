@@ -5,6 +5,7 @@ using LangLang.Observer;
 using LangLang.Storage;
 using LangLang.Domain.Model;
 using LangLang.Domain.IRepository;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.Repository
 {
@@ -141,6 +142,12 @@ namespace LangLang.Repository
 
             teachers = teachers.Skip((page - 1) * pageSize).Take(pageSize);
 
+            return teachers.ToList();
+        }
+        public List<Teacher> GetAllTeachers(int page, int pageSize, ISortStrategy sortStrategy, List<Teacher> teachersToPaginate)
+        {
+            IEnumerable<Teacher> teachers = sortStrategy.Sort(teachersToPaginate);
+            teachers = teachers.Skip((page - 1) * pageSize).Take(pageSize);
             return teachers.ToList();
         }
     }

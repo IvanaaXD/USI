@@ -5,6 +5,7 @@ using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using System.Linq;
 using LangLang.Domain.IRepository;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.Controller
 {
@@ -108,6 +109,11 @@ namespace LangLang.Controller
         {
             return _directors.GetAllTeachers(page, pageSize, sortCriteria, teachers);
         }
+        public List<Teacher> GetAllTeachers(int page, int pageSize, ISortStrategy sortStrategy, List<Teacher> teachers)
+        {
+            return _directors.GetAllTeachers(page, pageSize, sortStrategy, teachers);
+        }
+
 
         public Teacher? GetTeacherByCourse(int courseId)
         {

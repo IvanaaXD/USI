@@ -1,10 +1,10 @@
 ﻿using LangLang.Domain.IUtility;
 using LangLang.Domain.Model;
+using LangLang.Domain.IUtility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LangLang.Domain.Utility
 {
@@ -17,6 +17,10 @@ namespace LangLang.Domain.Utility
         public IEnumerable<Course> Sort(IEnumerable<Course> exams)
         {
             return exams.OrderBy(x => x.Level);
+        }
+        public IEnumerable<Teacher> Sort(IEnumerable<Teacher> teachers)
+        {
+            throw new NotImplementedException();
         }
     }
 }
