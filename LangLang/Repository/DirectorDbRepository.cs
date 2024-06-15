@@ -91,7 +91,7 @@ namespace LangLang.Repository
             NotifyObservers();
             return oldTeacher;
         }
-        public Director? Update(Director? director)
+        public Director? UpdateDirector(Director? director)
         {
             Director? oldDirector = GetDirector();
             if (oldDirector == null) return null;

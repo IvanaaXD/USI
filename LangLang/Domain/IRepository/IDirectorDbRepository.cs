@@ -14,7 +14,7 @@ namespace LangLang.Domain.IRepository
         Teacher GetById(int id);
         Teacher Add(Teacher teacher);
         Teacher? Update(Teacher teacher);
-        Director? Update(Director director);
+        Director? UpdateDirector(Director director);
         Teacher? Remove(int teacherId);
         List<Teacher> GetAll();
         List<Teacher> GetAllTeachers(int page, int pageSize, string sortCriteria, List<Teacher> teachersToPaginate);
