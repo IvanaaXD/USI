@@ -60,6 +60,7 @@ namespace LangLang.Domain.Model.Enums
         StudentGradeMessage,
         NULL
     }
+
     public enum StudentGradePriority {
         Knowledge,
         Activity

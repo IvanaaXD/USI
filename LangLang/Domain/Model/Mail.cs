@@ -71,7 +71,6 @@ namespace LangLang.Domain.Model
 
         public Mail(int id, string sender, string receiver, int courseId, int examTermId, TypeOfMessage typeOfMessage, DateTime dateOfMessage, string message, bool answered)
         {
-
             this.id = id;
             this.sender = sender;
             this.receiver = receiver;
@@ -103,12 +102,9 @@ namespace LangLang.Domain.Model
         public void FromCSV(string[] values)
         {
             if (values.Length != 9)
-            {
                 throw new ArgumentException("Invalid number of mail values in CSV");
-            }
 
             id = int.Parse(values[0]);
-
             sender = values[1];
             receiver = values[2];
             courseId = int.Parse(values[3]);

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows;
 using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
+using System.IO;
 
 namespace LangLang.View.Teacher
 {
@@ -22,7 +23,7 @@ namespace LangLang.View.Teacher
 
         private MailController mailController;
         private StudentsController studentController;
-        string messageBody;
+        int messageId;
 
         private bool _isFirstOptionSelected;
         private bool _isSecondOptionSelected;
@@ -58,7 +59,7 @@ namespace LangLang.View.Teacher
                 _isFirstOptionSelected = value;
                 OnPropertyChanged(nameof(IsFirstOptionSelected));
                 if (value)
-                    messageBody = "You have gotten a penalty point from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: Student didn't attend a course class.";
+                    messageId = 1;
             }
         }
         public bool IsSecondOptionSelected
@@ -69,7 +70,7 @@ namespace LangLang.View.Teacher
                 _isSecondOptionSelected = value;
                 OnPropertyChanged(nameof(IsSecondOptionSelected));
                 if (value)
-                    messageBody = "You have gotten a penalty point from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: Student is bothering other students during class.";
+                    messageId = 2;
             }
         }
         public bool IsThirdOptionSelected
@@ -80,7 +81,7 @@ namespace LangLang.View.Teacher
                 _isThirdOptionSelected = value;
                 OnPropertyChanged(nameof(IsThirdOptionSelected));
                 if (value)
-                    messageBody = "You have gotten a penalty point from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: Student didn't do homework.";
+                    messageId = 3;
             }
         }
 
@@ -88,10 +89,11 @@ namespace LangLang.View.Teacher
         {
             if (IsFirstOptionSelected || IsSecondOptionSelected || IsThirdOptionSelected)
             {
+                TypeOfMessage messageType = TypeOfMessage.TopStudentsMessage;
                 var examTerm = new ExamTerm();
                 examTerm.ExamID = -1;
 
-                mailController.ConstructMail(teacher, student, course, examTerm, TypeOfMessage.PenaltyPointMessage, messageBody);
+                mailController.GenerateMail(messageId, teacher, student, course, examTerm, messageType);
                 studentController.GivePenaltyPoint(student.Id);
 
                 Close();
