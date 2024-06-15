@@ -44,9 +44,9 @@ namespace LangLang.Controller
         {
             return _exams.GetAllExamTerms(page, pageSize, sortStrategy, exams);
         }
-        public void Add(ExamTerm examTerm)
+        public ExamTerm Add(ExamTerm examTerm)
         {
-            _exams.Add(examTerm);
+            return _exams.Add(examTerm);
         }
         public void Update(ExamTerm examTerm)
         {

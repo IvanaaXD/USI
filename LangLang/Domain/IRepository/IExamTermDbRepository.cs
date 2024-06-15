@@ -15,7 +15,7 @@ namespace LangLang.Domain.IRepository
         ExamTerm GetById(int id);
         List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> exams);
         List<ExamTerm> GetAllExamTerms(int page, int pageSize, ISortStrategy sortStrategy, List<ExamTerm> exams);
-        void Add(ExamTerm examTerm);
+        ExamTerm Add(ExamTerm examTerm);
         ExamTerm Update(ExamTerm examTerm);
         void Remove(ExamTerm examTerm);
         void Delete(int id);

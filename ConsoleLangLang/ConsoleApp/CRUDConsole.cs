@@ -5,8 +5,6 @@ using ConsoleLangLang.ConsoleApp.DTO;
 using ConsoleLangLang.DTO;
 using LangLang.Controller;
 using LangLang.Domain.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Org.BouncyCastle.Asn1.X509.Qualified;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 public class CRUDConsole
@@ -159,9 +157,12 @@ public class CRUDConsole
         if (addMethod != null)
         {
             var modelItem = ToModel(newItem);
-            addMethod.Invoke(controller, new object[] { modelItem });
+            object returnedValue = addMethod.Invoke(controller, new object[] { modelItem });
+            
+            TDto returnedValueDTO = ToDTO<TDto>(returnedValue);
+
             if (typeof(TDto) != typeof(TeacherDTO))
-                AddCheckType(newItem, person);
+                AddCheckType(returnedValueDTO, person);
         }
         else
             Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
@@ -273,19 +274,6 @@ public class CRUDConsole
         directorController.UpdateDirector(director);
     }
 
-    private static void SmartSelectionOfExamTeacher(DirectorController controller, ExamTerm examTerm)
-    {
-        int teacherCourseId = controller.FindMostAppropriateTeacher(examTerm);
-        if (teacherCourseId != -1)
-        {
-            Teacher teacher = controller.GetById(teacherCourseId);
-            teacher.CoursesId.Add(examTerm.ExamID);
-            controller.Update(teacher);
-            Console.WriteLine($"{teacher.FirstName} {teacher.LastName} was chosen");
-        }
-        else
-            MessageBox.Show("There is no available teacher for that course");
-    }
     private static void AddToTeacher<TDto>(TDto item, Person person)
     {
         DirectorController controller = Injector.CreateInstance<DirectorController>();
@@ -333,5 +321,19 @@ public class CRUDConsole
             directorController.RemoveCourseFromList(teacher.Id, course.Id);
             directorController.RemoveCourseFromDirector(course.Id);
         }
+    }
+
+    private static void SmartSelectionOfExamTeacher(DirectorController controller, ExamTerm examTerm)
+    {
+        int teacherCourseId = controller.FindMostAppropriateTeacher(examTerm);
+        if (teacherCourseId > 0)
+        {
+            Teacher teacher = controller.GetById(teacherCourseId);
+            teacher.ExamsId.Add(examTerm.ExamID);
+            controller.Update(teacher);
+            Console.WriteLine($"{teacher.FirstName} {teacher.LastName} was chosen");
+        }
+        else
+            MessageBox.Show("There is no available teacher for that course");
     }
 }

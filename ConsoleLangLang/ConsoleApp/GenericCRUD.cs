@@ -4,9 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LangLang.Domain.Model;
-using System.Reflection.Metadata.Ecma335;
-
 
 public class GenericCrud
 {
@@ -67,8 +64,16 @@ public class GenericCrud
     private object ReadEnumFromUser(PropertyInfo prop, Type elementType)
     {
         Console.WriteLine($"Choose {prop.Name}:");
-        
-        var enumValues = Enum.GetValues(elementType).Cast<object>().OrderBy(e => e.ToString()).ToList();
+
+        var nullValue = Enum.GetValues(elementType)
+                            .Cast<object>()
+                            .FirstOrDefault(e => e.ToString() == "NULL");
+
+        var enumValues = Enum.GetValues(elementType)
+                             .Cast<object>()
+                             .Where(e => !e.Equals(nullValue))
+                             .OrderBy(e => e.ToString())
+                             .ToList();
 
         if (prop.Name == "Languages" || prop.Name == "LevelOfLanguages" || prop.Name == "WorkDays")
         {
@@ -77,14 +82,15 @@ public class GenericCrud
             var list = (IList)Activator.CreateInstance(listType);
 
             foreach (var enumValue in selectedEnums)
-            {
                 list.Add(Convert.ChangeType(enumValue, elementType));
-            }
             return list;
         }
         else
+        {
             return SelectSingleEnum(enumValues);
+        }
     }
+
 
     private List<object> SelectMultipleEnum(List<object> enumValues, Type elementType)
     {
@@ -152,7 +158,7 @@ public class GenericCrud
         PrintTable(new List<T> { item });
     }
 
-    public T Update<T>(T item)
+    public T Update<T>(T item) where T : new()
     {
         foreach (PropertyInfo prop in typeof(T).GetProperties())
         {
@@ -171,6 +177,14 @@ public class GenericCrud
                    prop.SetValue(item, currentValue);
             }
         }
+
+        var validator = new PropertyValidator<T>(item);
+        if (!validator.IsValid())
+        {
+            Console.ReadLine();
+            return default(T);
+        }
+
         return item;
     }
 
@@ -236,10 +250,12 @@ public class GenericCrud
 
                     if (value is IEnumerable enumerable && !(value is string))
                         valueString = string.Join(",", enumerable.Cast<object>());
+                    else if (value is DateTime)
+                        valueString = value?.ToString().Split(" ")[0] ?? string.Empty;
                     else
                         valueString = value?.ToString() ?? string.Empty;
 
-                    Console.Write(valueString.PadRight(columnWidths[i] + 2)); // Padding for table formatting
+                    Console.Write(valueString.PadRight(columnWidths[i] + 2)); 
                 }
                 catch (Exception ex)
                 {
