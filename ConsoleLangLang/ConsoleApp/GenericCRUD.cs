@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using LangLang.Domain.Model;
+using System.Reflection.Metadata.Ecma335;
+
 
 public class GenericCrud
 {
@@ -15,20 +17,14 @@ public class GenericCrud
 
         foreach (PropertyInfo prop in typeof(T).GetProperties())
         {
-            if (prop.CanWrite && !IsCollectionType(prop.PropertyType))
+            if (prop.CanWrite)
             {
                 object value;
 
-                if (prop.PropertyType.IsEnum)
-                    value = ReadEnumFromUser<T>(prop);
+                if (IsCollectionType(prop.PropertyType))
+                    value = GetPropertyValue(prop, prop.PropertyType.GetGenericArguments()[0]);
                 else
-                {
-                    string formatHint = GetFormatHint(prop.PropertyType);
-                    Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
-
-                    string input = Console.ReadLine();
-                    value = ConvertValue(input, prop.PropertyType);
-                }
+                    value = GetPropertyValue(prop, prop.PropertyType);
 
                 if (value == null)
                     return default(T);
@@ -39,32 +35,58 @@ public class GenericCrud
                 if (validationError != null)
                 {
                     Console.WriteLine(validationError);
+                    Console.ReadLine();
                     return default(T);
                 }
             }
         }
 
         if (!validator.IsValid())
+        {
+            Console.ReadLine();
             return default(T);
+        }
 
         return item;
     }
 
-    private object ReadEnumFromUser<T>(PropertyInfo prop) where T : new()
+    private object GetPropertyValue(PropertyInfo prop, Type elementType)
     {
-        Console.WriteLine($"Choose {prop.Name}:");
-        var enumValues = Enum.GetValues(prop.PropertyType).Cast<Enum>().OrderBy(e => e.ToString()).ToList();
-
-        if (typeof(T) == typeof(Teacher) && (prop.Name == "Languages" || prop.Name == "LevelOfLanguages"))
-            return SelectMultipleEnum(enumValues);
-        else if (typeof(T) == typeof(Course) || typeof(T) == typeof(ExamTerm))
-            return SelectMultipleEnum(enumValues);
+        if (elementType.IsEnum)
+           return ReadEnumFromUser(prop,elementType);
         else
-            return SelectSingleEnum(enumValues);
+        {
+            string formatHint = GetFormatHint(prop.PropertyType);
+            Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
 
+            string input = Console.ReadLine();
+            return ConvertValue(input, prop.PropertyType);
+        }
     }
 
-    private List<Enum> SelectMultipleEnum(List<Enum> enumValues)
+    private object ReadEnumFromUser(PropertyInfo prop, Type elementType)
+    {
+        Console.WriteLine($"Choose {prop.Name}:");
+        
+        var enumValues = Enum.GetValues(elementType).Cast<object>().OrderBy(e => e.ToString()).ToList();
+
+        if (prop.Name == "Languages" || prop.Name == "LevelOfLanguages" || prop.Name == "WorkDays")
+        {
+            var selectedEnums = SelectMultipleEnum(enumValues, elementType);
+            var listType = typeof(List<>).MakeGenericType(elementType);
+            var list = (IList)Activator.CreateInstance(listType);
+
+            foreach (var enumValue in selectedEnums)
+            {
+                list.Add(Convert.ChangeType(enumValue, elementType));
+            }
+            return list;
+        }
+        else
+            return SelectSingleEnum(enumValues);
+    }
+
+    private List<object> SelectMultipleEnum(List<object> enumValues, Type elementType)
     {
         Console.WriteLine("Select multiple options separated by commas (e.g., 1,2,3):");
         for (int i = 0; i < enumValues.Count; i++)
@@ -74,7 +96,7 @@ public class GenericCrud
         string input = Console.ReadLine();
 
         string[] choices = input.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        var selectedEnums = new List<Enum>();
+        var selectedEnums = new List<object>();
 
         foreach (var choice in choices)
         {
@@ -86,11 +108,11 @@ public class GenericCrud
                 return null;
             }
         }
-
+        
         return selectedEnums;
     }
 
-    private Enum SelectSingleEnum(List<Enum> enumValues)
+    private object SelectSingleEnum(List<object> enumValues)
     {
         for (int i = 0; i < enumValues.Count; i++)
             Console.WriteLine($"{i + 1}. {enumValues[i]}");
@@ -108,12 +130,10 @@ public class GenericCrud
     }
 
     private bool IsCollectionType(Type type)
-        {
-        if (type == typeof(List<DayOfWeek>))
-            return false;
+    {
         return typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string);
     }
-
+  
     private string GetFormatHint(Type type)
     {
         if (type == typeof(int))

@@ -6,6 +6,7 @@ using ConsoleLangLang.DTO;
 using LangLang.Controller;
 using LangLang.Domain.Model;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Org.BouncyCastle.Asn1.X509.Qualified;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 public class CRUDConsole
@@ -94,6 +95,7 @@ public class CRUDConsole
                     Console.WriteLine("Invalid operation.");
                     break;
             }
+            Console.ReadLine();
         }
     }
 
@@ -158,7 +160,8 @@ public class CRUDConsole
         {
             var modelItem = ToModel(newItem);
             addMethod.Invoke(controller, new object[] { modelItem });
-            AddCheckType(newItem, person);
+            if (typeof(TDto) != typeof(TeacherDTO))
+                AddCheckType(newItem, person);
         }
         else
             Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
@@ -257,7 +260,7 @@ public class CRUDConsole
             ExamTermDTO examTermDTO = (ExamTermDTO)(object)item;
             ExamTerm examTerm = examTermDTO.ToModelClass(); 
             director.ExamsId.Add(examTerm.ExamID);
-            SmartSelectionOfExamTeacher(controller,examTerm);
+            SmartSelectionOfExamTeacher(directorController,examTerm);
             
         }
         else if (item is CourseDTO)
@@ -267,7 +270,7 @@ public class CRUDConsole
             director.CoursesId.Add(course.Id);
         }
 
-        controller.Update(director);
+        directorController.UpdateDirector(director);
     }
 
     private static void SmartSelectionOfExamTeacher(DirectorController controller, ExamTerm examTerm)
