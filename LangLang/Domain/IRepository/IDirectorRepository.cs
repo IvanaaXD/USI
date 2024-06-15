@@ -9,7 +9,7 @@ namespace LangLang.Domain.IRepository
         Director? GetDirector();
         Teacher Add(Teacher teacher);
         Teacher? Update(Teacher? teacher);
-        Director? Update(Director? director);
+        Director? UpdateDirector(Director? director);
         Teacher? Remove(int id);
         Teacher? GetById(int id);
         List<Teacher> GetAll();

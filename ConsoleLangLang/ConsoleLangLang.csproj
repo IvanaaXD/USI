@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\LangLang\LangLang.csproj" />
+		<ProjectReference Include="..\LangLang\LangLang.csproj" />
 	</ItemGroup>
 
 </Project>

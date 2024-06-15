@@ -196,7 +196,7 @@ namespace LangLang.View.Teacher
                         director.CoursesId = new List<int>();
                     }
                     director.CoursesId.Add(courseId + 1);
-                    directorController.Update(director);
+                    directorController.UpdateDirector(director);
                     courseController.Add(CreatedCourse.ToCourse());
                     Domain.Model.Teacher teacher = directorController.GetById(teacherId);
                     teacher.CoursesId.Add(CreatedCourse.ToCourse().Id);

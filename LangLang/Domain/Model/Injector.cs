@@ -18,7 +18,7 @@ namespace LangLang.Domain.Model
             { typeof(ExamTermController), new Lazy<object>(() => new ExamTermController()) },
             { typeof(ITeacherRepository), new Lazy<object>(() => new TeacherRepository()) },
             { typeof(TeacherController), new Lazy<object>(() => new TeacherController()) },
-            //{ typeof(IDirectorRepository), new Lazy<object>(() => new DirectorRepository()) },
+            { typeof(IDirectorRepository), new Lazy<object>(() => new DirectorRepository()) },
             { typeof(DirectorController), new Lazy<object>(() => new DirectorController()) },
             { typeof(IMailRepository), new Lazy<object>(() => new MailRepository()) },
             { typeof(MailController), new Lazy<object>(() => new MailController()) },

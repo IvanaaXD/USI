@@ -1,13 +1,8 @@
-﻿using ConsoleLangLang.ConsoleApp;
-using ConsoleLangLang.ConsoleApp.DTO;
-using LangLang.Controller;
+﻿using LangLang.Controller;
 using LangLang.Domain.Model;
 using System;
-using System.Windows.Documents;
-using LangLang.Domain.Model;
 using System.Collections.Generic;
 using System.Windows;
-using LangLang.Migrations;
 
 namespace LangLang.ConsoleApp
 {
@@ -22,6 +17,7 @@ namespace LangLang.ConsoleApp
 
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) CRUD operations\n" +
                                   "\t2) Smart selection of course teacher\n" +
@@ -52,6 +48,7 @@ namespace LangLang.ConsoleApp
 
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) Enter the course id\n" +
                                   "\tx) Exit\n");

@@ -240,7 +240,7 @@ namespace LangLang.View.Teacher
 
                     Domain.Model.Director director = directorController.GetDirector();
                     director.ExamsId.Add(examId + 1);
-                    directorController.Update(director);
+                    directorController.UpdateDirector(director);
                     Close();
                 }
                 Close();

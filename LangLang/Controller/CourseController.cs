@@ -21,18 +21,18 @@ namespace LangLang.Controller
         private readonly ICourseDbRepository _courses;
 
         private readonly int courseDurationInMinutes = 90;
-        private readonly int examDurationInMinutes = 240; 
+        private readonly int examDurationInMinutes = 240;
 
         public CourseController()
         {
             _students = Injector.CreateInstance<IStudentRepository>();
-           // _courses = Injector.CreateInstance<ICourseRepository>();
+            // _courses = Injector.CreateInstance<ICourseRepository>();
             _teacherController = Injector.CreateInstance<TeacherController>();
-           // _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            // _examTerms = Injector.CreateInstance<IExamTermRepository>();
             _director = Injector.CreateInstance<IDirectorDbRepository>();
 
             _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
-            _courses= Injector.CreateInstance<ICourseDbRepository>();
+            _courses = Injector.CreateInstance<ICourseDbRepository>();
 
         }
 
@@ -197,7 +197,7 @@ namespace LangLang.Controller
             return false;
         }
 
-        private (TimeSpan,TimeSpan) GetSessionTimes(Course course)
+        private (TimeSpan, TimeSpan) GetSessionTimes(Course course)
         {
             TimeSpan sessionStart = course.StartDate.TimeOfDay;
             TimeSpan sessionEnd = sessionStart.Add(TimeSpan.FromMinutes(courseDurationInMinutes));
@@ -211,7 +211,7 @@ namespace LangLang.Controller
             {
                 if (secondCourse.WorkDays.Contains(day))
                 {
-                    if (CompareTimes(course,secondCourse))
+                    if (CompareTimes(course, secondCourse))
                         return true;
                 }
             }
@@ -227,12 +227,12 @@ namespace LangLang.Controller
                 if (secondCourse.IsOnline)
                     continue;
 
-                    bool isSessionOverlap = CompareCourseDurations(course,secondCourse);
-                    if (isSessionOverlap)
-                        if (isClassroomOneTaken)
-                            return true;
-                        else
-                            isClassroomOneTaken = true;
+                bool isSessionOverlap = CompareCourseDurations(course, secondCourse);
+                if (isSessionOverlap)
+                    if (isClassroomOneTaken)
+                        return true;
+                    else
+                        isClassroomOneTaken = true;
             }
 
             foreach (ExamTerm examTerm in allAvailableExams)
@@ -259,14 +259,14 @@ namespace LangLang.Controller
         public void RemoveCourseFromRequests(int courseId)
         {
             List<Student> students = _students.GetAllStudents();
-            foreach(Student student in students)
+            foreach (Student student in students)
             {
                 if (student.RegisteredCoursesIds.Contains(courseId))
                 {
                     student.RegisteredCoursesIds.Remove(courseId);
                     _students.UpdateStudent(student);
                 }
-            }       
+            }
         }
 
         public void Subscribe(IObserver observer)
@@ -462,7 +462,7 @@ namespace LangLang.Controller
 
         public bool IsCourseActive(Course course)
         {
-            if (DateTime.Today.Date > course.StartDate.Date && course.StartDate.Date.AddDays(course.Duration*7) > DateTime.Today.Date) 
+            if (DateTime.Today.Date > course.StartDate.Date && course.StartDate.Date.AddDays(course.Duration * 7) > DateTime.Today.Date)
                 return true;
             return false;
         }
