@@ -1,4 +1,5 @@
-﻿using LangLang.Domain.Model;
+﻿using LangLang.Domain.IUtility;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace LangLang.Domain.IRepository
         Teacher? Remove(int teacherId);
         List<Teacher> GetAll();
         List<Teacher> GetAllTeachers(int page, int pageSize, string sortCriteria, List<Teacher> teachersToPaginate);
+        List<Teacher> GetAllTeachers(int page, int pageSize, ISortStrategy sortStrategy, List<Teacher> teachersToPaginate);
         void Subscribe(IObserver observer);
     }
 }

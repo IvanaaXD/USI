@@ -18,5 +18,9 @@ namespace LangLang.Domain.Utility
         {
             return exams.OrderBy(x => x.StartDate);
         }
+        public IEnumerable<Teacher> Sort(IEnumerable<Teacher> exams)
+        {
+            return exams.OrderBy(x => x.StartedWork);
+        }
     }
 }

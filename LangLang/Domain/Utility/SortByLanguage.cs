@@ -14,9 +14,14 @@ namespace LangLang.Domain.Utility
         {
             return exams.OrderBy(x => x.Language);
         }
-        public IEnumerable<Course> Sort(IEnumerable<Course> exams)
+        public IEnumerable<Course> Sort(IEnumerable<Course> courses)
         {
-            return exams.OrderBy(x => x.Language);
+            return courses.OrderBy(x => x.Language);
+        }
+
+        public IEnumerable<Teacher> Sort(IEnumerable<Teacher> teachers)
+        {
+            throw new NotImplementedException();
         }
     }
 }

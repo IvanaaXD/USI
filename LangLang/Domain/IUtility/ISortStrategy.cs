@@ -7,5 +7,6 @@ namespace LangLang.Domain.IUtility
     {
         IEnumerable<ExamTerm> Sort(IEnumerable<ExamTerm> exams);
         IEnumerable<Course> Sort(IEnumerable<Course> courses);
+        IEnumerable<Teacher> Sort(IEnumerable<Teacher> teachers);
     }
 }
