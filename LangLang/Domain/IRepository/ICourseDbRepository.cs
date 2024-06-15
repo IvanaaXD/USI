@@ -1,4 +1,5 @@
-﻿using LangLang.Domain.Model;
+﻿using LangLang.Domain.IUtility;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System.Collections.Generic;
 using System.Windows.Documents;
@@ -14,6 +15,7 @@ namespace LangLang.Domain.IRepository
         void Delete(int id);
         List<Course> GetAll();
         List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> coursesToPaginate);
+        List<Course> GetAllCourses(int page, int pageSize, ISortStrategy courseSortStrategy, List<Course> courses);
         void Subscribe(IObserver observer);
     }
 }

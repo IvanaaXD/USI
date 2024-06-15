@@ -12,19 +12,23 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly ITeacherRepository _teachers;
+        //private readonly ICourseRepository _courses;
         private readonly ICourseDbRepository _courses;
         private readonly IStudentRepository _students;
-        private readonly IDirectorRepository _director;
+        private readonly IDirectorDbRepository _director;
+        //private readonly IExamTermRepository _examTerms;
         private readonly IExamTermDbRepository _examTerms;
         private readonly IPenaltyPointRepository _penaltyPoints;
 
         public TeacherController()
         {
             _teachers = Injector.CreateInstance<ITeacherRepository>();
+            //_courses = Injector.CreateInstance<ICourseRepository>();
             _courses = Injector.CreateInstance<ICourseDbRepository>();
             _students = Injector.CreateInstance<IStudentRepository>();
+            //_examTerms = Injector.CreateInstance<IExamTermRepository>();
             _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
-            _director = Injector.CreateInstance<IDirectorRepository>(); 
+            _director = Injector.CreateInstance<IDirectorDbRepository>();
             _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
         }
         public Course? GetCourseById(int courseId)
@@ -50,18 +54,19 @@ namespace LangLang.Controller
             if (examTerm == null) return null;
             RemoveExamIdFromTeachers(id);
             RemoveExamIdFromStudents(id);
-            
-            _examTerms.Delete(examTerm.ExamID);
+
+            // _examTerms.Remove(examTerm.ExamID);
+            _examTerms.Remove(examTerm);
             return examTerm;
         }
         private void RemoveExamIdFromTeachers(int id)
         {
-            foreach (Teacher teacher in _director.GetAllTeachers())
+            foreach (Teacher teacher in _director.GetAll())
             {
                 if (teacher.ExamsId.Contains(id))
                 {
                     teacher.ExamsId.Remove(id);
-                    _director.UpdateTeacher(teacher);
+                    _director.Update(teacher);
                 }
             }
         }
@@ -90,7 +95,7 @@ namespace LangLang.Controller
             foreach (int courseId in allTeacherCourses)
             {
                 Course? course = _courses.GetById(courseId);
-                if (course!=null)
+                if (course != null)
                     availableCourses.Add(course);
             }
             return availableCourses;
@@ -117,7 +122,7 @@ namespace LangLang.Controller
 
             return !overlappingExams.Any();
         }
-        
+
         public void Subscribe(IObserver observer)
         {
             _teachers.Subscribe(observer);

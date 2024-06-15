@@ -5,11 +5,13 @@ using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using System.Linq;
 using LangLang.Domain.IRepository;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.Controller
 {
     public class DirectorController
     {
+        private readonly IDirectorDbRepository _directorsss;
         private readonly IDirectorRepository _directors;
         private readonly ITeacherRepository? _teachers;
         private readonly IStudentGradeRepository? _studentGrades;
@@ -17,6 +19,7 @@ namespace LangLang.Controller
         private readonly ExamTermController? _examTermController;
         public DirectorController()
         {
+            _directorsss = Injector.CreateInstance<IDirectorDbRepository>();
             _directors = Injector.CreateInstance<IDirectorRepository>();
             _teachers = Injector.CreateInstance<ITeacherRepository>();
             _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
@@ -31,42 +34,44 @@ namespace LangLang.Controller
 
         public Teacher? GetById(int teacherId)
         {
-            return _directors.GetTeacherById(teacherId);
+            return _directors.GetById(teacherId);
         }
 
         public List<Teacher> GetAllTeachers()
         {
-            return _directors.GetAllTeachers();
+            return _directors.GetAll();
         }
 
         public void Add(Teacher teacher)
         {
-            _directors.AddTeacher(teacher);
+            _directors.Add(teacher);
         }
 
         public void Update(Teacher teacher)
         {
-            _directors.UpdateTeacher(teacher);
+            _directors.Update(teacher);
         }
-        public void Update(Director director)
+        public void UpdateDirector(Director director)
         {
             _directors.UpdateDirector(director);
         }
         public void Delete(int teacherId)
         {
             Teacher teacher = GetById(teacherId);
-            var courses = _courseController.GetAllCourses();
 
             Update(_courseController.DeleteCoursesByTeacher(teacher));
             Update(_examTermController.DeleteExamTermsByTeacher(teacher));
 
-            _directors.RemoveTeacher(teacherId);
+            _directors.Remove(teacherId);
         }
 
         public List<Course> GetActiveCourses(Teacher teacher)
         {
             var activeCourses = new List<Course>();
             var courses = _courseController.GetAllCourses();
+
+            if (teacher.CoursesId == null)
+                return null;
 
             foreach (var course in courses)
             {
@@ -104,6 +109,11 @@ namespace LangLang.Controller
         {
             return _directors.GetAllTeachers(page, pageSize, sortCriteria, teachers);
         }
+        public List<Teacher> GetAllTeachers(int page, int pageSize, ISortStrategy sortStrategy, List<Teacher> teachers)
+        {
+            return _directors.GetAllTeachers(page, pageSize, sortStrategy, teachers);
+        }
+
 
         public Teacher? GetTeacherByCourse(int courseId)
         {
@@ -121,7 +131,7 @@ namespace LangLang.Controller
         {
             Director director = GetDirector();
             director.CoursesId.Remove(courseId);
-            Update(director);
+            UpdateDirector(director);
         }
 
         public Teacher? GetTeacherByExamTerm(int examTermId)

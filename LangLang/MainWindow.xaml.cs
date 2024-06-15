@@ -5,11 +5,7 @@ using LangLang.Controller;
 using LangLang.Domain.Model;
 using LangLang.View.Teacher;
 using LangLang.View.Student;
-using System.Diagnostics;
-using System.IO;
 using LangLang.Data;
-using LangLang.Domain.Model.Enums;
-using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,15 +30,7 @@ namespace LangLang
             examTermController = Injector.CreateInstance<ExamTermController>();
 
             SetPlaceholders();
-            /*
-            using (var dbContext = new AppDbContext())
-            {
-                DateTime specificDate = DateTime.ParseExact("2024-11-18", "yyyy-MM-dd", null).Date;
-                ExamTerm e = new ExamTerm(120, Domain.Model.Enums.Language.Spanish, LanguageLevel.B1, 1, specificDate, 150, 0);
-                examTermController.Add(e);
-                //dbContext.ExamTerms.Add(e);
-                //dbContext.SaveChanges();
-            }*/
+            
             //InitializeTeacherTable();
             //InitializeCourseTable();
             //InitializeExamTermTable();

@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using LangLang.Domain.Model.Enums;
 
 namespace LangLang.View.Teacher
 {
@@ -247,15 +248,11 @@ namespace LangLang.View.Teacher
                 {
                     courseController.IncrementCourseCurrentlyEnrolled(course.Id);
 
-                    MailToSend.Sender = teacher.Email;
-                    MailToSend.Receiver = student.Email;
-                    MailToSend.TypeOfMessage = Domain.Model.Enums.TypeOfMessage.AcceptEnterCourseRequestMessage;
-                    MailToSend.DateOfMessage = DateTime.Now;
-                    MailToSend.CourseId = course.Id;
-                    MailToSend.Message = "You have been accepted to course " + course.Language.ToString() + " " + course.Level.ToString();
-                    MailToSend.Answered = false;
+                    TypeOfMessage messageType = TypeOfMessage.TopStudentsMessage;
+                    var examTerm = new ExamTerm();
+                    examTerm.ExamID = -1;
 
-                    mailController.Send(MailToSend.ToMail());
+                    mailController.GenerateMail(teacher, student, course, examTerm, messageType);
                     selected.AddedToCourse = true;
 
                     AddCourseInfo();

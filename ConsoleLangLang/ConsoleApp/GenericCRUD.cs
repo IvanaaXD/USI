@@ -1,6 +1,4 @@
 ﻿using ConsoleLangLang.ConsoleApp.DTO;
-using LangLang.Domain.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,10 +7,9 @@ using System.Reflection;
 using LangLang.Domain.Model;
 using System.Reflection.Metadata.Ecma335;
 
+
 public class GenericCrud
 {
-    public delegate TOutput Converter<in TInput, out TOutput>(TInput input);
-
     public T Create<T>() where T : new()
     {
         T item = new T();
@@ -31,7 +28,7 @@ public class GenericCrud
 
                 if (value == null)
                     return default(T);
-                
+
                 prop.SetValue(item, value);
 
                 string validationError = validator.ValidateProperty(prop.Name);
@@ -136,7 +133,7 @@ public class GenericCrud
     {
         return typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string);
     }
-
+  
     private string GetFormatHint(Type type)
     {
         if (type == typeof(int))
@@ -144,7 +141,7 @@ public class GenericCrud
         else if (type == typeof(double))
             return " (e.g., 123.45)";
         else if (type == typeof(DateTime))
-            return " (e.g., 2023-01-01 12:00:00)";
+            return " (e.g., 2023-01-01)";
         else if (type == typeof(bool))
             return " (e.g., true or false)";
         else
@@ -161,28 +158,21 @@ public class GenericCrud
         {
             if (prop.CanWrite)
             {
-                Console.Write($"Enter new value for {prop.Name} ({prop.PropertyType}) or press Enter to keep the current value: ");
+                object currentValue = prop.GetValue(item);
+
+                Console.Write($"Enter new value for {prop.Name} ({prop.PropertyType}) or press Enter to keep the current value ({currentValue}): ");
                 string input = Console.ReadLine();
                 if (!string.IsNullOrEmpty(input))
                 {
                     object value = ConvertValue(input, prop.PropertyType);
                     prop.SetValue(item, value);
                 }
+                else
+                   prop.SetValue(item, currentValue);
             }
         }
         return item;
     }
-
-    /*    public void Delete(int index)
-        {
-            if (index < 0 || index >= dataStore.Count)
-            {
-                Console.WriteLine("Invalid index.");
-                return;
-            }
-            dataStore.RemoveAt(index);
-            Console.WriteLine("Item deleted.");
-        }*/
 
     public void PrintTable<T>(List<T> dataStore)
     {
@@ -203,10 +193,9 @@ public class GenericCrud
     {
         int[] columnWidths = new int[properties.Length];
 
-        // Calculate maximum widths of each column
         for (int i = 0; i < properties.Length; i++)
         {
-            columnWidths[i] = properties[i].Name.Length; // Start with the header length
+            columnWidths[i] = properties[i].Name.Length; 
 
             foreach (var item in dataStore)
             {
@@ -229,9 +218,8 @@ public class GenericCrud
     private void PrintHeader(PropertyInfo[] properties, int[] columnWidths)
     {
         for (int i = 0; i < properties.Length; i++)
-        {
             Console.Write(properties[i].Name.PadRight(columnWidths[i] + 2));
-        }
+
         Console.WriteLine();
     }
 
@@ -267,37 +255,21 @@ public class GenericCrud
             try
             {
                 if (type == typeof(int))
-                {
                     return int.Parse(input);
-                }
                 else if (type == typeof(float))
-                {
                     return float.Parse(input);
-                }
                 else if (type == typeof(double))
-                {
                     return double.Parse(input);
-                }
                 else if (type == typeof(bool))
-                {
                     return bool.Parse(input);
-                }
                 else if (type == typeof(DateTime))
-                {
                     return DateTime.Parse(input);
-                }
                 else if (type.IsEnum)
-                {
                     return Enum.Parse(type, input);
-                }
                 else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-                {
                     return ConvertListType(input, type);
-                }
                 else
-                {
                     return input;
-                }
             }
             catch(Exception e)
             {
@@ -309,16 +281,15 @@ public class GenericCrud
     private static object ConvertListType(string input, Type type)
     {
         if (string.IsNullOrEmpty(input)) 
-        {
             return null;
-        }
+
         Type itemType = type.GetGenericArguments()[0];
         string[] items = input.Split(',');
         var list = (IList)Activator.CreateInstance(type);
+
         foreach (string item in items)
-        {
             list.Add(ConvertValue(item.Trim(), itemType));
-        }
+
         return list;
     }
 }
