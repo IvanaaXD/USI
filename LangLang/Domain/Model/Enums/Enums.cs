@@ -36,11 +36,11 @@ namespace LangLang.Domain.Model.Enums
     public enum Language
     {
         English,
-        Spanish,
+        French,
         German,
         Japanese,
         Russian,
-        French,
+        Spanish, 
         NULL
     }
 

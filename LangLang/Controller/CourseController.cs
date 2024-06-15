@@ -6,6 +6,8 @@ using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.Controller
 {
@@ -45,7 +47,10 @@ namespace LangLang.Controller
         {
             return _courses.GetAll();
         }
-
+        public List<Course> GetAllCourses(int page, int pageSize, ISortStrategy courseSortStrategy, List<Course> courses)
+        {
+            return _courses.GetAllCourses(page, pageSize, courseSortStrategy, courses);
+        }
         public List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> courses)
         {
             return _courses.GetAllCourses(page, pageSize, sortCriteria, courses);

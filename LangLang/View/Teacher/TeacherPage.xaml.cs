@@ -46,6 +46,7 @@ namespace LangLang.View.Teacher
         private string courseSortCriteria;
 
         private ISortStrategy currentSortStrategy = new SortByDatetime();
+        private ISortStrategy courseSortStrategy = new SortByDatetime();
 
         public TeacherPage(int teacherId)
         {
@@ -397,7 +398,7 @@ namespace LangLang.View.Teacher
                 {
                     case "Language":
                         sortCriteria = "Language";
-                        currentSortStrategy = new SortByDatetime(); 
+                        currentSortStrategy = new SortByLanguage(); 
                         break;
                     case "Level":
                         sortCriteria = "Level";
@@ -446,8 +447,12 @@ namespace LangLang.View.Teacher
             {
                 TableViewModel.Courses.Clear();
                 var filteredCourses = GetFilteredCourses();
-                List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortCriteria, filteredCourses);
-                List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortCriteria, filteredCourses);
+                //List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortCriteria, filteredCourses);
+                //List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortCriteria, filteredCourses);
+                
+                List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortStrategy, filteredCourses);
+                List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortStrategy, filteredCourses);
+                
                 if (newCourses.Count == 0)
                     CourseNextButton.IsEnabled = false;
                 else
@@ -477,12 +482,15 @@ namespace LangLang.View.Teacher
                 {
                     case "Language":
                         courseSortCriteria = "Language";
+                        courseSortStrategy = new SortByLanguage();
                         break;
                     case "Level":
                         courseSortCriteria = "Level";
+                        courseSortStrategy = new SortByLevel();
                         break;
                     case "StartDate":
                         courseSortCriteria = "StartDate";
+                        courseSortStrategy = new SortByDatetime();
                         break;
                 }
                 UpdateCoursePagination();

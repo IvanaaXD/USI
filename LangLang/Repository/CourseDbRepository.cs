@@ -1,5 +1,6 @@
 ﻿using LangLang.Data;
 using LangLang.Domain.IRepository;
+using LangLang.Domain.IUtility;
 using LangLang.Domain.Model;
 using LangLang.Observer;
 using Microsoft.EntityFrameworkCore;
@@ -109,6 +110,13 @@ namespace LangLang.Repository
 
             return courses.ToList();
         }
+        public List<Course> GetAllCourses(int page, int pageSize, ISortStrategy sortStrategy, List<Course> coursesToPaginate)
+        {
+            IEnumerable<Course> courses = sortStrategy.Sort(coursesToPaginate);
+            courses = courses.Skip((page - 1) * pageSize).Take(pageSize);
+            return courses.ToList();
+        }
+
         public void Update()
         {
             throw new NotImplementedException();
