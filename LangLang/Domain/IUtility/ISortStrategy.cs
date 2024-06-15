@@ -6,5 +6,6 @@ namespace LangLang.Domain.IUtility
     public interface ISortStrategy
     {
         IEnumerable<ExamTerm> Sort(IEnumerable<ExamTerm> exams);
+        IEnumerable<Course> Sort(IEnumerable<Course> courses);
     }
 }
