@@ -10,21 +10,21 @@ namespace LangLang.Controller
 {
     public class ExamTermController
     {
-        //private readonly IExamTermRepository _exams;
-        private readonly IExamTermDbRepository _exams;
+        private readonly IExamTermRepository _exams;
+        //private readonly IExamTermDbRepository _exams;
         private readonly TeacherController teacherController;
-        private readonly IDirectorRepository _directorRepository;
+        private readonly IDirectorDbRepository _directorRepository;
 
-        public ExamTermController(IExamTermDbRepository exams, TeacherController teacherController)
+        public ExamTermController(IExamTermRepository exams, TeacherController teacherController)
         {
             _exams = exams ?? throw new ArgumentNullException(nameof(exams));
             this.teacherController = teacherController;
         }
         public ExamTermController()
         {
-            _exams = Injector.CreateInstance<IExamTermDbRepository>();
+            _exams = Injector.CreateInstance<IExamTermRepository>();
             this.teacherController = Injector.CreateInstance<TeacherController>();
-            _directorRepository = Injector.CreateInstance<IDirectorRepository>();   
+            _directorRepository = Injector.CreateInstance<IDirectorDbRepository>();   
         }
 
         public ExamTerm? GetById(int examId)
@@ -181,6 +181,9 @@ namespace LangLang.Controller
         {
             var examTerms = GetAllExamTerms();
             var teacherExamTerms = teacher.ExamsId;
+            if (teacherExamTerms == null)
+                return teacher;
+
 
             foreach (var examTerm in examTerms)
             {

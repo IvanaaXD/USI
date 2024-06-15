@@ -12,19 +12,19 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly ITeacherRepository _teachers;
-        private readonly ICourseDbRepository _courses;
+        private readonly ICourseRepository _courses;
         private readonly IStudentRepository _students;
-        private readonly IDirectorRepository _director;
-        private readonly IExamTermDbRepository _examTerms;
+        private readonly IDirectorDbRepository _director;
+        private readonly IExamTermRepository _examTerms;
         private readonly IPenaltyPointRepository _penaltyPoints;
 
         public TeacherController()
         {
             _teachers = Injector.CreateInstance<ITeacherRepository>();
-            _courses = Injector.CreateInstance<ICourseDbRepository>();
+            _courses = Injector.CreateInstance<ICourseRepository>();
             _students = Injector.CreateInstance<IStudentRepository>();
-            _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
-            _director = Injector.CreateInstance<IDirectorRepository>(); 
+            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _director = Injector.CreateInstance<IDirectorDbRepository>(); 
             _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
         }
         public Course? GetCourseById(int courseId)
@@ -51,17 +51,17 @@ namespace LangLang.Controller
             RemoveExamIdFromTeachers(id);
             RemoveExamIdFromStudents(id);
             
-            _examTerms.Delete(examTerm.ExamID);
+            _examTerms.Remove(examTerm.ExamID);
             return examTerm;
         }
         private void RemoveExamIdFromTeachers(int id)
         {
-            foreach (Teacher teacher in _director.GetAllTeachers())
+            foreach (Teacher teacher in _director.GetAll())
             {
                 if (teacher.ExamsId.Contains(id))
                 {
                     teacher.ExamsId.Remove(id);
-                    _director.UpdateTeacher(teacher);
+                    _director.Update(teacher);
                 }
             }
         }

@@ -95,7 +95,7 @@ namespace LangLang.Data
 
             modelBuilder.Entity<Course>()
                 .Property(t => t.StartDate)
-                .HasColumnType("date");
+                .HasColumnType("timestamp");
         }
         private static void OnExamTermModelCreating(ModelBuilder modelBuilder)
         {
@@ -117,7 +117,7 @@ namespace LangLang.Data
 
             modelBuilder.Entity<ExamTerm>()
                 .Property(t => t.ExamTime)
-                .HasColumnType("date");
+                .HasColumnType("timestamp");
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
