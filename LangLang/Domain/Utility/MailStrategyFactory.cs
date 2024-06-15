@@ -13,6 +13,8 @@ public static class MailStrategyFactory
             TypeOfMessage.PenaltyPointMessage => new PenaltyPointMailStrategy(),
             TypeOfMessage.DenyEnterCourseRequestMessage => new DenyEnterCourseStrategy(),
             TypeOfMessage.TeacherGradeStudentMessage => new TeacherGradeStudentStrategy(),
+            TypeOfMessage.AcceptEnterCourseRequestMessage => new AcceptEnterCourseStrategy(),
+            TypeOfMessage.StudentGradeMessage => new StudentGradeStrategy(),
             _ => throw new ArgumentException("Invalid email type")
         };
     }

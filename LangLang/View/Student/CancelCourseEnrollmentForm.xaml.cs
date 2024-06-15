@@ -22,7 +22,6 @@ namespace LangLang.View.Student
 
         MailDTO mailDTO { get; set; }
 
-        // Event handler to turn off drop out button functionality in student form when this window closes.
         public event EventHandler WindowClosed;
 
         public CancelCourseEnrollmentForm(int studentId, int courseId)
@@ -51,6 +50,7 @@ namespace LangLang.View.Student
                 Close();
             }
         }
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -63,11 +63,13 @@ namespace LangLang.View.Student
             
             mailDTO = new MailDTO(mailController.PrepareQuitCourseMail(student.Email,teacher.Email,courseId, -1));
         }
+
         private string GetCourseName(int courseId)
         {
             Course course = teacherController.GetCourseById(courseId);
             return course.Language.ToString() + " " + course.Level.ToString();
         }
+
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);

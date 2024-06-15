@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
+using LangLang.Domain.Model.Enums;
 
 namespace LangLang.View.Teacher
 {
@@ -320,18 +321,15 @@ namespace LangLang.View.Teacher
             var examTermStudents = GetAllStudentsForExamTerm(examTerm.ExamID);
             var director = _directorController.GetDirector();
 
+            var course = new Course();
+            course.Id = -1;
+
             foreach (Domain.Model.Student student in examTermStudents)
             {
-                MailToSend = new MailDTO();
-                MailToSend.Sender = director.Email;
-                MailToSend.Receiver = student.Email;
-                MailToSend.TypeOfMessage = Domain.Model.Enums.TypeOfMessage.StudentGradeMessage;
-                MailToSend.DateOfMessage = DateTime.Now;
-                MailToSend.CourseId = -1;
-                MailToSend.Message = GetMailMessage(student);
-                MailToSend.Answered = false;
+                TypeOfMessage messageType = TypeOfMessage.StudentGradeMessage;
 
-                _mailController.Send(MailToSend.ToMail());
+                var examTermGrade = _examTermGradeController.GetExamTermGradeByStudentExam(student.Id, examTerm.ExamID);
+                _mailController.GenerateMail(examTermGrade, director, student, course, examTerm, messageType);
             }
 
             Update();

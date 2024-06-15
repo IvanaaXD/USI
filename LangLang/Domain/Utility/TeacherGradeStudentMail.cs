@@ -28,5 +28,15 @@ namespace LangLang.Domain.Utility
         {
             throw new NotImplementedException();
         }
+
+        public string GenerateMailMessage(Course course)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GenerateMailMessage(ExamTermGrade examTermGrade, ExamTerm examTerm)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -5,8 +5,13 @@ using System;
 
 namespace LangLang.Domain.Utility
 {
-    public class DenyEnterCourseStrategy : IMailStrategy
+    public class AcceptEnterCourseStrategy : IMailStrategy
     {
+        public string GenerateMailMessage(Course course)
+        {
+            return $"You have been accepted to course {course.Language.ToString()} {course.Level.ToString()}";
+        }
+
         public string GenerateMailMessage(Student student, Course course, Director director)
         {
             throw new NotImplementedException();
@@ -19,16 +24,10 @@ namespace LangLang.Domain.Utility
 
         public string GenerateMailMessage(string rejectReason, Student student, Course course, Teacher teacher)
         {
-            return $"You have been rejected from course {course.Language.ToString()}" +
-                   $" {course.Level.ToString()}. Reason: {rejectReason}";
-        }
-
-        public string GenerateMailMessage(CourseGradeDTO studentCourseGrade, Course course)
-        {
             throw new NotImplementedException();
         }
 
-        public string GenerateMailMessage(Course course)
+        public string GenerateMailMessage(CourseGradeDTO studentCourseGrade, Course course)
         {
             throw new NotImplementedException();
         }
@@ -39,3 +38,4 @@ namespace LangLang.Domain.Utility
         }
     }
 }
+
