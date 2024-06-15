@@ -10,14 +10,16 @@ namespace LangLang.Controller
 {
     public class DirectorController
     {
-        private readonly IDirectorDbRepository _directors;
+        private readonly IDirectorDbRepository _directorsss;
+        private readonly IDirectorRepository _directors;
         private readonly ITeacherRepository? _teachers;
         private readonly IStudentGradeRepository? _studentGrades;
         private readonly CourseController? _courseController;
         private readonly ExamTermController? _examTermController;
         public DirectorController()
         {
-            _directors = Injector.CreateInstance<IDirectorDbRepository>();
+            _directorsss = Injector.CreateInstance<IDirectorDbRepository>();
+            _directors = Injector.CreateInstance<IDirectorRepository>();
             _teachers = Injector.CreateInstance<ITeacherRepository>();
             _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
             _examTermController = Injector.CreateInstance<ExamTermController>();
@@ -48,9 +50,9 @@ namespace LangLang.Controller
         {
             _directors.Update(teacher);
         }
-        public void Update(Director director)
+        public void UpdateDirector(Director director)
         {
-            _directors.Update(director);
+            _directors.UpdateDirector(director);
         }
         public void Delete(int teacherId)
         {
@@ -123,7 +125,7 @@ namespace LangLang.Controller
         {
             Director director = GetDirector();
             director.CoursesId.Remove(courseId);
-            Update(director);
+            UpdateDirector(director);
         }
 
         public Teacher? GetTeacherByExamTerm(int examTermId)

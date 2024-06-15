@@ -53,9 +53,7 @@ public class MainConsole
                 TeacherConsole.Display(currentUserEmail);
         }
         else
-        {
             Console.WriteLine("Invalid username or password. Please try again.");
-        }
 
         return true;
     }

@@ -36,7 +36,7 @@ namespace LangLang.Repository
             if (_teachers.Count == 0) return 0;
             return _teachers.Last().Id + 1;
         }
-        public Director? Update(Director? director)
+        public Director? UpdateDirector(Director? director)
         {
             Director? oldDirector = GetDirector();
             if (oldDirector == null) return null;

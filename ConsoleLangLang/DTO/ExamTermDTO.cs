@@ -101,8 +101,6 @@ namespace ConsoleLangLang.DTO
             return true;
         }
 
-        public string Error => null;
-
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
 
         public string ValidateProperty(string propertyName)

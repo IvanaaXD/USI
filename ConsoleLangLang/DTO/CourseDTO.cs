@@ -195,17 +195,21 @@ namespace ConsoleLangLang.ConsoleApp.DTO
             CurrentlyEnrolled = course.CurrentlyEnrolled;
             MaxEnrolledStudents = course.MaxEnrolledStudents.ToString();
         }*/
-        public void ToDTO(Course course)
+        public CourseDTO ToDTO(Course course)
         {
-            Language = course.Language;
-            LanguageLevel = course.Level;
-            Duration = course.Duration.ToString();
+            return new CourseDTO
+            {
+                Id = course.Id,
+                Language = course.Language,
+                LanguageLevel = course.Level,
+                Duration = course.Duration.ToString(),
 
-            WorkDays = course.WorkDays;
-            StartDate = course.StartDate;
-            IsOnline = course.IsOnline;
-            CurrentlyEnrolled = course.CurrentlyEnrolled;
-            MaxEnrolledStudents = course.MaxEnrolledStudents.ToString();
+                WorkDays = course.WorkDays,
+                StartDate = course.StartDate,
+                IsOnline = course.IsOnline,
+                CurrentlyEnrolled = course.CurrentlyEnrolled,
+                MaxEnrolledStudents = course.MaxEnrolledStudents.ToString()
+            };
         }
 
     }

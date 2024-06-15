@@ -16,6 +16,7 @@ public class CRUDConsole
     {
         while (true)
         {
+            Console.Clear();
             Console.WriteLine("Choose an entity type:");
 
             if (person.GetType() == typeof(Director))
@@ -60,9 +61,10 @@ public class CRUDConsole
 
         while (true)
         {
-            Console.WriteLine("Choose an operation: Create (c), Read (r), Exit (x)");
-            if (!isDirector)
-                Console.WriteLine("Update (u), Delete (d)");
+            Console.Clear();
+            Console.WriteLine("Choose an operation: \nExit (x) \nCreate (c) \nRead (r) ");
+            if (!isDirector || (isDirector && isTeacher))
+                Console.WriteLine("Update (u) \nDelete (d)");
 
             string operation = Console.ReadLine().ToLower();
 
@@ -72,17 +74,17 @@ public class CRUDConsole
                     CreateObject<TDto>(crud, person);
                     break;
                 case "r":
-                    ReadItem<TDto>(crud, person);
+                    ReadObject<TDto>(crud, person);
                     break;
                 case "u":
                     if (!isDirector|| (isDirector && isTeacher))
-                        UpdateItem<TDto>(crud, person);
+                        UpdateObject<TDto>(crud, person);
                     else
                         Console.WriteLine("Update operation is not allowed for Directors.");
                     break;
                 case "d":
                     if (!isDirector || (isDirector && isTeacher))
-                        DeleteItem<TDto>(crud, person);
+                        DeleteObject<TDto>(crud, person);
                     else
                         Console.WriteLine("Delete operation is not allowed for Directors.");
                     break;
@@ -141,6 +143,8 @@ public class CRUDConsole
 
     public static void CreateObject<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
+        Console.Clear();
+
         TDto newItem = crud.Create<TDto>();
         if (newItem == null)
             return;
@@ -160,15 +164,21 @@ public class CRUDConsole
             Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
     }
 
-    private static void ReadItem<TDto>(GenericCrud crud, Person person) where TDto : new()
+    private static void ReadObject<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
+        Console.Clear();
+
         var modelToRead = GetById<TDto>();
         TDto newItem = ToDTO<TDto>(modelToRead);
         crud.Read(newItem);
+
+        Console.ReadLine();
     }
 
-    private static void UpdateItem<TDto>(GenericCrud crud, Person person) where TDto : new()
+    private static void UpdateObject<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
+        Console.Clear();
+
         var modelToRead = GetById<TDto>();
         TDto updatedItem = ToDTO<TDto>(modelToRead);
         TDto updated = crud.Update(updatedItem);
@@ -181,14 +191,15 @@ public class CRUDConsole
         {
             var modelItem = ToModel(updated);
             updateMethod.Invoke(controller, new object[] { modelItem });
-            AddCheckType(updated, person);
         }
         else
             Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
     }
 
-    private static void DeleteItem<TDto>(GenericCrud crud, Person person) where TDto : new()
+    private static void DeleteObject<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
+        Console.Clear();
+
         var modelToRead = GetById<TDto>();
         TDto deletedItem = ToDTO<TDto>(modelToRead);
 

@@ -28,7 +28,7 @@ namespace LangLang.Controller
             _students = Injector.CreateInstance<IStudentRepository>();
             //_examTerms = Injector.CreateInstance<IExamTermRepository>();
             _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
-            _director = Injector.CreateInstance<IDirectorDbRepository>(); 
+            _director = Injector.CreateInstance<IDirectorDbRepository>();
             _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
         }
         public Course? GetCourseById(int courseId)
@@ -95,7 +95,7 @@ namespace LangLang.Controller
             foreach (int courseId in allTeacherCourses)
             {
                 Course? course = _courses.GetById(courseId);
-                if (course!=null)
+                if (course != null)
                     availableCourses.Add(course);
             }
             return availableCourses;
@@ -122,7 +122,7 @@ namespace LangLang.Controller
 
             return !overlappingExams.Any();
         }
-        
+
         public void Subscribe(IObserver observer)
         {
             _teachers.Subscribe(observer);

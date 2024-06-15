@@ -13,7 +13,7 @@ namespace LangLang.Controller
         //private readonly IExamTermRepository _exams;
         private readonly IExamTermDbRepository _exams;
         private readonly TeacherController teacherController;
-        private readonly IDirectorDbRepository _directorRepository;
+        private readonly IDirectorRepository _directorRepository;
 
         public ExamTermController(IExamTermDbRepository exams, TeacherController teacherController)
         {
@@ -24,7 +24,7 @@ namespace LangLang.Controller
         {
             _exams = Injector.CreateInstance<IExamTermDbRepository>();
             this.teacherController = Injector.CreateInstance<TeacherController>();
-            _directorRepository = Injector.CreateInstance<IDirectorDbRepository>();   
+            _directorRepository = Injector.CreateInstance<IDirectorRepository>();   
         }
 
         public ExamTerm? GetById(int examId)
