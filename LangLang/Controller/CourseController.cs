@@ -12,10 +12,13 @@ namespace LangLang.Controller
     public class CourseController
     {
         private readonly IStudentRepository _students;
-        private readonly ICourseRepository _courses;
+        //private readonly ICourseRepository _courses;
         private readonly TeacherController _teacherController;
-        private readonly IExamTermRepository _examTerms;
+        //private readonly IExamTermRepository _examTerms;
         private readonly IDirectorDbRepository _director;
+
+        private readonly IExamTermDbRepository _examTerms;
+        private readonly ICourseDbRepository _courses;
 
         private readonly int courseDurationInMinutes = 90;
         private readonly int examDurationInMinutes = 240; 
@@ -23,10 +26,14 @@ namespace LangLang.Controller
         public CourseController()
         {
             _students = Injector.CreateInstance<IStudentRepository>();
-            _courses = Injector.CreateInstance<ICourseRepository>();
+           // _courses = Injector.CreateInstance<ICourseRepository>();
             _teacherController = Injector.CreateInstance<TeacherController>();
-            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+           // _examTerms = Injector.CreateInstance<IExamTermRepository>();
             _director = Injector.CreateInstance<IDirectorDbRepository>();
+
+            _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
+            _courses= Injector.CreateInstance<ICourseDbRepository>();
+
         }
 
         public Course? GetById(int courseId)
@@ -244,7 +251,8 @@ namespace LangLang.Controller
 
         public void Delete(int courseId)
         {
-            _courses.Remove(courseId);
+            //_courses.Remove(courseId);
+            _courses.Delete(courseId);
             RemoveCourseFromRequests(courseId);
         }
 

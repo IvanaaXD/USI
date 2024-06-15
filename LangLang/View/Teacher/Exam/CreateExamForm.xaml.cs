@@ -65,8 +65,16 @@ namespace LangLang.View.Teacher
             this.teacherId = teacherId;
             DataContext = this;
 
-            FillLanguageAndLevelCombobox();
+            //FillLanguageAndLevelCombobox();
+            //CreatedExamTerm.ExamDate = DateTime.Now;
+            //CreatedExamTerm.ExamTime = "10:00";
+            //CreatedExamTerm.MaxStudents = 80;
 
+            SetInitialValues(CreatedExamTerm);
+        }
+        void SetInitialValues(ExamTermDTO CreatedExamTerm)
+        {
+            FillLanguageAndLevelCombobox();
             CreatedExamTerm.ExamDate = DateTime.Now;
             CreatedExamTerm.ExamTime = "10:00";
             CreatedExamTerm.MaxStudents = 80;
@@ -235,12 +243,11 @@ namespace LangLang.View.Teacher
                     directorController.Update(director);
                     Close();
                 }
+                Close();
 
             }
             else
-            {
                 MessageBox.Show("Exam cannot be created. Not all fields are valid.");
-            }
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {

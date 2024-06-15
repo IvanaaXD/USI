@@ -12,18 +12,22 @@ namespace LangLang.Controller
     public class TeacherController
     {
         private readonly ITeacherRepository _teachers;
-        private readonly ICourseRepository _courses;
+        //private readonly ICourseRepository _courses;
+        private readonly ICourseDbRepository _courses;
         private readonly IStudentRepository _students;
         private readonly IDirectorDbRepository _director;
-        private readonly IExamTermRepository _examTerms;
+        //private readonly IExamTermRepository _examTerms;
+        private readonly IExamTermDbRepository _examTerms;
         private readonly IPenaltyPointRepository _penaltyPoints;
 
         public TeacherController()
         {
             _teachers = Injector.CreateInstance<ITeacherRepository>();
-            _courses = Injector.CreateInstance<ICourseRepository>();
+            //_courses = Injector.CreateInstance<ICourseRepository>();
+            _courses = Injector.CreateInstance<ICourseDbRepository>();
             _students = Injector.CreateInstance<IStudentRepository>();
-            _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            //_examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
             _director = Injector.CreateInstance<IDirectorDbRepository>(); 
             _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
         }
@@ -50,8 +54,9 @@ namespace LangLang.Controller
             if (examTerm == null) return null;
             RemoveExamIdFromTeachers(id);
             RemoveExamIdFromStudents(id);
-            
-            _examTerms.Remove(examTerm.ExamID);
+
+            // _examTerms.Remove(examTerm.ExamID);
+            _examTerms.Remove(examTerm);
             return examTerm;
         }
         private void RemoveExamIdFromTeachers(int id)
