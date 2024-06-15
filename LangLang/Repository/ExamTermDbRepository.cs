@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using LangLang.Observer;
 using System;
 using System.Linq;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.Repository
 {
@@ -76,7 +77,7 @@ namespace LangLang.Repository
                 NotifyObservers();
             }
         }
-
+        
         public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> examsToPaginate)
         {
             IEnumerable<ExamTerm> exams = examsToPaginate;
@@ -93,6 +94,13 @@ namespace LangLang.Repository
                     exams = examsToPaginate.OrderBy(x => x.Level);
                     break;
             }
+            exams = exams.Skip((page - 1) * pageSize).Take(pageSize);
+            return exams.ToList();
+        }
+        
+        public List<ExamTerm> GetAllExamTermsTest(int page, int pageSize, ISortStrategy sortStrategy, List<ExamTerm> examsToPaginate)
+        {
+            IEnumerable<ExamTerm> exams = sortStrategy.Sort(examsToPaginate);
             exams = exams.Skip((page - 1) * pageSize).Take(pageSize);
             return exams.ToList();
         }
