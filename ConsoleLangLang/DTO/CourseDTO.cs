@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace ConsoleLangLang.ConsoleApp.DTO
         public string MaxEnrolledStudents { get; set; }
 
         private readonly CourseController _courseController;
-        private LangLang.Domain.Model.Teacher teacher;
+        private Teacher teacher;
 
         /*public CourseDTO(Teacher teacher)
         {
@@ -61,14 +62,6 @@ namespace ConsoleLangLang.ConsoleApp.DTO
             }
         }*/
 
-        public List<DayOfWeek> DayOfWeekValues
-        {
-            get
-            {
-                var days = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList();
-                return days;
-            }
-        }
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
 
         public string ValidateProperty(string propertyName)
@@ -157,46 +150,32 @@ namespace ConsoleLangLang.ConsoleApp.DTO
         {
             if (Duration == null)
                 return new Course();
-            string startTimes = StartDate.ToString().Split(" ")[1];
-            TimeSpan timeSpan = TimeSpan.Parse(startTimes);
-
+            TimeSpan timeSpan = TimeSpan.Parse(StartTime);
             DateTime combinedDateTime = StartDate.Date + timeSpan;
-            /*TimeSpan timeSpan = TimeSpan.Parse(startTime);
-            DateTime combinedDateTime = startDate.Date + timeSpan;*/
 
             if (IsOnline)
-            {
                 MaxEnrolledStudents = "0";
-            }
 
             return new Course
             {
+                Id = this.Id,
                 Language = this.Language,
                 Level = this.LanguageLevel,
                 Duration = int.Parse(this.Duration),
                 WorkDays = this.WorkDays,
                 StartDate = combinedDateTime,
                 IsOnline = this.IsOnline,
-                //CurrentlyEnrolled = this.CurrentlyEnrolled,
+                CurrentlyEnrolled = 0,
                 MaxEnrolledStudents = int.Parse(this.MaxEnrolledStudents)
             };
         }
 
-/*        public CourseDTO(Course course)
-        {
-            Id = course.Id;
-            Language = course.Language;
-            LanguageLevel = course.Level;
-            Duration = course.Duration.ToString();
-
-            WorkDays = course.WorkDays;
-            StartDate = course.StartDate;
-            IsOnline = course.IsOnline;
-            CurrentlyEnrolled = course.CurrentlyEnrolled;
-            MaxEnrolledStudents = course.MaxEnrolledStudents.ToString();
-        }*/
         public CourseDTO ToDTO(Course course)
         {
+            string startTime = course.StartDate.ToString().Split(" ")[1];
+            string startDate = course.StartDate.ToString().Split(" ")[0];
+            DateTime date = DateTime.Parse(startDate);
+
             return new CourseDTO
             {
                 Id = course.Id,
@@ -205,7 +184,8 @@ namespace ConsoleLangLang.ConsoleApp.DTO
                 Duration = course.Duration.ToString(),
 
                 WorkDays = course.WorkDays,
-                StartDate = course.StartDate,
+                StartDate = date,
+                StartTime = startTime,
                 IsOnline = course.IsOnline,
                 CurrentlyEnrolled = course.CurrentlyEnrolled,
                 MaxEnrolledStudents = course.MaxEnrolledStudents.ToString()

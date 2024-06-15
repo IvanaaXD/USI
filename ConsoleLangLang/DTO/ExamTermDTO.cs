@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace ConsoleLangLang.DTO
 {
@@ -64,7 +65,7 @@ namespace ConsoleLangLang.DTO
             set { SetProperty(ref maxStudents, value); }
         }
 
-        public int CurrentlyAttending
+        private int CurrentlyAttending
         {
             get { return currentlyAttending; }
             set { SetProperty(ref currentlyAttending, value); }
@@ -149,15 +150,14 @@ namespace ConsoleLangLang.DTO
 
             ExamTerm exam = new ExamTerm
             {
-                ExamID = 0,
+                ExamID = this.examID,
                 ExamTime = combinedDateTime,
                 MaxStudents = MaxStudents,
                 CurrentlyAttending = CurrentlyAttending,
                 Confirmed = false,
                 Informed = false
             };
-            //if (!_examTermController.ValidateExamTimeslot(exam, this.teacher))
-               // return "Cannot create exam term due to time overlap.";
+
             return null;
         }
 
@@ -174,7 +174,7 @@ namespace ConsoleLangLang.DTO
                 ExamID = this.examID,
                 ExamTime = combinedDateTime,
                 MaxStudents = MaxStudents,
-                CurrentlyAttending = CurrentlyAttending,
+                CurrentlyAttending = 0,
                 Language = Language,
                 Level = Level,
                 Confirmed = false,
@@ -184,13 +184,17 @@ namespace ConsoleLangLang.DTO
 
         public ExamTermDTO ToDTO(ExamTerm examTerm)
         {
+            string startTime = examTerm.ExamTime.ToString().Split(" ")[1];
+            string startDate = examTerm.ExamTime.ToString().Split(" ")[0];
+            DateTime date = DateTime.Parse(startDate);
+
             return new ExamTermDTO
             {
                 examID = examTerm.ExamID,
                 language = examTerm.Language,
                 level = examTerm.Level,
-                examDate = examTerm.ExamTime.Date,
-                examTime = examTerm.ExamTime.ToString("HH:mm"),
+                examDate = date,
+                examTime = startTime,
                 maxStudents = examTerm.MaxStudents,
                 currentlyAttending = examTerm.CurrentlyAttending,
                 confirmed = examTerm.Confirmed,

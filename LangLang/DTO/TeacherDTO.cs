@@ -45,7 +45,8 @@ namespace LangLang.DTO
                     if (language.Equals(Language.NULL))
                     {
                         continue;
-                    } else
+                    } 
+                    else
                     {
                         foreach (var level in levs)
                         {

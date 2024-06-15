@@ -21,12 +21,14 @@ namespace LangLang.Repository
             int maxId = _context.ExamTerms.Any() ? _context.ExamTerms.Max(e => e.ExamID) : 0;
             return maxId + 1;
         }
-        public void Add(ExamTerm examTerm)
+        public ExamTerm Add(ExamTerm examTerm)
         {
             examTerm.ExamID = GenerateExamId();
             _context.ExamTerms.Add(examTerm);
             _context.SaveChanges();
             NotifyObservers();
+
+            return examTerm;
         }
 
         public ExamTerm GetById(int id)
