@@ -1,5 +1,6 @@
 ﻿using LangLang.Controller;
 using LangLang.Domain.Model;
+using LangLang.Domain.Model.Enums;
 using LangLang.DTO;
 using System;
 using System.ComponentModel;
@@ -35,7 +36,7 @@ namespace LangLang.View.Teacher
         private CourseGradeController courseGradeController;
         private MailController mailController;
 
-        public GradeStudentCourseForm(Domain.Model.Course course, Domain.Model.Teacher teacher, Domain.Model.Student student)
+        public GradeStudentCourseForm(Course course, Domain.Model.Teacher teacher, Domain.Model.Student student)
         {
             InitializeComponent();
             DataContext = this;
@@ -69,13 +70,11 @@ namespace LangLang.View.Teacher
         {
             if (!string.IsNullOrWhiteSpace(activityValueTextBox.Text) && !string.IsNullOrWhiteSpace(knowledgeValueTextBox.Text))
             {
-                string messageBody = "Your final grade from course " + course.Language.ToString() + " " + course.Level.ToString() + " is " + StudentCourseGrade.StudentActivityValue.ToString() +
-                " for your activity on course, and " + StudentCourseGrade.StudentKnowledgeValue.ToString() + " for knowledge shown during course.";
-
+                TypeOfMessage messageType = TypeOfMessage.TeacherGradeStudentMessage;
                 var examTerm = new ExamTerm();
                 examTerm.ExamID = -1;
 
-                mailController.ConstructMail(teacher, student, course, examTerm, Domain.Model.Enums.TypeOfMessage.TeacherGradeStudentMessage, messageBody);
+                mailController.GenerateMail(StudentCourseGrade, teacher, student, course, examTerm, messageType);
                 courseGradeController.AddGrade(StudentCourseGrade.ToCourseGrade());
                 studentController.CompleteCourse(student, course);
 

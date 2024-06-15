@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using LangLang.Domain.Model.Enums;
 using System;
 using LangLang.Domain.IRepository;
+using LangLang.Domain.IUtility;
+using System.IO;
+using LangLang.DTO;
 
 namespace LangLang.Controller
 {
@@ -19,11 +22,6 @@ namespace LangLang.Controller
         public void Send(Mail mail)
         {
             _mails.AddMail(mail);
-        }
-
-        public void Delete(int mailId)
-        {
-            _mails.RemoveMail(mailId);
         }
 
         public void Update(Mail mail)
@@ -50,6 +48,38 @@ namespace LangLang.Controller
         {
             mail.Answered = true;
             Update(mail);
+        }
+
+        public void GenerateMail(Director sender, Student receiver, Course course, ExamTerm examTerm, TypeOfMessage messageType)
+        {
+            IMailStrategy mailStrategy = MailStrategyFactory.GetStrategy(messageType);
+            MailMessageGenerator context = new MailMessageGenerator(mailStrategy);
+            string emailBody = context.GenerateMailMessage(receiver, course, sender);
+            ConstructMail(sender, receiver, course, examTerm, messageType, emailBody);
+        }
+
+        public void GenerateMail(int messageId, Teacher sender, Student receiver, Course course, ExamTerm examTerm, TypeOfMessage messageType)
+        {
+            IMailStrategy mailStrategy = MailStrategyFactory.GetStrategy(messageType);
+            MailMessageGenerator context = new MailMessageGenerator(mailStrategy);
+            string emailBody = context.GenerateMailMessage(messageId, receiver, course, sender);
+            ConstructMail(sender, receiver, course, examTerm, messageType, emailBody);
+        }
+
+        public void GenerateMail(string rejectReason, Teacher sender, Student receiver, Course course, ExamTerm examTerm, TypeOfMessage messageType)
+        {
+            IMailStrategy mailStrategy = MailStrategyFactory.GetStrategy(messageType);
+            MailMessageGenerator context = new MailMessageGenerator(mailStrategy);
+            string emailBody = context.GenerateMailMessage(rejectReason, receiver, course, sender);
+            ConstructMail(sender, receiver, course, examTerm, messageType, emailBody);
+        }
+
+        public void GenerateMail(CourseGradeDTO studentCourseGrade, Teacher sender, Student receiver, Course course, ExamTerm examTerm, TypeOfMessage messageType)
+        {
+            IMailStrategy mailStrategy = MailStrategyFactory.GetStrategy(messageType);
+            MailMessageGenerator context = new MailMessageGenerator(mailStrategy);
+            string emailBody = context.GenerateMailMessage(studentCourseGrade, course);
+            ConstructMail(sender, receiver, course, examTerm, messageType, emailBody);
         }
 
         public void ConstructMail(Person sender, Person receiver, Course course, ExamTerm examTerm, TypeOfMessage type, string body)
