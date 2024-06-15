@@ -8,14 +8,12 @@ using System.Linq;
 
 namespace LangLang.Repository
 {
-    public class ExamTermDbRepository : IExamTermDbRepository
+    public class ExamTermDbRepository : Subject, IExamTermDbRepository
     {
         private readonly AppDbContext _context;
-        private readonly Subject _subject;
         public ExamTermDbRepository(AppDbContext context)
         {
             _context = context;
-            _subject = new Subject();
         }
         private int GenerateExamId()
         {
@@ -27,7 +25,7 @@ namespace LangLang.Repository
             examTerm.ExamID = GenerateExamId();
             _context.ExamTerms.Add(examTerm);
             _context.SaveChanges();
-            _subject.NotifyObservers();
+            NotifyObservers();
         }
 
         public ExamTerm GetById(int id)
@@ -48,27 +46,26 @@ namespace LangLang.Repository
         {
             _context.ExamTerms.Remove(examTerm);
             _context.SaveChanges();
-            _subject.NotifyObservers();
+            NotifyObservers();
         }
-        public void Update(ExamTerm examTerm)
+        public ExamTerm Update(ExamTerm examTerm)
         {
-            var existingExamTerm = _context.ExamTerms.Find(examTerm.ExamID);
-            if (existingExamTerm == null)
+            ExamTerm? oldExamTerm = GetById(examTerm.ExamID);
+            if (oldExamTerm == null)
             {
                 throw new KeyNotFoundException($"ExamTerm with ID {examTerm.ExamID} not found.");
             }
-            existingExamTerm.ExamTime = examTerm.ExamTime;
-            existingExamTerm.MaxStudents = examTerm.MaxStudents;
-            existingExamTerm.Language = examTerm.Language;
-            existingExamTerm.Level = examTerm.Level;
-            existingExamTerm.Confirmed = examTerm.Confirmed;
-            existingExamTerm.CurrentlyAttending = examTerm.CurrentlyAttending;
+            oldExamTerm.ExamTime = examTerm.ExamTime;
+            oldExamTerm.MaxStudents = examTerm.MaxStudents;
+            oldExamTerm.Language = examTerm.Language;
+            oldExamTerm.Level = examTerm.Level;
+            oldExamTerm.Confirmed = examTerm.Confirmed;
+            oldExamTerm.CurrentlyAttending = examTerm.CurrentlyAttending;
 
             _context.SaveChanges();
-            _subject.NotifyObservers();
+            NotifyObservers();
+            return oldExamTerm;
         }
-
-
         public void Delete(int id)
         {
             var examTerm = GetById(id);
@@ -76,7 +73,7 @@ namespace LangLang.Repository
             {
                 _context.ExamTerms.Remove(examTerm);
                 _context.SaveChanges();
-                _subject.NotifyObservers();
+                NotifyObservers();
             }
         }
 
@@ -102,10 +99,6 @@ namespace LangLang.Repository
         public void Update()
         {
             throw new NotImplementedException();
-        }
-        public void Subscribe(IObserver observer)
-        {
-
         }
     }
 }
