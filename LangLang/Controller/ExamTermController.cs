@@ -10,19 +10,19 @@ namespace LangLang.Controller
 {
     public class ExamTermController
     {
-        private readonly IExamTermRepository _exams;
-        //private readonly IExamTermDbRepository _exams;
+        //private readonly IExamTermRepository _exams;
+        private readonly IExamTermDbRepository _exams;
         private readonly TeacherController teacherController;
         private readonly IDirectorDbRepository _directorRepository;
 
-        public ExamTermController(IExamTermRepository exams, TeacherController teacherController)
+        public ExamTermController(IExamTermDbRepository exams, TeacherController teacherController)
         {
             _exams = exams ?? throw new ArgumentNullException(nameof(exams));
             this.teacherController = teacherController;
         }
         public ExamTermController()
         {
-            _exams = Injector.CreateInstance<IExamTermRepository>();
+            _exams = Injector.CreateInstance<IExamTermDbRepository>();
             this.teacherController = Injector.CreateInstance<TeacherController>();
             _directorRepository = Injector.CreateInstance<IDirectorDbRepository>();   
         }
