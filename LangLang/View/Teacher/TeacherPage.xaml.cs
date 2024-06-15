@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using LangLang.Domain.IUtility;
+using LangLang.Domain.Utility;
 
 namespace LangLang.View.Teacher
 {
@@ -42,6 +44,9 @@ namespace LangLang.View.Teacher
         private int currentCoursePage = 1;
         private string sortCriteria;
         private string courseSortCriteria;
+
+        private ISortStrategy currentSortStrategy = new SortByDatetime();
+
         public TeacherPage(int teacherId)
         {
             InitializeComponent();
@@ -360,8 +365,10 @@ namespace LangLang.View.Teacher
             {
                 TableViewModel.ExamTerms.Clear();
                 var examTerms = GetFilteredExamTerms();
-                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, sortCriteria, examTerms);
-                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, sortCriteria, examTerms);
+                //List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, sortCriteria, examTerms);
+                //List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, sortCriteria, examTerms);
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, currentSortStrategy, examTerms);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, currentSortStrategy, examTerms);
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
                 else NextButton.IsEnabled = true;   
@@ -390,12 +397,15 @@ namespace LangLang.View.Teacher
                 {
                     case "Language":
                         sortCriteria = "Language";
+                        currentSortStrategy = new SortByDatetime(); 
                         break;
                     case "Level":
                         sortCriteria = "Level";
+                        currentSortStrategy = new SortByLevel();
                         break;
                     case "Datetime":
                         sortCriteria = "Datetime";
+                        currentSortStrategy = new SortByDatetime();
                         break;
                 }
                 UpdateExamPagination();

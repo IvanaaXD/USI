@@ -98,7 +98,7 @@ namespace LangLang.Repository
             return exams.ToList();
         }
         
-        public List<ExamTerm> GetAllExamTermsTest(int page, int pageSize, ISortStrategy sortStrategy, List<ExamTerm> examsToPaginate)
+        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, ISortStrategy sortStrategy, List<ExamTerm> examsToPaginate)
         {
             IEnumerable<ExamTerm> exams = sortStrategy.Sort(examsToPaginate);
             exams = exams.Skip((page - 1) * pageSize).Take(pageSize);

@@ -1,4 +1,5 @@
-﻿using LangLang.Domain.Model;
+﻿using LangLang.Domain.IUtility;
+using LangLang.Domain.Model;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace LangLang.Domain.IRepository
         List<ExamTerm> GetAll();
         ExamTerm GetById(int id);
         List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> exams);
+        List<ExamTerm> GetAllExamTerms(int page, int pageSize, ISortStrategy sortStrategy, List<ExamTerm> exams);
         void Add(ExamTerm examTerm);
         ExamTerm Update(ExamTerm examTerm);
         void Remove(ExamTerm examTerm);

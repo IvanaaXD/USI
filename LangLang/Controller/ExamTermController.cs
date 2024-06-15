@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using LangLang.Domain.IRepository;
 using System.Linq;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.Controller
 {
@@ -38,6 +39,10 @@ namespace LangLang.Controller
         public List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> exams)
         {
             return _exams.GetAllExamTerms(page, pageSize, sortCriteria, exams);
+        }
+        public List<ExamTerm> GetAllExamTerms(int page, int pageSize, ISortStrategy sortStrategy, List<ExamTerm> exams)
+        {
+            return _exams.GetAllExamTerms(page, pageSize, sortStrategy, exams);
         }
         public void Add(ExamTerm examTerm)
         {
