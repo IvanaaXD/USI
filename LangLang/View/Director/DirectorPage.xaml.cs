@@ -231,7 +231,7 @@ namespace LangLang.View.Director
                 int id = SelectedTeacher.Id;
                 var activeCoursesWithoutTeacher = _directorController.GetActiveCourses(SelectedTeacher.ToTeacher());
 
-                if (activeCoursesWithoutTeacher.Count > 0)
+                if (activeCoursesWithoutTeacher!=null)
                 {
                     foreach (var course in activeCoursesWithoutTeacher)
                     {

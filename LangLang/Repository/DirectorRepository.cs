@@ -36,7 +36,7 @@ namespace LangLang.Repository
             if (_teachers.Count == 0) return 0;
             return _teachers.Last().Id + 1;
         }
-        public Director? UpdateDirector(Director? director)
+        public Director? Update(Director? director)
         {
             Director? oldDirector = GetDirector();
             if (oldDirector == null) return null;
@@ -56,7 +56,7 @@ namespace LangLang.Repository
             NotifyObservers();
             return oldDirector;
         }
-        public Teacher AddTeacher(Teacher teacher)
+        public Teacher Add(Teacher teacher)
         {
             teacher.Id = GenerateId();
             _teachers.Add(teacher);
@@ -65,9 +65,9 @@ namespace LangLang.Repository
             return teacher;
         }
 
-        public Teacher? UpdateTeacher(Teacher? teacher)
+        public Teacher? Update(Teacher? teacher)
         {
-            Teacher? oldTeacher = GetTeacherById(teacher.Id);
+            Teacher? oldTeacher = GetById(teacher.Id);
             if (oldTeacher == null) return null;
 
             oldTeacher.FirstName = teacher.FirstName;
@@ -89,9 +89,9 @@ namespace LangLang.Repository
             return oldTeacher;
         }
 
-        public Teacher? RemoveTeacher(int id)
+        public Teacher? Remove(int id)
         {
-            Teacher? teacher = GetTeacherById(id);
+            Teacher? teacher = GetById(id);
             if (teacher == null) return null;
 
             if (teacher.CoursesId != null)
@@ -107,12 +107,12 @@ namespace LangLang.Repository
         }
 
 
-        public Teacher? GetTeacherById(int id)
+        public Teacher? GetById(int id)
         {
             return _teachers.Find(t => t.Id == id);
         }
 
-        public List<Teacher> GetAllTeachers()
+        public List<Teacher> GetAll()
         {
             return _teachers;
         }

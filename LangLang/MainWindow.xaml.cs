@@ -44,8 +44,8 @@ namespace LangLang
                 //dbContext.SaveChanges();
             }*/
             //InitializeTeacherTable();
-            //InitializeCourseTable();
-            //InitializeExamTermTable();
+            InitializeCourseTable();
+            InitializeExamTermTable();
         }
         void InitializeTeacherTable()
         {
