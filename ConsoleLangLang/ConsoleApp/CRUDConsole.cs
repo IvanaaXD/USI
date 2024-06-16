@@ -61,9 +61,10 @@ public class CRUDConsole
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("Choose an operation: \nExit (x) \nCreate (c) \nRead (r) ");
+            Console.WriteLine("Choose an operation: \nCreate (c) \nRead (r) ");
             if (!isDirector || (isDirector && isTeacher))
                 Console.WriteLine("Update (u) \nDelete (d)");
+            Console.WriteLine("Exit (x)");
 
             string operation = Console.ReadLine().ToLower();
 

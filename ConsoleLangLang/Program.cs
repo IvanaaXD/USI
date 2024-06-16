@@ -42,7 +42,5 @@ namespace ConsoleLangLang
             services.AddTransient<ExamTermController>();
             services.AddTransient<MainConsole>();
         }
-
-
     }
 }
