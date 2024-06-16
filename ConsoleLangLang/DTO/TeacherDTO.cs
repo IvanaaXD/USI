@@ -278,7 +278,8 @@ namespace ConsoleLangLang.ConsoleApp.DTO
 
         public TeacherDTO ToDTO(Teacher teacher)
         {
-            return new TeacherDTO {
+            return new TeacherDTO
+            {
                 id = teacher.Id,
                 firstName = teacher.FirstName,
                 lastName = teacher.LastName,

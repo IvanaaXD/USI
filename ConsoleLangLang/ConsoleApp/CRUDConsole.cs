@@ -56,7 +56,7 @@ public class CRUDConsole
         var modelObject = ToModel(new TDto());
         controller = GetControllerByModelType(modelObject.GetType());
         bool isDirector = person is Director;
-        bool isTeacher = modelObject.GetType() == typeof(Teacher);  
+        bool isTeacher = modelObject.GetType() == typeof(Teacher);
 
         while (true)
         {
@@ -77,7 +77,7 @@ public class CRUDConsole
                     ReadObject<TDto>(crud, person);
                     break;
                 case "u":
-                    if (!isDirector|| (isDirector && isTeacher))
+                    if (!isDirector || (isDirector && isTeacher))
                         UpdateObject<TDto>(crud, person);
                     else
                         Console.WriteLine("Update operation is not allowed for Directors.");
@@ -138,7 +138,7 @@ public class CRUDConsole
         else
         {
             Console.WriteLine("Invalid input. Please enter a valid integer ID.");
-            return null; 
+            return null;
         }
     }
 
@@ -159,7 +159,7 @@ public class CRUDConsole
         {
             var modelItem = ToModel(newItem);
             object returnedValue = addMethod.Invoke(controller, new object[] { modelItem });
-            
+
             TDto returnedValueDTO = ToDTO<TDto>(returnedValue);
 
             if (typeof(TDto) != typeof(TeacherDTO))
@@ -260,10 +260,10 @@ public class CRUDConsole
         if (item is ExamTermDTO)
         {
             ExamTermDTO examTermDTO = (ExamTermDTO)(object)item;
-            ExamTerm examTerm = examTermDTO.ToModelClass(); 
+            ExamTerm examTerm = examTermDTO.ToModelClass();
             director.ExamsId.Add(examTerm.ExamID);
-            SmartSelectionOfExamTeacher(directorController,examTerm);
-            
+            SmartSelectionOfExamTeacher(directorController, examTerm);
+
         }
         else if (item is CourseDTO)
         {

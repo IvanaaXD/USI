@@ -43,14 +43,14 @@ namespace LangLang.Controller
             return _directors.GetAll();
         }
 
-        public void Add(Teacher teacher)
+        public Teacher Add(Teacher teacher)
         {
-            _directors.Add(teacher);
+            return _directors.Add(teacher);
         }
 
-        public void Update(Teacher teacher)
+        public Teacher Update(Teacher teacher)
         {
-            _directors.Update(teacher);
+            return _directors.Update(teacher);
         }
 
         public void UpdateDirector(Director director)

@@ -1,4 +1,5 @@
 ﻿using ConsoleLangLang.ConsoleApp.DTO;
+using LangLang.Migrations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,23 +13,23 @@ public class GenericCrud
         T item = new T();
         var validator = new PropertyValidator<T>(item);
 
-        foreach (PropertyInfo prop in typeof(T).GetProperties())
+        foreach (PropertyInfo property in typeof(T).GetProperties())
         {
-            if (prop.CanWrite)
+            if (property.CanWrite)
             {
                 object value;
 
-                if (IsCollectionType(prop.PropertyType))
-                    value = GetPropertyValue(prop, prop.PropertyType.GetGenericArguments()[0]);
+                if (IsCollectionType(property.PropertyType))
+                    value = GetPropertyValue(property, property.PropertyType.GetGenericArguments()[0]);
                 else
-                    value = GetPropertyValue(prop, prop.PropertyType);
+                    value = GetPropertyValue(property, property.PropertyType);
 
                 if (value == null)
                     return default(T);
 
-                prop.SetValue(item, value);
+                property.SetValue(item, value);
 
-                string validationError = validator.ValidateProperty(prop.Name);
+                string validationError = validator.ValidateProperty(property.Name);
                 if (validationError != null)
                 {
                     Console.WriteLine(validationError);
@@ -47,33 +48,42 @@ public class GenericCrud
         return item;
     }
 
-    private object GetPropertyValue(PropertyInfo prop, Type elementType)
+    private object GetPropertyValue(PropertyInfo property, Type elementType)
     {
         if (elementType.IsEnum)
-           return ReadEnumFromUser(prop,elementType);
+            return ReadEnumFromUser(property, elementType);
         else
         {
-            string formatHint = GetFormatHint(prop.PropertyType);
-            Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
+            string formatHint = GetFormatHint(property.PropertyType);
+            Console.Write($"Enter {property.Name} ({property.PropertyType.Name}{formatHint}): ");
 
             string input = Console.ReadLine();
-            return ConvertValue(input, prop.PropertyType);
+            return ConvertValue(input, property.PropertyType);
+        }
+    }
+
+    private object GetPropertyValueUpdate(PropertyInfo property, Type elementType, object currentValue)
+    {
+        if (elementType.IsEnum)
+            return ReadEnumFromUser(property, elementType);
+        else
+        {
+            string formatHint = GetFormatHint(property.PropertyType);
+            Console.Write($"Enter new value for {property.Name} ({property.PropertyType}) or press Enter to keep the current value ({currentValue}): ");
+
+            string input = Console.ReadLine();
+
+            if (!string.IsNullOrEmpty(input))
+                return ConvertValue(input, property.PropertyType);
+
+            return null;
         }
     }
 
     private object ReadEnumFromUser(PropertyInfo prop, Type elementType)
     {
         Console.WriteLine($"Choose {prop.Name}:");
-
-        var nullValue = Enum.GetValues(elementType)
-                            .Cast<object>()
-                            .FirstOrDefault(e => e.ToString() == "NULL");
-
-        var enumValues = Enum.GetValues(elementType)
-                             .Cast<object>()
-                             .Where(e => !e.Equals(nullValue))
-                             .OrderBy(e => e.ToString())
-                             .ToList();
+        var enumValues = GetEnumsList(elementType);
 
         if (prop.Name == "Languages" || prop.Name == "LevelOfLanguages" || prop.Name == "WorkDays")
         {
@@ -86,11 +96,22 @@ public class GenericCrud
             return list;
         }
         else
-        {
             return SelectSingleEnum(enumValues);
-        }
     }
 
+    private List<object> GetEnumsList(Type elementType)
+    {
+        var nullValue = Enum.GetValues(elementType)
+                    .Cast<object>()
+                    .FirstOrDefault(e => e.ToString() == "NULL");
+
+        var enumValues = Enum.GetValues(elementType)
+                             .Cast<object>()
+                             .Where(e => !e.Equals(nullValue))
+                             .OrderBy(e => e.ToString())
+                             .ToList();
+        return enumValues;
+    }
 
     private List<object> SelectMultipleEnum(List<object> enumValues, Type elementType)
     {
@@ -114,7 +135,7 @@ public class GenericCrud
                 return null;
             }
         }
-        
+
         return selectedEnums;
     }
 
@@ -139,7 +160,7 @@ public class GenericCrud
     {
         return typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string);
     }
-  
+
     private string GetFormatHint(Type type)
     {
         if (type == typeof(int))
@@ -160,25 +181,29 @@ public class GenericCrud
 
     public T Update<T>(T item) where T : new()
     {
+        var validator = new PropertyValidator<T>(item);
+
         foreach (PropertyInfo prop in typeof(T).GetProperties())
         {
             if (prop.CanWrite)
             {
                 object currentValue = prop.GetValue(item);
 
-                Console.Write($"Enter new value for {prop.Name} ({prop.PropertyType}) or press Enter to keep the current value ({currentValue}): ");
-                string input = Console.ReadLine();
-                if (!string.IsNullOrEmpty(input))
-                {
-                    object value = ConvertValue(input, prop.PropertyType);
-                    prop.SetValue(item, value);
-                }
+                if (IsCollectionType(prop.PropertyType))
+                    UpdateCollectionType(prop, item, currentValue);
                 else
-                   prop.SetValue(item, currentValue);
+                    UpdateNonCollectionType(prop, item, currentValue);
+
+                string validationError = validator.ValidateProperty(prop.Name);
+                if (validationError != null)
+                {
+                    Console.WriteLine(validationError);
+                    Console.ReadLine();
+                    return default(T);
+                }
             }
         }
 
-        var validator = new PropertyValidator<T>(item);
         if (!validator.IsValid())
         {
             Console.ReadLine();
@@ -186,6 +211,25 @@ public class GenericCrud
         }
 
         return item;
+    }
+
+    private void UpdateCollectionType<T>(PropertyInfo property, T item, object currenValue) where T : new()
+    {
+        object value = GetPropertyValue(property, property.PropertyType.GetGenericArguments()[0]);
+        int count = GetListCount(value);
+
+        if (count!=0)
+             property.SetValue(item, value);
+        else
+            property.SetValue(item, currenValue);
+    }
+
+    private void UpdateNonCollectionType<T>(PropertyInfo property, T item, object currentValue) where T : new()
+    {
+        object value = GetPropertyValueUpdate(property, property.PropertyType, currentValue);
+
+        if (value != null)
+            property.SetValue(item, value);
     }
 
     public void PrintTable<T>(List<T> dataStore)
@@ -209,7 +253,7 @@ public class GenericCrud
 
         for (int i = 0; i < properties.Length; i++)
         {
-            columnWidths[i] = properties[i].Name.Length; 
+            columnWidths[i] = properties[i].Name.Length;
 
             foreach (var item in dataStore)
             {
@@ -255,7 +299,7 @@ public class GenericCrud
                     else
                         valueString = value?.ToString() ?? string.Empty;
 
-                    Console.Write(valueString.PadRight(columnWidths[i] + 2)); 
+                    Console.Write(valueString.PadRight(columnWidths[i] + 2));
                 }
                 catch (Exception ex)
                 {
@@ -268,35 +312,35 @@ public class GenericCrud
 
     public static object ConvertValue(string input, Type type)
     {
-            try
-            {
-                if (type == typeof(int))
-                    return int.Parse(input);
-                else if (type == typeof(float))
-                    return float.Parse(input);
-                else if (type == typeof(double))
-                    return double.Parse(input);
-                else if (type == typeof(bool))
-                    return bool.Parse(input);
-                else if (type == typeof(DateTime))
-                    return DateTime.Parse(input);
-                else if (type.IsEnum)
-                    return Enum.Parse(type, input);
-                else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-                    return ConvertListType(input, type);
-                else
-                    return input;
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                return null;
-            }
+        try
+        {
+            if (type == typeof(int))
+                return int.Parse(input);
+            else if (type == typeof(float))
+                return float.Parse(input);
+            else if (type == typeof(double))
+                return double.Parse(input);
+            else if (type == typeof(bool))
+                return bool.Parse(input);
+            else if (type == typeof(DateTime))
+                return DateTime.Parse(input);
+            else if (type.IsEnum)
+                return Enum.Parse(type, input);
+            else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                return ConvertListType(input, type);
+            else
+                return input;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+            return null;
+        }
     }
 
     private static object ConvertListType(string input, Type type)
     {
-        if (string.IsNullOrEmpty(input)) 
+        if (string.IsNullOrEmpty(input))
             return null;
 
         Type itemType = type.GetGenericArguments()[0];
@@ -307,5 +351,26 @@ public class GenericCrud
             list.Add(ConvertValue(item.Trim(), itemType));
 
         return list;
+    }
+
+    public static int GetListCount(object list)
+    {
+        if (list == null)
+            throw new ArgumentNullException(nameof(list));
+
+        Type type = list.GetType();
+
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        {
+            PropertyInfo countProperty = type.GetProperty("Count");
+            if (countProperty != null)
+                return (int)countProperty.GetValue(list);
+        }
+
+        if (list is IList)
+            return ((IList)list).Count;
+
+        return 0;
+
     }
 }
