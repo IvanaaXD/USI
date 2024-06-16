@@ -17,6 +17,7 @@ namespace LangLang.Controller
         private readonly IStudentGradeRepository? _studentGrades;
         private readonly CourseController? _courseController;
         private readonly ExamTermController? _examTermController;
+
         public DirectorController()
         {
             _directorsss = Injector.CreateInstance<IDirectorDbRepository>();
@@ -51,18 +52,18 @@ namespace LangLang.Controller
         {
             _directors.Update(teacher);
         }
+
         public void UpdateDirector(Director director)
         {
             _directors.UpdateDirector(director);
         }
-        public void Delete(int teacherId)
-        {
-            Teacher teacher = GetById(teacherId);
 
+        public void Delete(Teacher teacher)
+        {
             Update(_courseController.DeleteCoursesByTeacher(teacher));
             Update(_examTermController.DeleteExamTermsByTeacher(teacher));
 
-            _directors.Remove(teacherId);
+            _directors.Remove(teacher.Id);
         }
 
         public List<Course> GetActiveCourses(Teacher teacher)
@@ -159,9 +160,8 @@ namespace LangLang.Controller
             int result = 0;
             List<StudentGrade> teachersGrades = _studentGrades.GetStudentGradeByTeacher(teacherId);
             foreach (StudentGrade grade in teachersGrades)
-            {
                 result += grade.Value;
-            }
+
             return result == 0 ? 0 : result / teachersGrades.Count;
         }
         public List<Teacher> GetCompatibleTeachers(Language language, LanguageLevel level)
@@ -226,9 +226,8 @@ namespace LangLang.Controller
         {
             Dictionary<int, double> teacherGrade = new();
             foreach (Teacher teacher in availableTeachers)
-            {
                 teacherGrade.Add(teacher.Id, GetAverageTeacherGrade(teacher.Id));
-            }
+
             int teacherWithMaxGradeId = teacherGrade.OrderByDescending(kv => kv.Value).First().Key;
             return teacherWithMaxGradeId;
         }
