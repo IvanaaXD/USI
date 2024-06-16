@@ -6,7 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LangLang.Domain.Model.Enums;
+using LangLang.Domain.Model;
+using System.Reflection.Metadata.Ecma335;
 
 public class GenericCrud
 {
@@ -19,34 +20,120 @@ public class GenericCrud
 
         foreach (PropertyInfo prop in typeof(T).GetProperties())
         {
-            if (prop.CanWrite && !IsCollectionType(prop.PropertyType))
+            if (prop.CanWrite)
             {
-                string formatHint = GetFormatHint(prop.PropertyType);
-                Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
-                string input = Console.ReadLine();
-                object value = ConvertValue(input, prop.PropertyType);
+                object value;
+
+                if (IsCollectionType(prop.PropertyType))
+                    value = GetPropertyValue(prop, prop.PropertyType.GetGenericArguments()[0]);
+                else
+                    value = GetPropertyValue(prop, prop.PropertyType);
+
                 if (value == null)
                     return default(T);
+                
                 prop.SetValue(item, value);
 
                 string validationError = validator.ValidateProperty(prop.Name);
                 if (validationError != null)
                 {
                     Console.WriteLine(validationError);
+                    Console.ReadLine();
                     return default(T);
                 }
             }
         }
 
         if (!validator.IsValid())
+        {
+            Console.ReadLine();
             return default(T);
+        }
+
         return item;
+    }
+
+    private object GetPropertyValue(PropertyInfo prop, Type elementType)
+    {
+        if (elementType.IsEnum)
+           return ReadEnumFromUser(prop,elementType);
+        else
+        {
+            string formatHint = GetFormatHint(prop.PropertyType);
+            Console.Write($"Enter {prop.Name} ({prop.PropertyType.Name}{formatHint}): ");
+
+            string input = Console.ReadLine();
+            return ConvertValue(input, prop.PropertyType);
+        }
+    }
+
+    private object ReadEnumFromUser(PropertyInfo prop, Type elementType)
+    {
+        Console.WriteLine($"Choose {prop.Name}:");
+        
+        var enumValues = Enum.GetValues(elementType).Cast<object>().OrderBy(e => e.ToString()).ToList();
+
+        if (prop.Name == "Languages" || prop.Name == "LevelOfLanguages" || prop.Name == "WorkDays")
+        {
+            var selectedEnums = SelectMultipleEnum(enumValues, elementType);
+            var listType = typeof(List<>).MakeGenericType(elementType);
+            var list = (IList)Activator.CreateInstance(listType);
+
+            foreach (var enumValue in selectedEnums)
+            {
+                list.Add(Convert.ChangeType(enumValue, elementType));
+            }
+            return list;
+        }
+        else
+            return SelectSingleEnum(enumValues);
+    }
+
+    private List<object> SelectMultipleEnum(List<object> enumValues, Type elementType)
+    {
+        Console.WriteLine("Select multiple options separated by commas (e.g., 1,2,3):");
+        for (int i = 0; i < enumValues.Count; i++)
+            Console.WriteLine($"{i + 1}. {enumValues[i]}");
+
+        Console.Write($"Enter choices (1-{enumValues.Count}): ");
+        string input = Console.ReadLine();
+
+        string[] choices = input.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        var selectedEnums = new List<object>();
+
+        foreach (var choice in choices)
+        {
+            if (int.TryParse(choice, out int index) && index >= 1 && index <= enumValues.Count)
+                selectedEnums.Add(enumValues[index - 1]);
+            else
+            {
+                Console.WriteLine("Invalid choice.");
+                return null;
+            }
+        }
+        
+        return selectedEnums;
+    }
+
+    private object SelectSingleEnum(List<object> enumValues)
+    {
+        for (int i = 0; i < enumValues.Count; i++)
+            Console.WriteLine($"{i + 1}. {enumValues[i]}");
+
+        Console.Write($"Enter choice (1-{enumValues.Count}): ");
+        string input = Console.ReadLine();
+
+        if (!int.TryParse(input, out int choice) || choice < 1 || choice > enumValues.Count)
+        {
+            Console.WriteLine("Invalid choice.");
+            return null;
+        }
+
+        return enumValues[choice - 1];
     }
 
     private bool IsCollectionType(Type type)
     {
-        if (type == typeof(List<DayOfWeek>))
-            return false;
         return typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string);
     }
 

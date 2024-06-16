@@ -52,6 +52,8 @@ namespace LangLang.ConsoleApp
 
             while (true)
             {
+                //Console.Clear();
+                
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) Enter the course id\n" +
                                   "\tx) Exit\n");
@@ -64,6 +66,7 @@ namespace LangLang.ConsoleApp
                         int courseId;
                         if (Int32.TryParse(Console.ReadLine(), out courseId))
                             AssignTeacher(courseController.GetById(courseId));
+                        Console.ReadLine();
                         break;
                     case "x":
                         return;
@@ -85,8 +88,6 @@ namespace LangLang.ConsoleApp
                 {
                     if (coursesId.Contains(course.Id))
                     {
-                        Course courseDTO = new Course();
-                        // CourseDTO courseDTO = new CourseDTO(course);    OVO TREBA DA RADI
                         Domain.Model.Teacher? courseTeacher = directorController.GetTeacherByCourse(course.Id);
                         if (courseTeacher == null)
                             filteredCourses.Add(course);
