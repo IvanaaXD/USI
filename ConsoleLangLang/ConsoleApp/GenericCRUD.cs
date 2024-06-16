@@ -183,19 +183,19 @@ public class GenericCrud
     {
         var validator = new PropertyValidator<T>(item);
 
-        foreach (PropertyInfo prop in typeof(T).GetProperties())
+        foreach (PropertyInfo property in typeof(T).GetProperties())
         {
-            if (prop.CanWrite)
+            if (property.CanWrite)
             {
-                object currentValue = prop.GetValue(item);
+                object currentValue = property.GetValue(item);
 
-                if (IsCollectionType(prop.PropertyType))
-                    UpdateCollectionType(prop, item, currentValue);
+                if (IsCollectionType(property.PropertyType))
+                    UpdateCollectionType(property, item, currentValue);
                 else
-                    UpdateNonCollectionType(prop, item, currentValue);
-
-                string validationError = validator.ValidateProperty(prop.Name);
-                if (validationError != null)
+                    UpdateNonCollectionType(property, item, currentValue);
+                
+                string validationError = validator.ValidateProperty(property.Name);
+                if (validationError != null || !string.IsNullOrEmpty(validationError))
                 {
                     Console.WriteLine(validationError);
                     Console.ReadLine();
@@ -213,15 +213,15 @@ public class GenericCrud
         return item;
     }
 
-    private void UpdateCollectionType<T>(PropertyInfo property, T item, object currenValue) where T : new()
+    private void UpdateCollectionType<T>(PropertyInfo property, T item, object currentValue) where T : new()
     {
-        object value = GetPropertyValue(property, property.PropertyType.GetGenericArguments()[0]);
+        object value = GetPropertyValueUpdate(property, property.PropertyType.GetGenericArguments()[0], currentValue);
         int count = GetListCount(value);
 
         if (count!=0)
              property.SetValue(item, value);
         else
-            property.SetValue(item, currenValue);
+            property.SetValue(item, currentValue);
     }
 
     private void UpdateNonCollectionType<T>(PropertyInfo property, T item, object currentValue) where T : new()

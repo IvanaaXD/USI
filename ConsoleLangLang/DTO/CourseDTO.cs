@@ -23,7 +23,7 @@ namespace ConsoleLangLang.ConsoleApp.DTO
         public string StartTime { get; set; }
         public bool IsOnline { get; set; }
         private int CurrentlyEnrolled { get; set; }
-        public string MaxEnrolledStudents { get; set; }
+        public int MaxEnrolledStudents { get; set; }
 
         private readonly CourseController _courseController;
         private Teacher teacher;
@@ -90,17 +90,15 @@ namespace ConsoleLangLang.ConsoleApp.DTO
                         return "Format is not good. Try again.";
                     break;
                 case "CurrentlyEnrolled":
-                    if (CurrentlyEnrolled < 0 || (!IsOnline && CurrentlyEnrolled > int.Parse(MaxEnrolledStudents)))
+                    if (CurrentlyEnrolled < 0 || (!IsOnline && CurrentlyEnrolled > MaxEnrolledStudents))
                         return "Number of enrolled students can't be less than 0 or greater than max enrolled";
                     break;
                 case "MaxEnrolledStudents":
-                    if (string.IsNullOrEmpty(MaxEnrolledStudents))
-                        return "Value must be >=0";
-                    if (int.Parse(MaxEnrolledStudents) < 0)
+                    if (MaxEnrolledStudents < 0)
                         return "Value must be >= 0";
-                    if (int.Parse(MaxEnrolledStudents) > 150)
+                    if (MaxEnrolledStudents > 150)
                         return "Value must be <= 150";
-                    if (int.Parse(MaxEnrolledStudents) == 0 && !IsOnline)
+                    if (MaxEnrolledStudents == 0 && !IsOnline)
                         return "Offline courses can't have 0 students";
                     break;
                 case "WorkDays":
@@ -125,7 +123,7 @@ namespace ConsoleLangLang.ConsoleApp.DTO
                 StartDate = combinedDateTime,
                 IsOnline = this.IsOnline,
                 CurrentlyEnrolled = this.CurrentlyEnrolled,
-                MaxEnrolledStudents = int.Parse(this.MaxEnrolledStudents)
+                MaxEnrolledStudents = this.MaxEnrolledStudents,
             };
             if (this.teacher != null && !_courseController.ValidateCourseTimeslot(course, this.teacher))
                 return "Cannot create course because of course time overlaps!";
@@ -154,7 +152,7 @@ namespace ConsoleLangLang.ConsoleApp.DTO
             DateTime combinedDateTime = StartDate.Date + timeSpan;
 
             if (IsOnline)
-                MaxEnrolledStudents = "0";
+                MaxEnrolledStudents = 0;
 
             return new Course
             {
@@ -166,7 +164,7 @@ namespace ConsoleLangLang.ConsoleApp.DTO
                 StartDate = combinedDateTime,
                 IsOnline = this.IsOnline,
                 CurrentlyEnrolled = 0,
-                MaxEnrolledStudents = int.Parse(this.MaxEnrolledStudents)
+                MaxEnrolledStudents = this.MaxEnrolledStudents
             };
         }
 
@@ -188,7 +186,7 @@ namespace ConsoleLangLang.ConsoleApp.DTO
                 StartTime = startTime,
                 IsOnline = course.IsOnline,
                 CurrentlyEnrolled = course.CurrentlyEnrolled,
-                MaxEnrolledStudents = course.MaxEnrolledStudents.ToString()
+                MaxEnrolledStudents = course.MaxEnrolledStudents
             };
         }
 
