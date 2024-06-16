@@ -49,7 +49,7 @@ namespace LangLang.ConsoleApp
             while (true)
             {
                 //Console.Clear();
-                
+
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) Enter the course id\n" +
                                   "\tx) Exit\n");
