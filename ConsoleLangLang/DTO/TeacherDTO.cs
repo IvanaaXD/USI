@@ -31,15 +31,6 @@ namespace ConsoleLangLang.ConsoleApp.DTO
         private List<int> coursesId;
         private List<int> examTermsId;
 
-        /*public List<Gender> GenderValues
-        {
-            get
-            {
-                var genders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
-                return genders;
-            }
-        }*/
-
         private int Id
         {
             get { return id; }

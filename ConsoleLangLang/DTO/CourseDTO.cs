@@ -28,11 +28,6 @@ namespace ConsoleLangLang.ConsoleApp.DTO
         private readonly CourseController _courseController;
         private Teacher teacher;
 
-        /*public CourseDTO(Teacher teacher)
-        {
-            _courseController = Injector.CreateInstance<CourseController>();
-            this.teacher = teacher;
-        }*/
         public CourseDTO()
         {
             _courseController = Injector.CreateInstance<CourseController>();
@@ -42,25 +37,6 @@ namespace ConsoleLangLang.ConsoleApp.DTO
             this.teacher = teacher;
             teacher.CoursesId.Add(course.Id);
         }
-      /*  public List<string> LanguageAndLevelValues
-        {
-            get
-            {
-                List<string> languageLevelNames = new List<string>();
-
-                var languages = Enum.GetValues(typeof(Language)).Cast<Language>().ToList();
-                var levels = Enum.GetValues(typeof(LanguageLevel)).Cast<LanguageLevel>().ToList();
-
-                foreach (var language in languages)
-                {
-                    foreach (var level in levels)
-                    {
-                        languageLevelNames.Add($"{language} {level}");
-                    }
-                }
-                return languageLevelNames;
-            }
-        }*/
 
         private Regex _TimeRegex = new Regex(@"^(?:[01]\d|2[0-3]):(?:[0-5]\d)$");
 
