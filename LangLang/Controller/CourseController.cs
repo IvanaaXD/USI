@@ -258,8 +258,7 @@ namespace LangLang.Controller
 
         public void Delete(Course course)
         {
-            //_courses.Remove(course.Id);
-            _courses.Remove(course);
+            _courses.Delete(course.Id);
             RemoveCourseFromRequests(course.Id);
         }
 

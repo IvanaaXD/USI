@@ -11,8 +11,7 @@ namespace LangLang.Controller
 {
     public class DirectorController
     {
-        private readonly IDirectorDbRepository _directorsss;
-        private readonly IDirectorRepository _directors;
+        private readonly IDirectorDbRepository _directors;
         private readonly ITeacherRepository? _teachers;
         private readonly IStudentGradeRepository? _studentGrades;
         private readonly CourseController? _courseController;
@@ -20,8 +19,7 @@ namespace LangLang.Controller
 
         public DirectorController()
         {
-            _directorsss = Injector.CreateInstance<IDirectorDbRepository>();
-            _directors = Injector.CreateInstance<IDirectorRepository>();
+            _directors = Injector.CreateInstance<IDirectorDbRepository>();
             _teachers = Injector.CreateInstance<ITeacherRepository>();
             _studentGrades = Injector.CreateInstance<IStudentGradeRepository>();
             _examTermController = Injector.CreateInstance<ExamTermController>();
