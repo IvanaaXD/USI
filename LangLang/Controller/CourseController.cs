@@ -47,10 +47,10 @@ namespace LangLang.Controller
         {
             return _courses.GetAll();
         }
-        public List<Course> GetAllCourses(int page, int pageSize, ISortStrategy courseSortStrategy, List<Course> courses)
+       /* public List<Course> GetAllCourses(int page, int pageSize, ISortStrategy courseSortStrategy, List<Course> courses)
         {
             return _courses.GetAllCourses(page, pageSize, courseSortStrategy, courses);
-        }
+        }*/
         public List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> courses)
         {
             return _courses.GetAllCourses(page, pageSize, sortCriteria, courses);
@@ -254,11 +254,11 @@ namespace LangLang.Controller
             return false;
         }
 
-        public void Delete(int courseId)
+        public void Delete(Course course)
         {
-            //_courses.Remove(courseId);
-            _courses.Delete(courseId);
-            RemoveCourseFromRequests(courseId);
+            //_courses.Remove(course.Id);
+            _courses.Remove(course);
+            RemoveCourseFromRequests(course.Id);
         }
 
         public void RemoveCourseFromRequests(int courseId)
