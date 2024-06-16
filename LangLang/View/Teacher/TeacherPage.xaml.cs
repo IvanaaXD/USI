@@ -175,7 +175,7 @@ namespace LangLang.View.Teacher
                 else
                 {
                     int courseId = SelectedCourse.Id;
-                    courseController.Delete(courseId);
+                    courseController.Delete(SelectedCourse.ToCourse());
                     directorController.RemoveCourseFromList(teacherId, courseId);
                     directorController.RemoveCourseFromDirector(courseId);
                 }
@@ -368,8 +368,10 @@ namespace LangLang.View.Teacher
                 var examTerms = GetFilteredExamTerms();
                 //List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, sortCriteria, examTerms);
                 //List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, sortCriteria, examTerms);
+                
                 List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, currentSortStrategy, examTerms);
                 List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, currentSortStrategy, examTerms);
+                
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
                 else NextButton.IsEnabled = true;   
@@ -447,11 +449,11 @@ namespace LangLang.View.Teacher
             {
                 TableViewModel.Courses.Clear();
                 var filteredCourses = GetFilteredCourses();
-                //List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortCriteria, filteredCourses);
-                //List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortCriteria, filteredCourses);
+                List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortCriteria, filteredCourses);
+                List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortCriteria, filteredCourses);
                 
-                List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortStrategy, filteredCourses);
-                List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortStrategy, filteredCourses);
+                //List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortStrategy, filteredCourses);
+                //List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortStrategy, filteredCourses);
                 
                 if (newCourses.Count == 0)
                     CourseNextButton.IsEnabled = false;
