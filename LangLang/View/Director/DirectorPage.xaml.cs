@@ -243,7 +243,7 @@ namespace LangLang.View.Director
                         choseTeacherView.Activate();
                     }
                 }
-                _directorController.Delete(id);
+                _directorController.Delete(SelectedTeacher.ToTeacher());
                 Update();
             }
         }
