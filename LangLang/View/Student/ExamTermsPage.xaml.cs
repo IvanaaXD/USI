@@ -337,10 +337,10 @@ namespace LangLang.View.Student
             {
                 TableViewModel.CompletedExamTerms.Clear();
                 var examTerms = GetFilteredCompletedExamTerms();
-                //List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 1, sortCriteria, examTerms);
-                //List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 1, sortCriteria, examTerms);
-                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 1, sortStrategy, examTerms);
-                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 1, sortStrategy, examTerms);
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 1, sortCriteria, examTerms);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 1, sortCriteria, examTerms);
+               // List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 1, sortStrategy, examTerms);
+                //List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 1, sortStrategy, examTerms);
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
                 else NextButton.IsEnabled = true;

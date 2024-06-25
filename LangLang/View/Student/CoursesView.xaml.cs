@@ -255,11 +255,11 @@ namespace LangLang.View.Student
                 TableViewModel.Courses.Clear();
 
                 var filteredCourses = GetFilteredCourses();
-                //List<Course> courses = courseController.GetAllCourses(currentCoursePage, 1, courseSortCriteria, filteredCourses);
-                //List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 1, courseSortCriteria, filteredCourses);
+                List<Course> courses = courseController.GetAllCourses(currentCoursePage, 1, courseSortCriteria, filteredCourses);
+                List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 1, courseSortCriteria, filteredCourses);
 
-                List<Course> courses = courseController.GetAllCourses(currentCoursePage, 1, courseSortStrategy, filteredCourses);
-                List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 1, courseSortStrategy, filteredCourses);
+                //List<Course> courses = courseController.GetAllCourses(currentCoursePage, 1, courseSortStrategy, filteredCourses);
+                //List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 1, courseSortStrategy, filteredCourses);
                 
                 if (newCourses.Count == 0)
                     CourseNextButton.IsEnabled = false;

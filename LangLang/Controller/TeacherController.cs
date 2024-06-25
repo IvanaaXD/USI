@@ -91,6 +91,8 @@ namespace LangLang.Controller
             List<int> allTeacherCourses = teacher.CoursesId;
 
             List<Course> availableCourses = new();
+            if (allTeacherCourses == null)
+                return availableCourses;
 
             foreach (int courseId in allTeacherCourses)
             {
@@ -134,6 +136,8 @@ namespace LangLang.Controller
             List<int> allTeacherExams = teacher.ExamsId;
 
             List<ExamTerm> availableExams = new List<ExamTerm>();
+            if (allTeacherExams == null) 
+                return availableExams;
 
             foreach (int examId in allTeacherExams)
             {

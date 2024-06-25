@@ -28,8 +28,8 @@ namespace ConsoleLangLang.ConsoleApp.DTO
 
         private List<Language> languages;
         private List<LanguageLevel> levelOfLanguages;
-        private List<int> coursesId;
-        private List<int> examTermsId;
+        private List<int> coursesId = new List<int>();
+        private List<int> examTermsId = new List<int>();
 
         private int Id
         {

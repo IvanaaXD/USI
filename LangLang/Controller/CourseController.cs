@@ -64,6 +64,8 @@ namespace LangLang.Controller
             List<int> allTeacherCourses = teacher.CoursesId;
 
             List<Course> availableCourses = new();
+            if (allTeacherCourses == null)
+                return availableCourses;
 
             foreach (Course course in allCourses)
             {

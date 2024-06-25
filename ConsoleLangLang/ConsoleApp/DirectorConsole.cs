@@ -48,7 +48,6 @@ namespace LangLang.ConsoleApp
 
             while (true)
             {
-                //Console.Clear();
 
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) Enter the course id\n" +
@@ -104,7 +103,7 @@ namespace LangLang.ConsoleApp
                 Console.WriteLine($"{teacher.FirstName} {teacher.LastName} was chosen");
             }
             else
-                MessageBox.Show("There is no available teacher for that course");
+                Console.WriteLine("There is no available teacher for that course");
         }
     }
 }

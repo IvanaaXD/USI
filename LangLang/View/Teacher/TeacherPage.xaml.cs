@@ -175,7 +175,7 @@ namespace LangLang.View.Teacher
                 else
                 {
                     int courseId = SelectedCourse.Id;
-                    courseController.Delete(SelectedCourse.ToCourse());
+                    //courseController.Delete(SelectedCourse.ToCourse());
                     directorController.RemoveCourseFromList(teacherId, courseId);
                     directorController.RemoveCourseFromDirector(courseId);
                 }
@@ -366,11 +366,11 @@ namespace LangLang.View.Teacher
             {
                 TableViewModel.ExamTerms.Clear();
                 var examTerms = GetFilteredExamTerms();
-                //List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, sortCriteria, examTerms);
-                //List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, sortCriteria, examTerms);
+                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, sortCriteria, examTerms);
+                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, sortCriteria, examTerms);
                 
-                List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, currentSortStrategy, examTerms);
-                List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, currentSortStrategy, examTerms);
+                //List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, currentSortStrategy, examTerms);
+                //List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, currentSortStrategy, examTerms);
                 
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
