@@ -171,16 +171,16 @@ namespace LangLang.View.Teacher
 
             if (CreatedCourse.IsValid && teacherId != -1)
             {
-                courseController.Add(CreatedCourse.ToCourse());
+                Course course = courseController.Add(CreatedCourse.ToCourse());
                 Domain.Model.Teacher teacher = directorController.GetById(teacherId);
-                teacher.CoursesId.Add(CreatedCourse.ToCourse().Id);
+                teacher.CoursesId.Add(course.Id);
                 directorController.Update(teacher);
 
                 Close();
             }
             else if (teacherId == -1)
             {
-                Domain.Model.Course course = CreatedCourse.ToCourse();
+                Course course = CreatedCourse.ToCourse();
                 int teacherId = directorController.FindMostAppropriateTeacher(course);
                 if (teacherId != -1)
                 {
@@ -196,7 +196,7 @@ namespace LangLang.View.Teacher
                         director.CoursesId = new List<int>();
                     }
                     director.CoursesId.Add(courseId + 1);
-                    directorController.Update(director);
+                    directorController.UpdateDirector(director);
                     courseController.Add(CreatedCourse.ToCourse());
                     Domain.Model.Teacher teacher = directorController.GetById(teacherId);
                     teacher.CoursesId.Add(CreatedCourse.ToCourse().Id);

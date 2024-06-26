@@ -12,7 +12,7 @@ namespace LangLang.Domain.Model.Reports
     {
         CourseController _courseController = Injector.CreateInstance<CourseController>();
         ExamTermController _examTermController = Injector.CreateInstance<ExamTermController>();
-        IExamTermRepository _examTerms = Injector.CreateInstance<IExamTermRepository>();
+        IExamTermDbRepository _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
         IPenaltyPointRepository _penaltyPoints = Injector.CreateInstance<IPenaltyPointRepository>();
         ExamTermGradeController _examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
 
@@ -122,7 +122,7 @@ namespace LangLang.Domain.Model.Reports
         public Dictionary<Language, double> GetNumberOfPoints()
         {
             Dictionary<Language, double> numberOfPoints = GetLanguages<double>();
-            var examTerms = _examTerms.GetAllExamTerms();
+            var examTerms = _examTerms.GetAll();
 
             foreach (var number in numberOfPoints)
             {

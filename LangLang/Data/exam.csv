@@ -1,6 +1,6 @@
 2|French|A1|2024-01-22 09:00|90|2|True|True
 3|French|A1|2024-02-22 09:00|90|2|True|True
-4|French|A1|2024-04-22 09:00|90|2|True|True
+4|French|A1|2024-04-22 09:00|90|2|True|False
 6|English|B1|2024-05-06 13:00|12|1|True|False
 7|French|A1|2023-04-22 09:00|90|2|True|True
 9|German|A1|2024-08-20 10:00|14|0|False|False
@@ -19,3 +19,8 @@
 22|German|A1|2024-04-10 10:00|80|3|False|False
 23|Spanish|C2|2024-09-18 10:00|80|0|False|False
 24|English|A2|2024-12-01 10:00|50|0|False|False
+25|Russian|B2|2024-10-10 10:00|15|4|False|False
+26|French|A1|2024-10-10 14:00|60|20|False|False
+27|English|A1|2024-10-10 14:00|60|10|False|False
+28|French|A1|2024-10-10 14:00|60|20|False|False
+29|Japanese|A1|2024-12-12 15:00|50|10|False|False

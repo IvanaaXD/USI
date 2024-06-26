@@ -52,12 +52,12 @@ namespace LangLang.View.Teacher
         {
             if (!string.IsNullOrWhiteSpace(mailBodyTextBlock.Text))
             {
-                string messageBody = "You have been rejected from course " + course.Language.ToString() + " " + course.Level.ToString() + ". Reason: " + RejectReason;
-                studentController.RejectStudentApplication(student, course);
-
+                TypeOfMessage messageType = TypeOfMessage.TopStudentsMessage;
                 var examTerm = new ExamTerm();
                 examTerm.ExamID = -1;
-                mailController.ConstructMail(teacher, student, course, examTerm, TypeOfMessage.DenyEnterCourseRequestMessage, messageBody);
+
+                mailController.GenerateMail(RejectReason, teacher, student, course, examTerm, messageType); 
+                studentController.RejectStudentApplication(student, course);
 
                 Close();
             }

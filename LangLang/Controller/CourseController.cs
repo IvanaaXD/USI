@@ -1,43 +1,56 @@
-﻿using LangLang.Domain.Model;
+﻿using LangLang.Data;
+using LangLang.Domain.IRepository;
+using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
-using LangLang.Domain.IRepository;
 using System.Linq;
-using System.Windows.Input;
-using Org.BouncyCastle.Asn1.Cms;
+using System.Windows.Controls;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.Controller
 {
     public class CourseController
     {
         private readonly IStudentRepository _students;
-        private readonly ICourseRepository _courses;
+        //private readonly ICourseRepository _courses;
         private readonly TeacherController _teacherController;
-        private readonly IExamTermRepository _examTerms;
-        private readonly IDirectorRepository _director;
+        //private readonly IExamTermRepository _examTerms;
+        private readonly IDirectorDbRepository _director;
+
+        private readonly IExamTermDbRepository _examTerms;
+        private readonly ICourseDbRepository _courses;
 
         private readonly int courseDurationInMinutes = 90;
-        private readonly int examDurationInMinutes = 240; 
+        private readonly int examDurationInMinutes = 240;
 
         public CourseController()
         {
             _students = Injector.CreateInstance<IStudentRepository>();
-            _courses = Injector.CreateInstance<ICourseRepository>();
+            // _courses = Injector.CreateInstance<ICourseRepository>();
             _teacherController = Injector.CreateInstance<TeacherController>();
-            _examTerms = Injector.CreateInstance<IExamTermRepository>();
-            _director = Injector.CreateInstance<IDirectorRepository>();
+            // _examTerms = Injector.CreateInstance<IExamTermRepository>();
+            _director = Injector.CreateInstance<IDirectorDbRepository>();
+
+            _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
+            _courses = Injector.CreateInstance<ICourseDbRepository>();
+
         }
 
         public Course? GetById(int courseId)
         {
-            return _courses.GetCourseById(courseId);
+            return _courses.GetById(courseId);
         }
 
         public List<Course> GetAllCourses()
         {
-            return _courses.GetAllCourses();
+            return _courses.GetAll();
+        }
+        
+        public List<Course> GetAllCourses(int page, int pageSize, ISortStrategy courseSortStrategy, List<Course> courses)
+        {
+            return _courses.GetAllCourses(page, pageSize, courseSortStrategy, courses);
         }
 
         public List<Course> GetAllCourses(int page, int pageSize, string sortCriteria, List<Course> courses)
@@ -51,6 +64,8 @@ namespace LangLang.Controller
             List<int> allTeacherCourses = teacher.CoursesId;
 
             List<Course> availableCourses = new();
+            if (allTeacherCourses == null)
+                return availableCourses;
 
             foreach (Course course in allCourses)
             {
@@ -62,13 +77,13 @@ namespace LangLang.Controller
 
         public Course Add(Course course)
         {
-            Course createdCourse = _courses.AddCourse(course);
+            Course createdCourse = _courses.Add(course);
             return createdCourse;
         }
 
         public void Update(Course course)
         {
-            _courses.UpdateCourse(course);
+            _courses.Update(course);
         }
 
         public bool ValidateCourseTimeslot(Course course, Teacher teacher)
@@ -81,8 +96,8 @@ namespace LangLang.Controller
 
         private bool CheckCourseOverlap(Course course, Teacher teacher)
         {
-            List<Course> allAvailableCourses = _courses.GetAllCourses();
-            List<ExamTerm> allAvailableExams = _examTerms.GetAllExamTerms();
+            List<Course> allAvailableCourses = _courses.GetAll();
+            List<ExamTerm> allAvailableExams = _examTerms.GetAll();
 
             bool isSameTeacherCourseOverlap = CheckTeacherCoursesOverlap(course, teacher);
             if (isSameTeacherCourseOverlap)
@@ -191,7 +206,7 @@ namespace LangLang.Controller
             return false;
         }
 
-        private (TimeSpan,TimeSpan) GetSessionTimes(Course course)
+        private (TimeSpan, TimeSpan) GetSessionTimes(Course course)
         {
             TimeSpan sessionStart = course.StartDate.TimeOfDay;
             TimeSpan sessionEnd = sessionStart.Add(TimeSpan.FromMinutes(courseDurationInMinutes));
@@ -205,7 +220,7 @@ namespace LangLang.Controller
             {
                 if (secondCourse.WorkDays.Contains(day))
                 {
-                    if (CompareTimes(course,secondCourse))
+                    if (CompareTimes(course, secondCourse))
                         return true;
                 }
             }
@@ -221,12 +236,12 @@ namespace LangLang.Controller
                 if (secondCourse.IsOnline)
                     continue;
 
-                    bool isSessionOverlap = CompareCourseDurations(course,secondCourse);
-                    if (isSessionOverlap)
-                        if (isClassroomOneTaken)
-                            return true;
-                        else
-                            isClassroomOneTaken = true;
+                bool isSessionOverlap = CompareCourseDurations(course, secondCourse);
+                if (isSessionOverlap)
+                    if (isClassroomOneTaken)
+                        return true;
+                    else
+                        isClassroomOneTaken = true;
             }
 
             foreach (ExamTerm examTerm in allAvailableExams)
@@ -243,23 +258,23 @@ namespace LangLang.Controller
             return false;
         }
 
-        public void Delete(int courseId)
+        public void Delete(Course course)
         {
-            _courses.RemoveCourse(courseId);
-            RemoveCourseFromRequests(courseId);
+            _courses.Delete(course.Id);
+            RemoveCourseFromRequests(course.Id);
         }
 
         public void RemoveCourseFromRequests(int courseId)
         {
             List<Student> students = _students.GetAllStudents();
-            foreach(Student student in students)
+            foreach (Student student in students)
             {
                 if (student.RegisteredCoursesIds.Contains(courseId))
                 {
                     student.RegisteredCoursesIds.Remove(courseId);
                     _students.UpdateStudent(student);
                 }
-            }       
+            }
         }
 
         public void Subscribe(IObserver observer)
@@ -286,7 +301,7 @@ namespace LangLang.Controller
 
         public List<Course> FindCoursesByCriteria(Language? language, LanguageLevel? level, DateTime? startDate, int duration, bool? isOnline)
         {
-            var filteredCourses = _courses.GetAllCourses().Where(course =>
+            var filteredCourses = _courses.GetAll().Where(course =>
                 (!language.HasValue || course.Language == language.Value) &&
                 (!level.HasValue || course.Level == level.Value) &&
                 (!startDate.HasValue || course.StartDate.Date >= (startDate.Value.Date)) &&
@@ -299,7 +314,7 @@ namespace LangLang.Controller
 
         public List<Course> FindCoursesByDate(DateTime startDate)
         {
-            var filteredCourses = _courses.GetAllCourses().Where(course =>
+            var filteredCourses = _courses.GetAll().Where(course =>
                 course.StartDate.Date >= startDate.Date && course.StartDate.Date <= DateTime.Today.Date
             ).ToList();
 
@@ -418,11 +433,6 @@ namespace LangLang.Controller
             return courses;
         }
 
-        public List<Course> GetCoursesByTeacher(int teacherId)
-        {
-            return _courses.GetCoursesByTeacher(teacherId);
-        }
-
         public List<Course>? GetCoursesForDisplay(bool isSearchClicked, List<Course> availableCourses, Language? selectedLanguage, LanguageLevel? selectedLevel, DateTime? selectedStartDate, int selectedDuration, bool isOnline)
         {
             List<Course> finalCourses = new();
@@ -446,6 +456,8 @@ namespace LangLang.Controller
         {
             var courses = GetAllCourses();
             var teacherCourses = teacher.CoursesId;
+            if (teacherCourses == null)
+                return teacher;
             var director = _director.GetDirector();
 
             foreach (var course in courses)
@@ -458,7 +470,7 @@ namespace LangLang.Controller
 
         public bool IsCourseActive(Course course)
         {
-            if (DateTime.Today.Date > course.StartDate.Date && course.StartDate.Date.AddDays(course.Duration*7) > DateTime.Today.Date) 
+            if (DateTime.Today.Date > course.StartDate.Date && course.StartDate.Date.AddDays(course.Duration * 7) > DateTime.Today.Date)
                 return true;
             return false;
         }

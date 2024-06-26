@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Reflection;
+using System.Windows;
+using ConsoleLangLang.ConsoleApp.DTO;
+using ConsoleLangLang.DTO;
 using LangLang.Controller;
 using LangLang.Domain.Model;
-using System.Reflection;
-using LangLang.DTO;
-using PdfSharp.Snippets.Font;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 public class CRUDConsole
 {
@@ -13,6 +15,7 @@ public class CRUDConsole
     {
         while (true)
         {
+            Console.Clear();
             Console.WriteLine("Choose an entity type:");
 
             if (person.GetType() == typeof(Director))
@@ -28,15 +31,15 @@ public class CRUDConsole
             {
                 case "t":
                     if (person.GetType() == typeof(Director))
-                        DisplayCrudOperations<Teacher>(person);
+                        DisplayCrudOperations<TeacherDTO>(person);
                     else
                         Console.WriteLine("Invalid choice.");
                     break;
                 case "c":
-                    DisplayCrudOperations<Course>(person);
+                    DisplayCrudOperations<CourseDTO>(person);
                     break;
                 case "e":
-                    DisplayCrudOperations<ExamTerm>(person);
+                    DisplayCrudOperations<ExamTermDTO>(person);
                     break;
                 case "x":
                     return;
@@ -47,114 +50,175 @@ public class CRUDConsole
         }
     }
 
-    public static void DisplayCrudOperations<T>(Person person) where T : new()
+    public static void DisplayCrudOperations<TDto>(Person person) where TDto : new()
     {
         GenericCrud crud = new GenericCrud();
-        controller = GetControllerByModelType(typeof(T));
+        var modelObject = ToModel(new TDto());
+        controller = GetControllerByModelType(modelObject.GetType());
+        bool isDirector = person is Director;
+        bool isTeacher = modelObject.GetType() == typeof(Teacher);
 
         while (true)
         {
-            Console.WriteLine("Choose an operation: Create (c), Read (r), Update (u), Delete (d), Exit (x)");
+            Console.Clear();
+            Console.WriteLine("Choose an operation: \nCreate (c) \nRead (r) ");
+            if (!isDirector || (isDirector && isTeacher))
+                Console.WriteLine("Update (u) \nDelete (d)");
+            Console.WriteLine("Exit (x)");
+
             string operation = Console.ReadLine().ToLower();
 
             switch (operation)
             {
                 case "c":
-                    CreateObject<T>(crud, person);
+                    CreateObject<TDto>(crud, person);
                     break;
                 case "r":
-                    ReadItem<T>(crud, person);
+                    ReadObject<TDto>(crud, person);
                     break;
                 case "u":
-                    UpdateItem<T>(crud, person);
+                    if (!isDirector || (isDirector && isTeacher))
+                        UpdateObject<TDto>(crud, person);
+                    else
+                        Console.WriteLine("Update operation is not allowed for Directors.");
                     break;
                 case "d":
-                    DeleteItem<T>(crud, person);
+                    if (!isDirector || (isDirector && isTeacher))
+                        DeleteObject<TDto>(crud, person);
+                    else
+                        Console.WriteLine("Delete operation is not allowed for Directors.");
                     break;
-                case "e":
+                case "x":
                     return;
                 default:
                     Console.WriteLine("Invalid operation.");
                     break;
             }
+            Console.ReadLine();
         }
     }
 
-    private static void CreateItem<T>(GenericCrud crud, Person person) where T : new()
+    private static TDto ToDTO<TDto>(object modelToRead) where TDto : new()
     {
-        T newItem = crud.Create<T>();
+        TDto newItem = new TDto();
+        MethodInfo toDtoMethod = typeof(TDto).GetMethod("ToDTO");
 
-        Console.WriteLine("Item created: ");
-        crud.Read(newItem);
-
-        AddCheckType(newItem, person);
-        controller.Add(newItem);
+        if (toDtoMethod != null)
+        {
+            newItem = (TDto)toDtoMethod.Invoke(newItem, new object[] { modelToRead });
+            return newItem;
+        }
+        else
+            throw new InvalidOperationException($"Method 'ToModelClass' not found in type '{typeof(TDto).Name}'.");
     }
 
-    private static void ReadItem<T>(GenericCrud crud, Person person) where T : new()
+    private static object ToModel<TDto>(TDto item) where TDto : new()
+    {
+        MethodInfo toModelMethod = typeof(TDto).GetMethod("ToModelClass");
+        if (toModelMethod != null)
+        {
+            var modelItem = toModelMethod.Invoke(item, null);
+            return modelItem;
+        }
+        else
+            throw new InvalidOperationException($"Method 'ToModelClass' not found in type '{typeof(TDto).Name}'.");
+    }
+
+    private static object GetById<TDto>()
     {
         Console.Write("Enter ID of item to read: ");
+        string input = Console.ReadLine();
 
-        if (int.TryParse(Console.ReadLine(), out int readId))
+        if (int.TryParse(input, out int readId))
         {
-            T itemToRead = new T();
-            itemToRead = controller.GetById(readId);
-            crud.Read(itemToRead);
+            MethodInfo getByIdMethod = controller.GetType().GetMethod("GetById");
+            var modelToRead = getByIdMethod.Invoke(controller, new object[] { readId });
+            return modelToRead;
         }
         else
-            Console.WriteLine("Invalid input.");
-    }
-
-    private static void UpdateItem<T>(GenericCrud crud, Person person) where T : new()
-    {
-        Console.Write("Enter ID of item to update: ");
-
-        if (int.TryParse(Console.ReadLine(), out int updateId))
         {
-            T itemToUpdate = new T();
-            T updatedItem = crud.Update(itemToUpdate);
-            controller.Update(updatedItem);
-
-            Console.WriteLine("Item updated:");
-            crud.Read(updatedItem);
+            Console.WriteLine("Invalid input. Please enter a valid integer ID.");
+            return null;
         }
-        else
-            Console.WriteLine("Invalid input.");
     }
 
-    private static void DeleteItem<T>(GenericCrud crud, Person person) where T : new()
+    public static void CreateObject<TDto>(GenericCrud crud, Person person) where TDto : new()
     {
-        Console.Write("Enter ID of item to delete: ");
-        if (int.TryParse(Console.ReadLine(), out int deleteId))
-        {
-            T itemToDelete = new T();
-            controller.GetById(deleteId);
-            controller.Delete(itemToDelete);
-            Console.WriteLine("Item deleted.");
-        }
-        else
-            Console.WriteLine("Invalid input.");
-    }
-    
-    private static void CreateObject<T>(GenericCrud crud, Person person) where T : new()
-    {
-        T newItem = crud.Create<T>();
+        Console.Clear();
+
+        TDto newItem = crud.Create<TDto>();
+        if (newItem == null)
+            return;
+
         Console.WriteLine("Item created:");
-        crud.Read(newItem); 
+        crud.Read(newItem);
 
         MethodInfo addMethod = controller.GetType().GetMethod("Add");
+
         if (addMethod != null)
         {
-            addMethod.Invoke(controller, new object[] { newItem });
-            Console.WriteLine($"{typeof(T).Name} added successfully.");
-            AddCheckType(newItem, person);
+            var modelItem = ToModel(newItem);
+            object returnedValue = addMethod.Invoke(controller, new object[] { modelItem });
+
+            TDto returnedValueDTO = ToDTO<TDto>(returnedValue);
+
+            if (typeof(TDto) != typeof(TeacherDTO))
+                AddCheckType(returnedValueDTO, person);
         }
         else
-        {
-            Console.WriteLine($"Add method not found on controller for entity type: {typeof(T).Name}");
-        }
+            Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
     }
-    
+
+    private static void ReadObject<TDto>(GenericCrud crud, Person person) where TDto : new()
+    {
+        Console.Clear();
+
+        var modelToRead = GetById<TDto>();
+        TDto newItem = ToDTO<TDto>(modelToRead);
+        crud.Read(newItem);
+
+        Console.ReadLine();
+    }
+
+    private static void UpdateObject<TDto>(GenericCrud crud, Person person) where TDto : new()
+    {
+        Console.Clear();
+
+        var modelToRead = GetById<TDto>();
+        TDto updatedItem = ToDTO<TDto>(modelToRead);
+        TDto updated = crud.Update(updatedItem);
+        Console.WriteLine("Item updated:");
+        crud.Read(updated);
+
+        MethodInfo updateMethod = controller.GetType().GetMethod("Update");
+
+        if (updateMethod != null)
+        {
+            var modelItem = ToModel(updated);
+            updateMethod.Invoke(controller, new object[] { modelItem });
+        }
+        else
+            Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
+    }
+
+    private static void DeleteObject<TDto>(GenericCrud crud, Person person) where TDto : new()
+    {
+        Console.Clear();
+
+        var modelToRead = GetById<TDto>();
+        TDto deletedItem = ToDTO<TDto>(modelToRead);
+
+        MethodInfo deleteMethod = controller.GetType().GetMethod("Delete");
+
+        if (deleteMethod != null)
+        {
+            deleteMethod.Invoke(controller, new object[] { modelToRead });
+            Console.WriteLine("Item deleted.");
+            DeleteCheckType(deletedItem, person);
+        }
+        else
+            Console.WriteLine($"Add method not found on controller for entity type: {typeof(TDto).Name}");
+    }
 
     private static object GetControllerByModelType(Type type)
     {
@@ -180,47 +244,97 @@ public class CRUDConsole
         return controller;
     }
 
-    private static void AddCheckType<T>(T item, Person person)
+    private static void AddCheckType<TDto>(TDto item, Person person)
     {
         if (person.GetType() == typeof(Teacher))
             AddToTeacher(item, person);
         else
             AddToDirector(item);
     }
-    private static void AddToDirector<T>(T item)
+
+    private static void AddToDirector<TDto>(TDto item)
     {
-        Director director = controller.GetDirector();
+        DirectorController directorController = Injector.CreateInstance<DirectorController>();
+        Director director = directorController.GetDirector();
 
-        if (item.GetType() == typeof(ExamTerm))
+        if (item is ExamTermDTO)
         {
-            ExamTerm examTerm = item as ExamTerm;
-            director.CoursesId.Add(examTerm.ExamID);
+            ExamTermDTO examTermDTO = (ExamTermDTO)(object)item;
+            ExamTerm examTerm = examTermDTO.ToModelClass();
+            director.ExamsId.Add(examTerm.ExamID);
+            SmartSelectionOfExamTeacher(directorController, examTerm);
+
         }
-        else if (item.GetType() == typeof(Course))
+        else if (item is CourseDTO)
         {
-            Course course = item as Course;
-            director.ExamsId.Add(course.Id);
+            CourseDTO courseDTO = (CourseDTO)(object)item;
+            Course course = courseDTO.ToModelClass();
+            director.CoursesId.Add(course.Id);
         }
 
-        controller.Update(director);
+        directorController.UpdateDirector(director);
     }
 
-    private static void AddToTeacher<T>(T item, Person person)
+    private static void AddToTeacher<TDto>(TDto item, Person person)
     {
         DirectorController controller = Injector.CreateInstance<DirectorController>();
         Teacher teacher = controller.GetById(person.Id);
 
-        if (item.GetType() == typeof(ExamTerm))
+        if (item.GetType() == typeof(ExamTermDTO))
         {
-            ExamTerm examTerm = item as ExamTerm;
+            ExamTermDTO examTermDTO = (ExamTermDTO)(object)item;
+            ExamTerm examTerm = examTermDTO.ToModelClass();
             teacher.CoursesId.Add(examTerm.ExamID);
         }
-        else if (item.GetType() == typeof(Course))
+        else if (item.GetType() == typeof(CourseDTO))
         {
-            Course course = item as Course;
-            teacher.ExamsId.Add(course.Id);
+            CourseDTO courseDTO = (CourseDTO)(object)item;
+            Course course = courseDTO.ToModelClass();
+            teacher.CoursesId.Add(course.Id);
         }
 
         controller.Update(teacher);
+    }
+
+    private static void DeleteCheckType<TDto>(TDto item, Person person)
+    {
+        if (person.GetType() == typeof(Teacher))
+            DeleteFromTeacher(item, person);
+    }
+
+    private static void DeleteFromTeacher<TDto>(TDto item, Person person)
+    {
+        DirectorController directorController = Injector.CreateInstance<DirectorController>();
+        TeacherController teacherController = Injector.CreateInstance<TeacherController>();
+        Teacher teacher = directorController.GetById(person.Id);
+
+        if (item.GetType() == typeof(ExamTermDTO))
+        {
+            ExamTermDTO examTermDTO = (ExamTermDTO)(object)item;
+            ExamTerm examTerm = examTermDTO.ToModelClass();
+            teacherController.RemoveExamTerm(examTerm.ExamID);
+        }
+        else if (item.GetType() == typeof(CourseDTO))
+        {
+            CourseDTO courseDTO = (CourseDTO)(object)item;
+            Course course = courseDTO.ToModelClass();
+            controller.Delete(course.Id);
+            directorController.RemoveCourseFromList(teacher.Id, course.Id);
+            directorController.RemoveCourseFromDirector(course.Id);
+        }
+    }
+
+    private static void SmartSelectionOfExamTeacher(DirectorController controller, ExamTerm examTerm)
+    {
+        int teacherCourseId = controller.FindMostAppropriateTeacher(examTerm);
+        if (teacherCourseId > 0)
+        {
+            Teacher teacher = controller.GetById(teacherCourseId);
+            teacher.ExamsId.Add(examTerm.ExamID);
+            controller.Update(teacher);
+            Console.WriteLine($"{teacher.FirstName} {teacher.LastName} was chosen");
+        }
+        else
+            MessageBox.Show("There is no available teacher for that course");
     }
 }

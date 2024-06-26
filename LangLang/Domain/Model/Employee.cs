@@ -15,12 +15,12 @@ namespace LangLang.Domain.Model
             get { return title; }
             set { title = value; }
         }
-        public List<int> CoursesId
+        public List<int>? CoursesId
         {
             get { return coursesId; }
             set { coursesId = value; }
         }
-        public List<int> ExamsId
+        public List<int>? ExamsId
         {
             get { return examsId; }
             set { examsId = value; }
@@ -37,12 +37,8 @@ namespace LangLang.Domain.Model
 
         public override string[] ToCSV()
         {
-            string coursesIdStr = "";
-            if (coursesId != null)
-                coursesIdStr = string.Join(",", coursesId);
-            string examsIdStr = "";
-            if (examsId != null)
-                examsIdStr = string.Join(",", examsId);
+            string coursesIdStr = coursesId != null ? string.Join(",", coursesId) : string.Empty;
+            string examsIdStr = examsId != null ? string.Join(",", examsId) : string.Empty;
             return new string[] {
                 Id.ToString(),
                 FirstName,

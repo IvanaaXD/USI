@@ -8,7 +8,7 @@ namespace LangLang.Domain.Model.Reports
     public class ThirdReportGenerator : IReportGenerator
     {
         CourseController _courseController = Injector.CreateInstance<CourseController>();
-        IExamTermRepository _examTerms = Injector.CreateInstance<IExamTermRepository>();
+        IExamTermDbRepository _examTerms = Injector.CreateInstance<IExamTermDbRepository>();
         ExamTermGradeController _examTermGradeController = Injector.CreateInstance<ExamTermGradeController>();
         ICourseGradeRepository _courseGrade = Injector.CreateInstance<ICourseGradeRepository>();
 
@@ -67,7 +67,7 @@ namespace LangLang.Domain.Model.Reports
             List<ExamTermGrade> examGrades = _examTermGradeController.GetAllExamTermGrades();
             foreach (ExamTermGrade grade in examGrades)
             {
-                ExamTerm exam = _examTerms.GetExamTermById(grade.ExamId);
+                ExamTerm exam = _examTerms.GetById(grade.ExamId);
                 if (exam == null)
                     continue;
                 else if (exam.ExamTime >= DateTime.Now.AddYears(-1))

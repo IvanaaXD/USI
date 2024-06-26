@@ -1,4 +1,5 @@
 ﻿using LangLang.Controller;
+using LangLang.Domain.IUtility;
 using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
 using LangLang.DTO;
@@ -58,11 +59,11 @@ namespace LangLang.View.Director
         {
             foreach(Domain.Model.Student student in GetFilteredStudents())
             {
-                string emailBody = $"Dear {student.FirstName}, Congratulations on being one of the top students in {course.Language} {course.Level}!" +
-                                   $" Your hard work and dedication have truly paid off. Thank you for your outstanding performance. Best regards, {director.FirstName}";
+                TypeOfMessage messageType = TypeOfMessage.TopStudentsMessage;
                 var examTerm = new ExamTerm();
                 examTerm.ExamID = -1;
-                mailController.ConstructMail(director, student, course, examTerm, TypeOfMessage.TopStudentsMessage,emailBody);
+
+                mailController.GenerateMail(director, student, course, examTerm, messageType);
             }
             SendMailButton.Visibility = Visibility.Collapsed;
             MessageBox.Show("You have successfully sent your emails.");

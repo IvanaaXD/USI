@@ -5,8 +5,9 @@ using LangLang.Controller;
 using LangLang.Domain.Model;
 using LangLang.View.Teacher;
 using LangLang.View.Student;
-using System.Diagnostics;
-using System.IO;
+using LangLang.Data;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace LangLang
 {
@@ -17,16 +18,59 @@ namespace LangLang
     {
         private StudentsController studentController { get; set; }
         private DirectorController directorController { get; set; }
+        private CourseController courseController { get; set; }
+        private ExamTermController examTermController { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             directorController = Injector.CreateInstance<DirectorController>();
             studentController = Injector.CreateInstance<StudentsController>();
+            courseController = Injector.CreateInstance<CourseController>(); 
+            examTermController = Injector.CreateInstance<ExamTermController>();
 
             SetPlaceholders();
+            
+            //InitializeTeacherTable();
+            //InitializeCourseTable();
+            //InitializeExamTermTable();
         }
-
+        void InitializeTeacherTable()
+        {
+            List<Teacher> teachers = directorController.GetAllTeachers();
+            using (var dbContext = new AppDbContext())
+            {
+                foreach (Teacher teacher in teachers)
+                {
+                    dbContext.Teachers.Add(teacher);
+                }
+                dbContext.SaveChanges();
+            }
+        }
+        void InitializeCourseTable()
+        {
+            List<Course> courses = courseController.GetAllCourses();
+            using (var dbContext = new AppDbContext())
+            {
+                foreach (Course course in courses)
+                {
+                    dbContext.Courses.Add(course);
+                }
+                dbContext.SaveChanges();
+            }
+        }
+        void InitializeExamTermTable()
+        {
+            List<ExamTerm> examTerms = examTermController.GetAllExamTerms();
+            using (var dbContext = new AppDbContext())
+             {
+                foreach (ExamTerm examTerm in examTerms)
+                {
+                    dbContext.ExamTerms.Add(examTerm);
+                }
+                dbContext.SaveChanges();         
+             }
+        }
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             /*string email = "ivana@gmail.com";

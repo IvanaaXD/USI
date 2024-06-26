@@ -2,14 +2,14 @@
 using LangLang.DTO;
 using LangLang.Domain.Model;
 using LangLang.Domain.Model.Enums;
-using LangLang.Repository;
 using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
+using LangLang.Domain.IUtility;
+using LangLang.Domain.Utility;
 
 namespace LangLang.View.Teacher
 {
@@ -44,6 +44,10 @@ namespace LangLang.View.Teacher
         private int currentCoursePage = 1;
         private string sortCriteria;
         private string courseSortCriteria;
+
+        private ISortStrategy currentSortStrategy = new SortByDatetime();
+        private ISortStrategy courseSortStrategy = new SortByDatetime();
+
         public TeacherPage(int teacherId)
         {
             InitializeComponent();
@@ -171,7 +175,7 @@ namespace LangLang.View.Teacher
                 else
                 {
                     int courseId = SelectedCourse.Id;
-                    courseController.Delete(courseId);
+                    //courseController.Delete(SelectedCourse.ToCourse());
                     directorController.RemoveCourseFromList(teacherId, courseId);
                     directorController.RemoveCourseFromDirector(courseId);
                 }
@@ -364,6 +368,10 @@ namespace LangLang.View.Teacher
                 var examTerms = GetFilteredExamTerms();
                 List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, sortCriteria, examTerms);
                 List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, sortCriteria, examTerms);
+                
+                //List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 4, currentSortStrategy, examTerms);
+                //List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 4, currentSortStrategy, examTerms);
+                
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
                 else NextButton.IsEnabled = true;   
@@ -392,12 +400,15 @@ namespace LangLang.View.Teacher
                 {
                     case "Language":
                         sortCriteria = "Language";
+                        currentSortStrategy = new SortByLanguage(); 
                         break;
                     case "Level":
                         sortCriteria = "Level";
+                        currentSortStrategy = new SortByLevel();
                         break;
                     case "Datetime":
                         sortCriteria = "Datetime";
+                        currentSortStrategy = new SortByDatetime();
                         break;
                 }
                 UpdateExamPagination();
@@ -440,6 +451,10 @@ namespace LangLang.View.Teacher
                 var filteredCourses = GetFilteredCourses();
                 List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortCriteria, filteredCourses);
                 List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortCriteria, filteredCourses);
+                
+                //List<Course> courses = courseController.GetAllCourses(currentCoursePage, 4, courseSortStrategy, filteredCourses);
+                //List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 4, courseSortStrategy, filteredCourses);
+                
                 if (newCourses.Count == 0)
                     CourseNextButton.IsEnabled = false;
                 else
@@ -469,12 +484,15 @@ namespace LangLang.View.Teacher
                 {
                     case "Language":
                         courseSortCriteria = "Language";
+                        courseSortStrategy = new SortByLanguage();
                         break;
                     case "Level":
                         courseSortCriteria = "Level";
+                        courseSortStrategy = new SortByLevel();
                         break;
                     case "StartDate":
                         courseSortCriteria = "StartDate";
+                        courseSortStrategy = new SortByDatetime();
                         break;
                 }
                 UpdateCoursePagination();

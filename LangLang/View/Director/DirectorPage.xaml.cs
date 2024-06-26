@@ -10,6 +10,8 @@ using System.Windows;
 using LangLang.View.Teacher;
 using System.Windows.Controls;
 using LangLang.Domain.Model.Reports;
+using LangLang.Domain.IUtility;
+using LangLang.Domain.Utility;
 
 namespace LangLang.View.Director
 {
@@ -56,6 +58,7 @@ namespace LangLang.View.Director
         private int selectedTabIndex = 0;
         private int currentTeacherPage = 1;
         private string teacherSortCriteria;
+        private ISortStrategy sortStrategy = new SortByFirstName();
 
         public DirectorPage(int directorId)
         {
@@ -231,7 +234,7 @@ namespace LangLang.View.Director
                 int id = SelectedTeacher.Id;
                 var activeCoursesWithoutTeacher = _directorController.GetActiveCourses(SelectedTeacher.ToTeacher());
 
-                if (activeCoursesWithoutTeacher.Count > 0)
+                if (activeCoursesWithoutTeacher!=null)
                 {
                     foreach (var course in activeCoursesWithoutTeacher)
                     {
@@ -240,7 +243,7 @@ namespace LangLang.View.Director
                         choseTeacherView.Activate();
                     }
                 }
-                _directorController.Delete(id);
+                _directorController.Delete(SelectedTeacher.ToTeacher());
                 Update();
             }
         }
@@ -458,8 +461,11 @@ namespace LangLang.View.Director
             {
                 TableViewModel.Teachers.Clear();
                 var filteredTeachers= GetFilteredTeachers();
-                List<Domain.Model.Teacher> teachers = _directorController.GetAllTeachers(currentTeacherPage, 4, teacherSortCriteria, filteredTeachers);
-                List<Domain.Model.Teacher> newTeachers = _directorController.GetAllTeachers(currentTeacherPage + 1, 4, teacherSortCriteria, filteredTeachers);
+                 //List<Domain.Model.Teacher> teachers = _directorController.GetAllTeachers(currentTeacherPage, 4, teacherSortCriteria, filteredTeachers);
+                //List<Domain.Model.Teacher> newTeachers = _directorController.GetAllTeachers(currentTeacherPage + 1, 4, teacherSortCriteria, filteredTeachers);
+
+                List<Domain.Model.Teacher> teachers = _directorController.GetAllTeachers(currentTeacherPage, 4, sortStrategy, filteredTeachers);
+                List<Domain.Model.Teacher> newTeachers = _directorController.GetAllTeachers(currentTeacherPage + 1, 4, sortStrategy, filteredTeachers);
 
                 if (newTeachers.Count == 0)
                     TeacherNextButton.IsEnabled = false;
@@ -489,12 +495,15 @@ namespace LangLang.View.Director
                 {
                     case "FirstName":
                         teacherSortCriteria = "FirstName";
+                        sortStrategy = new SortByFirstName();
                         break;
                     case "LastName":
                         teacherSortCriteria = "LastName";
+                        sortStrategy = new SortByLastName();
                         break;
                     case "StartedWork":
                         teacherSortCriteria = "StartedWork";
+                        sortStrategy = new SortByDatetime();
                         break;
                 }
                 UpdatePagination();

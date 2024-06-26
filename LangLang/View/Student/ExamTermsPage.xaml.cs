@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using LangLang.Domain.Utility;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.View.Student
 {
@@ -44,6 +46,7 @@ namespace LangLang.View.Student
         private bool isSearchButtonClicked = false;
         private int currentExamPage = 1;
         private string sortCriteria;
+        private ISortStrategy sortStrategy = new SortByLanguage();
 
         public ExamTermsPage(int studentId)
         {
@@ -336,6 +339,8 @@ namespace LangLang.View.Student
                 var examTerms = GetFilteredCompletedExamTerms();
                 List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 1, sortCriteria, examTerms);
                 List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 1, sortCriteria, examTerms);
+               // List<ExamTerm> exams = examTermController.GetAllExamTerms(currentExamPage, 1, sortStrategy, examTerms);
+                //List<ExamTerm> newExams = examTermController.GetAllExamTerms(currentExamPage + 1, 1, sortStrategy, examTerms);
                 if (newExams.Count == 0)
                     NextButton.IsEnabled = false;
                 else NextButton.IsEnabled = true;
@@ -364,12 +369,15 @@ namespace LangLang.View.Student
                 {
                     case "Language":
                         sortCriteria = "Language";
+                        sortStrategy = new SortByLanguage();
                         break;
                     case "Level":
                         sortCriteria = "Level";
+                        sortStrategy = new SortByLevel();
                         break;
                     case "Datetime":
                         sortCriteria = "Datetime";
+                        sortStrategy = new SortByDatetime();
                         break;
                 }
                 UpdateCompletedExamsTable();

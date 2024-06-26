@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using LangLang.Domain.IUtility;
+using LangLang.Domain.Utility;
 
 namespace LangLang.View.Student
 {
@@ -43,6 +45,8 @@ namespace LangLang.View.Student
         private Button CoursePreviousButton;
         private TextBlock CoursePageNumberTextBlock;
         private ComboBox courseSortCriteriaComboBox;
+
+        private ISortStrategy courseSortStrategy = new SortByDatetime();
 
         public CoursesView(int studentId, int tabIndex)
         {
@@ -254,6 +258,9 @@ namespace LangLang.View.Student
                 List<Course> courses = courseController.GetAllCourses(currentCoursePage, 1, courseSortCriteria, filteredCourses);
                 List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 1, courseSortCriteria, filteredCourses);
 
+                //List<Course> courses = courseController.GetAllCourses(currentCoursePage, 1, courseSortStrategy, filteredCourses);
+                //List<Course> newCourses = courseController.GetAllCourses(currentCoursePage + 1, 1, courseSortStrategy, filteredCourses);
+                
                 if (newCourses.Count == 0)
                     CourseNextButton.IsEnabled = false;
                 else
@@ -279,12 +286,15 @@ namespace LangLang.View.Student
                 {
                     case "Language":
                         courseSortCriteria = "Language";
+                        courseSortStrategy = new SortByLanguage();
                         break;
                     case "Level":
                         courseSortCriteria = "Level";
+                        courseSortStrategy = new SortByLevel();
                         break;
                     case "StartDate":
                         courseSortCriteria = "StartDate";
+                        courseSortStrategy = new SortByDatetime();
                         break;
                 }
                 UpdatePagination();

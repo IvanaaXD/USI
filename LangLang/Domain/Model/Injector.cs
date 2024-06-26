@@ -31,11 +31,16 @@ namespace LangLang.Domain.Model
 
         static Injector()
         {
+            Data.AppDbContext appDbContext = new Data.AppDbContext();   
             _implementations.Add(typeof(IPenaltyPointRepository), new Lazy<object>(() => new PenaltyPointRepository()));
             _implementations.Add(typeof(PenaltyPointController), new Lazy<object>(() => new PenaltyPointController()));
             _implementations.Add(typeof(ReportController), new Lazy<object>(() => new ReportController()));
+            _implementations.Add(typeof(IExamTermDbRepository), new Lazy<object>(() => new ExamTermDbRepository(appDbContext))); //
+            _implementations.Add(typeof(ICourseDbRepository), new Lazy<object>(() => new CourseDbRepository(appDbContext)));     //
+            _implementations.Add(typeof(IDirectorDbRepository), new Lazy<object>(() => new DirectorDbRepository(appDbContext)));
+
         }
-            
+
         public static T CreateInstance<T>()
         {
             Type type = typeof(T);

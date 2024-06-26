@@ -5,6 +5,7 @@ using LangLang.Observer;
 using LangLang.Storage;
 using LangLang.Domain.Model;
 using LangLang.Domain.IRepository;
+using LangLang.Domain.IUtility;
 
 namespace LangLang.Repository
 {
@@ -56,7 +57,7 @@ namespace LangLang.Repository
             NotifyObservers();
             return oldDirector;
         }
-        public Teacher AddTeacher(Teacher teacher)
+        public Teacher Add(Teacher teacher)
         {
             teacher.Id = GenerateId();
             _teachers.Add(teacher);
@@ -65,9 +66,9 @@ namespace LangLang.Repository
             return teacher;
         }
 
-        public Teacher? UpdateTeacher(Teacher? teacher)
+        public Teacher? Update(Teacher? teacher)
         {
-            Teacher? oldTeacher = GetTeacherById(teacher.Id);
+            Teacher? oldTeacher = GetById(teacher.Id);
             if (oldTeacher == null) return null;
 
             oldTeacher.FirstName = teacher.FirstName;
@@ -89,15 +90,15 @@ namespace LangLang.Repository
             return oldTeacher;
         }
 
-        public Teacher? RemoveTeacher(int id)
+        public Teacher? Remove(int id)
         {
-            Teacher? teacher = GetTeacherById(id);
+            Teacher? teacher = GetById(id);
             if (teacher == null) return null;
 
             if (teacher.CoursesId != null)
             {
                 foreach (int courseId in teacher.CoursesId)
-                    courseRepository.RemoveCourse(courseId);
+                    courseRepository.Remove(courseId);
             }
 
             _teachers.Remove(teacher);
@@ -107,12 +108,12 @@ namespace LangLang.Repository
         }
 
 
-        public Teacher? GetTeacherById(int id)
+        public Teacher? GetById(int id)
         {
             return _teachers.Find(t => t.Id == id);
         }
 
-        public List<Teacher> GetAllTeachers()
+        public List<Teacher> GetAll()
         {
             return _teachers;
         }
@@ -141,6 +142,12 @@ namespace LangLang.Repository
 
             teachers = teachers.Skip((page - 1) * pageSize).Take(pageSize);
 
+            return teachers.ToList();
+        }
+        public List<Teacher> GetAllTeachers(int page, int pageSize, ISortStrategy sortStrategy, List<Teacher> teachersToPaginate)
+        {
+            IEnumerable<Teacher> teachers = sortStrategy.Sort(teachersToPaginate);
+            teachers = teachers.Skip((page - 1) * pageSize).Take(pageSize);
             return teachers.ToList();
         }
     }

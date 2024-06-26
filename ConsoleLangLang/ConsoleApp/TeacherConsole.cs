@@ -1,10 +1,7 @@
-﻿using LangLang.Controller;
+﻿using ConsoleLangLang.ConsoleApp;
+using LangLang.Controller;
 using LangLang.Domain.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LangLang.ConsoleApp
 {
@@ -18,6 +15,7 @@ namespace LangLang.ConsoleApp
 
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("Choose an operation:\n" +
                                   "\t1) CRUD operations\n" +
                                   "\tx) Exit");
@@ -29,7 +27,7 @@ namespace LangLang.ConsoleApp
                     case "1":
                         CRUDConsole.Display(teacher);
                         break;
-                    case "2":
+                    case "x":
                         return;
                     default:
                         Console.WriteLine("Invalid operation.");

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using LangLang.Domain.Model;
-using LangLang.View.Director;
-using LangLang.View.Teacher;
 using LangLang.Controller;
 using LangLang.ConsoleApp;
 
@@ -30,34 +27,38 @@ public class MainConsole
     {
         Console.WriteLine("Please login to continue or type 'x' to quit.");
 
-        Console.Write("Username: ");
-        string username = Console.ReadLine();
-        if (username == null) return false;
-
-        if (username.ToLower() == "x")
-            return true;
-
-        Console.Write("Password: ");
-        string password = Console.ReadLine();
-        if (password == null) return false;
-
-        if (Authenticate(username, password))
+        while (true)
         {
-            currentUserEmail = username;
-            Console.WriteLine($"Logged in successfully\n");
+            Console.Write("Username: ");
+            string username = Console.ReadLine();
+            if (username == null) return false;
 
-            if (currentUserEmail == directorController.GetDirector().Email)
-                DirectorConsole.Display();
+            if (username.ToLower() == "x")
+                return true;
+
+            Console.Write("Password: ");
+            string password = Console.ReadLine();
+            if (password == null) return false;
+
+            if (Authenticate(username, password))
+            {
+                currentUserEmail = username;
+                Console.WriteLine($"Logged in successfully\n");
+
+                if (currentUserEmail == directorController.GetDirector().Email)
+                    DirectorConsole.Display();
+                else
+                    TeacherConsole.Display(currentUserEmail);
+
+                return true;
+            }
             else
-                TeacherConsole.Display(currentUserEmail);
+            {
+                Console.WriteLine("Invalid username or password. Please try again.");
+            }
         }
-        else
-        {
-            Console.WriteLine("Invalid username or password. Please try again.");
-        }
-
-        return true;
     }
+
     private static bool Authenticate(string email, string password)
     {
         return HasTeacherLoggedIn(email, password) || HasDirectorLoggedIn(email, password);

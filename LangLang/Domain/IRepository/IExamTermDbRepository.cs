@@ -1,4 +1,6 @@
-﻿using LangLang.Domain.Model;
+﻿using LangLang.Domain.IUtility;
+using LangLang.Domain.Model;
+using LangLang.Observer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +9,17 @@ using System.Threading.Tasks;
 
 namespace LangLang.Domain.IRepository
 {
-    public interface IExamTermDbRepository
+    public interface IExamTermDbRepository : IObserver
     {
+        List<ExamTerm> GetAll();
         ExamTerm GetById(int id);
-        void Add(ExamTerm examTerm);
-        void Update(ExamTerm examTerm);
+        List<ExamTerm> GetAllExamTerms(int page, int pageSize, string sortCriteria, List<ExamTerm> exams);
+        List<ExamTerm> GetAllExamTerms(int page, int pageSize, ISortStrategy sortStrategy, List<ExamTerm> exams);
+        ExamTerm Add(ExamTerm examTerm);
+        ExamTerm Update(ExamTerm examTerm);
         void Remove(ExamTerm examTerm);
         void Delete(int id);
+        void Subscribe(IObserver observer);
+        void Update();
     }
 }
